@@ -8,9 +8,11 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface MicroServiceField {
-	String primaryKey() default "";
-
 	String serviceID() default "";
 
 	String function() default "";
+
+	String sortFunction() default "";
+
+	String mockTarget() default "";
 }
