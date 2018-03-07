@@ -4,9 +4,11 @@ import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.dozer.DozerBeanMapper;
+import org.dozer.MappingException;
 
 public abstract class FileHandler<T> {
 
@@ -15,19 +17,23 @@ public abstract class FileHandler<T> {
 	protected Reader reader;
 	protected List records;
 	
-	private Object holderRecord;
+	protected Object holderRecord;
+	protected List<ErrorRecord> errorRecords;
+	
 	private int index;
 	private int totalCount;
-	private int successCount;
+	private int successCount;	
 	
 	public void initWithFileHolder(Class<T> fileHolder) throws IOException {
-		
+				
 		this.fileHolder = fileHolder;
 		this.reader = Files.newBufferedReader(path);
+		this.errorRecords = new ArrayList<ErrorRecord>();
 		
 		this.initializeFileReader();
 		
 		this.totalCount = records.size();
+		
 	}
 	
 	protected abstract void initializeFileReader() throws IOException;
@@ -50,23 +56,48 @@ public abstract class FileHandler<T> {
 		DozerBeanMapper beanMapper = new DozerBeanMapper();
 		this.holderRecord = this.records.get(index);
 		
-		Object valueObject = beanMapper.map(holderRecord, valueClass);
-				
+		Object valueObject = null;
+		
+		try {
+			
+			valueObject = beanMapper.map(holderRecord, valueClass);
+			
+		} catch (MappingException ex) {
+			ErrorRecord errorRecord = new ErrorRecord(index, ex, holderRecord);			
+			this.errorRecords.add(errorRecord);
+		}
 		index++;
+		successCount++;
 		
 		return (T) valueObject;		
 	}
 	
-	public <T> T getHolderRecord() {
-		
+	public <T> T getHolderRecord() {		
 		return (T) this.holderRecord;		
 	}
 	
 	public Path getPath() {
 		return path;
 	}
+	
 	public void setPath(Path path) {
 		this.path = path;
+	}
+
+	public int getTotalCount() {
+		return totalCount;
+	}
+
+	public int getSuccessCount() {
+		return successCount;
+	}
+
+	public int getErrorCount() {
+		return totalCount - successCount;
+	}
+
+	public List<ErrorRecord> getErrorRecords() {
+		return errorRecords;
 	}
 
 }

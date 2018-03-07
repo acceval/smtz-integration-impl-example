@@ -15,6 +15,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import com.acceval.core.filehandler.ErrorRecord;
 import com.acceval.core.filehandler.FileHandler;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
@@ -26,38 +27,46 @@ public class XlsxFileHandler extends FileHandler {
 		
 		String csvFile = this.getPath().toString().replace(".xlsx", ".csv");
 				
-		Workbook workbook = null;
 		try {
-			workbook = new XSSFWorkbook(new File(path.toString()));
-		} catch (InvalidFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			throw new IOException(e);			
-		}
-		
-		DataFormatter formatter = new DataFormatter();
-		PrintStream out = new PrintStream(new FileOutputStream(csvFile),
-		                                  true, "UTF-8");
-		for (Sheet sheet : workbook) {
-		    for (Row row : sheet) {
-		        boolean firstCell = true;
-		        for (Cell cell : row) {
-		            if (!firstCell) out.print(',');
-		            String text = formatter.formatCellValue(cell);
-		            out.print(text);
-		            firstCell = false;
-		        }
-		        out.println();
-		    }
-		}	       
-		
-		this.path = Paths.get(csvFile);
-		this.reader = Files.newBufferedReader(this.path);
-		
-		CsvToBean csvToBean = new CsvToBeanBuilder(this.reader)
-				.withType(this.fileHolder)
-				.withIgnoreLeadingWhiteSpace(true).build();
+			Workbook workbook = new XSSFWorkbook(new File(path.toString()));
 				
-		this.records = csvToBean.parse();
+			DataFormatter formatter = new DataFormatter();
+			PrintStream out = new PrintStream(new FileOutputStream(csvFile),
+			                                  true, "UTF-8");
+			for (Sheet sheet : workbook) {
+			    for (Row row : sheet) {
+			        boolean firstCell = true;
+			        for (Cell cell : row) {
+			            if (!firstCell) out.print(',');
+			            String text = formatter.formatCellValue(cell);
+			            out.print(text);
+			            firstCell = false;
+			        }
+			        out.println();
+			    }
+			}	       
+			
+			this.path = Paths.get(csvFile);
+			this.reader = Files.newBufferedReader(this.path);
+			
+			CsvToBean csvToBean = new CsvToBeanBuilder(this.reader)
+					.withType(this.fileHolder)
+					.withIgnoreLeadingWhiteSpace(true).build();
+					
+			this.records = csvToBean.parse();
+			
+		} catch (InvalidFormatException ex) {
+						
+			ex.printStackTrace();
+			ErrorRecord errorRecord = new ErrorRecord(0, ex, this.holderRecord);			
+			this.errorRecords.add(errorRecord);	
+			throw new IOException(ex);
+					
+		} catch (Exception ex) {
+			
+			ex.printStackTrace();
+			ErrorRecord errorRecord = new ErrorRecord(0, ex, this.holderRecord);			
+			this.errorRecords.add(errorRecord);					
+		}
 	}
 }
