@@ -1,4 +1,4 @@
-package com.acceval.core.util.storage;
+package com.acceval.core.util.file;
 
 public class StorageFileNotFoundException extends StorageException {
 
