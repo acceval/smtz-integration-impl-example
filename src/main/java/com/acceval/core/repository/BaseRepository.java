@@ -6,10 +6,7 @@ import javax.persistence.EntityManagerFactory;
 import org.springframework.util.MultiValueMap;
 
 public interface BaseRepository {
-	EntityManager getEntityManager();
-
-	EntityManagerFactory getEntityManagerFactory();
-
+	
 	QueryResult queryByCriteria(Criteria acceCriteria, Class<?> targetClass);
 
 	QueryResult queryByMapParam(MultiValueMap<String, String> mapParam);
@@ -20,5 +17,4 @@ public interface BaseRepository {
 
 	Criteria getCriteriaByMapParam(MultiValueMap<String, String> mapParam, Class<?> targetClass);
 
-	Class<?> getTargetClass();
 }

@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -40,6 +42,12 @@ public abstract class BaseRepositoryImpl implements BaseRepository {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BaseRepositoryImpl.class);
 
+	protected abstract EntityManagerFactory getEntityManagerFactory();
+	
+	protected abstract EntityManager getEntityManager();
+	
+	protected abstract Class<?> getTargetClass();
+	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public QueryResult queryByCriteria(Criteria acceCriteria, Class<?> targetClass) {
