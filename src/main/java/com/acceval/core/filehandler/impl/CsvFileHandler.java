@@ -1,13 +1,10 @@
 package com.acceval.core.filehandler.impl;
 
-import org.dozer.MappingException;
-
-import com.acceval.core.filehandler.ErrorRecord;
-import com.acceval.core.filehandler.FileHandler;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 
-import net.bytebuddy.asm.Advice.This;
+import com.acceval.core.filehandler.ErrorRecord;
+import com.acceval.core.filehandler.FileHandler;
 
 public class CsvFileHandler extends FileHandler {
 
