@@ -7,7 +7,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -18,8 +20,6 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Selection;
-import javax.persistence.metamodel.Attribute;
-import javax.persistence.metamodel.EntityType;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ClassUtils;
@@ -58,14 +58,6 @@ public abstract class BaseRepositoryImpl implements BaseRepository {
 		Root<?> root = criteria.from(targetClass);
 		criteria.select((Selection) root);
 		List<Predicate> lstPredicate = new ArrayList<>();
-
-		//TODO testing area
-		//		Calendar c = Calendar.getInstance();
-		//		c.set(2018, 2, 7);
-		//				acceCriteria.appendCriterion(new Criterion("testLocalDate", RestrictionType.GREATER, LocalDate.of(2018, 3, 4)));
-		//		acceCriteria.appendCriterion(new Criterion("pamentMethod", 3L));
-		//		acceCriteria.appendCriterion(new Criterion("paymentMethod.incoterm.code", "cfr"));
-
 
 		/** criteria */
 		for (Criterion criterion : acceCriteria.getCriterion()) {
@@ -249,7 +241,6 @@ public abstract class BaseRepositoryImpl implements BaseRepository {
 		CriteriaBuilder builder = getEntityManagerFactory().getCriteriaBuilder();
 		CriteriaQuery<?> criteria = builder.createQuery(targetClass);
 		Root<?> root = criteria.from(targetClass);
-		EntityType<?> entityType = root.getModel();
 
 		// order
 		if (CollectionUtils.isNotEmpty(lstSort)) {
@@ -265,27 +256,29 @@ public abstract class BaseRepositoryImpl implements BaseRepository {
 		for (String key : mapParam.keySet()) {
 			if (_PAGE.equals(key) || _PAGESIZE.equals(key) || _SORT.equals(key) || StringUtils.isBlank(mapParam.getFirst(key))) continue;
 
-			Attribute<?, ?> attribute = entityType.getAttribute(key);
-			if (attribute != null) {
-				Class<?> attrClass = attribute.getJavaType();
+			try {
+				String resolveKey = getMapPropertyResolver().containsKey(key) ? getMapPropertyResolver().get(key) : key;
+				Class<?> attrClass = getPath(root, resolveKey).getJavaType();
 				if (ClassUtils.isAssignable(attrClass, Long.class, true)) {
-					lstCrriterion.add(new Criterion(key, Long.valueOf(mapParam.getFirst(key))));
+					lstCrriterion.add(new Criterion(resolveKey, Long.valueOf(mapParam.getFirst(key))));
 				} else if (attrClass.isAssignableFrom(String.class)) {
-					lstCrriterion.add(new Criterion(key, "%" + mapParam.getFirst(key).toLowerCase() + "%", false));
+					lstCrriterion.add(new Criterion(resolveKey, "%" + mapParam.getFirst(key).toLowerCase() + "%", false));
 				} else if (ClassUtils.isAssignable(attrClass, Double.class, true)) {
-					lstCrriterion.add(new Criterion(key, Double.parseDouble(mapParam.getFirst(key))));
+					lstCrriterion.add(new Criterion(resolveKey, Double.parseDouble(mapParam.getFirst(key))));
 				} else if (ClassUtils.isAssignable(attrClass, Integer.class, true)) {
-					lstCrriterion.add(new Criterion(key, Integer.parseInt(mapParam.getFirst(key))));
+					lstCrriterion.add(new Criterion(resolveKey, Integer.parseInt(mapParam.getFirst(key))));
 				} else if (ClassUtils.isAssignable(attrClass, Date.class)) {
 					try {
-						lstCrriterion
-								.add(new Criterion(key, DateUtils.parseDateStrictly(mapParam.getFirst(key), "dd/MM/yyyy", "yyyy/MM/dd")));
+						lstCrriterion.add(
+								new Criterion(resolveKey, DateUtils.parseDateStrictly(mapParam.getFirst(key), "dd/MM/yyyy", "yyyy/MM/dd")));
 					} catch (ParseException e) {
 						LOGGER.error("Date Parsing Error.", e);
 					}
 				} else {
 					LOGGER.error("[" + attrClass.getName() + "] is not support in Acceval Base Criteria Search yet!");
 				}
+			} catch (Exception e) {
+				LOGGER.error(e.getMessage(), e);
 			}
 		}
 		acceCriteria.setCriterion(lstCrriterion);
@@ -293,7 +286,7 @@ public abstract class BaseRepositoryImpl implements BaseRepository {
 		return acceCriteria;
 	}
 
-	protected Path<?> getPath(Root<?> root, String property) {
+	protected Path<?> getPath(Root<?> root, String property) throws IllegalStateException, IllegalArgumentException {
 		String[] splitProperty = property.split("[.]");
 		Path<?> path = null;
 		for (String pro : splitProperty) {
@@ -304,5 +297,9 @@ public abstract class BaseRepositoryImpl implements BaseRepository {
 		}
 
 		return path;
+	}
+
+	protected Map<String, String> getMapPropertyResolver() {
+		return new HashMap<>();
 	}
 }
