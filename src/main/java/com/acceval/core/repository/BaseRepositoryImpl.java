@@ -61,7 +61,9 @@ public abstract class BaseRepositoryImpl implements BaseRepository {
 
 		/** criteria */
 		for (Criterion criterion : acceCriteria.getCriterion()) {
-			String property = criterion.getPropertyName();
+			String property = getMapPropertyResolver().containsKey(criterion.getPropertyName())
+					? getMapPropertyResolver().get(criterion.getPropertyName())
+					: criterion.getPropertyName();
 			Object value = criterion.getSearchValue();
 			Object[] values = criterion.getSearchValues();
 			RestrictionType restrictionType = criterion.getRestrictionType();
