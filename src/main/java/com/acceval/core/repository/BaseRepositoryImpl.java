@@ -43,11 +43,11 @@ public abstract class BaseRepositoryImpl implements BaseRepository {
 	private static final Logger LOGGER = LoggerFactory.getLogger(BaseRepositoryImpl.class);
 
 	protected abstract EntityManagerFactory getEntityManagerFactory();
-	
+
 	protected abstract EntityManager getEntityManager();
-	
+
 	protected abstract Class<?> getTargetClass();
-	
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public QueryResult queryByCriteria(Criteria acceCriteria, Class<?> targetClass) {
@@ -87,22 +87,19 @@ public abstract class BaseRepositoryImpl implements BaseRepository {
 				if (ClassUtils.isAssignable(attrClass, Date.class) || ClassUtils.isAssignable(attrClass, LocalDateTime.class)
 						|| ClassUtils.isAssignable(attrClass, LocalDate.class)) {
 					if (value instanceof String) {
-						lstPredicate.add(builder.equal(
-								builder.function("TO_CHAR", String.class, path, builder.literal("dd/MM/yyyy")), value));
+						lstPredicate
+								.add(builder.equal(builder.function("TO_CHAR", String.class, path, builder.literal("yyyy-MM-dd")), value));
 					} else if (value instanceof Date) {
-						lstPredicate.add(
-								builder.equal(builder.function("TO_CHAR", String.class, path, builder.literal("dd/MM/yyyy")),
-										new SimpleDateFormat("dd/MM/yyyy").format(value)));
+						lstPredicate.add(builder.equal(builder.function("TO_CHAR", String.class, path, builder.literal("yyyy-MM-dd")),
+								new SimpleDateFormat("yyyy-MM-dd").format(value)));
 					} else if (value instanceof LocalDate) {
 						LocalDate vLocalDate = (LocalDate) value;
-						lstPredicate.add(
-								builder.equal(builder.function("TO_CHAR", String.class, path, builder.literal("dd/MM/yyyy")),
-										vLocalDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))));
+						lstPredicate.add(builder.equal(builder.function("TO_CHAR", String.class, path, builder.literal("yyyy-MM-dd")),
+								vLocalDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))));
 					} else if (value instanceof LocalDateTime) {
 						LocalDateTime vLocalDate = (LocalDateTime) value;
-						lstPredicate.add(
-								builder.equal(builder.function("TO_CHAR", String.class, path, builder.literal("dd/MM/yyyy")),
-										vLocalDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))));
+						lstPredicate.add(builder.equal(builder.function("TO_CHAR", String.class, path, builder.literal("yyyy-MM-dd")),
+								vLocalDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))));
 					}
 				} else {
 					lstPredicate.add(builder.equal(path, value));
@@ -154,7 +151,7 @@ public abstract class BaseRepositoryImpl implements BaseRepository {
 					lstPredicate.add(builder.le(path, (Number) value));
 				}
 			}
-			//unknown
+			// unknown
 			else {
 				LOGGER.error("Criterion for [" + criterion.getPropertyName() + "] failed!");
 			}
@@ -211,7 +208,8 @@ public abstract class BaseRepositoryImpl implements BaseRepository {
 	}
 
 	/**
-	 * convert map to criteria and inquiry, normally use for Search Form, with pagination
+	 * convert map to criteria and inquiry, normally use for Search Form, with
+	 * pagination
 	 */
 	@Override
 	public QueryResult queryByMapParam(MultiValueMap<String, String> mapParam, Class<?> targetClass) {
@@ -269,10 +267,10 @@ public abstract class BaseRepositoryImpl implements BaseRepository {
 					lstCrriterion.add(new Criterion(resolveKey, Double.parseDouble(mapParam.getFirst(key))));
 				} else if (ClassUtils.isAssignable(attrClass, Integer.class, true)) {
 					lstCrriterion.add(new Criterion(resolveKey, Integer.parseInt(mapParam.getFirst(key))));
-				} else if (ClassUtils.isAssignable(attrClass, Date.class)) {
+				} else if (ClassUtils.isAssignable(attrClass, Date.class) || ClassUtils.isAssignable(attrClass, LocalDate.class)) {
 					try {
-						lstCrriterion.add(
-								new Criterion(resolveKey, DateUtils.parseDateStrictly(mapParam.getFirst(key), "dd/MM/yyyy", "yyyy/MM/dd")));
+						lstCrriterion.add(new Criterion(resolveKey, DateUtils.parseDateStrictly(mapParam.getFirst(key), "yyyy-MM-dd",
+								"dd-MM-yyyy", "dd/MM/yyyy", "yyyy/MM/dd")));
 					} catch (ParseException e) {
 						LOGGER.error("Date Parsing Error.", e);
 					}
