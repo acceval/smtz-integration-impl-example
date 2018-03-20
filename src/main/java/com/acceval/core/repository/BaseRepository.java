@@ -1,8 +1,5 @@
 package com.acceval.core.repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-
 import org.springframework.util.MultiValueMap;
 
 public interface BaseRepository {

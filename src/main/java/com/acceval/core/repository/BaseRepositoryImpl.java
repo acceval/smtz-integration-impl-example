@@ -284,6 +284,8 @@ public abstract class BaseRepositoryImpl implements BaseRepository {
 					lstCrriterion.add(new Criterion(resolveKey, "%" + mapParam.getFirst(key).toLowerCase() + "%", false));
 				} else if (ClassUtils.isAssignable(attrClass, Double.class, true)) {
 					lstCrriterion.add(new Criterion(resolveKey, Double.parseDouble(mapParam.getFirst(key))));
+				} else if (ClassUtils.isAssignable(attrClass, Float.class, true)) {
+					lstCrriterion.add(new Criterion(resolveKey, Float.parseFloat(mapParam.getFirst(key))));
 				} else if (ClassUtils.isAssignable(attrClass, Integer.class, true)) {
 					lstCrriterion.add(new Criterion(resolveKey, Integer.parseInt(mapParam.getFirst(key))));
 				} else if (ClassUtils.isAssignable(attrClass, Date.class) || ClassUtils.isAssignable(attrClass, LocalDate.class)
