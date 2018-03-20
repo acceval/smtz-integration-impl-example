@@ -11,7 +11,9 @@ public class ExceptionHandler {
 	public static ResponseEntity<ResponseWrapper> buildExceptionResponse(Object obj, Throwable ex) {
 
 		if (ex instanceof ObjectNotFoundException) {
-			return ResponseEntity.status(ApplicationHttpStatus.STATUS_OBJECT_NOT_FOUND.getStatus()).build();
+			ResponseWrapper wrapper = new ResponseWrapper(obj);
+			wrapper.addMessage(MessageType.ERROR, ex.getMessage());
+			return ResponseEntity.status(ApplicationHttpStatus.STATUS_OBJECT_NOT_FOUND.getStatus()).body(wrapper);
 		} else {
 			ResponseWrapper wrapper = new ResponseWrapper(obj);
 			wrapper.addMessage(MessageType.ERROR, ex.getMessage());
