@@ -1,11 +1,10 @@
 package com.acceval.core.repository;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +38,8 @@ public abstract class BaseRepositoryImpl implements BaseRepository {
 
 	public static String _ASC = "asc";
 	public static String _DESC = "desc";
+
+	public static String[] STD_DATEFORMAT = new String[] { "yyyy-MM-dd", "dd-MM-yyyy", "dd/MM/yyyy", "yyyy/MM/dd" };
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BaseRepositoryImpl.class);
 
@@ -86,21 +87,39 @@ public abstract class BaseRepositoryImpl implements BaseRepository {
 				// handle Date
 				if (ClassUtils.isAssignable(attrClass, Date.class) || ClassUtils.isAssignable(attrClass, LocalDateTime.class)
 						|| ClassUtils.isAssignable(attrClass, LocalDate.class)) {
+					int year = 0;
+					int month = 0;
+					int day = 0;
 					if (value instanceof String) {
-						lstPredicate
-								.add(builder.equal(builder.function("TO_CHAR", String.class, path, builder.literal("yyyy-MM-dd")), value));
+						try {
+							Calendar calendar = Calendar.getInstance();
+							calendar.setTime(DateUtils.parseDateStrictly((String) value, STD_DATEFORMAT));
+							year = calendar.get(Calendar.YEAR);
+							month = calendar.get(Calendar.MONTH) + 1;
+							day = calendar.get(Calendar.DAY_OF_MONTH);
+						} catch (ParseException e) {
+							LOGGER.error(e.getMessage(), e);
+						}
 					} else if (value instanceof Date) {
-						lstPredicate.add(builder.equal(builder.function("TO_CHAR", String.class, path, builder.literal("yyyy-MM-dd")),
-								new SimpleDateFormat("yyyy-MM-dd").format(value)));
+						Calendar calendar = Calendar.getInstance();
+						calendar.setTime((Date) value);
+						year = calendar.get(Calendar.YEAR);
+						month = calendar.get(Calendar.MONTH) + 1;
+						day = calendar.get(Calendar.DAY_OF_MONTH);
 					} else if (value instanceof LocalDate) {
 						LocalDate vLocalDate = (LocalDate) value;
-						lstPredicate.add(builder.equal(builder.function("TO_CHAR", String.class, path, builder.literal("yyyy-MM-dd")),
-								vLocalDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))));
+						year = vLocalDate.getYear();
+						month = vLocalDate.getMonthValue();
+						day = vLocalDate.getDayOfMonth();
 					} else if (value instanceof LocalDateTime) {
 						LocalDateTime vLocalDate = (LocalDateTime) value;
-						lstPredicate.add(builder.equal(builder.function("TO_CHAR", String.class, path, builder.literal("yyyy-MM-dd")),
-								vLocalDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))));
+						year = vLocalDate.getYear();
+						month = vLocalDate.getMonthValue();
+						day = vLocalDate.getDayOfMonth();
 					}
+					lstPredicate.add(builder.equal(builder.function("year", Integer.class, path), year));
+					lstPredicate.add(builder.equal(builder.function("month", Integer.class, path), month));
+					lstPredicate.add(builder.equal(builder.function("day", Integer.class, path), day));
 				} else {
 					lstPredicate.add(builder.equal(path, value));
 				}
@@ -267,10 +286,10 @@ public abstract class BaseRepositoryImpl implements BaseRepository {
 					lstCrriterion.add(new Criterion(resolveKey, Double.parseDouble(mapParam.getFirst(key))));
 				} else if (ClassUtils.isAssignable(attrClass, Integer.class, true)) {
 					lstCrriterion.add(new Criterion(resolveKey, Integer.parseInt(mapParam.getFirst(key))));
-				} else if (ClassUtils.isAssignable(attrClass, Date.class) || ClassUtils.isAssignable(attrClass, LocalDate.class)) {
+				} else if (ClassUtils.isAssignable(attrClass, Date.class) || ClassUtils.isAssignable(attrClass, LocalDate.class)
+						|| ClassUtils.isAssignable(attrClass, LocalDateTime.class)) {
 					try {
-						lstCrriterion.add(new Criterion(resolveKey, DateUtils.parseDateStrictly(mapParam.getFirst(key), "yyyy-MM-dd",
-								"dd-MM-yyyy", "dd/MM/yyyy", "yyyy/MM/dd")));
+						lstCrriterion.add(new Criterion(resolveKey, DateUtils.parseDateStrictly(mapParam.getFirst(key), STD_DATEFORMAT)));
 					} catch (ParseException e) {
 						LOGGER.error("Date Parsing Error.", e);
 					}
