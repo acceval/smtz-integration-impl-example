@@ -1,6 +1,9 @@
 package com.acceval.core.repository;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -9,9 +12,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.Id;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -26,6 +31,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import com.acceval.core.repository.Criterion.RestrictionType;
@@ -42,12 +48,143 @@ public abstract class BaseRepositoryImpl implements BaseRepository {
 	public static String[] STD_DATEFORMAT = new String[] { "yyyy-MM-dd", "dd-MM-yyyy", "dd/MM/yyyy", "yyyy/MM/dd" };
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BaseRepositoryImpl.class);
-
+	
 	protected abstract EntityManagerFactory getEntityManagerFactory();
 
 	protected abstract EntityManager getEntityManager();
 
 	protected abstract Class<?> getTargetClass();
+
+	
+	@Override
+	public boolean isExists(Object obj) {
+		
+		Field[] fields = obj.getClass().getDeclaredFields();
+		MultiValueMap<String, String> mapParam = new LinkedMultiValueMap<String, String>();
+		
+		for (Field field : fields) {			
+						
+			if (field.isAnnotationPresent(UniqueKey.class)) {
+				
+				UniqueKey uniqueKey = field.getAnnotation(UniqueKey.class);
+								
+				if (uniqueKey.attr().length() > 0) {
+
+					Field attrField = null;
+					
+					if (uniqueKey.attr().contains(".")) {
+						
+						StringTokenizer tokenizer = new StringTokenizer(uniqueKey.attr(), ".");
+							
+						Object childObj = null;
+						
+						while (tokenizer.hasMoreTokens()) {
+							
+							String fieldName = tokenizer.nextToken();
+							try {
+													
+								if (childObj == null) {
+									attrField = obj.getClass().getDeclaredField(fieldName);
+								
+									attrField.setAccessible(true);
+								
+									childObj = attrField.get(obj);
+								} else {
+									attrField = childObj.getClass().getDeclaredField(fieldName);
+									
+									attrField.setAccessible(true);
+								
+									childObj = attrField.get(childObj);
+								}
+								
+							} catch (NoSuchFieldException | SecurityException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							} catch (IllegalArgumentException | IllegalAccessException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}							
+						}			
+
+						if (childObj instanceof Date) {
+							mapParam.set(uniqueKey.attr(), new SimpleDateFormat("dd/MM/yyyy").format(childObj));							
+						} else {
+							mapParam.set(uniqueKey.attr(), String.valueOf(childObj));
+						}
+						
+					} else {
+											
+						attrField = field;
+	
+						attrField.setAccessible(true);
+						
+						try {
+							
+							Object value = attrField.get(obj);		
+							if (value instanceof Date) {
+								mapParam.set(uniqueKey.attr(), new SimpleDateFormat("dd/MM/yyyy").format(value));							
+							} else {
+								mapParam.set(uniqueKey.attr(), String.valueOf(value));
+							}
+									
+						} catch (IllegalArgumentException | IllegalAccessException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				} else {
+					
+					field.setAccessible(true);
+					try {
+						Object value = field.get(obj);
+						if (value instanceof Date) {
+							mapParam.set(field.getName(), new SimpleDateFormat("dd/MM/yyyy").format(value));							
+						} else {
+							mapParam.set(field.getName(), String.valueOf(value));
+						}
+					} catch (IllegalArgumentException | IllegalAccessException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}					
+				}
+			}
+		}
+		
+		QueryResult result = this.queryByMapParam(mapParam);
+		
+		if (result.getTotal() > 0) {
+			
+			Object existingObj = result.getResults().get(0);
+			Field[] existingFields = existingObj.getClass().getDeclaredFields();
+			
+			for (Field field : existingFields) {	
+				if (field.isAnnotationPresent(Id.class)) {
+					try {
+						field.setAccessible(true);
+						Object value = field.get(existingObj);
+						Field idField = obj.getClass().getDeclaredField(field.getName());
+						idField.setAccessible(true);
+						idField.set(obj, value);
+						break;
+					} catch (IllegalArgumentException | IllegalAccessException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (NoSuchFieldException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (SecurityException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+			
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
