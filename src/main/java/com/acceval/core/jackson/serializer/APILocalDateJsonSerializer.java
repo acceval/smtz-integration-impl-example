@@ -3,12 +3,11 @@ package com.acceval.core.jackson.serializer;
 import java.io.IOException;
 import java.time.LocalDate;
 
+import com.acceval.core.jackson.Fields;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-
-import com.acceval.core.jackson.Fields;
 
 public class APILocalDateJsonSerializer extends JsonSerializer<LocalDate> {
 	public static APILocalDateJsonSerializer INSTANCE = new APILocalDateJsonSerializer();

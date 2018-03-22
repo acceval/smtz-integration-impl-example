@@ -179,6 +179,12 @@
 		</dependency>
 		
 		<dependency>
+		  <groupId>io.craftsman</groupId>
+		  <artifactId>dozer-jdk8-support</artifactId>
+		  <version>1.0.3</version>
+		</dependency>
+		
+		<dependency>
     			<groupId>org.apache.poi</groupId>
     			<artifactId>poi-ooxml</artifactId>
     			<version>3.17</version>
