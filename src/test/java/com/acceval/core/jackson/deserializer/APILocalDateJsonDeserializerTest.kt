@@ -1,8 +1,10 @@
 package com.acceval.core.jackson.deserializer
 
 import com.fasterxml.jackson.core.JsonFactory
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.deser.BeanDeserializerFactory
 import com.fasterxml.jackson.databind.deser.DefaultDeserializationContext
+import com.fasterxml.jackson.databind.module.SimpleModule
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import kotlin.test.assertEquals
@@ -48,4 +50,25 @@ internal class APILocalDateJsonDeserializerTest {
 
         assertNull(dt)
     }
+
+    @Test
+    fun testDeserializeIntoObject() {
+        val mapper = ObjectMapper(factory)
+        val module = SimpleModule()
+        module.addDeserializer(LocalDate::class.java, out)
+        mapper.registerModule(module)
+
+        val value = mapper.readValue("""{"id": 369, "dt": {"year": 1989, "month": 8, "day": 1}, "str": "My string"}""",
+                DeserializeTester::class.java)
+
+        assertEquals(369, value.id)
+        assertEquals(LocalDate.of(1989, 8, 1), value.dt)
+        assertEquals("My string", value.str)
+    }
 }
+
+data class DeserializeTester(
+        val id: Long = 0,
+        val dt: LocalDate = LocalDate.now(),
+        val str: String = ""
+)

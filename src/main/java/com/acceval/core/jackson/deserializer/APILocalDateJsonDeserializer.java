@@ -48,6 +48,10 @@ public class APILocalDateJsonDeserializer extends JsonDeserializer<LocalDate> {
 		val = p.nextIntValue(-1);
 		mapVal.put(field, val);
 
+		if (p.nextToken() != JsonToken.END_OBJECT) {
+			ctx.reportWrongTokenException(p, JsonToken.END_OBJECT, "Expected end object for date");
+		}
+
 		return LocalDate.of(
 				mapVal.getOrDefault(Fields.YEAR, -1),
 				mapVal.getOrDefault(Fields.MONTH, -1),
