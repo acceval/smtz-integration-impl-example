@@ -3,16 +3,16 @@ package com.acceval.core.repository;
 import java.io.Serializable;
 import java.util.List;
 
-public class QueryResult implements Serializable {
+public class QueryResult<T> implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private int total;
-	private List<?> results;
+	private List<T> results;
 
-	public QueryResult(int total, List<?> results) {
+	public QueryResult(int total, List<T> results) {
 		super();
 		if (total == 0) {
-			total = results.size();
+			this.total = results.size();
 		} else {
 			this.total = total;
 		}
@@ -27,11 +27,11 @@ public class QueryResult implements Serializable {
 		this.total = total;
 	}
 
-	public List<?> getResults() {
+	public List<T> getResults() {
 		return results;
 	}
 
-	public void setResults(List<?> results) {
+	public void setResults(List<T> results) {
 		this.results = results;
 	}
 
