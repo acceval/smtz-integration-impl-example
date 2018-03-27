@@ -38,7 +38,7 @@ public class ResponseWrapper<T> {
 			
 			this.setObject(obj);
 			this.addMessage(MessageType.ERROR, ex.getMessage());
-			return ResponseEntity.status(HttpStatus.OK).body(this);
+			return ResponseEntity.status(ApplicationHttpStatus.STATUS_APPLICATION_ERROR.getStatus()).body(this);
 		}
 	}
 	
