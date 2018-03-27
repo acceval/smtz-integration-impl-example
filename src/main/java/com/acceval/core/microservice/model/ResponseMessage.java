@@ -8,6 +8,10 @@ public class ResponseMessage {
 	private MessageType type;
 	private String message;
 
+	public ResponseMessage() {
+		
+	}
+	
 	public ResponseMessage(MessageType type, String message) {
 		super();
 		this.type = type;
