@@ -32,8 +32,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
 import com.acceval.core.repository.Criterion.RestrictionType;
 
@@ -53,6 +55,10 @@ public abstract class BaseRepositoryImpl implements BaseRepository {
 	protected abstract EntityManagerFactory getEntityManagerFactory();
 
 	protected abstract EntityManager getEntityManager();
+
+	protected abstract DiscoveryClient getDiscoveryClient();
+
+	protected abstract RestTemplate getRestTemplate();
 
 	protected abstract Class<?> getTargetClass();
 
@@ -347,6 +353,11 @@ public abstract class BaseRepositoryImpl implements BaseRepository {
 		}
 
 		List<?> result = query.getResultList();
+		try {
+			MicroServiceObjectUtil.refreshObjectDependency(getDiscoveryClient(), getRestTemplate(), result);
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage(), e);
+		}
 		queryResult = new QueryResult(total, result);
 
 		return queryResult;
