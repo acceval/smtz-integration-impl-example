@@ -1,6 +1,5 @@
 package com.acceval.core.repository;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -20,6 +19,8 @@ import javax.persistence.Id;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -48,116 +49,111 @@ public abstract class BaseRepositoryImpl implements BaseRepository {
 	public static String[] STD_DATEFORMAT = new String[] { "yyyy-MM-dd", "dd-MM-yyyy", "dd/MM/yyyy", "yyyy/MM/dd" };
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BaseRepositoryImpl.class);
-	
+
 	protected abstract EntityManagerFactory getEntityManagerFactory();
 
 	protected abstract EntityManager getEntityManager();
 
 	protected abstract Class<?> getTargetClass();
 
-	
 	@Override
 	public boolean isExists(Object obj) {
-		
+
 		Field[] fields = obj.getClass().getDeclaredFields();
 		MultiValueMap<String, String> mapParam = new LinkedMultiValueMap<String, String>();
-		
-		for (Field field : fields) {			
-						
+
+		for (Field field : fields) {
+
 			if (field.isAnnotationPresent(UniqueKey.class)) {
-				
+
 				UniqueKey uniqueKey = field.getAnnotation(UniqueKey.class);
-								
+
 				if (uniqueKey.attr().length() > 0) {
 
 					Field attrField = null;
-					
+
 					if (uniqueKey.attr().contains(".")) {
-						
+
 						StringTokenizer tokenizer = new StringTokenizer(uniqueKey.attr(), ".");
-							
+
 						Object childObj = null;
-						
+
 						while (tokenizer.hasMoreTokens()) {
-							
+
 							String fieldName = tokenizer.nextToken();
 							try {
-													
+
 								if (childObj == null) {
 									attrField = obj.getClass().getDeclaredField(fieldName);
-								
+
 									attrField.setAccessible(true);
-								
+
 									childObj = attrField.get(obj);
 								} else {
 									attrField = childObj.getClass().getDeclaredField(fieldName);
-									
+
 									attrField.setAccessible(true);
-								
+
 									childObj = attrField.get(childObj);
 								}
-								
+
 							} catch (NoSuchFieldException | SecurityException e) {
-								// TODO Auto-generated catch block
 								e.printStackTrace();
 							} catch (IllegalArgumentException | IllegalAccessException e) {
-								// TODO Auto-generated catch block
 								e.printStackTrace();
-							}							
-						}			
+							}
+						}
 
 						if (childObj instanceof Date) {
-							mapParam.set(uniqueKey.attr(), new SimpleDateFormat("dd/MM/yyyy").format(childObj));							
+							mapParam.set(uniqueKey.attr(), new SimpleDateFormat("dd/MM/yyyy").format(childObj));
 						} else {
 							mapParam.set(uniqueKey.attr(), String.valueOf(childObj));
 						}
-						
+
 					} else {
-											
+
 						attrField = field;
-	
+
 						attrField.setAccessible(true);
-						
+
 						try {
-							
-							Object value = attrField.get(obj);		
+
+							Object value = attrField.get(obj);
 							if (value instanceof Date) {
-								mapParam.set(uniqueKey.attr(), new SimpleDateFormat("dd/MM/yyyy").format(value));							
+								mapParam.set(uniqueKey.attr(), new SimpleDateFormat("dd/MM/yyyy").format(value));
 							} else {
 								mapParam.set(uniqueKey.attr(), String.valueOf(value));
 							}
-									
+
 						} catch (IllegalArgumentException | IllegalAccessException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
 				} else {
-					
+
 					field.setAccessible(true);
 					try {
 						Object value = field.get(obj);
 						if (value instanceof Date) {
-							mapParam.set(field.getName(), new SimpleDateFormat("dd/MM/yyyy").format(value));							
+							mapParam.set(field.getName(), new SimpleDateFormat("dd/MM/yyyy").format(value));
 						} else {
 							mapParam.set(field.getName(), String.valueOf(value));
 						}
 					} catch (IllegalArgumentException | IllegalAccessException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
-					}					
+					}
 				}
 			}
 		}
-		
-		QueryResult result = this.queryByMapParam(mapParam);
-		
+
+		QueryResult<?> result = this.queryByMapParam(mapParam);
+
 		if (result.getTotal() > 0) {
-			
+
 			Object existingObj = result.getResults().get(0);
 			Field[] existingFields = existingObj.getClass().getDeclaredFields();
-			
-			for (Field field : existingFields) {	
+
+			for (Field field : existingFields) {
 				if (field.isAnnotationPresent(Id.class)) {
 					try {
 						field.setAccessible(true);
@@ -167,24 +163,20 @@ public abstract class BaseRepositoryImpl implements BaseRepository {
 						idField.set(obj, value);
 						break;
 					} catch (IllegalArgumentException | IllegalAccessException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (NoSuchFieldException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (SecurityException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
 			}
-			
+
 			return true;
 		} else {
 			return false;
 		}
 	}
-	
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
@@ -196,6 +188,7 @@ public abstract class BaseRepositoryImpl implements BaseRepository {
 		Root<?> root = criteria.from(targetClass);
 		criteria.select((Selection) root);
 		List<Predicate> lstPredicate = new ArrayList<>();
+		Map<String, Join<?, ?>> mapDefinedPath = new HashMap<>();
 
 		/** criteria */
 		for (Criterion criterion : acceCriteria.getCriterion()) {
@@ -206,7 +199,7 @@ public abstract class BaseRepositoryImpl implements BaseRepository {
 			Object[] values = criterion.getSearchValues();
 			RestrictionType restrictionType = criterion.getRestrictionType();
 
-			Path path = getPath(root, property);
+			Path path = getPath(root, property, mapDefinedPath);
 			Class<?> attrClass = path.getJavaType();
 
 			// Null
@@ -322,10 +315,11 @@ public abstract class BaseRepositoryImpl implements BaseRepository {
 		if (acceCriteria.getOrder() != null) {
 			List<javax.persistence.criteria.Order> lstOrder = new ArrayList<>();
 			for (Order order : acceCriteria.getOrder()) {
+				Path orderPath = getPath(root, order.getProperty(), mapDefinedPath);
 				if (order.getIsAscending()) {
-					lstOrder.add(builder.asc(root.get(order.getProperty())));
+					lstOrder.add(builder.asc(orderPath));
 				} else {
-					lstOrder.add(builder.desc(root.get(order.getProperty())));
+					lstOrder.add(builder.desc(orderPath));
 				}
 			}
 			if (CollectionUtils.isNotEmpty(lstOrder)) {
@@ -359,7 +353,7 @@ public abstract class BaseRepositoryImpl implements BaseRepository {
 	}
 
 	@Override
-	public QueryResult queryByMapParam(MultiValueMap<String, String> mapParam) {
+	public QueryResult<?> queryByMapParam(MultiValueMap<String, String> mapParam) {
 		return queryByMapParam(mapParam, getTargetClass());
 	}
 
@@ -368,7 +362,7 @@ public abstract class BaseRepositoryImpl implements BaseRepository {
 	 * pagination
 	 */
 	@Override
-	public QueryResult queryByMapParam(MultiValueMap<String, String> mapParam, Class<?> targetClass) {
+	public QueryResult<?> queryByMapParam(MultiValueMap<String, String> mapParam, Class<?> targetClass) {
 		return queryByCriteria(getCriteriaByMapParam(mapParam, targetClass), targetClass);
 	}
 
@@ -448,15 +442,51 @@ public abstract class BaseRepositoryImpl implements BaseRepository {
 		String[] splitProperty = property.split("[.]");
 		Path<?> path = null;
 		for (String pro : splitProperty) {
-			if (path == null)
+			if (path == null) {
 				path = root.get(pro);
-			else
+			} else {
 				path = path.get(pro);
+			}
 		}
-
 		return path;
 	}
 
+	/**
+	 * by calling this, the JPA should auto join all the tables in query
+	 */
+	protected Path<?> getPath(Root<?> root, String property, Map<String, Join<?, ?>> mapDefinedPath)
+			throws IllegalStateException, IllegalArgumentException {
+		if (property.indexOf(".") == -1) {
+			return getPath(root, property);
+		}
+
+		String[] splitProperty = property.split("[.]");
+		Join<?, ?> join = null;
+		StringBuilder reappendProp = new StringBuilder();
+		for (int i = 0; i < splitProperty.length; i++) {
+			String pro = splitProperty[i];
+			if (i == 0) {
+				reappendProp.append(pro);
+				Join<?, ?> defPath = mapDefinedPath.get(pro);
+				join = defPath == null ? root.join(pro, JoinType.LEFT) : defPath;
+				mapDefinedPath.put(pro, join);
+			} else if (i != splitProperty.length - 1) {
+				reappendProp.append("." + pro);
+				Join<?, ?> defPath = mapDefinedPath.get(reappendProp.toString());
+				join = defPath == null ? join.join(pro, JoinType.LEFT) : defPath;
+				mapDefinedPath.put(reappendProp.toString(), join);
+			} else {
+				return join.get(pro);
+			}
+		}
+
+		return join;
+	}
+
+	/**
+	 * provide Map to translate short property to full property path
+	 * eg. customerID => customer.customerID
+	 */
 	protected Map<String, String> getMapPropertyResolver() {
 		return new HashMap<>();
 	}
