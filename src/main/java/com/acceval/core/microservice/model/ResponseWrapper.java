@@ -49,6 +49,19 @@ public class ResponseWrapper<T> {
 	public static <X> ResponseEntity<ResponseWrapper<X>> exceptionResponse(Throwable ex) {
 		return exceptionResponse(ex, null);
 	}
+
+	public static <X> ResponseEntity<ResponseWrapper<X>> notFound() {
+		return ResponseEntity.notFound().build();
+	}
+
+	public static <X> ResponseEntity<ResponseWrapper<X>> ok(ResponseWrapper<X> item) {
+		return ResponseEntity.ok(item);
+	}
+
+	public static <X> ResponseEntity<ResponseWrapper<X>> ok(X item) {
+		ResponseWrapper<X> wrapper = new ResponseWrapper<>(item);
+		return ok(wrapper);
+	}
 	
 	public ResponseWrapper() {
 		
