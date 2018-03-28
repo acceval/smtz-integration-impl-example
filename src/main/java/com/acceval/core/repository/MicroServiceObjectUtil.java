@@ -46,6 +46,12 @@ public class MicroServiceObjectUtil {
 
 		if (target == null) return;
 
+		if (target instanceof Collection) {
+			for (Object obj : (Collection<?>) target) {
+				refreshObjectDependency(discoveryClient, restTemplate, obj, isForceRefresh);
+			}
+		}
+
 		Class<?> classToFind = target.getClass();
 		if (!classToFind.getName().equals(Object.class.getName())) {
 
