@@ -41,6 +41,14 @@ public class ResponseWrapper<T> {
 			return ResponseEntity.status(ApplicationHttpStatus.STATUS_APPLICATION_ERROR.getStatus()).body(this);
 		}
 	}
+
+	public static <X> ResponseEntity<ResponseWrapper<X>> exceptionResponse(Throwable ex, X object) {
+		return new ResponseWrapper<X>().buildExceptionResponse(object, ex);
+	}
+
+	public static <X> ResponseEntity<ResponseWrapper<X>> exceptionResponse(Throwable ex) {
+		return exceptionResponse(ex, null);
+	}
 	
 	public ResponseWrapper() {
 		
