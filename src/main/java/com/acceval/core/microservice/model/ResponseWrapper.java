@@ -58,11 +58,22 @@ public class ResponseWrapper<T> {
 		return ResponseEntity.ok(item);
 	}
 
-	public static <X> ResponseEntity<ResponseWrapper<X>> ok(X item) {
+	/**
+	 * Returns a ResponseEntity with the optional parameter items. Only takes the first item provided.
+	 * @param items only takes the first item provided
+	 * @param <X>
+	 * @return HTTP OK ResponseEntity with a ResponseWrapper body
+	 */
+	@SafeVarargs
+	public static <X> ResponseEntity<ResponseWrapper<X>> ok(X... items) {
+		X item = null;
+		if (items.length > 0) {
+			item = items[0];
+		}
 		ResponseWrapper<X> wrapper = new ResponseWrapper<>(item);
 		return ok(wrapper);
 	}
-	
+
 	public ResponseWrapper() {
 		
 	}
