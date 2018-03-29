@@ -199,7 +199,7 @@ public abstract class BaseRepositoryImpl implements BaseRepository {
 			Object[] values = criterion.getSearchValues();
 			RestrictionType restrictionType = criterion.getRestrictionType();
 
-			Path path = getPath(root, property, mapDefinedPath);
+			Path path = getPath(root, property);
 			Class<?> attrClass = path.getJavaType();
 
 			// Null
