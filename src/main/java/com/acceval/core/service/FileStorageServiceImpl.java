@@ -16,9 +16,9 @@ import org.springframework.util.FileSystemUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.acceval.core.util.file.StorageException;
-import com.acceval.core.util.file.StorageFileNotFoundException;
-import com.acceval.core.util.file.StorageProperties;
+import com.acceval.core.filehandler.StorageException;
+import com.acceval.core.filehandler.StorageFileNotFoundException;
+import com.acceval.core.filehandler.StorageProperties;
 
 @Service
 public class FileStorageServiceImpl implements FileStorageService {

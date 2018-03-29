@@ -1,4 +1,4 @@
-package com.acceval.core.util.file;
+package com.acceval.core.util;
 
 import java.io.File;
 import java.io.FileOutputStream;

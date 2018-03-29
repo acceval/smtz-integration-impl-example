@@ -1,4 +1,4 @@
-package com.acceval.core.util.file;
+package com.acceval.core.filehandler;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
