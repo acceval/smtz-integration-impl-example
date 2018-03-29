@@ -73,7 +73,9 @@ public class MicroServiceObjectUtil {
 			executor.shutdown();
 			executor.awaitTermination(10, TimeUnit.MINUTES);
 			if (LOGGER.isDebugEnabled()) {
-				LOGGER.debug("Object Initialised in: " + (System.currentTimeMillis() - longStart) + " ms");
+				if ((System.currentTimeMillis() - longStart) > 500) {
+					LOGGER.debug("Object Initialised in (more than 500 ms): " + (System.currentTimeMillis() - longStart) + " ms");
+				}
 			}
 		}
 	}
