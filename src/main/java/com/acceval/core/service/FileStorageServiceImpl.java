@@ -1,7 +1,9 @@
 package com.acceval.core.service;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -30,7 +32,29 @@ public class FileStorageServiceImpl implements FileStorageService {
         this.rootLocation = Paths.get(properties.getLocation());
     }
 
-    @Override
+    @Override 
+    public void store(String filename, String content) {
+        
+        try {
+            if (content.isEmpty()) {
+                throw new StorageException("Failed to store empty file " + filename);
+            }
+            if (filename.contains("..")) {
+                // This is a security check
+                throw new StorageException(
+                        "Cannot store file with relative path outside current directory "
+                                + filename);
+            }
+            
+            Files.copy(new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8)), this.rootLocation.resolve(filename),
+                    StandardCopyOption.REPLACE_EXISTING);
+        }
+        catch (IOException e) {
+            throw new StorageException("Failed to store file " + filename, e);
+        }
+    }
+    
+    @Override 
     public void store(MultipartFile file) {
         String filename = StringUtils.cleanPath(file.getOriginalFilename());
         try {

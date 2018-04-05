@@ -20,4 +20,6 @@ public interface FileStorageService {
 
     void deleteAll();
 
+	void store(String filename, String content);
+
 }
