@@ -11,6 +11,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ import com.acceval.core.filehandler.StorageFileNotFoundException;
 import com.acceval.core.filehandler.StorageProperties;
 
 @Service
+@EnableConfigurationProperties(StorageProperties.class)
 public class FileStorageServiceImpl implements FileStorageService {
 
     private final Path rootLocation;
