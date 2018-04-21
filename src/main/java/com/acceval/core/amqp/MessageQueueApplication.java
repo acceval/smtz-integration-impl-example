@@ -18,19 +18,27 @@ public abstract class MessageQueueApplication implements RabbitListenerConfigure
 
 	protected abstract String getQueueName();
 	
-	protected abstract String getTopicExchangeName();
+	protected abstract String getExchangeName();
 	
 //	protected abstract MessageReceiver getMessageReceiver();
     
     		
     @Bean
     Queue queue() {
-        return new Queue(this.getQueueName(), false);
+    		if (this.getQueueName() != null || !this.getQueueName().isEmpty()) {
+    			return new Queue(this.getQueueName(), false);
+    		} else {
+    			return null;
+    		}
     }
 
     @Bean
     TopicExchange exchange() {
-        return new TopicExchange(this.getTopicExchangeName());
+    		if (this.getExchangeName() != null || !this.getExchangeName().isEmpty()) {
+    			return new TopicExchange(this.getExchangeName());
+    		} else {
+    			return null;
+    		}
     }
 
 //    @Bean
@@ -48,8 +56,11 @@ public abstract class MessageQueueApplication implements RabbitListenerConfigure
     
     @Bean
     Binding binding(Queue queue, TopicExchange exchange) {
-    		
-        return BindingBuilder.bind(queue).to(exchange).with(this.getQueueName());
+    		if (this.getQueueName() != null || !this.getQueueName().isEmpty()) {
+    			return BindingBuilder.bind(queue).to(exchange).with(this.getQueueName());
+    		} else {
+    			return null;
+    		}
     }
     
 	//Comment all methods below and remove interface's implementation to use the default serialization/deserialization.
