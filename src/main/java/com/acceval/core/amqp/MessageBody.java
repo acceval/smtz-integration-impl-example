@@ -1,6 +1,8 @@
 package com.acceval.core.amqp;
 
-public class MessageBody<T> {
+import java.io.Serializable;
+
+public class MessageBody<T> implements Serializable {
 	
 	private T body;
 	
