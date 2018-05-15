@@ -178,6 +178,11 @@ public abstract class BaseRepositoryImpl implements BaseRepository {
 		}
 	}
 
+	@Override
+	public QueryResult<?> queryByCriteria(Criteria acceCriteria) {
+		return queryByCriteria(acceCriteria, getTargetClass());
+	}
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public QueryResult queryByCriteria(Criteria acceCriteria, Class<?> targetClass) {

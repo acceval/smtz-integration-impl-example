@@ -9,6 +9,10 @@ public class QueryResult<T> implements Serializable {
 	private int total;
 	private List<T> results;
 
+	public QueryResult() {
+		super();
+	}
+
 	public QueryResult(int total, List<T> results) {
 		super();
 		if (total == 0) {
