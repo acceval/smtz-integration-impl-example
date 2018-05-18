@@ -3,15 +3,15 @@ package com.acceval.core.audit.business;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
-import com.acceval.core.audit.business.EventType;
-
 
 public class EventLog implements Serializable {
 	
+	public enum EventType {
+		RETRIEVED,
+		CREATED,
+		DELETED,
+		UPDATED
+	}
 
 	private static final long serialVersionUID = 934480591337935417L;
 
