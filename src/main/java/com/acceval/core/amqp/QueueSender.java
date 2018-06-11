@@ -2,6 +2,7 @@ package com.acceval.core.amqp;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.AmqpConnectException;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -33,7 +34,12 @@ public abstract class QueueSender {
     public void sendMessage() {
   		    		
 		logger.info("Sending message...");
-		rabbitTemplate.convertAndSend(this.getTopicExchageName(), this.getSenderQueueName(), this.messageBody.getBody());  	
+		try {
+			rabbitTemplate.convertAndSend(this.getTopicExchageName(), this.getSenderQueueName(), 
+				this.messageBody.getBody());
+		} catch (AmqpConnectException ex) {
+			ex.printStackTrace();
+		}
     }
 
 }
