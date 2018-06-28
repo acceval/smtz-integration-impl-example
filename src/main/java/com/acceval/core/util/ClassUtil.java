@@ -27,4 +27,12 @@ public class ClassUtil {
 		}
 
 	}
+
+	public static void copyProperties(Object dest, Object orig) {
+		try {
+			PropertyUtils.copyProperties(dest, orig);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+	}
 }
