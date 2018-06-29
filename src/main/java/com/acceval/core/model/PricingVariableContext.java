@@ -3,8 +3,9 @@ package com.acceval.core.model;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -14,8 +15,15 @@ import org.apache.commons.lang3.StringUtils;
 public class PricingVariableContext implements Serializable, Cloneable {
 
 	private static final long serialVersionUID = 3457134321135281269L;
-
-
+	
+	public static final String CURRENCY_CODE = "CURRENCY_CODE";
+	public static final String UOM_CODE = "UOM_CODE";
+	public static final String QUANTITY = "QUANTITY";
+	public static final String PRODUCT = "PRODUCT";
+	public static final String PERCENTAGE_APPLY_INPUT_PARAM = "PERCENTAGE_APPLY_INPUT_PARAM";
+	public static final String VALID_FROM = "VALID_FROM";
+	public static final String CURRENCY_EXCHANGE_RATE_TYPE = "CURRENCY_EXCHANGE_RATE_TYPE";
+	
 	private Map<String, Object> variableMap = Collections.synchronizedMap(new HashMap<>());
 
 	@Override
@@ -68,21 +76,19 @@ public class PricingVariableContext implements Serializable, Cloneable {
 		return getVariable(key) != null ? String.valueOf(getVariable(key)) : null;
 	}
 
-	public Date getVariableAsDate(String key) {
+	public LocalDate getVariableAsDate(String key) {
 		Object data = getVariable(key);
 
-		Date retVal = null;
+		LocalDate retVal = null;
 
-		if (!(data instanceof Date)) {
+		if (!(data instanceof LocalDate)) {
 			if (data instanceof String) {
-				try {
-					retVal = new SimpleDateFormat("dd/MM/yyyy").parse((String) data);
-				} catch (ParseException e) {
-					e.printStackTrace();
-				}
+				
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+				retVal = LocalDate.parse((String) data, formatter);			
 			}
 		} else {
-			retVal = (Date) data;
+			retVal = (LocalDate) data;
 		}
 
 		return retVal;
