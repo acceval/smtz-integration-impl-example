@@ -12,7 +12,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
-public class PricingVariableContext implements Serializable, Cloneable {
+public class VariableContext implements Serializable, Cloneable {
 
 	private static final long serialVersionUID = 3457134321135281269L;
 	
@@ -27,9 +27,9 @@ public class PricingVariableContext implements Serializable, Cloneable {
 	private Map<String, Object> variableMap = Collections.synchronizedMap(new HashMap<>());
 
 	@Override
-	public PricingVariableContext clone() {
+	public VariableContext clone() {
 		try {
-			PricingVariableContext context = (PricingVariableContext) super.clone();
+			VariableContext context = (VariableContext) super.clone();
 
 			Map<String, Object> nMap = Collections.synchronizedMap(new HashMap<>());
 
@@ -46,7 +46,7 @@ public class PricingVariableContext implements Serializable, Cloneable {
 		}
 	}
 
-	public void setContext(PricingVariableContext context) {
+	public void setContext(VariableContext context) {
 		if (context != null) {
 			this.variableMap.putAll(context.getVariableMap());
 		}
