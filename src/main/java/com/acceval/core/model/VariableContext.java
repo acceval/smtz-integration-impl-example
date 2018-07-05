@@ -84,7 +84,7 @@ public class VariableContext implements Serializable, Cloneable {
 		if (!(data instanceof LocalDate)) {
 			if (data instanceof String) {
 				
-				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 				retVal = LocalDate.parse((String) data, formatter);			
 			}
 		} else {
