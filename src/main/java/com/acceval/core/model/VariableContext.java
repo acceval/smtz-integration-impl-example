@@ -1,8 +1,6 @@
 package com.acceval.core.model;
 
 import java.io.Serializable;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
@@ -24,6 +22,9 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String VALID_FROM = "VALID_FROM";
 	public static final String CURRENCY_EXCHANGE_RATE_TYPE = "CURRENCY_EXCHANGE_RATE_TYPE";
 	
+	// pricing
+	public static final String PRICETECH_DECIDER = "PRICETECH_DECIDER";
+
 	private Map<String, Object> variableMap = Collections.synchronizedMap(new HashMap<>());
 
 	@Override
@@ -73,7 +74,13 @@ public class VariableContext implements Serializable, Cloneable {
 	}
 
 	public String getVariableAsString(String key) {
-		return getVariable(key) != null ? String.valueOf(getVariable(key)) : null;
+		Object value = getVariable(key);
+		if (value instanceof String) {
+			return (String) value;
+		} else if (value != null) {
+			return String.valueOf(value);
+		}
+		return null;
 	}
 
 	public LocalDate getVariableAsDate(String key) {
