@@ -37,7 +37,7 @@ public abstract class BaseModel {
 	}
 
 	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
+		this.createdBy = createdBy;		 
 	}
 
 	public LocalDateTime getCreated() {
