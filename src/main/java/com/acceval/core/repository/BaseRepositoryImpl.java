@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -25,11 +26,13 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Selection;
+import javax.persistence.criteria.CriteriaBuilder.In;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.LinkedMultiValueMap;
@@ -259,8 +262,11 @@ public abstract class BaseRepositoryImpl implements BaseRepository {
 					lstPredicate.add(builder.equal(path, value));
 				}
 			} else if (Criterion.RestrictionType.IN.equals(restrictionType)) {
-				lstPredicate.add(builder.in(path.in(values)));
+
+				lstPredicate.add(path.in(Arrays.asList(values)));
+				
 			} else if (Criterion.RestrictionType.NOT_IN.equals(restrictionType)) {
+				
 				lstPredicate.add(builder.not(path.in(values)));
 			}
 			// GREAT/LESS
@@ -417,7 +423,14 @@ public abstract class BaseRepositoryImpl implements BaseRepository {
 				if (ClassUtils.isAssignable(attrClass, Long.class, true)) {
 					lstCrriterion.add(new Criterion(resolveKey, Long.valueOf(mapParam.getFirst(key))));
 				} else if (attrClass.isAssignableFrom(String.class)) {
-					lstCrriterion.add(new Criterion(resolveKey, "%" + mapParam.getFirst(key).toLowerCase() + "%", false));
+					Object searchValue = mapParam.get(key);
+										
+					if (searchValue != null && searchValue instanceof List) {
+						Object searchValues = ((List) searchValue).toArray();
+						lstCrriterion.add(new Criterion(resolveKey, searchValues));
+					} else {
+						lstCrriterion.add(new Criterion(resolveKey, "%" + mapParam.getFirst(key).toLowerCase() + "%", false));
+					}
 				} else if (ClassUtils.isAssignable(attrClass, Double.class, true)) {
 					lstCrriterion.add(new Criterion(resolveKey, Double.parseDouble(mapParam.getFirst(key))));
 				} else if (ClassUtils.isAssignable(attrClass, Float.class, true)) {
