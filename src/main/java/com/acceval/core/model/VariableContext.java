@@ -103,20 +103,32 @@ public class VariableContext implements Serializable, Cloneable {
 
 	public double getVariableAsDouble(String key) {
 		Object value = getVariable(key);
-
 		if (value instanceof Double) {
 			return (Double) value;
+		}
+		if (value == null) {
+			return 0;
+		}
+		if (StringUtils.isBlank(String.valueOf(value))) {
+			return 0;
+		}
+		Double retVal = Double.parseDouble(String.valueOf(value));
+		return retVal == null ? 0 : retVal;
+	}
+
+	public int getVariableAsInteger(String key) {
+		Object value = getVariable(key);
+		if (value instanceof Integer) {
+			return (Integer) value;
 		}
 
 		if (value == null) {
 			return 0;
 		}
-
 		if (StringUtils.isBlank(String.valueOf(value))) {
 			return 0;
 		}
-		Double retVal = Double.parseDouble(String.valueOf(value));
-
+		Integer retVal = Integer.parseInt(String.valueOf(value));
 		return retVal == null ? 0 : retVal;
 	}
 

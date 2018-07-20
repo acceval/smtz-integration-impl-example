@@ -1,5 +1,6 @@
 package com.acceval.core.model;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -14,9 +15,10 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public abstract class BaseModel {
+public abstract class BaseModel implements Serializable {
+	private static final long serialVersionUID = 1L;
 
-    @CreatedBy
+	@CreatedBy
     @Column(nullable = false, updatable = false)
     private String createdBy;
 
@@ -37,7 +39,7 @@ public abstract class BaseModel {
 	}
 
 	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;		 
+		this.createdBy = createdBy;
 	}
 
 	public LocalDateTime getCreated() {

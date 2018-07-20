@@ -1,5 +1,6 @@
 package com.acceval.core.config;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.boot.model.naming.Identifier;
 import org.hibernate.engine.jdbc.env.spi.JdbcEnvironment;
 import org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy;
@@ -9,7 +10,8 @@ public class CustomSpringPhysicalNamingStrategy extends SpringPhysicalNamingStra
 	@Override
 	public Identifier toPhysicalTableName(Identifier name, JdbcEnvironment jdbcEnvironment) {
 		Identifier iden = apply(name, jdbcEnvironment);
-		return new Identifier("tb_" + iden.getText(), iden.isQuoted());
+		String text = StringUtils.substring(iden.getText(), 0, 3).equalsIgnoreCase("tb_") ? iden.getText() : "tb_" + iden.getText();
+		return new Identifier(text, iden.isQuoted());
 	}
 
 	@Override

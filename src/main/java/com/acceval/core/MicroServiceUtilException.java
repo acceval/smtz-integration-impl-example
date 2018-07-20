@@ -3,6 +3,10 @@ package com.acceval.core;
 public class MicroServiceUtilException extends Exception {
 	private static final long serialVersionUID = 1L;
 
+	public MicroServiceUtilException(Throwable e) {
+		super(e);
+	}
+
 	public MicroServiceUtilException(String msg) {
 		super(msg);
 	}
@@ -10,4 +14,5 @@ public class MicroServiceUtilException extends Exception {
 	public MicroServiceUtilException(Class<?> clz, String msg) {
 		super((clz != null ? clz.getName() + ". " : "") + msg);
 	}
+
 }

@@ -6,18 +6,30 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.beanutils.BeanUtilsBean;
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang3.reflect.MethodUtils;
+import org.hibernate.proxy.HibernateProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acceval.core.MicroServiceUtilException;
+import com.acceval.core.model.BaseModel;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ClassUtil {
-	private static Logger logger = LoggerFactory.getLogger(ClassUtil.class);
+	private static Logger Logger = LoggerFactory.getLogger(ClassUtil.class);
 
 	public static void populateJsonMapToObj(ObjectMapper objectMapper, Object target, Map<String, Object> mapValues) {
 		if (target == null || mapValues == null) return;
@@ -29,7 +41,7 @@ public class ClassUtil {
 				Object convertedValue = objectMapper.convertValue(value, propertyClass);
 				PropertyUtils.setProperty(target, key, convertedValue);
 			} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e1) {
-				logger.error(e1.getMessage(), e1);
+				Logger.error(e1.getMessage(), e1);
 			}
 		}
 
@@ -39,7 +51,7 @@ public class ClassUtil {
 		try {
 			PropertyUtils.copyProperties(dest, orig);
 		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
+			Logger.error(e.getMessage(), e);
 		}
 	}
 
@@ -93,5 +105,289 @@ public class ClassUtil {
 			}
 		}
 		return null; //no primary key found
+	}
+
+	public static Class<?> getClass(String clazzName) throws MicroServiceUtilException {
+		try {
+			if (clazzName == null) throw new IllegalArgumentException("Clazzame [" + "] clazzName is null");
+			Class<?> clazz = Class.forName(clazzName);
+			return clazz;
+		} catch (ClassNotFoundException e) {
+			throw new MicroServiceUtilException(e.getMessage());
+		}
+
+	}
+
+	/**
+	 * 
+	 * @param className
+	 * @param level
+	 *            if level <= 0, go until the end of the property pojo. if level
+	 *            = 1, only current level. if level > 1, this level property +
+	 *            deeper level property if there is any.
+	 * @return
+	 */
+	public static String[] getClassPojoProperties(String className, int level, boolean includeSuperclass) throws MicroServiceUtilException {
+		List<String> fields = new ArrayList<>();
+
+		List<Class<?>> classArray = new ArrayList<>();
+		Class<?> clazz = getClass(className);
+		classArray.add(clazz);
+
+		if (includeSuperclass) {
+			while (clazz.getSuperclass() != null) {
+				clazz = clazz.getSuperclass();
+				classArray.add(clazz);
+			}
+		}
+
+		for (Iterator<Class<?>> it = classArray.iterator(); it.hasNext();) {
+			Class<?> cls = (Class<?>) it.next();
+			Field[] fs = cls.getDeclaredFields();
+
+			boolean recursive = false;
+			for (int i = 0; i < fs.length; i++) {
+				Field field = fs[i];
+
+				if (Modifier.isStatic(field.getModifiers())) {
+					continue;
+				}
+				if (field.getType().isPrimitive()) {
+					fields.add(field.getName());
+					continue;
+				}
+
+				if (level <= 0) {
+					recursive = true;
+				} else if (level == 1) {
+					recursive = false;
+				} else {
+					recursive = true;
+				}
+
+				if (recursive && field.getType().getSuperclass() != null
+						&& field.getType().getSuperclass().getName().equals(BaseModel.class.getName())) {
+					String[] temp = getClassPojoProperties(field.getType().getName(), level - 1, includeSuperclass);
+					for (int u = 0; u < temp.length; u++) {
+						String tempField = temp[u];
+						fields.add(field.getName() + "." + tempField);
+					}
+				} else {
+					// prevent infinited loop
+					if (!field.getType().equals(cls)) {
+						fields.add(field.getName());
+					}
+				}
+			}
+		}
+
+		Collections.sort(fields);
+		String[] retVal = new String[fields.size()];
+		fields.toArray(retVal);
+
+		return retVal;
+	}
+
+	public static Object invokeMethod(Object target, String methodName, Class<?>[] clazz, Object[] objects)
+			throws MicroServiceUtilException {
+		if (target == null || methodName == null) {
+			throw new MicroServiceUtilException("target or methodName not allow to be null!");
+		}
+
+		try {
+			return MethodUtils.invokeMethod(target, methodName, objects);
+		} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+			throw new MicroServiceUtilException(e);
+		}
+	}
+
+	public static Object invokeMethod(Class<?> target, String methodName, Class<?>[] clazz, Object[] objects)
+			throws MicroServiceUtilException {
+		try {
+			Method method = target.getMethod(methodName, clazz);
+
+			return method.invoke(null, objects);
+		} catch (SecurityException | NoSuchMethodException | IllegalArgumentException | IllegalAccessException
+				| InvocationTargetException e) {
+			throw new MicroServiceUtilException(e);
+		}
+	}
+
+	public static String getGetterMethod(Class<?> clz, String propName) {
+		char[] propNameChars = propName.toCharArray();
+		propNameChars[0] = Character.toUpperCase(propNameChars[0]);
+		String getterName = "get" + new String(propNameChars);
+
+		Method[] methods = clz.getMethods();
+		for (int i = 0; i < methods.length; i++) {
+			String methodName = methods[i].getName();
+			if (methodName.equals(getterName)) return methodName;
+		}
+
+		return null;
+	}
+
+	public static Object getPropertyValue(Object target, String property) {
+		try {
+			return invokeMethod(target, getGetterMethod(target.getClass(), property), null, null);
+		} catch (MicroServiceUtilException e) {
+			Logger.error(e.getMessage(), e);
+		}
+		return null;
+	}
+
+	/**
+	 * compare to getPropertyValue, this method will instance new Object
+	 */
+	public static Object getProperty(Object target, String property) throws MicroServiceUtilException {
+		if (target instanceof HibernateProxy) {
+			target = ((HibernateProxy) target).getHibernateLazyInitializer().getImplementation();
+		}
+
+		try {
+			return BeanUtilsBean.getInstance().getPropertyUtils().getNestedProperty(target, property);
+		} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+			throw new MicroServiceUtilException(e);
+		}
+	}
+
+	public static void setProperty(Object target, String property, Object value) throws MicroServiceUtilException {
+		try {
+			if (value instanceof Double) {
+				value = NumberUtil.zeroIfNullorNaN((Double) value);
+			}
+
+			BeanUtilsBean.getInstance().getPropertyUtils().setNestedProperty(target, property, value);
+		} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+			throw new MicroServiceUtilException(e);
+		}
+	}
+
+	public static Class<?> getPropertyClass(String clzName, String propName)
+			throws SecurityException, NoSuchMethodException, MicroServiceUtilException {
+		while (propName.indexOf(".") >= 0) {
+			clzName = getPropertyClass(clzName, propName.substring(0, propName.indexOf("."))).getName();
+			propName = propName.substring(propName.indexOf(".") + 1, propName.length());
+
+		}
+		return getPropertyClass(getClass(clzName), propName);
+	}
+
+	public static Class<?> getPropertyClass(Class<?> cls, String propName) throws SecurityException, NoSuchMethodException {
+		char[] propNameChars = propName.toCharArray();
+		propNameChars[0] = Character.toUpperCase(propNameChars[0]);
+		String getterName = "get" + new String(propNameChars);
+
+		try {
+			Method getterMethod = cls.getMethod(getterName, (Class[]) null);
+			return getterMethod.getReturnType();
+		} catch (NoSuchMethodException e) {
+			getterName = "is" + new String(propNameChars);
+			Method getterMethod = cls.getMethod(getterName, (Class[]) null);
+			return getterMethod.getReturnType();
+		}
+	}
+
+	public static String getPrimitiveClassName(String className) {
+		if ("long".equals(className)) {
+			className = "java.lang.Long";
+		} else if ("boolean".equals(className)) {
+			className = "java.lang.Boolean";
+		} else if ("byte".equals(className)) {
+			className = "java.lang.Byte";
+		} else if ("char".equals(className)) {
+			className = "java.lang.Character";
+		} else if ("short".equals(className)) {
+			className = "java.lang.Short";
+		} else if ("int".equals(className)) {
+			className = "java.lang.Integer";
+		} else if ("float".equals(className)) {
+			className = "java.lang.Float";
+		} else if ("double".equals(className)) {
+			className = "java.lang.Double";
+		}
+		return className;
+	}
+
+	public static boolean isDateProperty(String clzName, String propName) {
+		try {
+			Class<?> clz = getPropertyClass(clzName, propName);
+			if (clz.isPrimitive()) {
+				return false;
+			}
+
+			try {
+				Object obj = clz.newInstance();
+				if (obj instanceof Date || obj instanceof LocalDate || obj instanceof LocalDateTime) {
+					return true;
+				}
+			} catch (InstantiationException e) {
+				// do nothing
+			} catch (IllegalAccessException e) {
+				// do nothing
+			}
+
+			String className = clz.getName();
+			if (className.equals(Date.class.getName())) {
+				return true;
+			}
+		} catch (SecurityException | NoSuchMethodException | MicroServiceUtilException e1) {
+			Logger.error(e1.getMessage(), e1);
+		}
+
+		return false;
+	}
+
+	public static boolean isLongProperty(String clzName, String propName) {
+		try {
+			Class<?> clz = getPropertyClass(clzName, propName);
+			if (clz.getName().indexOf("long") >= 0) return true;
+			if (clz.getName().indexOf("Long") >= 0) return true;
+		} catch (SecurityException | NoSuchMethodException | MicroServiceUtilException e1) {
+			Logger.error(e1.getMessage(), e1);
+		}
+		return false;
+	}
+
+	public static boolean isIntegerProperty(String clzName, String propName) {
+		try {
+			Class<?> clz = getPropertyClass(clzName, propName);
+			String className = getPrimitiveClassName(clz.getName());
+			if ("java.lang.Integer".equals(className)) {
+				return true;
+			} else if ("java.lang.Short".equals(className)) {
+				return true;
+			}
+		} catch (SecurityException | NoSuchMethodException | MicroServiceUtilException e1) {
+			Logger.error(e1.getMessage(), e1);
+		}
+		return false;
+	}
+
+	public static boolean isDoubleProperty(String clzName, String propName) {
+		try {
+			Class<?> clz = getPropertyClass(clzName, propName);
+			String className = getPrimitiveClassName(clz.getName());
+			if ("java.lang.Double".equals(className)) {
+				return true;
+			} else if ("java.lang.Float".equals(className)) {
+				return true;
+			}
+		} catch (SecurityException | NoSuchMethodException | MicroServiceUtilException e1) {
+			Logger.error(e1.getMessage(), e1);
+		}
+		return false;
+	}
+
+	public static boolean isStringProperty(String clzName, String propName) {
+		try {
+			Class<?> clz = getPropertyClass(clzName, propName);
+			if (clz.isAssignableFrom(String.class)) {
+				return true;
+			}
+		} catch (SecurityException | NoSuchMethodException | MicroServiceUtilException e1) {
+			Logger.error(e1.getMessage(), e1);
+		}
+		return false;
 	}
 }
