@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,7 +26,10 @@ public class ControllerUtil {
 		List<FunctionObject> lstAC = new ArrayList<>();
 
 		// ALL access, by MicroService
-		lstAC.add(new FunctionObject(microService, "ALL", "ALL", "ALL", "ALL", "ALL"));
+		String[] msSplit = microService.split("-");
+		String msDesc = StringUtils.join(
+				Stream.of(msSplit).map(str -> str.substring(0, 1).toUpperCase() + str.substring(1)).collect(Collectors.toList()), " ");
+		lstAC.add(new FunctionObject(microService, "ALL", "ALL", "ALL", msDesc, "ALL"));
 
 		Set<String> setModule = new HashSet<>();
 		for (RequestMappingInfo mapingInfo : map.keySet()) {
@@ -87,7 +92,28 @@ public class ControllerUtil {
 
 		// ALL access, by MicroService
 		for (String module : setModule) {
-			lstAC.add(new FunctionObject(microService, module, "ALL", "ALL", "ALL", "ALL"));
+			String moduleDesc = module;
+			if (module.indexOf("-") > -1) {
+				String[] splitModule = module.split("-");
+				moduleDesc = StringUtils.join(Stream.of(splitModule).map(str -> str.substring(0, 1).toUpperCase() + str.substring(1))
+						.collect(Collectors.toList()), " ");
+			} else {
+				List<Character> lstChar = new ArrayList<>();
+				int index = 0;
+				for (char ch : module.toCharArray()) {
+					if (index == 0) {
+						lstChar.add(Character.toUpperCase(ch));
+					} else if (Character.isUpperCase(ch)) {
+						lstChar.add(' ');
+						lstChar.add(ch);
+					} else {
+						lstChar.add(ch);
+					}
+					index++;
+				}
+				moduleDesc = StringUtils.join(lstChar, "");
+			}
+			lstAC.add(new FunctionObject(microService, module, "ALL", "ALL", moduleDesc, "ALL"));
 		}
 
 		return lstAC;
