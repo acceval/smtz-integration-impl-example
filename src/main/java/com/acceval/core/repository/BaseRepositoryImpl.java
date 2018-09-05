@@ -26,13 +26,11 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Selection;
-import javax.persistence.criteria.CriteriaBuilder.In;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
-import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.LinkedMultiValueMap;
@@ -264,9 +262,9 @@ public abstract class BaseRepositoryImpl implements BaseRepository {
 			} else if (Criterion.RestrictionType.IN.equals(restrictionType)) {
 
 				lstPredicate.add(path.in(Arrays.asList(values)));
-				
+
 			} else if (Criterion.RestrictionType.NOT_IN.equals(restrictionType)) {
-				
+
 				lstPredicate.add(builder.not(path.in(values)));
 			}
 			// GREAT/LESS
@@ -423,10 +421,10 @@ public abstract class BaseRepositoryImpl implements BaseRepository {
 				if (ClassUtils.isAssignable(attrClass, Long.class, true)) {
 					lstCrriterion.add(new Criterion(resolveKey, Long.valueOf(mapParam.getFirst(key))));
 				} else if (attrClass.isAssignableFrom(String.class)) {
-					Object searchValue = mapParam.get(key);
-										
-					if (searchValue != null && searchValue instanceof List) {
-						Object searchValues = ((List) searchValue).toArray();
+					List<String> searchValue = mapParam.get(key);
+
+					if (searchValue.size() > 1) {
+						Object searchValues = searchValue.toArray();
 						lstCrriterion.add(new Criterion(resolveKey, searchValues));
 					} else {
 						lstCrriterion.add(new Criterion(resolveKey, "%" + mapParam.getFirst(key).toLowerCase() + "%", false));
@@ -448,7 +446,9 @@ public abstract class BaseRepositoryImpl implements BaseRepository {
 					LOGGER.error("[" + attrClass.getName() + "] is not support in Acceval Base Criteria Search yet!");
 				}
 			} catch (Exception e) {
-				LOGGER.error(e.getMessage(), e);
+				if (e.getMessage().indexOf("Unable to locate Attribute  with the the given name") == -1) {
+					LOGGER.error(e.getMessage(), e);
+				}
 			}
 		}
 		acceCriteria.setCriterion(lstCrriterion);

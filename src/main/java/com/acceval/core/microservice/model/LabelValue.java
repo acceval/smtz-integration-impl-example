@@ -1,5 +1,14 @@
 package com.acceval.core.microservice.model;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import com.acceval.core.util.ClassUtil;
+
 /**
  * standard LabelValue to map back to Angular
  */
@@ -31,6 +40,21 @@ public class LabelValue implements Comparable<LabelValue> {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	public static List<LabelValue> toLabelValueList(Collection<?> sources, String labelProperty, String valueProperty) {
+		List<LabelValue> lst = new ArrayList<>();
+		if (CollectionUtils.isNotEmpty(sources)) {
+			for (Object obj : sources) {
+				if (StringUtils.isBlank(valueProperty) && StringUtils.isBlank(labelProperty)) {
+					lst.add(new LabelValue(obj.toString(), obj.toString()));
+				} else {
+					lst.add(new LabelValue(String.valueOf(ClassUtil.getPropertyValue(obj, labelProperty)),
+							String.valueOf(ClassUtil.getPropertyValue(obj, valueProperty))));
+				}
+			}
+		}
+		return lst;
 	}
 
 	@Override

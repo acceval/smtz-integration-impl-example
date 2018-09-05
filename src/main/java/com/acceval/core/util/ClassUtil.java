@@ -11,16 +11,21 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.hibernate.proxy.HibernateProxy;
+import org.reflections.Reflections;
+import org.reflections.scanners.SubTypesScanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,7 +63,7 @@ public class ClassUtil {
 	/**
 	 * copy properties with filter
 	 */
-	public static void copyPropertiesWithFilter(Object dest, Object orig, String[] filter) {
+	public static void copyPropertiesWithFilter(Object dest, Object orig, String... filter) {
 		if (filter == null) {
 			filter = new String[0];
 		}
@@ -75,6 +80,17 @@ public class ClassUtil {
 			}
 			try {
 				Object value = PropertyUtils.getProperty(orig, propKey);
+
+				// Collection persistence safe
+				if (value instanceof Collection) {
+					Object dbColl = getProperty(dest, propKey);
+					if (dbColl instanceof Set) {
+						value = CollectionUtil.synToHibernateSet((Set) dbColl, (Collection<?>) value);
+					} else if (dbColl instanceof List) {
+						value = CollectionUtil.synToHibernateSet((List) dbColl, (Collection<?>) value);
+					}
+				}
+
 				PropertyUtils.setProperty(dest, propKey, value);
 			} catch (Throwable e) {
 				throw new RuntimeException(e);
@@ -95,7 +111,6 @@ public class ClassUtil {
 				getter = new PropertyDescriptor(field.getName(), object.getClass()).getReadMethod();
 			} catch (IntrospectionException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
 			if (getter != null) {
 				Annotation getterAnnotations[] = getter.getDeclaredAnnotations();
@@ -116,6 +131,10 @@ public class ClassUtil {
 			throw new MicroServiceUtilException(e.getMessage());
 		}
 
+	}
+
+	public static String[] getClassPojoProperties(String className, int level) throws MicroServiceUtilException {
+		return getClassPojoProperties(className, level, false);
 	}
 
 	/**
@@ -389,5 +408,32 @@ public class ClassUtil {
 			Logger.error(e1.getMessage(), e1);
 		}
 		return false;
+	}
+
+	/**
+	 * getAllClassMetadataByClasses retrieves all classes which are sub types of
+	 * @param classes the parent classes to search for
+	 * @return a map with the key being one of the class passed into this method
+	 */
+	public static Map<Class<?>, Set<Class<?>>> getAllSubtypeOfClasses(String packageToScan, Class... classes) {
+		Map<Class<?>, Set<Class<?>>> allClasses = new HashMap<>(classes.length);
+
+		Reflections reflections = new Reflections(packageToScan, new SubTypesScanner());
+
+		for (Class aClass : classes) {
+			Set<Class<?>> subTypesOf = reflections.getSubTypesOf(aClass);
+
+			for (Iterator<Class<?>> iterator = subTypesOf.iterator(); iterator.hasNext();) {
+				Class<?> subType = iterator.next();
+
+				if (subType.isInterface()) {
+					iterator.remove();
+				}
+			}
+
+			allClasses.put(aClass, subTypesOf);
+		}
+
+		return allClasses;
 	}
 }
