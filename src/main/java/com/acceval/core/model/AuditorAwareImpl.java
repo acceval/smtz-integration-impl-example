@@ -9,15 +9,17 @@ class AuditorAwareImpl implements AuditorAware<String> {
     @Override
     public String getCurrentAuditor() {
                 
-    		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     		
-    		if (principal instanceof AuthUser) {
-    			AuthUser authUser = (AuthUser) principal;
-    	
-		    	if (authUser != null) {
-		    		return authUser.getUsername();
-		    	} 
-    		}    			
+    		if (auth != null) {
+	    		Object principal = auth.getPrincipal();
+	    		
+	    		if (principal != null && principal instanceof AuthUser) {
+	    			
+	    			AuthUser authUser = (AuthUser) principal;	    	
+			    	return authUser.getUsername();		 
+	    		}    			
+    		}
     		return "anonymousUser";    	
     }
 }

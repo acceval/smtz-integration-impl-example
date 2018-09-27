@@ -405,14 +405,18 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 
 		try {
 			if (targetClass.newInstance() instanceof BaseModel) {
-				Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-				if (principal instanceof AuthUser) {
-					AuthUser authUser = (AuthUser) principal;
-					if (authUser.getCompanyId() != null) {
-						String[] values = {String.valueOf(authUser.getCompanyId())};
-						mapParam.put("companyId", Arrays.asList(values));								
-					} else {
-						mapParam.put("companyId", null);
+				
+				Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+				if (auth != null) {
+					Object principal = auth.getPrincipal();
+					if (principal != null && principal instanceof AuthUser) {
+						AuthUser authUser = (AuthUser) principal;
+						if (authUser.getCompanyId() != null) {
+							String[] values = {String.valueOf(authUser.getCompanyId())};
+							mapParam.put("companyId", Arrays.asList(values));								
+						} else {
+							mapParam.put("companyId", null);
+						}
 					}
 				}
 			}
