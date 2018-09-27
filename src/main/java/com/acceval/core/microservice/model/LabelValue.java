@@ -3,6 +3,7 @@ package com.acceval.core.microservice.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -53,6 +54,14 @@ public class LabelValue implements Comparable<LabelValue> {
 							String.valueOf(ClassUtil.getPropertyValue(obj, valueProperty))));
 				}
 			}
+		}
+		return lst;
+	}
+
+	public static List<LabelValue> toLabelValueList(Map<?, ?> map) {
+		List<LabelValue> lst = new ArrayList<>();
+		for (Object key : map.keySet()) {
+			lst.add(new LabelValue(map.get(key).toString(), key.toString()));
 		}
 		return lst;
 	}
