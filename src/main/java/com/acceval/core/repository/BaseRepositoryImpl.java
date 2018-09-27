@@ -33,12 +33,16 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import com.acceval.core.model.AuthUser;
+import com.acceval.core.model.BaseModel;
 import com.acceval.core.repository.Criterion.RestrictionType;
 
-public abstract class BaseRepositoryImpl implements BaseRepository {
+public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 
 	public static String _PAGE = "_page";
 	public static String _PAGESIZE = "_pageSize";
@@ -56,6 +60,13 @@ public abstract class BaseRepositoryImpl implements BaseRepository {
 	protected abstract EntityManager getEntityManager();
 
 	protected abstract Class<?> getTargetClass();
+	
+	public List<T> findAll() {
+		
+		MultiValueMap<String, String> mapParam = new LinkedMultiValueMap<>();			
+		QueryResult<T> queryResult = this.queryByMapParam(mapParam);
+		return queryResult.getResults();
+	}
 
 	@Override
 	public boolean isExists(Object obj) {
@@ -147,7 +158,7 @@ public abstract class BaseRepositoryImpl implements BaseRepository {
 			}
 		}
 
-		QueryResult<?> result = this.queryByMapParam(mapParam);
+		QueryResult<T> result = this.queryByMapParam(mapParam);
 
 		if (result.getTotal() > 0) {
 
@@ -180,7 +191,7 @@ public abstract class BaseRepositoryImpl implements BaseRepository {
 	}
 
 	@Override
-	public QueryResult<?> queryByCriteria(Criteria acceCriteria) {
+	public QueryResult<T> queryByCriteria(Criteria acceCriteria) {
 		return queryByCriteria(acceCriteria, getTargetClass());
 	}
 
@@ -355,14 +366,14 @@ public abstract class BaseRepositoryImpl implements BaseRepository {
 			total = getEntityManager().createQuery(cCount).getSingleResult().intValue();
 		}
 
-		List<?> result = query.getResultList();
+		List<T> result = query.getResultList();
 		queryResult = new QueryResult(total, result);
 
 		return queryResult;
 	}
 
 	@Override
-	public QueryResult<?> queryByMapParam(MultiValueMap<String, String> mapParam) {
+	public QueryResult<T> queryByMapParam(MultiValueMap<String, String> mapParam) {
 		return queryByMapParam(mapParam, getTargetClass());
 	}
 
@@ -371,7 +382,7 @@ public abstract class BaseRepositoryImpl implements BaseRepository {
 	 * pagination
 	 */
 	@Override
-	public QueryResult<?> queryByMapParam(MultiValueMap<String, String> mapParam, Class<?> targetClass) {
+	public QueryResult<T> queryByMapParam(MultiValueMap<String, String> mapParam, Class<?> targetClass) {
 		return queryByCriteria(getCriteriaByMapParam(mapParam, targetClass), targetClass);
 	}
 
@@ -392,6 +403,24 @@ public abstract class BaseRepositoryImpl implements BaseRepository {
 		int pageSize = mapParam.get(_PAGESIZE) != null ? Integer.parseInt(mapParam.getFirst(_PAGESIZE)) : 0;
 		List<String> lstSort = mapParam.get(_SORT);
 
+		try {
+			if (targetClass.newInstance() instanceof BaseModel) {
+				Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+				if (principal instanceof AuthUser) {
+					AuthUser authUser = (AuthUser) principal;
+					if (authUser.getCompanyId() != null) {
+						String[] values = {String.valueOf(authUser.getCompanyId())};
+						mapParam.put("companyId", Arrays.asList(values));								
+					} else {
+						mapParam.put("companyId", null);
+					}
+				}
+			}
+		} catch (InstantiationException | IllegalAccessException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
 		Criteria acceCriteria = new Criteria();
 		acceCriteria.setRequestedPage(page);
 		acceCriteria.setPageSize(pageSize);
@@ -413,12 +442,19 @@ public abstract class BaseRepositoryImpl implements BaseRepository {
 
 		List<Criterion> lstCrriterion = new ArrayList<>();
 		for (String key : mapParam.keySet()) {
-			if (_PAGE.equals(key) || _PAGESIZE.equals(key) || _SORT.equals(key) || StringUtils.isBlank(mapParam.getFirst(key))) continue;
+						
+			if (_PAGE.equals(key) || _PAGESIZE.equals(key) || _SORT.equals(key) 
+					|| (mapParam.getFirst(key) != null && StringUtils.trim(mapParam.getFirst(key)).length() == 0)) {
+				continue;
+			}
 
 			try {
 				String resolveKey = getMapPropertyResolver().containsKey(key) ? getMapPropertyResolver().get(key) : key;
 				Class<?> attrClass = getPath(root, resolveKey).getJavaType();
-				if (ClassUtils.isAssignable(attrClass, Long.class, true)) {
+				
+				if (mapParam.getFirst(key) == null) {
+					lstCrriterion.add(new Criterion(resolveKey, RestrictionType.IS_NULL, mapParam.getFirst(key)));
+				} else if (ClassUtils.isAssignable(attrClass, Long.class, true)) {
 					lstCrriterion.add(new Criterion(resolveKey, Long.valueOf(mapParam.getFirst(key))));
 				} else if (attrClass.isAssignableFrom(String.class)) {
 					List<String> searchValue = mapParam.get(key);
