@@ -105,7 +105,8 @@ public class ClassUtil {
 			for (Annotation annotation : annotations) {
 				if (annotation instanceof javax.persistence.Id) return field.getName();
 			}
-			//only getter methods can have persistence annotations, setters cannot
+			// only getter methods can have persistence annotations, setters
+			// cannot
 			Method getter = null;
 			try {
 				getter = new PropertyDescriptor(field.getName(), object.getClass()).getReadMethod();
@@ -119,7 +120,7 @@ public class ClassUtil {
 				}
 			}
 		}
-		return null; //no primary key found
+		return null; // no primary key found
 	}
 
 	public static Class<?> getClass(String clazzName) throws MicroServiceUtilException {
@@ -131,6 +132,16 @@ public class ClassUtil {
 			throw new MicroServiceUtilException(e.getMessage());
 		}
 
+	}
+
+	public static Object getClassObject(String clazzName) throws MicroServiceUtilException {
+		if (clazzName == null) throw new IllegalArgumentException("Clazzame [" + "] clazzName is null");
+		try {
+			Object obj = Class.forName(clazzName).newInstance();
+			return obj;
+		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+			throw new MicroServiceUtilException(e.getMessage());
+		}
 	}
 
 	public static String[] getClassPojoProperties(String className, int level) throws MicroServiceUtilException {
@@ -412,7 +423,9 @@ public class ClassUtil {
 
 	/**
 	 * getAllClassMetadataByClasses retrieves all classes which are sub types of
-	 * @param classes the parent classes to search for
+	 * 
+	 * @param classes
+	 *            the parent classes to search for
 	 * @return a map with the key being one of the class passed into this method
 	 */
 	public static Map<Class<?>, Set<Class<?>>> getAllSubtypeOfClasses(String packageToScan, Class... classes) {
