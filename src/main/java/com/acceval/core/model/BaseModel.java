@@ -7,7 +7,6 @@ import javax.persistence.Column;
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
 
-import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -20,23 +19,23 @@ public abstract class BaseModel implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
-	@Column(updatable = false)
+	@Column(nullable = false, updatable = false)
     private Long companyId;
     
 	@CreatedBy
-    @Column(nullable = false, updatable = false, columnDefinition = "varchar(255) default 'anonymousUser'")	
+    @Column(nullable = false, updatable = false)	
     private String createdBy;
 
     @CreatedDate
-    @Column(nullable = false, updatable = false, columnDefinition = "timestamp default now()")    
+    @Column(nullable = false, updatable = false)    
     private LocalDateTime created;
 
     @LastModifiedBy
-    @Column(nullable = false, columnDefinition = "varchar(255) default 'anonymousUser'")    
+    @Column(nullable = false)    
     private String modifiedBy;
 
     @LastModifiedDate
-    @Column(nullable = false, columnDefinition = "timestamp default now()")    
+    @Column(nullable = false)    
     private LocalDateTime modified;
 
 	public Long getCompanyId() {
