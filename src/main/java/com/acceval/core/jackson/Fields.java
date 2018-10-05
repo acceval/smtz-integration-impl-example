@@ -8,4 +8,7 @@ public interface Fields {
 	String MINUTE = "minute";
 	String SECOND = "second";
 	String MILLISECOND = "millisecond";
+	String MONTHVALUE = "monthValue";
+	String DAYOFMONTH = "dayOfMonth";
+	String DAYOFWEEK = "dayOfWeek";
 }
