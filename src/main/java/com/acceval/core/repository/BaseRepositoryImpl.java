@@ -414,9 +414,7 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 						if (authUser.getCompanyId() != null) {
 							String[] values = {String.valueOf(authUser.getCompanyId())};
 							mapParam.put("companyId", Arrays.asList(values));								
-						} else {
-							mapParam.put("companyId", null);
-						}
+						} 
 					}
 				}
 			}
