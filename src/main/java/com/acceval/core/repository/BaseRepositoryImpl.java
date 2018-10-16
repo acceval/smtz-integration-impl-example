@@ -60,10 +60,10 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 	protected abstract EntityManager getEntityManager();
 
 	protected abstract Class<?> getTargetClass();
-	
+
 	public List<T> findAll() {
-		
-		MultiValueMap<String, String> mapParam = new LinkedMultiValueMap<>();			
+
+		MultiValueMap<String, String> mapParam = new LinkedMultiValueMap<>();
 		QueryResult<T> queryResult = this.queryByMapParam(mapParam);
 		return queryResult.getResults();
 	}
@@ -405,16 +405,16 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 
 		try {
 			if (targetClass.newInstance() instanceof BaseModel) {
-				
+
 				Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 				if (auth != null) {
 					Object principal = auth.getPrincipal();
 					if (principal != null && principal instanceof AuthUser) {
 						AuthUser authUser = (AuthUser) principal;
 						if (authUser.getCompanyId() != null) {
-							String[] values = {String.valueOf(authUser.getCompanyId())};
-							mapParam.put("companyId", Arrays.asList(values));								
-						} 
+							String[] values = { String.valueOf(authUser.getCompanyId()) };
+							mapParam.put("companyId", Arrays.asList(values));
+						}
 					}
 				}
 			}
@@ -422,7 +422,7 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
+
 		Criteria acceCriteria = new Criteria();
 		acceCriteria.setRequestedPage(page);
 		acceCriteria.setPageSize(pageSize);
@@ -444,8 +444,8 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 
 		List<Criterion> lstCrriterion = new ArrayList<>();
 		for (String key : mapParam.keySet()) {
-						
-			if (_PAGE.equals(key) || _PAGESIZE.equals(key) || _SORT.equals(key) 
+
+			if (_PAGE.equals(key) || _PAGESIZE.equals(key) || _SORT.equals(key)
 					|| (mapParam.getFirst(key) != null && StringUtils.trim(mapParam.getFirst(key)).length() == 0)) {
 				continue;
 			}
@@ -453,7 +453,7 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 			try {
 				String resolveKey = getMapPropertyResolver().containsKey(key) ? getMapPropertyResolver().get(key) : key;
 				Class<?> attrClass = getPath(root, resolveKey).getJavaType();
-				
+
 				if (mapParam.getFirst(key) == null) {
 					lstCrriterion.add(new Criterion(resolveKey, RestrictionType.IS_NULL, mapParam.getFirst(key)));
 				} else if (ClassUtils.isAssignable(attrClass, Long.class, true)) {
@@ -480,6 +480,9 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 					} catch (ParseException e) {
 						LOGGER.error("Date Parsing Error.", e);
 					}
+				} else if (ClassUtils.isAssignable(attrClass, Enum.class)) {
+					lstCrriterion
+							.add(new Criterion(resolveKey, Enum.valueOf(attrClass.asSubclass(Enum.class), mapParam.getFirst(key)), true));
 				} else {
 					LOGGER.error("[" + attrClass.getName() + "] is not support in Acceval Base Criteria Search yet!");
 				}
@@ -540,8 +543,8 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 	}
 
 	/**
-	 * provide Map to translate short property to full property path
-	 * eg. customerID => customer.customerID
+	 * provide Map to translate short property to full property path eg.
+	 * customerID => customer.customerID
 	 */
 	protected Map<String, String> getMapPropertyResolver() {
 		return new HashMap<>();
