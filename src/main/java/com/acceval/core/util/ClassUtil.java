@@ -3,6 +3,7 @@ package com.acceval.core.util;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -140,6 +141,25 @@ public class ClassUtil {
 			Object obj = Class.forName(clazzName).newInstance();
 			return obj;
 		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+			Logger.error(e.getMessage(), e);
+			throw new MicroServiceUtilException(e.getMessage());
+		}
+	}
+
+	public static Object getClassObject(String clazzName, Object... constructorParam) throws MicroServiceUtilException {
+		if (clazzName == null) throw new IllegalArgumentException("Clazzame [" + "] clazzName is null");
+		try {
+			Class<?> clazz = Class.forName(clazzName);
+			Class<?>[] consClass = new Class[constructorParam.length];
+			int i = 0;
+			for (Object obj : constructorParam) {
+				consClass[i++] = obj.getClass();
+			}
+			Constructor<?> constructor = clazz.getConstructor(consClass);
+			return constructor.newInstance(constructorParam);
+		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | IllegalArgumentException
+				| InvocationTargetException | NoSuchMethodException | SecurityException e) {
+			Logger.error(e.getMessage(), e);
 			throw new MicroServiceUtilException(e.getMessage());
 		}
 	}

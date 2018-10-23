@@ -8,4 +8,7 @@ public class ObjectNotFoundException extends Exception {
 		super(msg);
 	}
 
+	public ObjectNotFoundException(long id) {
+		super("Object with ID [" + id + "] not found!");
+	}
 }
