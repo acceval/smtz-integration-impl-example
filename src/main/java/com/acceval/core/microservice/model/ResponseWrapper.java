@@ -11,6 +11,9 @@ import com.acceval.core.microservice.model.ResponseMessage.MessageType;
 
 public class ResponseWrapper<T> {
 	
+	public static final String COMMON_MSG_SAVE_SUCCESS = "Save Successfully";
+	public static final String COMMON_MSG_DELETE_SUCCESS = "Delete Successfully";
+
 	public enum ApplicationHttpStatus {
 		STATUS_OBJECT_NOT_FOUND(HttpStatus.NOT_FOUND), STATUS_APPLICATION_ERROR(HttpStatus.BAD_REQUEST);
 		private final HttpStatus status;
@@ -81,6 +84,12 @@ public class ResponseWrapper<T> {
 	public ResponseWrapper(T object) {
 		super();
 		this.object = object;
+	}
+
+	public ResponseWrapper(T object, String msg) {
+		super();
+		this.object = object;
+		this.messages.add(new ResponseMessage(MessageType.INFO, msg));
 	}
 
 	public ResponseWrapper(T object, List<ResponseMessage> messages) {
