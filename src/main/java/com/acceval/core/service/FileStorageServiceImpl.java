@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.util.StringUtils;
@@ -69,6 +71,15 @@ public class FileStorageServiceImpl implements FileStorageService {
                         "Cannot store file with relative path outside current directory "
                                 + filename);
             }
+            if (!Files.exists(this.rootLocation)) {
+		    		try {
+					Files.createDirectories(this.rootLocation);
+				} catch (IOException e) {
+					throw new StorageException(
+	                        "Cannot create root location "
+	                                + this.rootLocation.toString());
+				}
+    			}
             Files.copy(file.getInputStream(), this.rootLocation.resolve(filename),
                     StandardCopyOption.REPLACE_EXISTING);
         }
