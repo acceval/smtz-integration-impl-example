@@ -63,9 +63,12 @@ public class CollectionUtil {
 						}
 					}
 				}
-				boolean isAdded = target.add(objSource);
-				if (isAdded && objSource instanceof BaseModel) {
-					((BaseModel) objSource).setCreated(LocalDateTime.now());
+				boolean isAdd = !target.contains(objSource);
+				if (isAdd) {
+					target.add(objSource);
+					if (objSource instanceof BaseModel) {
+						((BaseModel) objSource).setCreated(LocalDateTime.now());
+					}
 				}
 			}
 
