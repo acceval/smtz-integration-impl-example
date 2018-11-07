@@ -1,4 +1,4 @@
-package com.acceval.core.amqp;
+package com.acceval.core;
 
 import org.springframework.amqp.rabbit.annotation.RabbitListenerConfigurer;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -10,7 +10,7 @@ import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.handler.annotation.support.DefaultMessageHandlerMethodFactory;
 
 
-public class QueueSenderApplication implements RabbitListenerConfigurer {
+public class CommonApplication implements RabbitListenerConfigurer {
     
 	//Comment all methods below and remove interface's implementation to use the default serialization/deserialization.
 	
