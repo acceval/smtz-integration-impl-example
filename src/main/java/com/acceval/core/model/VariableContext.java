@@ -22,6 +22,8 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String VALID_FROM = "VALID_FROM";
 	public static final String CURRENCY_EXCHANGE_RATE_TYPE = "CURRENCY_EXCHANGE_RATE_TYPE";
 	
+	public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
+
 	// pricing
 	public static final String PRICETECH_DECIDER = "PRICETECH_DECIDER";
 
@@ -91,7 +93,7 @@ public class VariableContext implements Serializable, Cloneable {
 		if (!(data instanceof LocalDate)) {
 			if (data instanceof String) {
 				
-				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT);
 				retVal = LocalDate.parse((String) data, formatter);			
 			}
 		} else {

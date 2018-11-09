@@ -1,10 +1,13 @@
 package com.acceval.core.model;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
 import org.springframework.data.annotation.CreatedBy;
@@ -12,6 +15,8 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import com.acceval.core.util.ClassUtil;
 
 @MappedSuperclass
 @EntityListeners({AuditingEntityListener.class, CompanyModelListener.class})
@@ -37,6 +42,18 @@ public abstract class BaseModel implements Serializable {
     @LastModifiedDate
     @Column(nullable = false)    
     private LocalDateTime modified;
+
+	public Object retrievePrimaryKey() {
+		if (this.getClass().isAnnotationPresent(Entity.class)) {
+			Class<?> classToFind = this.getClass();
+			for (Field field : classToFind.getDeclaredFields()) {
+				if (field.isAnnotationPresent(Id.class)) {
+					return ClassUtil.getPropertyValue(this, field.getName());
+				}
+			}
+		}
+		return null;
+	}
 
 	public Long getCompanyId() {
 		return companyId;
