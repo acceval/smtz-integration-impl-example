@@ -61,6 +61,7 @@ public class Criterion implements Serializable {
 	}
 
 	public Criterion(String propertyName, Object[] searchValues) {
+		this.setRestrictionType(RestrictionType.IN);
 		this.setPropertyName(propertyName);
 		this.setSearchValues(searchValues);
 	}

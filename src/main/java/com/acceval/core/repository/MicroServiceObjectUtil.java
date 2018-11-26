@@ -5,6 +5,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -15,12 +16,17 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.security.oauth2.client.OAuth2RestTemplate;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.client.RestTemplate;
 
 import com.acceval.core.MicroServiceUtilException;
+import com.acceval.core.controller.GenericCommonController;
 import com.acceval.core.microservice.MicroServiceRequest;
 import com.acceval.core.microservice.MicroServiceUtil;
+import com.acceval.core.util.BaseBeanUtil;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -30,9 +36,8 @@ public class MicroServiceObjectUtil {
 	/**
 	 * initialise all fields with MicroServiceField annotation
 	 */
-	public static void refreshObjectDependency(DiscoveryClient discoveryClient, RestTemplate restTemplate, Object target)
-			throws MicroServiceUtilException, Exception {
-		refreshObjectDependency(discoveryClient, restTemplate, target, true);
+	public static void refreshObjectDependency(Object target) throws MicroServiceUtilException, Exception {
+		refreshObjectDependency(target, true);
 	}
 
 	/**
@@ -41,14 +46,16 @@ public class MicroServiceObjectUtil {
 	 * @param isForceRefresh force refresh? Or do nothing if PK are same
 	 * @throws Exception
 	 */
-	public static void refreshObjectDependency(DiscoveryClient discoveryClient, RestTemplate restTemplate, Object target,
-			boolean isForceRefresh) throws MicroServiceUtilException, Exception {
+	public static void refreshObjectDependency(Object target, boolean isForceRefresh) throws MicroServiceUtilException, Exception {
 
 		if (target == null) return;
 
+		OAuth2RestTemplate restTemplate = BaseBeanUtil.getBean(OAuth2RestTemplate.class);
+		DiscoveryClient discoveryClient = (DiscoveryClient) BaseBeanUtil.getBean(DiscoveryClient.class);
+
 		if (target instanceof Collection) {
 			for (Object obj : (Collection<?>) target) {
-				refreshObjectDependency(discoveryClient, restTemplate, obj, isForceRefresh);
+				refreshObjectDependency(obj, isForceRefresh);
 			}
 		}
 
@@ -57,19 +64,35 @@ public class MicroServiceObjectUtil {
 
 			ExecutorService executor = Executors.newFixedThreadPool(10);
 			Long longStart = System.currentTimeMillis();
-			for (Field field : classToFind.getDeclaredFields()) {
+			List<Field> allField = new ArrayList<>();
+			appendClassField(classToFind, allField);
+			for (Field field : allField) {
 				if (field.isAnnotationPresent(MicroServiceField.class)) {
-					// multi-thread
-					executor.submit(() -> {
-						try {
-							refreshField(discoveryClient, restTemplate, target, field.getName(), isForceRefresh);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					});
+					if (Collection.class.isAssignableFrom(field.getType())) {
+						PropertyDescriptor getter = new PropertyDescriptor(field.getName(), field.getDeclaringClass());
+						Object childObj = getter.getReadMethod().invoke(target);
+						refreshObjectDependency(childObj, isForceRefresh);
+					} else {
+						// multi-thread
+						executor.submit(() -> {
+							try {
+								refreshField(discoveryClient, restTemplate, target, field.getName(), isForceRefresh);
+							} catch (Exception e) {
+								LOGGER.error(e.getMessage(), e);
+							}
+						});
+					}
+				} else if ((Collection.class.isAssignableFrom(field.getType())
+						&& field.getGenericType().getTypeName().indexOf("com.acceval.sales.model.") > -1
+						&& field.getGenericType().getTypeName().indexOf("com.acceval.sales.model.so.") == -1)
+						|| (field.getType().getTypeName().indexOf("com.acceval.sales.model.") > -1
+								&& field.getType().getTypeName().indexOf("com.acceval.sales.model.so.") == -1)) {
+					PropertyDescriptor getter = new PropertyDescriptor(field.getName(), field.getDeclaringClass());
+					Object childObj = getter.getReadMethod().invoke(target);
+					refreshObjectDependency(childObj, isForceRefresh);
 				}
-
 			}
+
 			executor.shutdown();
 			executor.awaitTermination(10, TimeUnit.MINUTES);
 			if (LOGGER.isDebugEnabled()) {
@@ -78,6 +101,16 @@ public class MicroServiceObjectUtil {
 				}
 			}
 		}
+	}
+
+	/**
+	 * discover Field from super class
+	 */
+	private static void appendClassField(Class<?> classToFind, List<Field> allField) {
+		if (!Object.class.getName().equals(classToFind.getSuperclass().getName())) {
+			appendClassField(classToFind.getSuperclass(), allField);
+		}
+		allField.addAll(Arrays.asList(classToFind.getDeclaredFields()));
 	}
 
 	/**
@@ -99,34 +132,49 @@ public class MicroServiceObjectUtil {
 			Annotation objFieldAnno = field.getAnnotation(MicroServiceField.class);
 			MicroServiceField fieldAnno = (MicroServiceField) objFieldAnno;
 
-			/** validation */
 			String msService = fieldAnno.serviceID();
-			if (StringUtils.isBlank(msService)) {
-				throw new MicroServiceUtilException(MicroServiceObjectUtil.class,
-						"MS Application Name not define in POJO for [" + field.getName() + "] field!");
-			}
 			String msFunction = fieldAnno.function();
-			if (StringUtils.isBlank(msFunction)) {
-				throw new MicroServiceUtilException(MicroServiceObjectUtil.class,
-						"MS Service is not define in POJO for [" + field.getName() + "] field!");
-			}
 			String mockTarget = fieldAnno.mockTarget();
 			if (StringUtils.isBlank(mockTarget)) {
 				throw new MicroServiceUtilException(MicroServiceObjectUtil.class,
-						"Mock Target is not define for [" + field.getName() + "] field!");
+						"Mock Target is not define for [" + field.getName() + "] field! Class [" + classToFind.getName() + "]");
+			}
+			PropertyDescriptor pdMockTarget = new PropertyDescriptor(mockTarget, classToFind);
+			if (!pdMockTarget.getPropertyType().isAnnotationPresent(MicroServiceObject.class)) {
+				throw new MicroServiceUtilException(MicroServiceObjectUtil.class,
+						"MicroServiceObject is not define for [" + field.getName() + "] field! Class [" + classToFind.getName() + "]");
+			}
+			Annotation objAnno = pdMockTarget.getPropertyType().getAnnotation(MicroServiceObject.class);
+			MicroServiceObject msObject = (MicroServiceObject) objAnno;
+			// if MS info not from MicroServiceField level, get from MicroServiceObject level
+			if (StringUtils.isBlank(msFunction)) {
+				msService = getServiceID(msObject);
+				msFunction = msObject.module() + "/" + MicroServiceObject.COMMON_GT_OBJ;
+				if (msObject.useCommonQuery()) {
+					msFunction = "common/query";
+				}
+			}
+
+			/** validation */
+			if (StringUtils.isBlank(msService)) {
+				throw new MicroServiceUtilException(MicroServiceObjectUtil.class,
+						"MS Service ID not define in POJO for [" + field.getName() + "] field! Class [" + classToFind.getName() + "]");
+			}
+			if (StringUtils.isBlank(msFunction)) {
+				throw new MicroServiceUtilException(MicroServiceObjectUtil.class,
+						"MS Function is not define in POJO for [" + field.getName() + "] field! Class [" + classToFind.getName() + "]");
 			}
 
 			/** get Primary Key */
 			String id = null;
-			PropertyDescriptor pdMockTarget = new PropertyDescriptor(mockTarget, classToFind);
 			PropertyDescriptor pdFieldPK = new PropertyDescriptor(field.getName(), classToFind);
 			Object objID = pdFieldPK.getReadMethod().invoke(target);
 			if (objID instanceof Collection) {
-				id = StringUtils.join((Collection<?>) objID, ",");
+				id = objID == null ? null : StringUtils.join((Collection<?>) objID, ",");
 			} else {
 				id = objID == null ? null : String.valueOf(objID);
 			}
-			if (StringUtils.isBlank(id)) {
+			if (StringUtils.isBlank(id) || "0".equals(id)) {
 				// no ID, exit
 				Method mockWriteTarget = pdMockTarget.getWriteMethod();
 				Object nullObj = null;
@@ -170,15 +218,40 @@ public class MicroServiceObjectUtil {
 			Object childObj = null;
 			if (Collection.class.isAssignableFrom(pdMockTarget.getPropertyType())) {
 				// special handling for Collection
-				String resJson = (String) MicroServiceUtil
-						.getForObject(new MicroServiceRequest(discoveryClient, restTemplate, msService, msFunction, id), String.class);
+				String resJson;
+				if (msObject.useCommonQuery()) {
+					MultiValueMap<String, String> mvm = new LinkedMultiValueMap<>();
+					mvm.add(msObject.primaryKey(), id);
+					mvm.add(GenericCommonController.KEY_ENTITY_CLASS, msObject.originEntityClass());
+					mvm.add(GenericCommonController.KEY_IS_COLLECTION, "true");
+					resJson = (String) MicroServiceUtil.getForObject(
+							new MicroServiceRequest(discoveryClient, restTemplate, msService, msFunction, ""), mvm, String.class);
+				} else {
+					resJson = (String) MicroServiceUtil
+							.getForObject(new MicroServiceRequest(discoveryClient, restTemplate, msService, msFunction, id), String.class);
+				}
 				ObjectMapper maple = new ObjectMapper();
 				Field mockfield = ReflectionUtils.findField(classToFind, mockTarget);
 				childObj = maple.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false).readValue(resJson,
 						maple.constructType(mockfield.getGenericType()));
 			} else {
-				childObj = MicroServiceUtil.getForObject(new MicroServiceRequest(discoveryClient, restTemplate, msService, msFunction, id),
-						pdMockTarget.getPropertyType());
+				if (msObject.useCommonQuery()) {
+					MultiValueMap<String, String> mvm = new LinkedMultiValueMap<>();
+					mvm.add(msObject.primaryKey(), id);
+					mvm.add(GenericCommonController.KEY_ENTITY_CLASS, msObject.originEntityClass());
+					childObj =
+							MicroServiceUtil.getForObject(new MicroServiceRequest(discoveryClient, restTemplate, msService, msFunction, ""),
+									mvm, pdMockTarget.getPropertyType());
+				} else {
+					childObj =
+							MicroServiceUtil.getForObject(new MicroServiceRequest(discoveryClient, restTemplate, msService, msFunction, id),
+									pdMockTarget.getPropertyType());
+				}
+			}
+
+			/** fields recursive */
+			if (childObj != null) {
+				refreshObjectDependency(childObj, isForceRefresh);
 			}
 
 			/** reflection to set Mocked object */
@@ -187,4 +260,29 @@ public class MicroServiceObjectUtil {
 	}
 
 	// TODO init Collection, store re-use mapping
+
+	private static String getServiceID(MicroServiceObject microServiceObject) {
+		String entityClass = microServiceObject.originEntityClass();
+		if (StringUtils.isNotBlank(entityClass)) {
+			String[] split = entityClass.split("[.]");
+			if (split.length >= 3) {
+				switch (split[2]) {
+					case "masterdata":
+						return MicroServiceObject.SRC_MASTERDATA;
+					case "identitymanagement":
+						return MicroServiceObject.SRC_IDENTITY;
+					case "industryanalysis":
+						return MicroServiceObject.SRC_INDUSTRY_ANALYSIS;
+					case "pricing":
+						return MicroServiceObject.SRC_PRICING;
+					case "etl":
+						return MicroServiceObject.SRC_ETL;
+					case "pricingpower":
+						return MicroServiceObject.SRC_PRICING_POWER;
+				}
+			}
+		}
+
+		return "";
+	}
 }
