@@ -8,6 +8,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -43,14 +45,70 @@ public class ClassUtil {
 		for (String key : mapValues.keySet()) {
 			Object value = mapValues.get(key);
 			try {
-				Class<?> propertyClass = PropertyUtils.getPropertyDescriptor(target, key).getPropertyType();
-				Object convertedValue = objectMapper.convertValue(value, propertyClass);
-				PropertyUtils.setProperty(target, key, convertedValue);
-			} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e1) {
+				PropertyDescriptor pd = PropertyUtils.getPropertyDescriptor(target, key);
+				if (pd == null) continue; // don't know why null
+				Class<?> propertyClass = pd.getPropertyType();
+				if (Collection.class.isAssignableFrom(propertyClass)) {
+					// collection Json to Object
+					Collection col = (Collection) getProperty(target, key);
+					if (col == null) {
+						if (List.class.isAssignableFrom(propertyClass)) {
+							col = new ArrayList();
+						} else if (Set.class.isAssignableFrom(propertyClass)) {
+							col = new LinkedHashSet();
+						} else {
+							col = (Collection) propertyClass.newInstance();
+						}
+					}
+					col.clear();
+					Field field = getDeclaredField(target.getClass(), key);
+					ParameterizedType listType = (ParameterizedType) field.getGenericType();
+					Class<?> collClass = (Class<?>) listType.getActualTypeArguments()[0];
+					Object collObj = null;
+					boolean isAcceObj = collClass.getName().indexOf("com.acceval") > -1;
+					if (isAcceObj) {
+						collObj = getClassObject(collClass.getName());
+					}
+					Collection convertedValue = (Collection) mapValues.get(key);
+					if (convertedValue != null) {
+						for (Object o : convertedValue) {
+							if (isAcceObj) {
+								populateJsonMapToObj(objectMapper, collObj, (Map) o);
+								col.add(collObj);
+							} else {
+								col.add(o);
+							}
+						}
+						PropertyUtils.setProperty(target, key, col);
+					} else {
+						PropertyUtils.setProperty(target, key, null);
+					}
+				} else {
+					Object convertedValue = objectMapper.convertValue(value, propertyClass);
+					PropertyUtils.setProperty(target, key, convertedValue);
+				}
+			} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | MicroServiceUtilException
+					| NoSuchFieldException | SecurityException | InstantiationException e1) {
 				Logger.error(e1.getMessage(), e1);
 			}
 		}
 
+	}
+
+	/**
+	 * will scan thru super class
+	 */
+	public static Field getDeclaredField(Class<?> target, String property) throws SecurityException, NoSuchFieldException {
+		try {
+			return target.getDeclaredField(property);
+		} catch (NoSuchFieldException e) {
+			// no such field here, try super class
+			Class<?> superClass = target.getSuperclass();
+			if (superClass == null || Object.class.getName().equals(superClass.getName())) {
+				throw e;
+			}
+			return getDeclaredField(superClass, property);
+		}
 	}
 
 	public static void copyProperties(Object dest, Object orig) {
