@@ -89,7 +89,9 @@ public class MicroServiceObjectUtil {
 								&& field.getType().getTypeName().indexOf("com.acceval.sales.model.so.") == -1)) {
 					PropertyDescriptor getter = new PropertyDescriptor(field.getName(), field.getDeclaringClass());
 					Object childObj = getter.getReadMethod().invoke(target);
-					refreshObjectDependency(childObj, isForceRefresh);
+					if (childObj != null && !childObj.getClass().isEnum()) {
+						refreshObjectDependency(childObj, isForceRefresh);
+					}
 				}
 			}
 
@@ -117,8 +119,23 @@ public class MicroServiceObjectUtil {
 	 * initialise by field level
 	 * 
 	 * @param isForceRefresh force refresh? Or do nothing if PK are same
+	 * @return object refreshed
 	 */
-	public static void refreshField(DiscoveryClient discoveryClient, RestTemplate restTemplate, Object target, String fieldName,
+	public static boolean refreshField(Object target, String fieldName, boolean isForceRefresh)
+			throws MicroServiceUtilException, Exception {
+		OAuth2RestTemplate restTemplate = BaseBeanUtil.getBean(OAuth2RestTemplate.class);
+		DiscoveryClient discoveryClient = (DiscoveryClient) BaseBeanUtil.getBean(DiscoveryClient.class);
+
+		return refreshField(discoveryClient, restTemplate, target, fieldName, isForceRefresh);
+	}
+
+	/**
+	 * initialise by field level
+	 * 
+	 * @param isForceRefresh force refresh? Or do nothing if PK are same
+	 * @return object refreshed
+	 */
+	public static boolean refreshField(DiscoveryClient discoveryClient, RestTemplate restTemplate, Object target, String fieldName,
 			boolean isForceRefresh) throws MicroServiceUtilException, Exception {
 		Class<?> classToFind = target.getClass();
 
@@ -148,11 +165,13 @@ public class MicroServiceObjectUtil {
 			MicroServiceObject msObject = (MicroServiceObject) objAnno;
 			// if MS info not from MicroServiceField level, get from MicroServiceObject level
 			if (StringUtils.isBlank(msFunction)) {
-				msService = getServiceID(msObject);
 				msFunction = msObject.module() + "/" + MicroServiceObject.COMMON_GT_OBJ;
 				if (msObject.useCommonQuery()) {
 					msFunction = "common/query";
 				}
+			}
+			if (StringUtils.isBlank(msService)) {
+				msService = getServiceID(msObject);
 			}
 
 			/** validation */
@@ -177,9 +196,14 @@ public class MicroServiceObjectUtil {
 			if (StringUtils.isBlank(id) || "0".equals(id)) {
 				// no ID, exit
 				Method mockWriteTarget = pdMockTarget.getWriteMethod();
+				Object mockObj = pdMockTarget.getReadMethod().invoke(target);
 				Object nullObj = null;
 				mockWriteTarget.invoke(target, nullObj);
-				return;
+				if (mockObj != null) {
+					return true; // updated to null
+				} else {
+					return false;
+				}
 			}
 
 			/** if not Force Refresh, check between Primary Key to decide Refresh or not (Performance) */
@@ -199,7 +223,7 @@ public class MicroServiceObjectUtil {
 							lst.add(childObjPK);
 						}
 						if (StringUtils.equals(id, StringUtils.join(lst, ","))) {
-							return; // do nothing if PK are same
+							return false; // do nothing if PK are same
 						}
 					} else {
 						Annotation objPrixObjAnno = mockObj.getClass().getAnnotation(MicroServiceObject.class);
@@ -208,7 +232,7 @@ public class MicroServiceObjectUtil {
 						Method getterChildPK = pdChildPK.getReadMethod();
 						Object childObjPK = getterChildPK.invoke(mockObj);
 						if (StringUtils.equals(id, String.valueOf(childObjPK))) {
-							return; // do nothing if PK are same
+							return false; // do nothing if PK are same
 						}
 					}
 				}
@@ -256,7 +280,10 @@ public class MicroServiceObjectUtil {
 
 			/** reflection to set Mocked object */
 			pdMockTarget.getWriteMethod().invoke(target, childObj);
+			return true;
 		}
+
+		return false;
 	}
 
 	// TODO init Collection, store re-use mapping

@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -54,7 +53,7 @@ public class MicroServiceUtil {
 		try {
 			Object object = restTemplate.getForObject(url, type);
 			return object;
-		} catch (HttpServerErrorException e) {
+		} catch (Throwable e) {
 			LOGGER.error("Error occur when fire [" + url + "] \r\n" + e.getMessage(), e);
 		}
 

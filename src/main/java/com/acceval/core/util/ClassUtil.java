@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.beanutils.BeanUtilsBean;
+import org.apache.commons.beanutils.NestedNullException;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.hibernate.proxy.HibernateProxy;
@@ -352,8 +353,12 @@ public class ClassUtil {
 			target = ((HibernateProxy) target).getHibernateLazyInitializer().getImplementation();
 		}
 
+		if (target == null) return null;
+
 		try {
 			return BeanUtilsBean.getInstance().getPropertyUtils().getNestedProperty(target, property);
+		} catch (NestedNullException nullEx) {
+			return null;
 		} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
 			throw new MicroServiceUtilException(e);
 		}
@@ -363,6 +368,11 @@ public class ClassUtil {
 		try {
 			if (value instanceof Double) {
 				value = NumberUtil.zeroIfNullorNaN((Double) value);
+			}
+
+			Class targetClass = getPropertyClass(target.getClass(), property);
+			if (targetClass.isEnum() && value instanceof String) {
+				value = Enum.valueOf(targetClass, String.valueOf(value));
 			}
 
 			BeanUtilsBean.getInstance().getPropertyUtils().setNestedProperty(target, property, value);

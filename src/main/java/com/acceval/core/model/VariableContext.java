@@ -25,7 +25,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
 
 	// pricing
-	public static final String PRICETECH_DECIDER = "PRICETECH_DECIDER";
+	public static final String PRICETECH_DECIDER = "PRICING_TECHNIQUE_DECIDER";
 
 	private Map<String, Object> variableMap = Collections.synchronizedMap(new HashMap<>());
 
@@ -56,7 +56,12 @@ public class VariableContext implements Serializable, Cloneable {
 	}
 
 	public void setVariable(String key, Object value) {
-		variableMap.put(key, value);
+		if (value instanceof LocalDate) {
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT);
+			variableMap.put(key, ((LocalDate) value).format(formatter));
+		} else {
+			variableMap.put(key, value);
+		}
 	}
 
 	public void setVariable(String key, double value) {
@@ -134,11 +139,11 @@ public class VariableContext implements Serializable, Cloneable {
 		return retVal == null ? 0 : retVal;
 	}
 
-	public long getVariableAsLong(String key) {
+	public Long getVariableAsLong(String key) {
 
 		Object value = getVariable(key);
 		if (value == null) {
-			return 0;
+			return null;
 		}
 		if (value instanceof Long) {
 			return (Long) value;
@@ -147,7 +152,7 @@ public class VariableContext implements Serializable, Cloneable {
 		if (StringUtils.isNotBlank(String.valueOf(value))) {
 			return Long.parseLong(String.valueOf(value).trim());
 		}
-		return 0l;
+		return null;
 	}
 
 	public boolean getVariableAsBoolean(String key) {
