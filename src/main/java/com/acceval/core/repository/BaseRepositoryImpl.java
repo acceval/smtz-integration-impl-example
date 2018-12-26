@@ -33,12 +33,16 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import com.acceval.core.model.AuthUser;
+import com.acceval.core.model.BaseEntity;
+import com.acceval.core.model.BaseEntity.STATUS;
 import com.acceval.core.model.BaseModel;
 import com.acceval.core.repository.Criterion.RestrictionType;
 
@@ -404,8 +408,10 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 		List<String> lstSort = mapParam.get(_SORT);
 
 		try {
+			if (targetClass.newInstance() instanceof BaseEntity) {
+				mapParam.put("recordStatus", Arrays.asList(STATUS.ACTIVE.name()));
+			}
 			if (targetClass.newInstance() instanceof BaseModel) {
-
 				Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 				if (auth != null) {
 					Object principal = auth.getPrincipal();
@@ -548,5 +554,75 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 	 */
 	protected Map<String, String> getMapPropertyResolver() {
 		return new HashMap<>();
+	}
+
+	@Override
+	public T findOneByRecordStatus(STATUS status, Long id) {
+		String idField = null;
+		Class<?> entity = getTargetClass();
+
+		for (Field field : entity.getDeclaredFields()) {
+			if (field.isAnnotationPresent(Id.class)) {
+				idField = field.getName();
+				break;
+			}
+		}
+
+		Query query = prepareSelectQuery(status, idField, id);
+		return (T) query.getSingleResult();
+	}
+
+	@Override
+	public List<T> findAllByRecordStatus(STATUS status) {
+		Query query = prepareSelectQuery(status, null, null);
+		return query.getResultList();
+	}
+
+	private Query prepareSelectQuery(STATUS status, String idField, Long id) {
+		String selectQuery = "SELECT e FROM " + getTargetClass().getSimpleName() + " e WHERE e.recordStatus = :status";
+		if (StringUtils.isNotEmpty(idField) && id != null) {
+			selectQuery += " AND e." + idField + " = :id";
+		}
+		Query query = getEntityManager().createQuery(selectQuery, getTargetClass());
+		query.setParameter("status", status == null ? STATUS.ACTIVE : status);
+		if (id != null) query.setParameter("id", id);
+
+		return query;
+	}
+
+	@Transactional
+	@Modifying
+	@Override
+	public void softDelete(T entity) {
+		Long id = null;
+		String idField = null;
+		Field[] existingFields = entity.getClass().getDeclaredFields();
+
+		for (Field field : existingFields) {
+			if (field.isAnnotationPresent(Id.class)) {
+				try {
+					field.setAccessible(true);
+					id = (Long) field.get(entity);
+					idField = field.getName();
+				} catch (IllegalArgumentException | IllegalAccessException e) {
+					e.printStackTrace();
+				}
+				break;
+			}
+		}
+
+		String updateSql =
+				"UPDATE " + entity.getClass().getSimpleName() + " e SET e.recordStatus = 'ARCHIVE' WHERE e." + idField + " = " + id;
+		Query query = getEntityManager().createQuery(updateSql);
+		int updatedCount = query.executeUpdate();
+	}
+
+	@Transactional
+	@Modifying
+	@Override
+	public void softDelete(List<T> entities) {
+		for (T entity : entities) {
+			softDelete(entity);
+		}
 	}
 }
