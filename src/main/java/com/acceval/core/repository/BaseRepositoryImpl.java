@@ -51,6 +51,7 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 	public static String _PAGE = "_page";
 	public static String _PAGESIZE = "_pageSize";
 	public static String _SORT = "_sort";
+	public static String _FETCHALL = "_fetchAll";
 
 	public static String _ASC = "asc";
 	public static String _DESC = "desc";
@@ -371,7 +372,12 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 		}
 
 		List<T> result = query.getResultList();
-		queryResult = new QueryResult(total, result);
+		
+		if (!acceCriteria.isFetchAll()) {
+			queryResult = new QueryResult(total, result);
+		} else {
+			queryResult = new QueryResult(result.size(), result);
+		}
 
 		return queryResult;
 	}
@@ -405,6 +411,7 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 	public Criteria getCriteriaByMapParam(MultiValueMap<String, String> mapParam, Class<?> targetClass) {
 		int page = mapParam.get(_PAGE) != null ? Integer.parseInt(mapParam.getFirst(_PAGE)) : 0;
 		int pageSize = mapParam.get(_PAGESIZE) != null ? Integer.parseInt(mapParam.getFirst(_PAGESIZE)) : 0;
+		boolean isFetchAll = mapParam.get(_FETCHALL) != null ? Boolean.parseBoolean(mapParam.getFirst(_FETCHALL)) : false;
 		List<String> lstSort = mapParam.get(_SORT);
 
 		try {
@@ -432,7 +439,7 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 		Criteria acceCriteria = new Criteria();
 		acceCriteria.setRequestedPage(page);
 		acceCriteria.setPageSize(pageSize);
-		acceCriteria.setFetchAll(false);
+		acceCriteria.setFetchAll(isFetchAll);
 
 		CriteriaBuilder builder = getEntityManagerFactory().getCriteriaBuilder();
 		CriteriaQuery<?> criteria = builder.createQuery(targetClass);
@@ -451,7 +458,7 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 		List<Criterion> lstCrriterion = new ArrayList<>();
 		for (String key : mapParam.keySet()) {
 
-			if (_PAGE.equals(key) || _PAGESIZE.equals(key) || _SORT.equals(key)
+			if (_PAGE.equals(key) || _PAGESIZE.equals(key) || _SORT.equals(key) || _FETCHALL.equals(key) 
 					|| (mapParam.getFirst(key) != null && StringUtils.trim(mapParam.getFirst(key)).length() == 0)) {
 				continue;
 			}
