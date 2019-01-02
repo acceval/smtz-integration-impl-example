@@ -24,8 +24,13 @@ public class VariableContext implements Serializable, Cloneable {
 	
 	public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
 
-	// pricing
+	// Pricing Technique Condition Table Code
 	public static final String PRICETECH_DECIDER = "PRICING_TECHNIQUE_DECIDER";
+
+	// Deal Mgt Object
+	public static final String OBJ_SALES_DOC = "salesDoc";
+	public static final String OBJ_SALES_ITEM = "salesItem";
+	public static final String OBJ_SALES_SCENARIO = "salesScenario";
 
 	private Map<String, Object> variableMap = Collections.synchronizedMap(new HashMap<>());
 
