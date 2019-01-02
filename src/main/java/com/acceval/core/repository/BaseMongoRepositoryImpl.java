@@ -39,6 +39,7 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 	public static String _PAGE = "_page";
 	public static String _PAGESIZE = "_pageSize";
 	public static String _SORT = "_sort";
+	public static String _FETCHALL = "_fetchAll";
 
 	public static String _ASC = "asc";
 	public static String _DESC = "desc";
@@ -48,7 +49,7 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 	private static final Logger LOGGER = LoggerFactory.getLogger(BaseMongoRepositoryImpl.class);
 
 	@Autowired
-    private MongoTemplate mongoTemplate;
+	protected MongoTemplate mongoTemplate;
 
 	protected abstract Class<?> getTargetClass();
 
@@ -153,6 +154,7 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 	public Criteria getCriteriaByMapParam(MultiValueMap<String, String> mapParam, Class<?> targetClass) {
 		int page = mapParam.get(_PAGE) != null ? Integer.parseInt(mapParam.getFirst(_PAGE)) : 0;
 		int pageSize = mapParam.get(_PAGESIZE) != null ? Integer.parseInt(mapParam.getFirst(_PAGESIZE)) : 0;
+		boolean isFetchAll = mapParam.get(_FETCHALL) != null ? Boolean.parseBoolean(mapParam.getFirst(_FETCHALL)) : false;
 		List<String> lstSort = mapParam.get(_SORT);
 
 		try {
@@ -178,7 +180,7 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 		Criteria acceCriteria = new Criteria();
 		acceCriteria.setRequestedPage(page);
 		acceCriteria.setPageSize(pageSize);
-		acceCriteria.setFetchAll(false);
+		acceCriteria.setFetchAll(isFetchAll);
 		
 		// order
 		if (CollectionUtils.isNotEmpty(lstSort)) {
@@ -193,7 +195,7 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 		List<Criterion> lstCrriterion = new ArrayList<>();
 		for (String key : mapParam.keySet()) {
 
-			if (_PAGE.equals(key) || _PAGESIZE.equals(key) || _SORT.equals(key)
+			if (_PAGE.equals(key) || _PAGESIZE.equals(key) || _SORT.equals(key) || _FETCHALL.equals(key) 
 					|| (mapParam.getFirst(key) != null && StringUtils.trim(mapParam.getFirst(key)).length() == 0)) {
 				continue;
 			}
@@ -290,11 +292,17 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 			
 			final Pageable pageableRequest = new PageRequest(page, pageSize);
 			query.with(pageableRequest);
-		}
+		} 
 			
 		List<T> result = (List<T>) mongoTemplate.find(query, this.getTargetClass());
 		
-		queryResult = new QueryResult<T>(Math.toIntExact(total), result);
+		if (!andCriteria.isFetchAll()) {
+			queryResult = new QueryResult<T>(Math.toIntExact(total), result);
+		} else {
+			queryResult = new QueryResult<T>(result.size(), result);
+		}
+		
+		
 
 		return queryResult;
 	}
@@ -336,13 +344,17 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 		}
 			
 		List<T> result = (List<T>) mongoTemplate.find(query, this.getTargetClass());
-		
-		queryResult = new QueryResult<T>(Math.toIntExact(total), result);
+
+		if (!acceCriteria.isFetchAll()) {
+			queryResult = new QueryResult<T>(Math.toIntExact(total), result);
+		} else {
+			queryResult = new QueryResult<T>(result.size(), result);
+		}
 
 		return queryResult;
 	}
 	
-	private List<org.springframework.data.mongodb.core.query.Criteria> getMongoCriterias(Criteria acceCriteria) {
+	protected List<org.springframework.data.mongodb.core.query.Criteria> getMongoCriterias(Criteria acceCriteria) {
 
 		List<org.springframework.data.mongodb.core.query.Criteria> mongoCriterias = 
 				new ArrayList<org.springframework.data.mongodb.core.query.Criteria>();
