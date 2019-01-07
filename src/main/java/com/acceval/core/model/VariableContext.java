@@ -33,6 +33,8 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String OBJ_SALES_SCENARIO = "salesScenario";
 
 	private Map<String, Object> variableMap = Collections.synchronizedMap(new HashMap<>());
+	private Long companyId;
+	private String companyCode;
 
 	@Override
 	public VariableContext clone() {
@@ -180,4 +182,20 @@ public class VariableContext implements Serializable, Cloneable {
 		this.variableMap = variableMap;
 	}
 
+	public Long getCompanyId() {
+		return companyId;
+	}
+
+	public void setCompanyId(Long companyId) {
+		this.companyId = companyId;
+	}
+
+	public String getCompanyCode() {
+		return companyCode;
+	}
+
+	public void setCompanyCode(String companyCode) {
+		this.companyCode = companyCode;
+	}
+	
 }
