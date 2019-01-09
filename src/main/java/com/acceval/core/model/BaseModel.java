@@ -17,6 +17,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.acceval.core.util.ClassUtil;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @MappedSuperclass
 @EntityListeners({AuditingEntityListener.class, CompanyModelListener.class})
@@ -24,21 +25,26 @@ public abstract class BaseModel implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
+	@JsonIgnore
 	@Column(nullable = false, updatable = false)
     private Long companyId;
     
+	@JsonIgnore
 	@CreatedBy
     @Column(nullable = false, updatable = false)	
     private String createdBy;
 
+	@JsonIgnore
     @CreatedDate
     @Column(nullable = false, updatable = false)    
     private LocalDateTime created;
 
+	@JsonIgnore
     @LastModifiedBy
     @Column(nullable = false)    
     private String modifiedBy;
 
+	@JsonIgnore
     @LastModifiedDate
     @Column(nullable = false)    
     private LocalDateTime modified;
