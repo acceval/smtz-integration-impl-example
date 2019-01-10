@@ -29,4 +29,11 @@ public class NumberUtil {
 		return new Double(Double.parseDouble(newNumber));
 	}
 
+	public static double round(double number, int decimalPoint) {
+		return new BigDecimal(number).setScale(decimalPoint, BigDecimal.ROUND_HALF_UP).doubleValue();
+	}
+
+	public static double round(double number, int decimalPoint, int roundingMode) {
+		return new BigDecimal(number).setScale(decimalPoint, roundingMode).doubleValue();
+	}
 }
