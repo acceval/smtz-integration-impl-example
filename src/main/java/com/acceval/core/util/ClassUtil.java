@@ -112,6 +112,19 @@ public class ClassUtil {
 		}
 	}
 
+	/**
+	 * will scan thru super class
+	 */
+	public static List<Field> getDeclaredFields(Class<?> target) throws SecurityException {
+		List<Field> fields = new ArrayList<Field>();
+		fields.addAll(Arrays.asList(target.getDeclaredFields()));
+		if (target.getSuperclass() != null) {
+			fields.addAll(getDeclaredFields(target.getSuperclass()));
+		}
+
+		return fields;
+	}
+
 	public static void copyProperties(Object dest, Object orig) {
 		try {
 			PropertyUtils.copyProperties(dest, orig);
