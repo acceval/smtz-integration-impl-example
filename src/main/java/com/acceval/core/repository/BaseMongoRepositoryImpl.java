@@ -32,7 +32,9 @@ import org.springframework.util.MultiValueMap;
 
 import com.acceval.core.model.AuthUser;
 import com.acceval.core.model.BaseModel;
+import com.acceval.core.model.GlobalData;
 import com.acceval.core.repository.Criterion.RestrictionType;
+import com.acceval.core.security.SessionUtil;
 
 public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<T> {
 
@@ -158,19 +160,15 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 		List<String> lstSort = mapParam.get(_SORT);
 
 		try {
-			if (targetClass.newInstance() instanceof BaseModel) {
-
-				Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-				if (auth != null) {
-					Object principal = auth.getPrincipal();
-					if (principal != null && principal instanceof AuthUser) {
-						AuthUser authUser = (AuthUser) principal;
-						if (authUser.getCompanyId() != null) {
-							String[] values = { String.valueOf(authUser.getCompanyId()) };
-							mapParam.put("companyId", Arrays.asList(values));
-						}
-					}
-				}
+			Object targetObj = targetClass.newInstance();
+			if ( targetObj instanceof BaseModel && !(targetObj instanceof GlobalData)) {
+				
+				Long companyId = SessionUtil.getCompanyId();
+				
+				if (companyId != null) {
+					String[] values = { String.valueOf(companyId) };
+					mapParam.put("companyId", Arrays.asList(values));
+				}				
 			}
 		} catch (InstantiationException | IllegalAccessException e1) {
 			// TODO Auto-generated catch block
