@@ -10,7 +10,7 @@ public class Criterion implements Serializable {
 	public static final String STRING = "STRING";
 	public static final String DATE = "DATE";
 
-	enum RestrictionType {
+	public enum RestrictionType {
 		EQUAL("="), LESS_OR_EQUAL("<="), GREATER_OR_EQUAL(">="), GREATER(">"), LESS("<"), NOT_EQUAL("<>"), IN("in"), NOT_IN("not in"),
 		IS_NULL("is null"), IS_NOT_NULL("is not null");
 
