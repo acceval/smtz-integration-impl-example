@@ -45,49 +45,49 @@ public class PathAuthenticationLogger {
 		
         for (Map.Entry<String, Object> entry: data.entrySet()) {
         	
-        		//Error for invalid token & access denied (without token)
-        		if (entry.getValue() instanceof String) {
-        			
-        			 logger.info(entry.getKey() + " : " + entry.getValue());
-        			 if (entry.getKey().equals("type")) {
-        				 pathRequest.setType((String) entry.getValue());
-        			 } else if (entry.getKey().equals("message")) {
-        				 pathRequest.setTokenValue((String) entry.getValue());
-        			 } else if (entry.getKey().equals("requestUrl")) {
-        				 pathRequest.setRequestUrl((String) entry.getValue());        				         				 
-        			 }
-        			 
-        			 if (pathRequest.getRequestUrl() == null) {
-        				 pathRequest.setRequestUrl(this.getRequestUrl());
-        			 }
-        		//Error for access denied (without token)
-        		} else if (entry.getValue() instanceof WebAuthenticationDetails) {
-        			
-        			WebAuthenticationDetails details = (WebAuthenticationDetails) entry.getValue();
-        			pathRequest.setRemoteAddress(details.getRemoteAddress());
-        			pathRequest.setSessionId(details.getSessionId());
-        			
-        		//Any microservice method calls
-        		} else if (entry.getValue() instanceof OAuth2AuthenticationDetails) {
-        			        			
-        			pathRequest.setRequestUrl(this.getRequestUrl());
-        			        			
-        			OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) entry.getValue();
-        			logger.info("remote address :" + details.getRemoteAddress());
-        			logger.info("token type :" + details.getTokenType());
-        			logger.info("token value : " + details.getTokenValue());
-        			pathRequest.setRemoteAddress(details.getRemoteAddress());
-        			pathRequest.setTokenType(details.getTokenType());
-        			pathRequest.setRemoteAddress(details.getRemoteAddress());
-        			
-        		//OAuth login authentication
-        		} //else if (entry.getValue() instanceof Map) {
-//        			Map<String, String> details = (Map<String, String>) entry.getValue();
+    		//Error for invalid token & access denied (without token)
+    		if (entry.getValue() instanceof String) {
+    			
+    			 logger.info(entry.getKey() + " : " + entry.getValue());
+    			 if (entry.getKey().equals("type")) {
+    				 pathRequest.setType((String) entry.getValue());
+    			 } else if (entry.getKey().equals("message")) {
+    				 pathRequest.setTokenValue((String) entry.getValue());
+    			 } else if (entry.getKey().equals("requestUrl")) {
+    				 pathRequest.setRequestUrl((String) entry.getValue());        				         				 
+    			 }
+    			 
+    			 if (pathRequest.getRequestUrl() == null) {
+    				 pathRequest.setRequestUrl(this.getRequestUrl());
+    			 }
+    		//Error for access denied (without token)
+    		} else if (entry.getValue() instanceof WebAuthenticationDetails) {
+    			
+    			WebAuthenticationDetails details = (WebAuthenticationDetails) entry.getValue();
+    			pathRequest.setRemoteAddress(details.getRemoteAddress());
+    			pathRequest.setSessionId(details.getSessionId());
+    			
+    		//Any microservice method calls
+    		} else if (entry.getValue() instanceof OAuth2AuthenticationDetails) {
+    			        			
+    			pathRequest.setRequestUrl(this.getRequestUrl());
+    			        			
+    			OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) entry.getValue();
+    			logger.info("remote address :" + details.getRemoteAddress());
+    			logger.info("token type :" + details.getTokenType());
+    			logger.info("token value : " + details.getTokenValue());
+    			pathRequest.setRemoteAddress(details.getRemoteAddress());
+    			pathRequest.setTokenType(details.getTokenType());
+    			pathRequest.setRemoteAddress(details.getRemoteAddress());
+    			
+    		//OAuth login authentication
+    		} //else if (entry.getValue() instanceof Map) {
+//        		Map<String, String> details = (Map<String, String>) entry.getValue();
 //        			
-//        			for (Map.Entry<String, String> detail: details.entrySet()) {
-//        				logger.info(detail.getKey() + " : " + detail.getValue());
-//        			}
+//        		for (Map.Entry<String, String> detail: details.entrySet()) {
+//        			logger.info(detail.getKey() + " : " + detail.getValue());
 //        		}
+//        	}
         }        
         
 
