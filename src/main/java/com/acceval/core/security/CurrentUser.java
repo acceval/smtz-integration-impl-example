@@ -1,6 +1,7 @@
 package com.acceval.core.security;
 
 import com.acceval.core.model.AuthUser;
+import com.acceval.core.model.ServicePackage;
 
 public class CurrentUser implements AuthUser {
 
@@ -11,6 +12,7 @@ public class CurrentUser implements AuthUser {
 	private String email;
 	private Long companyId;
 	private String companyCode;
+	private ServicePackage servicePackage;
 	private boolean enabled;
 	
 	@Override
@@ -64,6 +66,12 @@ public class CurrentUser implements AuthUser {
 	}
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
+	}
+	public ServicePackage getServicePackage() {
+		return servicePackage;
+	}
+	public void setServicePackage(ServicePackage servicePackage) {
+		this.servicePackage = servicePackage;
 	}
 	
 }

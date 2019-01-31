@@ -3,6 +3,8 @@ package com.acceval.core.security;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.acceval.core.model.ServicePackage;
+
 public class SessionUtil {
 
 
@@ -58,6 +60,22 @@ public class SessionUtil {
 			}
 		}
 		return null;
-	}	
+	}
+	
+	public static ServicePackage getServicePackage() {
+		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		
+		if (auth != null) {
+			Object principal = auth.getPrincipal();
+			
+			if (principal != null && principal instanceof CurrentUser) {
+				
+				CurrentUser currentUser = (CurrentUser) principal;
+				return currentUser.getServicePackage();
+			}
+		}
+		return null;
+	}
 		
 }
