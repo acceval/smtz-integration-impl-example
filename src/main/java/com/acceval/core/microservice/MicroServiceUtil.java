@@ -29,15 +29,16 @@ public class MicroServiceUtil {
 
 		DiscoveryClient discoveryClient = microServiceRequest.getDiscoveryClient();
 		RestTemplate restTemplate = microServiceRequest.getRestTemplate();
+		String zuulService = "ZUUL-SERVER";
 		String msService = microServiceRequest.getMsService();
 		String msFunction = microServiceRequest.getMsFunction();
 		String param = microServiceRequest.getParam() == null ? "" : microServiceRequest.getParam();
 
-		List<ServiceInstance> instances = discoveryClient.getInstances(msService);
-		if (instances.isEmpty()) throw new MicroServiceUtilException(MicroServiceUtil.class, msService + " Service is Not Available!");
+		List<ServiceInstance> instances = discoveryClient.getInstances(zuulService);
+		if (instances.isEmpty()) throw new MicroServiceUtilException(MicroServiceUtil.class, zuulService + " Service is Not Available!");
 		ServiceInstance instance = instances.get(0);
 		String host = instance.getHost();
-		String url = "http://" + host + ":" + instance.getPort() + "/" + msFunction + "/" + param;
+		String url = "http://" + host + ":" + instance.getPort() + "/" + msService + "/" + msFunction + "/" + param;
 
 		if (mvmValue != null && !mvmValue.keySet().isEmpty()) {
 			UriComponentsBuilder uriCompBuilder = UriComponentsBuilder.fromHttpUrl(url);
