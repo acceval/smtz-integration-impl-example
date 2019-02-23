@@ -196,6 +196,46 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 			return false;
 		}
 	}
+	
+	@Override
+	public QueryResult<T> queryByMapParam(MultiValueMap<String, String> mapParam, List<DateRange> dateRanges) {
+		
+		Criteria criteria = this.getCriteriaByMapParam(mapParam, getTargetClass());
+		for (DateRange dateRange : dateRanges) {
+			
+			LocalDateTime startDate = LocalDateTime.of(dateRange.getStartDate().getYear(), 
+					dateRange.getStartDate().getMonthValue(), 
+					dateRange.getStartDate().getDayOfMonth(),
+					0,
+					0,
+					0);
+			
+			if (dateRange.getEndDate() != null) {
+				LocalDateTime endDate = LocalDateTime.of(dateRange.getEndDate().getYear(), 
+						dateRange.getEndDate().getMonthValue(), 
+						dateRange.getEndDate().getDayOfMonth(),
+						0,
+						0);
+				endDate = endDate.plusDays(1);
+								
+				Criterion startCriterion = new Criterion(dateRange.getPropertyPath(), RestrictionType.GREATER_OR_EQUAL, startDate);
+				startCriterion.setSearchValueDataType(Criterion.DATE);
+				criteria.appendCriterion(startCriterion);
+				
+				Criterion endCriterion = new Criterion(dateRange.getPropertyPath(), RestrictionType.LESS, endDate);
+				startCriterion.setSearchValueDataType(Criterion.DATE);
+				criteria.appendCriterion(endCriterion);
+								
+			} else {
+				Criterion startCriterion = new Criterion(dateRange.getPropertyPath(), RestrictionType.GREATER_OR_EQUAL, startDate);
+				startCriterion.setSearchValueDataType(Criterion.DATE);
+				criteria.appendCriterion(startCriterion);
+				
+			}
+		}
+		
+		return this.queryByCriteria(criteria, getTargetClass());
+	}
 
 	@Override
 	public QueryResult<T> queryByCriteria(Criteria acceCriteria) {

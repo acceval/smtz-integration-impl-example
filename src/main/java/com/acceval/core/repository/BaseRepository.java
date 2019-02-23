@@ -17,6 +17,8 @@ public interface BaseRepository<T> {
 	QueryResult<T> queryByCriteria(Criteria acceCriteria, Class<?> targetClass);
 
 	QueryResult<T> queryByMapParam(MultiValueMap<String, String> mapParam);
+	
+	QueryResult<T> queryByMapParam(MultiValueMap<String, String> mapParam, List<DateRange> dateRanges);
 
 	QueryResult<T> queryByMapParam(MultiValueMap<String, String> mapParam, Class<?> targetClass);
 
