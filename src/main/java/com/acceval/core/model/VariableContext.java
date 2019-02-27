@@ -21,6 +21,8 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String PERCENTAGE_APPLY_INPUT_PARAM = "PERCENTAGE_APPLY_INPUT_PARAM";
 	public static final String VALID_FROM = "VALID_FROM";
 	public static final String CURRENCY_EXCHANGE_RATE_TYPE = "CURRENCY_EXCHANGE_RATE_TYPE";
+	public static final String COMPANY_ID = "COMPANY_ID";
+	public static final String COMPANY_CODE = "COMPANY_CODE";
 	
 	public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
 
@@ -189,6 +191,7 @@ public class VariableContext implements Serializable, Cloneable {
 	}
 
 	public void setCompanyId(Long companyId) {
+		setVariable(COMPANY_ID, companyId);
 		this.companyId = companyId;
 	}
 
@@ -197,7 +200,17 @@ public class VariableContext implements Serializable, Cloneable {
 	}
 
 	public void setCompanyCode(String companyCode) {
+		setVariable(COMPANY_CODE, companyCode);
 		this.companyCode = companyCode;
 	}
 	
+	public Map<String, Object> getNonBaseModelMap() {
+		Map<String, Object> map = new HashMap<>();
+		for (String key : getVariableMap().keySet()) {
+			if (!(getVariableMap().get(key) instanceof BaseModel)) {
+				map.put(key, getVariableMap().get(key));
+			}
+		}
+		return map;
+	}
 }

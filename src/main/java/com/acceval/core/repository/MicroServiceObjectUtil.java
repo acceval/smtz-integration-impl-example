@@ -62,7 +62,7 @@ public class MicroServiceObjectUtil {
 		Class<?> classToFind = target.getClass();
 		if (!classToFind.getName().equals(Object.class.getName())) {
 
-			ExecutorService executor = Executors.newFixedThreadPool(10);
+			ExecutorService executor = Executors.newFixedThreadPool(20);
 			Long longStart = System.currentTimeMillis();
 			List<Field> allField = new ArrayList<>();
 			appendClassField(classToFind, allField);
