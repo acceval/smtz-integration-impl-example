@@ -2,9 +2,7 @@ package com.acceval.core.repository;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -26,11 +24,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.MultiValueMap;
 
-import com.acceval.core.model.AuthUser;
 import com.acceval.core.model.BaseModel;
 import com.acceval.core.model.GlobalData;
 import com.acceval.core.repository.Criterion.RestrictionType;

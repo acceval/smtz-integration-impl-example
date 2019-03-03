@@ -34,13 +34,10 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import com.acceval.core.model.AuthUser;
 import com.acceval.core.model.BaseEntity;
 import com.acceval.core.model.BaseEntity.STATUS;
 import com.acceval.core.model.BaseModel;
@@ -373,7 +370,7 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 			}
 		}
 		if (!lstPredicate.isEmpty()) {
-			criteria.where(lstPredicate.stream().toArray(Predicate[]::new));
+			criteria.where(lstPredicate.stream().toArray(Predicate[]::new));			
 		}
 
 		/** TODO projection? */
