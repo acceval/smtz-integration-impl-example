@@ -17,6 +17,7 @@ public @interface MicroServiceObject {
 	public static final String SRC_PRICING_POWER = "pricing-power-service";
 
 	public static final String COMMON_GT_OBJ = "getObj";
+	public static final String COMMON_QUERY = "common/query";
 
 	/** eg. masterdata-service, can deriave from originEntityClass */
 	//	String serviceID() default "";

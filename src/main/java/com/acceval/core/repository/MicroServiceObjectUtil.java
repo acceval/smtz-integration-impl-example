@@ -27,6 +27,7 @@ import com.acceval.core.controller.GenericCommonController;
 import com.acceval.core.microservice.MicroServiceRequest;
 import com.acceval.core.microservice.MicroServiceUtil;
 import com.acceval.core.util.BaseBeanUtil;
+import com.acceval.core.util.ClassUtil;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -167,7 +168,7 @@ public class MicroServiceObjectUtil {
 			if (StringUtils.isBlank(msFunction)) {
 				msFunction = msObject.module() + "/" + MicroServiceObject.COMMON_GT_OBJ;
 				if (msObject.useCommonQuery()) {
-					msFunction = "common/query";
+					msFunction = MicroServiceObject.COMMON_QUERY;
 				}
 			}
 			if (StringUtils.isBlank(msService)) {
@@ -284,6 +285,51 @@ public class MicroServiceObjectUtil {
 		}
 
 		return false;
+	}
+
+	public static void mappingFields(Object targetObj, List<MappingRequest> lstMappingRequest) throws Exception {
+		OAuth2RestTemplate restTemplate = BaseBeanUtil.getBean(OAuth2RestTemplate.class);
+		DiscoveryClient discoveryClient = (DiscoveryClient) BaseBeanUtil.getBean(DiscoveryClient.class);
+
+		ExecutorService executor = Executors.newFixedThreadPool(20);
+
+		// multi-thread
+		for (MappingRequest mapping : lstMappingRequest) {
+			executor.submit(() -> {
+				Class<?> mappingClass = mapping.getMappingClass();
+				if (mappingClass.isAnnotationPresent(MicroServiceObject.class)) {
+
+					MultiValueMap<String, String> mapParam = mapping.getMapParams();
+					String strMappingField = mapping.getMappingField();
+					String strDestinationField = mapping.getDestinationField();
+
+					Annotation objAnno = mappingClass.getAnnotation(MicroServiceObject.class);
+					MicroServiceObject msObject = (MicroServiceObject) objAnno;
+					mapParam.add(GenericCommonController.KEY_ENTITY_CLASS, msObject.originEntityClass());
+					if (mapping.isCollection()) {
+						mapParam.add(GenericCommonController.KEY_IS_COLLECTION, "true");
+					}
+
+					try {
+						Object mappedObj = MicroServiceUtil.getForObject(new MicroServiceRequest(discoveryClient, restTemplate,
+								getServiceID(msObject), MicroServiceObject.COMMON_QUERY, ""), mapParam, mappingClass);
+						if (mappedObj != null) {
+							Object targetField = ClassUtil.getProperty(mappedObj, strMappingField);
+							if (targetField != null) {
+								ClassUtil.setProperty(targetObj, strDestinationField, targetField);
+							}
+						}
+					} catch (MicroServiceUtilException e) {
+						LOGGER.error(e.getMessage(), e);
+					}
+
+				} else {
+					LOGGER.error("Target class [" + mappingClass.getName() + "] is not MicroServiceObject");
+				}
+			});
+		}
+		executor.shutdown();
+		executor.awaitTermination(10, TimeUnit.MINUTES);
 	}
 
 	// TODO init Collection, store re-use mapping
