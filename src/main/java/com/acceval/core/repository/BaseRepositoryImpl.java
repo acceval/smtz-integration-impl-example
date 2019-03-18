@@ -44,6 +44,7 @@ import com.acceval.core.model.BaseModel;
 import com.acceval.core.model.GlobalData;
 import com.acceval.core.repository.Criterion.RestrictionType;
 import com.acceval.core.security.SessionUtil;
+import com.acceval.core.util.ClassUtil;
 
 public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 
@@ -640,7 +641,8 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 	public void softDelete(T entity) {
 		Long id = null;
 		String idField = null;
-		Field[] existingFields = entity.getClass().getDeclaredFields();
+		List<Field> existingFields = ClassUtil.getDeclaredFields(entity.getClass());
+		Class<?> parentEntity = checkParentBaseEntity(entity.getClass());		
 
 		for (Field field : existingFields) {
 			if (field.isAnnotationPresent(Id.class)) {
@@ -655,10 +657,23 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 			}
 		}
 
+		@SuppressWarnings("null")
 		String updateSql =
-				"UPDATE " + entity.getClass().getSimpleName() + " e SET e.recordStatus = 'ARCHIVE' WHERE e." + idField + " = " + id;
+				"UPDATE " + (parentEntity != null ? parentEntity.getSimpleName() : entity.getClass().getSimpleName()) + " e SET e.recordStatus = 'ARCHIVE' WHERE e." + idField + " = " + id;
 		Query query = getEntityManager().createQuery(updateSql);
 		int updatedCount = query.executeUpdate();
+	}
+	
+	private Class<?> checkParentBaseEntity(Class<?> clazz){
+		if (clazz == null) {
+			return null;
+		}
+		
+		if (clazz.getSuperclass().equals(BaseEntity.class)) {
+			return clazz;
+		}else {
+			return checkParentBaseEntity(clazz.getSuperclass());
+		}
 	}
 
 	@Transactional
