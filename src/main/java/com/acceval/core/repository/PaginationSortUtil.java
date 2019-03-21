@@ -17,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 import com.acceval.core.MicroServiceUtilException;
 import com.acceval.core.microservice.MicroServiceRequest;
 import com.acceval.core.microservice.MicroServiceUtil;
+import com.acceval.core.security.SessionUtil;
 
 public class PaginationSortUtil {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PaginationSortUtil.class);
@@ -64,7 +65,8 @@ public class PaginationSortUtil {
 			}
 
 			msRequest =
-					new MicroServiceRequest(discoveryClient, restTemplate, msService, msFunction, orderParam + "/" + isAsc + "/" + params);
+					new MicroServiceRequest(discoveryClient, restTemplate, SessionUtil.getToken(), msService, msFunction,
+							orderParam + "/" + isAsc + "/" + params);
 		} else {
 			throw new MicroServiceUtilException(PaginationSortUtil.class,
 					"Field [" + orderTarget + "] in [" + targetClass.getName() + "] is not support for sorting service.");

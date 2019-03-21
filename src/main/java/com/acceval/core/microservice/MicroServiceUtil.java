@@ -7,6 +7,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -33,6 +37,7 @@ public class MicroServiceUtil {
 		String msService = microServiceRequest.getMsService();
 		String msFunction = microServiceRequest.getMsFunction();
 		String param = microServiceRequest.getParam() == null ? "" : microServiceRequest.getParam();
+		String token = microServiceRequest.getToken();
 
 		List<ServiceInstance> instances = discoveryClient.getInstances(zuulService);
 		if (instances.isEmpty()) throw new MicroServiceUtilException(MicroServiceUtil.class, zuulService + " Service is Not Available!");
@@ -52,7 +57,18 @@ public class MicroServiceUtil {
 			LOGGER.debug("Firing URL: " + url);
 		}
 		try {
-			Object object = restTemplate.getForObject(url, type);
+			Object object = null;
+			if (token != null) {
+				HttpHeaders headers = new HttpHeaders();
+				//											headers.setContentType(MediaType.APPLICATION_JSON);
+				headers.set("Authorization", token);
+				HttpEntity<String> entity = new HttpEntity<String>("", headers);
+				ResponseEntity respEntity = restTemplate.exchange(url, HttpMethod.GET, entity, type);
+				object = respEntity.getBody();
+			} else {
+				object = restTemplate.getForObject(url, type);
+			}
+
 			return object;
 		} catch (Throwable e) {
 			LOGGER.error("Error occur when fire [" + url + "] \r\n" + e.getMessage(), e);

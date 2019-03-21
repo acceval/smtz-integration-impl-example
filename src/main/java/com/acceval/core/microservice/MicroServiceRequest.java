@@ -12,15 +12,17 @@ public class MicroServiceRequest {
 
 	private DiscoveryClient discoveryClient;
 	private RestTemplate restTemplate;
+	private String token;
 	private String msService;
 	private String msFunction;
 	private String param;
 
-	public MicroServiceRequest(DiscoveryClient discoveryClient, RestTemplate restTemplate, String msService, String msFunction,
-			String param) {
+	public MicroServiceRequest(DiscoveryClient discoveryClient, RestTemplate restTemplate, String token, String msService,
+			String msFunction, String param) {
 		super();
 		this.discoveryClient = discoveryClient;
 		this.restTemplate = restTemplate;
+		this.token = token;
 		this.msService = msService;
 		this.msFunction = msFunction;
 		this.param = param;
@@ -56,6 +58,14 @@ public class MicroServiceRequest {
 
 	public RestTemplate getRestTemplate() {
 		return restTemplate;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
 	}
 
 	public void setRestTemplate(RestTemplate restTemplate) {

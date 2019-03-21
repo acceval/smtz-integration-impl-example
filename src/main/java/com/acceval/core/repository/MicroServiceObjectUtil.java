@@ -26,6 +26,7 @@ import com.acceval.core.MicroServiceUtilException;
 import com.acceval.core.controller.GenericCommonController;
 import com.acceval.core.microservice.MicroServiceRequest;
 import com.acceval.core.microservice.MicroServiceUtil;
+import com.acceval.core.security.SessionUtil;
 import com.acceval.core.util.BaseBeanUtil;
 import com.acceval.core.util.ClassUtil;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -75,9 +76,10 @@ public class MicroServiceObjectUtil {
 						refreshObjectDependency(childObj, isForceRefresh);
 					} else {
 						// multi-thread
+						String token = SessionUtil.getToken();
 						executor.submit(() -> {
 							try {
-								refreshField(discoveryClient, restTemplate, target, field.getName(), isForceRefresh);
+								refreshField(discoveryClient, restTemplate, token, target, field.getName(), isForceRefresh);
 							} catch (Exception e) {
 								LOGGER.error(e.getMessage(), e);
 							}
@@ -126,8 +128,9 @@ public class MicroServiceObjectUtil {
 			throws MicroServiceUtilException, Exception {
 		OAuth2RestTemplate restTemplate = BaseBeanUtil.getBean(OAuth2RestTemplate.class);
 		DiscoveryClient discoveryClient = (DiscoveryClient) BaseBeanUtil.getBean(DiscoveryClient.class);
+		String token = SessionUtil.getToken();
 
-		return refreshField(discoveryClient, restTemplate, target, fieldName, isForceRefresh);
+		return refreshField(discoveryClient, restTemplate, token, target, fieldName, isForceRefresh);
 	}
 
 	/**
@@ -136,7 +139,8 @@ public class MicroServiceObjectUtil {
 	 * @param isForceRefresh force refresh? Or do nothing if PK are same
 	 * @return object refreshed
 	 */
-	public static boolean refreshField(DiscoveryClient discoveryClient, RestTemplate restTemplate, Object target, String fieldName,
+	public static boolean refreshField(DiscoveryClient discoveryClient, RestTemplate restTemplate, String token, Object target,
+			String fieldName,
 			boolean isForceRefresh) throws MicroServiceUtilException, Exception {
 		Class<?> classToFind = target.getClass();
 
@@ -250,10 +254,11 @@ public class MicroServiceObjectUtil {
 					mvm.add(GenericCommonController.KEY_ENTITY_CLASS, msObject.originEntityClass());
 					mvm.add(GenericCommonController.KEY_IS_COLLECTION, "true");
 					resJson = (String) MicroServiceUtil.getForObject(
-							new MicroServiceRequest(discoveryClient, restTemplate, msService, msFunction, ""), mvm, String.class);
+							new MicroServiceRequest(discoveryClient, restTemplate, token, msService, msFunction, ""), mvm, String.class);
 				} else {
 					resJson = (String) MicroServiceUtil
-							.getForObject(new MicroServiceRequest(discoveryClient, restTemplate, msService, msFunction, id), String.class);
+							.getForObject(new MicroServiceRequest(discoveryClient, restTemplate, token, msService, msFunction, id),
+									String.class);
 				}
 				ObjectMapper maple = new ObjectMapper();
 				Field mockfield = ReflectionUtils.findField(classToFind, mockTarget);
@@ -265,11 +270,13 @@ public class MicroServiceObjectUtil {
 					mvm.add(msObject.primaryKey(), id);
 					mvm.add(GenericCommonController.KEY_ENTITY_CLASS, msObject.originEntityClass());
 					childObj =
-							MicroServiceUtil.getForObject(new MicroServiceRequest(discoveryClient, restTemplate, msService, msFunction, ""),
+							MicroServiceUtil.getForObject(
+									new MicroServiceRequest(discoveryClient, restTemplate, token, msService, msFunction, ""),
 									mvm, pdMockTarget.getPropertyType());
 				} else {
 					childObj =
-							MicroServiceUtil.getForObject(new MicroServiceRequest(discoveryClient, restTemplate, msService, msFunction, id),
+							MicroServiceUtil.getForObject(
+									new MicroServiceRequest(discoveryClient, restTemplate, token, msService, msFunction, id),
 									pdMockTarget.getPropertyType());
 				}
 			}
@@ -295,6 +302,7 @@ public class MicroServiceObjectUtil {
 
 		// multi-thread
 		for (MappingRequest mapping : lstMappingRequest) {
+			String token = SessionUtil.getToken();
 			executor.submit(() -> {
 				Class<?> mappingClass = mapping.getMappingClass();
 				if (mappingClass.isAnnotationPresent(MicroServiceObject.class)) {
@@ -311,7 +319,7 @@ public class MicroServiceObjectUtil {
 					}
 
 					try {
-						Object mappedObj = MicroServiceUtil.getForObject(new MicroServiceRequest(discoveryClient, restTemplate,
+						Object mappedObj = MicroServiceUtil.getForObject(new MicroServiceRequest(discoveryClient, restTemplate, token,
 								getServiceID(msObject), MicroServiceObject.COMMON_QUERY, ""), mapParam, mappingClass);
 						if (mappedObj != null) {
 							Object targetField = ClassUtil.getProperty(mappedObj, strMappingField);
