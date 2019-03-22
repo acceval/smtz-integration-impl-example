@@ -43,7 +43,7 @@ import com.acceval.core.model.BaseEntity.STATUS;
 import com.acceval.core.model.BaseModel;
 import com.acceval.core.model.GlobalData;
 import com.acceval.core.repository.Criterion.RestrictionType;
-import com.acceval.core.security.SessionUtil;
+import com.acceval.core.security.PrincipalUtil;
 import com.acceval.core.util.ClassUtil;
 
 public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
@@ -462,7 +462,7 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 			}			
 			if (targetObj instanceof BaseModel && !(targetObj instanceof GlobalData)) {
 				
-				Long companyId = SessionUtil.getCompanyId();
+				Long companyId = PrincipalUtil.getCompanyID();
 				
 				if (companyId != null) {
 					String[] values = { String.valueOf(companyId) };

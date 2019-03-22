@@ -29,7 +29,7 @@ import org.springframework.util.MultiValueMap;
 import com.acceval.core.model.BaseModel;
 import com.acceval.core.model.GlobalData;
 import com.acceval.core.repository.Criterion.RestrictionType;
-import com.acceval.core.security.SessionUtil;
+import com.acceval.core.security.PrincipalUtil;
 
 public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<T> {
 
@@ -158,7 +158,7 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 			Object targetObj = targetClass.newInstance();
 			if ( targetObj instanceof BaseModel && !(targetObj instanceof GlobalData)) {
 				
-				Long companyId = SessionUtil.getCompanyId();
+				Long companyId = PrincipalUtil.getCompanyID();
 				
 				if (companyId != null) {
 					String[] values = { String.valueOf(companyId) };

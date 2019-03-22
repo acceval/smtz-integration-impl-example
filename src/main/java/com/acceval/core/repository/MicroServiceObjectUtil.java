@@ -26,7 +26,7 @@ import com.acceval.core.MicroServiceUtilException;
 import com.acceval.core.controller.GenericCommonController;
 import com.acceval.core.microservice.MicroServiceRequest;
 import com.acceval.core.microservice.MicroServiceUtil;
-import com.acceval.core.security.SessionUtil;
+import com.acceval.core.security.PrincipalUtil;
 import com.acceval.core.util.BaseBeanUtil;
 import com.acceval.core.util.ClassUtil;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -76,7 +76,7 @@ public class MicroServiceObjectUtil {
 						refreshObjectDependency(childObj, isForceRefresh);
 					} else {
 						// multi-thread
-						String token = SessionUtil.getToken();
+						String token = PrincipalUtil.getToken();
 						executor.submit(() -> {
 							try {
 								refreshField(discoveryClient, restTemplate, token, target, field.getName(), isForceRefresh);
@@ -128,7 +128,7 @@ public class MicroServiceObjectUtil {
 			throws MicroServiceUtilException, Exception {
 		OAuth2RestTemplate restTemplate = BaseBeanUtil.getBean(OAuth2RestTemplate.class);
 		DiscoveryClient discoveryClient = (DiscoveryClient) BaseBeanUtil.getBean(DiscoveryClient.class);
-		String token = SessionUtil.getToken();
+		String token = PrincipalUtil.getToken();
 
 		return refreshField(discoveryClient, restTemplate, token, target, fieldName, isForceRefresh);
 	}
@@ -302,7 +302,7 @@ public class MicroServiceObjectUtil {
 
 		// multi-thread
 		for (MappingRequest mapping : lstMappingRequest) {
-			String token = SessionUtil.getToken();
+			String token = PrincipalUtil.getToken();
 			executor.submit(() -> {
 				Class<?> mappingClass = mapping.getMappingClass();
 				if (mappingClass.isAnnotationPresent(MicroServiceObject.class)) {
