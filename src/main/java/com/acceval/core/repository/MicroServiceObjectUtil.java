@@ -339,6 +339,17 @@ public class MicroServiceObjectUtil {
 		executor.shutdown();
 		executor.awaitTermination(10, TimeUnit.MINUTES);
 	}
+	
+	public static void poMappingFields(Object targetObject, Object sourceTargetObject, List<POMappingRequest> mappingRequestLst) {
+		for (POMappingRequest rq : mappingRequestLst) {
+			try {
+				Object value = ClassUtil.getProperty(sourceTargetObject, rq.getSourceObject());
+				ClassUtil.setProperty(targetObject, rq.getDestinationObject(), value);
+			} catch (MicroServiceUtilException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
 	// TODO init Collection, store re-use mapping
 
