@@ -1,6 +1,7 @@
 package com.acceval.core.remote;
 
 import java.util.Base64;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpEntity;
@@ -8,6 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -18,9 +20,18 @@ public class RemoteServerTemplate {
 		
 	private RemoteConfig remoteConfig;
 	
+	private List<HttpMessageConverter<?>> messageConverters;
+	
 	private RestTemplate restTemplate;
 	
 	public RemoteServerTemplate() {
+		this.restTemplate = new RestTemplate();
+	}
+	
+	public RemoteServerTemplate(RemoteConfig config, List<HttpMessageConverter<?>> converters) {
+		
+		this.remoteConfig = config;
+		this.messageConverters = converters;
 		this.restTemplate = new RestTemplate();
 	}
 		
@@ -54,11 +65,14 @@ public class RemoteServerTemplate {
 		String completeUrl = "http://" + this.remoteConfig.getRemoteIp() + ":"
 				+ this.remoteConfig.getRemotePort() + url;
 
-		HttpHeaders bearerHeaders = this.createBearerHeaders(token);
-        HttpEntity<?> bearerEntity = new HttpEntity<>(requestBody, bearerHeaders);
+		HttpHeaders bearerHeaders = this.createBearerHeaders(token);		
+
+        restTemplate.setMessageConverters(messageConverters);;
         
-        ResponseEntity<T> response = restTemplate.exchange(completeUrl, HttpMethod.POST, 
-        		bearerEntity, responseType);
+
+        HttpEntity<?> bearerEntity = new HttpEntity<>(requestBody, bearerHeaders);
+                
+        ResponseEntity<T> response = restTemplate.postForEntity(completeUrl, bearerEntity, responseType);                		
         
         return response.getBody();
 	} 
@@ -78,7 +92,7 @@ public class RemoteServerTemplate {
         return response.getBody();
 	} 
 
-	private String getRemoteServerToken() {
+	public String getRemoteServerToken() {
 		
 		String authUrl = "http://" + this.remoteConfig.getRemoteIp() + ":"
 				+ this.remoteConfig.getRemotePort() 
@@ -106,7 +120,7 @@ public class RemoteServerTemplate {
 	    return null;
 	}
 	    
-	private HttpHeaders createBasicHeaders(String user, String password) {
+	public HttpHeaders createBasicHeaders(String user, String password) {
 		
 	    String notEncoded = user + ":" + password;
 	    String encodedAuth = "Basic " + Base64.getEncoder().encodeToString(notEncoded.getBytes());
@@ -116,7 +130,7 @@ public class RemoteServerTemplate {
 	    return headers;
 	}
 	
-	private HttpHeaders createBearerHeaders(String token) {
+	public HttpHeaders createBearerHeaders(String token) {
 			    	    
 	    HttpHeaders headers = new HttpHeaders();
 	    headers.setContentType(MediaType.APPLICATION_JSON);
@@ -130,6 +144,14 @@ public class RemoteServerTemplate {
 
 	public void setRemoteConfig(RemoteConfig remoteConfig) {
 		this.remoteConfig = remoteConfig;
+	}
+
+	public List<HttpMessageConverter<?>> getMessageConverters() {
+		return messageConverters;
+	}
+
+	public void setMessageConverters(List<HttpMessageConverter<?>> messageConverters) {
+		this.messageConverters = messageConverters;
 	}
 
 }
