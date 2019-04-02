@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Id;
@@ -670,7 +671,12 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 		}
 		
 		if (clazz.getSuperclass().equals(BaseEntity.class)) {
-			return clazz;
+			if (clazz.isAnnotationPresent(Entity.class)) {
+				return clazz;
+			}else {
+				return null;
+			}
+			
 		}else {
 			return checkParentBaseEntity(clazz.getSuperclass());
 		}
