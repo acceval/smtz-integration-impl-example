@@ -16,6 +16,8 @@ import com.acceval.core.util.ClassUtil;
 public class LabelValue implements Comparable<LabelValue> {
 	private String label;
 	private String label2;
+	private String label3;
+	private String label4;
 	private String value;
 
 	public LabelValue() {
@@ -28,12 +30,12 @@ public class LabelValue implements Comparable<LabelValue> {
 		this.value = value;
 	}
 
+	// TODO use varargs later
     public LabelValue(String label, String label2, String value) {
         this.label = label;
         this.label2 = label2;
         this.value = value;
     }
-
 
     public String getLabel() {
 		return label;
@@ -49,6 +51,22 @@ public class LabelValue implements Comparable<LabelValue> {
 
     public void setLabel2(String label2) {
         this.label2 = label2;
+    }
+
+    public String getLabel3() {
+        return label3;
+    }
+
+    public void setLabel3(String label3) {
+        this.label3 = label3;
+    }
+
+    public String getLabel4() {
+        return label4;
+    }
+
+    public void setLabel4(String label4) {
+        this.label4 = label4;
     }
 
 	public String getValue() {
