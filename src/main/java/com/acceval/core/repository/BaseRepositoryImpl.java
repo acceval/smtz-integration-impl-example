@@ -195,44 +195,37 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 			return false;
 		}
 	}
-	
+
 	@Override
 	public QueryResult<T> queryByMapParam(MultiValueMap<String, String> mapParam, List<DateRange> dateRanges) {
-		
+
 		Criteria criteria = this.getCriteriaByMapParam(mapParam, getTargetClass());
 		for (DateRange dateRange : dateRanges) {
-			
-			LocalDateTime startDate = LocalDateTime.of(dateRange.getStartDate().getYear(), 
-					dateRange.getStartDate().getMonthValue(), 
-					dateRange.getStartDate().getDayOfMonth(),
-					0,
-					0,
-					0);
-			
+
+			LocalDateTime startDate = LocalDateTime.of(dateRange.getStartDate().getYear(), dateRange.getStartDate().getMonthValue(),
+					dateRange.getStartDate().getDayOfMonth(), 0, 0, 0);
+
 			if (dateRange.getEndDate() != null) {
-				LocalDateTime endDate = LocalDateTime.of(dateRange.getEndDate().getYear(), 
-						dateRange.getEndDate().getMonthValue(), 
-						dateRange.getEndDate().getDayOfMonth(),
-						0,
-						0);
+				LocalDateTime endDate = LocalDateTime.of(dateRange.getEndDate().getYear(), dateRange.getEndDate().getMonthValue(),
+						dateRange.getEndDate().getDayOfMonth(), 0, 0);
 				endDate = endDate.plusDays(1);
-								
+
 				Criterion startCriterion = new Criterion(dateRange.getPropertyPath(), RestrictionType.GREATER_OR_EQUAL, startDate);
 				startCriterion.setSearchValueDataType(Criterion.DATE);
 				criteria.appendCriterion(startCriterion);
-				
+
 				Criterion endCriterion = new Criterion(dateRange.getPropertyPath(), RestrictionType.LESS, endDate);
 				startCriterion.setSearchValueDataType(Criterion.DATE);
 				criteria.appendCriterion(endCriterion);
-								
+
 			} else {
 				Criterion startCriterion = new Criterion(dateRange.getPropertyPath(), RestrictionType.GREATER_OR_EQUAL, startDate);
 				startCriterion.setSearchValueDataType(Criterion.DATE);
 				criteria.appendCriterion(startCriterion);
-				
+
 			}
 		}
-		
+
 		return this.queryByCriteria(criteria, getTargetClass());
 	}
 
@@ -255,124 +248,15 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 
 		/** criteria */
 		for (Criterion criterion : acceCriteria.getCriterion()) {
-			String property = getMapPropertyResolver().containsKey(criterion.getPropertyName())
-					? getMapPropertyResolver().get(criterion.getPropertyName())
-					: criterion.getPropertyName();
-			Object value = criterion.getSearchValue();
-			Object[] values = criterion.getSearchValues();
-			RestrictionType restrictionType = criterion.getRestrictionType();
-
-			Path path = getPath(root, property);
-			Class<?> attrClass = path.getJavaType();
-
-			// Null
-			if (Criterion.RestrictionType.IS_NULL.equals(restrictionType)) {
-				lstPredicate.add(builder.isNull(path));
-			} else if (Criterion.RestrictionType.IS_NOT_NULL.equals(restrictionType)) {
-				lstPredicate.add(builder.isNotNull(path));
-			}
-			// LIKE
-			else if (!criterion.isExactSearch() && value instanceof String) {
-				lstPredicate.add(builder.like(builder.lower(path), "%" + value.toString().toLowerCase() + "%"));
-			}
-			// EQUAL
-			else if (Criterion.RestrictionType.EQUAL.equals(restrictionType)) {
-				// handle Date
-				if (ClassUtils.isAssignable(attrClass, Date.class) || ClassUtils.isAssignable(attrClass, LocalDateTime.class)
-						|| ClassUtils.isAssignable(attrClass, LocalDate.class)) {
-					int year = 0;
-					int month = 0;
-					int day = 0;
-					if (value instanceof String) {
-						try {
-							Calendar calendar = Calendar.getInstance();
-							calendar.setTime(DateUtils.parseDateStrictly((String) value, STD_DATEFORMAT));
-							year = calendar.get(Calendar.YEAR);
-							month = calendar.get(Calendar.MONTH) + 1;
-							day = calendar.get(Calendar.DAY_OF_MONTH);
-						} catch (ParseException e) {
-							LOGGER.error(e.getMessage(), e);
-						}
-					} else if (value instanceof Date) {
-						Calendar calendar = Calendar.getInstance();
-						calendar.setTime((Date) value);
-						year = calendar.get(Calendar.YEAR);
-						month = calendar.get(Calendar.MONTH) + 1;
-						day = calendar.get(Calendar.DAY_OF_MONTH);
-					} else if (value instanceof LocalDate) {
-						LocalDate vLocalDate = (LocalDate) value;
-						year = vLocalDate.getYear();
-						month = vLocalDate.getMonthValue();
-						day = vLocalDate.getDayOfMonth();
-					} else if (value instanceof LocalDateTime) {
-						LocalDateTime vLocalDate = (LocalDateTime) value;
-						year = vLocalDate.getYear();
-						month = vLocalDate.getMonthValue();
-						day = vLocalDate.getDayOfMonth();
-					}
-					lstPredicate.add(builder.equal(builder.function("year", Integer.class, path), year));
-					lstPredicate.add(builder.equal(builder.function("month", Integer.class, path), month));
-					lstPredicate.add(builder.equal(builder.function("day", Integer.class, path), day));
-				} else {
-					lstPredicate.add(builder.equal(path, value));
+			Predicate[] arrPre = buildPredicate(criterion, root, builder);
+			if (arrPre != null && arrPre.length > 0) {
+				for (Predicate predic : arrPre) {
+					lstPredicate.add(predic);
 				}
-			} else if (Criterion.RestrictionType.IN.equals(restrictionType)) {
-
-				lstPredicate.add(path.in(Arrays.asList(values)));
-
-			} else if (Criterion.RestrictionType.NOT_IN.equals(restrictionType)) {
-
-				lstPredicate.add(builder.not(path.in(values)));
-			}
-			// GREAT/LESS
-			else if (Criterion.RestrictionType.GREATER.equals(restrictionType)) {
-				if (value instanceof LocalDate) {
-					lstPredicate.add(builder.greaterThan(path, (LocalDate) value));
-				} else if (value instanceof Date) {
-					lstPredicate.add(builder.greaterThan(path, (Date) value));
-				} else if (value instanceof LocalDateTime) {
-					lstPredicate.add(builder.greaterThan(path, (LocalDateTime) value));
-				} else if (value instanceof Number) {
-					lstPredicate.add(builder.gt(path, (Number) value));
-				}
-			} else if (Criterion.RestrictionType.GREATER_OR_EQUAL.equals(restrictionType)) {
-				if (value instanceof LocalDate) {
-					lstPredicate.add(builder.greaterThanOrEqualTo(path, (LocalDate) value));
-				} else if (value instanceof Date) {
-					lstPredicate.add(builder.greaterThanOrEqualTo(path, (Date) value));
-				} else if (value instanceof LocalDateTime) {
-					lstPredicate.add(builder.greaterThanOrEqualTo(path, (LocalDateTime) value));
-				} else if (value instanceof Number) {
-					lstPredicate.add(builder.ge(path, (Number) value));
-				}
-			} else if (Criterion.RestrictionType.LESS.equals(restrictionType)) {
-				if (value instanceof LocalDate) {
-					lstPredicate.add(builder.lessThan(path, (LocalDate) value));
-				} else if (value instanceof Date) {
-					lstPredicate.add(builder.lessThan(path, (Date) value));
-				} else if (value instanceof LocalDateTime) {
-					lstPredicate.add(builder.lessThan(path, (LocalDateTime) value));
-				} else if (value instanceof Number) {
-					lstPredicate.add(builder.lt(path, (Number) value));
-				}
-			} else if (Criterion.RestrictionType.LESS_OR_EQUAL.equals(restrictionType)) {
-				if (value instanceof LocalDate) {
-					lstPredicate.add(builder.lessThanOrEqualTo(path, (LocalDate) value));
-				} else if (value instanceof Date) {
-					lstPredicate.add(builder.lessThanOrEqualTo(path, (Date) value));
-				} else if (value instanceof LocalDateTime) {
-					lstPredicate.add(builder.lessThanOrEqualTo(path, (LocalDateTime) value));
-				} else if (value instanceof Number) {
-					lstPredicate.add(builder.le(path, (Number) value));
-				}
-			}
-			// unknown
-			else {
-				LOGGER.error("Criterion for [" + criterion.getPropertyName() + "] failed!");
 			}
 		}
 		if (!lstPredicate.isEmpty()) {
-			criteria.where(lstPredicate.stream().toArray(Predicate[]::new));			
+			criteria.where(lstPredicate.stream().toArray(Predicate[]::new));
 		}
 
 		/** TODO projection? */
@@ -413,7 +297,7 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 		}
 
 		List<T> result = query.getResultList();
-		
+
 		if (!acceCriteria.isFetchAll()) {
 			queryResult = new QueryResult(total, result);
 		} else {
@@ -421,6 +305,139 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 		}
 
 		return queryResult;
+	}
+
+	protected Predicate[] buildPredicate(Criterion criterion, Root<?> root, CriteriaBuilder builder) {
+
+		if (criterion instanceof OrCriterion) {
+			OrCriterion orCriterion = (OrCriterion) criterion;
+			List<Predicate> lstPredicate = new ArrayList<>();
+			for (Criterion c : orCriterion.getCriterions()) {
+				Predicate[] arrPre = buildPredicate(c, root, builder);
+				if (arrPre != null && arrPre.length > 0) {
+					for (Predicate predic : arrPre) {
+						lstPredicate.add(predic);
+					}
+				}
+			}
+			Predicate or = builder.or(lstPredicate.stream().toArray(Predicate[]::new));
+			return new Predicate[] { or };
+		}
+
+		String property = getMapPropertyResolver().containsKey(criterion.getPropertyName())
+				? getMapPropertyResolver().get(criterion.getPropertyName())
+				: criterion.getPropertyName();
+		Object value = criterion.getSearchValue();
+		Object[] values = criterion.getSearchValues();
+		RestrictionType restrictionType = criterion.getRestrictionType();
+
+		Path path = getPath(root, property);
+		Class<?> attrClass = path.getJavaType();
+
+		// Null
+		if (Criterion.RestrictionType.IS_NULL.equals(restrictionType)) {
+			return new Predicate[] { builder.isNull(path) };
+		} else if (Criterion.RestrictionType.IS_NOT_NULL.equals(restrictionType)) {
+			return new Predicate[] { builder.isNotNull(path) };
+		}
+		// LIKE
+		else if (!criterion.isExactSearch() && value instanceof String) {
+			return new Predicate[] { builder.like(builder.lower(path), "%" + value.toString().toLowerCase() + "%") };
+		}
+		// EQUAL
+		else if (Criterion.RestrictionType.EQUAL.equals(restrictionType)) {
+			// handle Date
+			if (ClassUtils.isAssignable(attrClass, Date.class) || ClassUtils.isAssignable(attrClass, LocalDateTime.class)
+					|| ClassUtils.isAssignable(attrClass, LocalDate.class)) {
+				int year = 0;
+				int month = 0;
+				int day = 0;
+				if (value instanceof String) {
+					try {
+						Calendar calendar = Calendar.getInstance();
+						calendar.setTime(DateUtils.parseDateStrictly((String) value, STD_DATEFORMAT));
+						year = calendar.get(Calendar.YEAR);
+						month = calendar.get(Calendar.MONTH) + 1;
+						day = calendar.get(Calendar.DAY_OF_MONTH);
+					} catch (ParseException e) {
+						LOGGER.error(e.getMessage(), e);
+					}
+				} else if (value instanceof Date) {
+					Calendar calendar = Calendar.getInstance();
+					calendar.setTime((Date) value);
+					year = calendar.get(Calendar.YEAR);
+					month = calendar.get(Calendar.MONTH) + 1;
+					day = calendar.get(Calendar.DAY_OF_MONTH);
+				} else if (value instanceof LocalDate) {
+					LocalDate vLocalDate = (LocalDate) value;
+					year = vLocalDate.getYear();
+					month = vLocalDate.getMonthValue();
+					day = vLocalDate.getDayOfMonth();
+				} else if (value instanceof LocalDateTime) {
+					LocalDateTime vLocalDate = (LocalDateTime) value;
+					year = vLocalDate.getYear();
+					month = vLocalDate.getMonthValue();
+					day = vLocalDate.getDayOfMonth();
+				}
+				return new Predicate[] { builder.equal(builder.function("year", Integer.class, path), year),
+						builder.equal(builder.function("month", Integer.class, path), month),
+						builder.equal(builder.function("day", Integer.class, path), day) };
+			} else {
+				return new Predicate[] { builder.equal(path, value) };
+			}
+		} else if (Criterion.RestrictionType.IN.equals(restrictionType)) {
+			return new Predicate[] { path.in(Arrays.asList(values)) };
+		} else if (Criterion.RestrictionType.NOT_IN.equals(restrictionType)) {
+			return new Predicate[] { builder.not(path.in(values)) };
+		}
+		// GREAT/LESS
+		else if (Criterion.RestrictionType.GREATER.equals(restrictionType)) {
+			if (value instanceof LocalDate) {
+				return new Predicate[] { builder.greaterThan(path, (LocalDate) value) };
+			} else if (value instanceof Date) {
+				return new Predicate[] { builder.greaterThan(path, (Date) value) };
+			} else if (value instanceof LocalDateTime) {
+				return new Predicate[] { builder.greaterThan(path, (LocalDateTime) value) };
+			} else if (value instanceof Number) {
+				return new Predicate[] { builder.gt(path, (Number) value) };
+			}
+		} else if (Criterion.RestrictionType.GREATER_OR_EQUAL.equals(restrictionType)) {
+			if (value instanceof LocalDate) {
+				return new Predicate[] { builder.greaterThanOrEqualTo(path, (LocalDate) value) };
+			} else if (value instanceof Date) {
+				return new Predicate[] { builder.greaterThanOrEqualTo(path, (Date) value) };
+			} else if (value instanceof LocalDateTime) {
+				return new Predicate[] { builder.greaterThanOrEqualTo(path, (LocalDateTime) value) };
+			} else if (value instanceof Number) {
+				return new Predicate[] { builder.ge(path, (Number) value) };
+			}
+		} else if (Criterion.RestrictionType.LESS.equals(restrictionType)) {
+			if (value instanceof LocalDate) {
+				return new Predicate[] { builder.lessThan(path, (LocalDate) value) };
+			} else if (value instanceof Date) {
+				return new Predicate[] { builder.lessThan(path, (Date) value) };
+			} else if (value instanceof LocalDateTime) {
+				return new Predicate[] { builder.lessThan(path, (LocalDateTime) value) };
+			} else if (value instanceof Number) {
+				return new Predicate[] { builder.lt(path, (Number) value) };
+			}
+		} else if (Criterion.RestrictionType.LESS_OR_EQUAL.equals(restrictionType)) {
+			if (value instanceof LocalDate) {
+				return new Predicate[] { builder.lessThanOrEqualTo(path, (LocalDate) value) };
+			} else if (value instanceof Date) {
+				return new Predicate[] { builder.lessThanOrEqualTo(path, (Date) value) };
+			} else if (value instanceof LocalDateTime) {
+				return new Predicate[] { builder.lessThanOrEqualTo(path, (LocalDateTime) value) };
+			} else if (value instanceof Number) {
+				return new Predicate[] { builder.le(path, (Number) value) };
+			}
+		}
+		// unknown
+		else {
+			LOGGER.error("Criterion for [" + criterion.getPropertyName() + "] failed!");
+		}
+
+		return null;
 	}
 
 	@Override
@@ -457,18 +474,18 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 
 		try {
 			Object targetObj = targetClass.newInstance();
-			
+
 			if (targetObj instanceof BaseEntity) {
 				mapParam.put("recordStatus", Arrays.asList(STATUS.ACTIVE.name()));
-			}			
+			}
 			if (targetObj instanceof BaseModel && !(targetObj instanceof GlobalData)) {
-				
+
 				Long companyId = PrincipalUtil.getCompanyID();
-				
+
 				if (companyId != null) {
 					String[] values = { String.valueOf(companyId) };
 					mapParam.put("companyId", Arrays.asList(values));
-				}				
+				}
 			}
 		} catch (InstantiationException | IllegalAccessException e1) {
 			// TODO Auto-generated catch block
@@ -497,7 +514,7 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 		List<Criterion> lstCrriterion = new ArrayList<>();
 		for (String key : mapParam.keySet()) {
 
-			if (_PAGE.equals(key) || _PAGESIZE.equals(key) || _SORT.equals(key) || _FETCHALL.equals(key) 
+			if (_PAGE.equals(key) || _PAGESIZE.equals(key) || _SORT.equals(key) || _FETCHALL.equals(key)
 					|| (mapParam.getFirst(key) != null && StringUtils.trim(mapParam.getFirst(key)).length() == 0)) {
 				continue;
 			}
@@ -643,7 +660,7 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 		Long id = null;
 		String idField = null;
 		List<Field> existingFields = ClassUtil.getDeclaredFields(entity.getClass());
-		Class<?> parentEntity = checkParentBaseEntity(entity.getClass());		
+		Class<?> parentEntity = checkParentBaseEntity(entity.getClass());
 
 		for (Field field : existingFields) {
 			if (field.isAnnotationPresent(Id.class)) {
@@ -659,8 +676,8 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 		}
 
 		@SuppressWarnings("null")
-		String updateSql =
-				"UPDATE " + (parentEntity != null ? parentEntity.getSimpleName() : entity.getClass().getSimpleName()) + " e SET e.recordStatus = 'ARCHIVE' WHERE e." + idField + " = " + id;
+		String updateSql = "UPDATE " + (parentEntity != null ? parentEntity.getSimpleName() : entity.getClass().getSimpleName())
+				+ " e SET e.recordStatus = 'ARCHIVE' WHERE e." + idField + " = " + id;
 		Query query = getEntityManager().createQuery(updateSql);
 		int updatedCount = query.executeUpdate();
 	}
