@@ -76,6 +76,7 @@ public class ClassUtil {
 							if (isAcceObj) {
 								populateJsonMapToObj(objectMapper, collObj, (Map) o);
 								col.add(collObj);
+								collObj = getClassObject(collClass.getName());
 							} else {
 								col.add(o);
 							}
