@@ -20,6 +20,16 @@ public abstract class BaseEntity extends BaseModel {
 	@JsonIgnore
 	@Enumerated(EnumType.STRING)
 	private STATUS recordStatus = STATUS.ACTIVE;
+	
+	private String dateArchived = "";
+
+	public String getDateArchived() {
+		return dateArchived;
+	}
+
+	public void setDateArchived(String dateArchived) {
+		this.dateArchived = dateArchived;
+	}
 
 	public STATUS getRecordStatus() {
 		return recordStatus;

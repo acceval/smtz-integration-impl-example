@@ -5,12 +5,14 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.StringTokenizer;
 
@@ -675,9 +677,11 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 			}
 		}
 
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.US);
+		
 		@SuppressWarnings("null")
 		String updateSql = "UPDATE " + (parentEntity != null ? parentEntity.getSimpleName() : entity.getClass().getSimpleName())
-				+ " e SET e.recordStatus = 'ARCHIVE' WHERE e." + idField + " = " + id;
+				+ " e SET e.recordStatus = 'ARCHIVE', e.dateArchived ='" + LocalDateTime.now().format(formatter) + "' WHERE e." + idField + " = " + id;
 		Query query = getEntityManager().createQuery(updateSql);
 		int updatedCount = query.executeUpdate();
 	}
