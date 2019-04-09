@@ -22,6 +22,16 @@ public final class SendEmailRequest extends QueueRequest {
 	public SendEmailRequest() {
 	}
 
+	public SendEmailRequest(SendEmailRequest other) {
+		this.sendTo = other.sendTo;
+		this.sendCcTo = other.sendCcTo;
+		this.text = other.text;
+		this.subject = other.subject;
+		this.template = other.template;
+		this.context = other.context;
+		this.lstAttachment = other.lstAttachment;
+	}
+
 	public String[] getSendTo() {
 		return sendTo;
 	}
@@ -73,7 +83,7 @@ public final class SendEmailRequest extends QueueRequest {
 	public void setContext(Map<String, Object> context) {
 		this.context = context;
 	}
-	
+
 	public String getTemplate() {
 		return template;
 	}
