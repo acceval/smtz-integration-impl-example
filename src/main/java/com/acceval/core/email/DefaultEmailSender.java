@@ -2,6 +2,7 @@ package com.acceval.core.email;
 
 import com.acceval.core.amqp.MessageBody;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.IOException;
 import java.util.Calendar;
@@ -16,6 +17,12 @@ class DefaultEmailSender implements EmailSender {
 	private final TemplateRenderer renderer;
 	private final EmailQueueSender sender;
 
+	@Value("${webapp.url}")
+    private String webappURL;
+
+	@Value("${email.titlePrefix}")
+    private String titlePrefix;
+
 	public DefaultEmailSender(TemplateRenderer renderer, EmailQueueSender sender) {
 		this.renderer = renderer;
 		this.sender = sender;
@@ -23,9 +30,10 @@ class DefaultEmailSender implements EmailSender {
 
 	@Override
 	public void sendEmail(EmailContentData data) throws IOException {
-		SendEmailRequest myRequest = data.toRequest();
 
 		this.defaultData(data);
+
+        SendEmailRequest myRequest = data.toRequest();
 
 		if (StringUtils.isNotBlank(data.getTemplate())) {
 			String newContent = renderer.render(data.getTemplate(), data);
@@ -45,6 +53,8 @@ class DefaultEmailSender implements EmailSender {
         }
 
 	    data.getContext().put("YEAR", Calendar.getInstance().get(Calendar.YEAR));
-	    data.getContext().put("DOMAIN_PATH", "http://www.smarttradzt.com");
+	    data.getContext().put("DOMAIN_PATH", this.webappURL);
+
+	    data.setSubject(this.titlePrefix + data.getSubject());
     }
 }
