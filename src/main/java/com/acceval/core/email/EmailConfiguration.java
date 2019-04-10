@@ -38,7 +38,7 @@ public class EmailConfiguration {
 	@Bean
 	TemplateLoader rootClasspathTemplateLoader() {
 		TemplateLoader loader = new ClassPathTemplateLoader();
-		loader.setPrefix("");
+		loader.setPrefix("/emailTemplates");
 		loader.setSuffix(".html");
 
 		return loader;

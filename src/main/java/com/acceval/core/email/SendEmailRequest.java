@@ -13,8 +13,6 @@ public final class SendEmailRequest extends QueueRequest {
 	private String[] sendCcTo;
 	private String text;
 	private String subject;
-	private String template;
-	private Map<String, Object> context;
 
 	/** attachment */
 	Map<String, Byte[]> lstAttachment = new LinkedHashMap<>();
@@ -27,8 +25,6 @@ public final class SendEmailRequest extends QueueRequest {
 		this.sendCcTo = other.sendCcTo;
 		this.text = other.text;
 		this.subject = other.subject;
-		this.template = other.template;
-		this.context = other.context;
 		this.lstAttachment = other.lstAttachment;
 	}
 
@@ -76,19 +72,4 @@ public final class SendEmailRequest extends QueueRequest {
 		lstAttachment.put(fileName, content);
 	}
 
-	public Map<String, Object> getContext() {
-		return context;
-	}
-
-	public void setContext(Map<String, Object> context) {
-		this.context = context;
-	}
-
-	public String getTemplate() {
-		return template;
-	}
-
-	public void setTemplate(String template) {
-		this.template = template;
-	}
 }

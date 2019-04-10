@@ -6,5 +6,5 @@ import java.io.IOException;
  * @author Julian
  */
 public interface TemplateRenderer {
-	String render(String templateFile, Object context) throws IOException;
+	String render(String templateFile, EmailContentData context) throws IOException;
 }

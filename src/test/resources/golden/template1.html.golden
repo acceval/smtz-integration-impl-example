@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,7 +12,8 @@ Param 1 : Param 1 value
 Param 2 Object : Param 2 name
 
 
-default content
+Sample content
+my custom content
 
 </body>
 </html>

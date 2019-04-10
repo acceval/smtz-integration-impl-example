@@ -34,13 +34,13 @@ internal class DefaultEmailSenderTest {
 
 	@Test
 	fun sendEmailWithTemplate() {
-		val request = SendEmailRequest()
-		request.text = "my custom content"
-		request.template = "default"
+		val data = EmailContentData()
+        data.text = "my custom content"
+        data.template = "default"
 
-		sender.sendEmail(request)
+		sender.sendEmail(data)
 
-		verify(templateRenderer, times(1)).render(any(), eq(request.text))
+		verify(templateRenderer, times(1)).render(any(), eq(data))
 		verify(emailQueueSender, times(1)).messageBody = any()
 		verify(emailQueueSender, times(1)).sendMessage()
 	}

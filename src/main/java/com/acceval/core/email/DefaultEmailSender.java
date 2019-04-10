@@ -4,6 +4,8 @@ import com.acceval.core.amqp.MessageBody;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.HashMap;
 
 /**
  * Default implementation of email sender
@@ -20,13 +22,13 @@ class DefaultEmailSender implements EmailSender {
 	}
 
 	@Override
-	public void sendEmail(SendEmailRequest request) throws IOException {
-		SendEmailRequest myRequest = request;
+	public void sendEmail(EmailContentData data) throws IOException {
+		SendEmailRequest myRequest = data.toRequest();
 
-		if (StringUtils.isNotBlank(myRequest.getTemplate())) {
-			myRequest = new SendEmailRequest(request);
+		this.defaultData(data);
 
-			String newContent = renderer.render(myRequest.getTemplate(), myRequest.getText());
+		if (StringUtils.isNotBlank(data.getTemplate())) {
+			String newContent = renderer.render(data.getTemplate(), data);
 			myRequest.setText(newContent);
 		}
 
@@ -36,4 +38,13 @@ class DefaultEmailSender implements EmailSender {
 		sender.setMessageBody(messageBody);
 		sender.sendMessage();
 	}
+
+	private void defaultData(EmailContentData data) {
+	    if (data.getContext() == null) {
+	        data.setContext(new HashMap());
+        }
+
+	    data.getContext().put("YEAR", Calendar.getInstance().get(Calendar.YEAR));
+	    data.getContext().put("DOMAIN_PATH", "http://www.smarttradzt.com");
+    }
 }

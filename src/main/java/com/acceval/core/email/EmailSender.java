@@ -6,5 +6,5 @@ import java.io.IOException;
  * @author Julian
  */
 public interface EmailSender {
-	void sendEmail(SendEmailRequest request) throws IOException;
+	void sendEmail(EmailContentData data) throws IOException;
 }

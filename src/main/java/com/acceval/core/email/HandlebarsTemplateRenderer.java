@@ -11,15 +11,15 @@ import java.io.IOException;
  * @author Julian
  */
 public class HandlebarsTemplateRenderer implements TemplateRenderer {
-	private final Handlebars handlebars;
+    private final Handlebars handlebars;
 
-	public HandlebarsTemplateRenderer(Handlebars handlebars) {
-		this.handlebars = handlebars;
-	}
+    public HandlebarsTemplateRenderer(Handlebars handlebars) {
+        this.handlebars = handlebars;
+    }
 
-	public String render(String templateFile, Object context) throws IOException {
-		Template tmpl = handlebars.compile(templateFile);
+    public String render(String templateFile, EmailContentData data) throws IOException {
+        Template tmpl = handlebars.compile(templateFile);
 
-		return tmpl.apply(context);
-	}
+        return tmpl.apply(data);
+    }
 }
