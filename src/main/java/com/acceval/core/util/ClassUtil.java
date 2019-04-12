@@ -65,18 +65,14 @@ public class ClassUtil {
 					Field field = getDeclaredField(target.getClass(), key);
 					ParameterizedType listType = (ParameterizedType) field.getGenericType();
 					Class<?> collClass = (Class<?>) listType.getActualTypeArguments()[0];
-					Object collObj = null;
 					boolean isAcceObj = collClass.getName().indexOf("com.acceval") > -1;
-					if (isAcceObj) {
-						collObj = getClassObject(collClass.getName());
-					}
 					Collection convertedValue = (Collection) mapValues.get(key);
 					if (convertedValue != null) {
 						for (Object o : convertedValue) {
 							if (isAcceObj) {
+								Object collObj = getClassObject(collClass.getName());
 								populateJsonMapToObj(objectMapper, collObj, (Map) o);
 								col.add(collObj);
-								collObj = getClassObject(collClass.getName());
 							} else {
 								col.add(o);
 							}

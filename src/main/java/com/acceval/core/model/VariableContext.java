@@ -18,6 +18,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String UOM_CODE = "UOM_CODE";
 	public static final String QUANTITY = "QUANTITY";
 	public static final String PRODUCT = "PRODUCT";
+	public static final String GRADE = "GRADE";
 	public static final String PERCENTAGE_APPLY_INPUT_PARAM = "PERCENTAGE_APPLY_INPUT_PARAM";
 	public static final String VALID_FROM = "VALID_FROM";
 	public static final String CURRENCY_EXCHANGE_RATE_TYPE = "CURRENCY_EXCHANGE_RATE_TYPE";
