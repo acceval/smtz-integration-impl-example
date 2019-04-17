@@ -40,9 +40,9 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 
 	public static String _ASC = "asc";
 	public static String _DESC = "desc";
-	
+
 	public static String[] STD_DATEFORMAT = new String[] { "yyyy-MM-dd", "dd-MM-yyyy", "dd/MM/yyyy", "yyyy/MM/dd" };
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(BaseMongoRepositoryImpl.class);
 
 	@Autowired
@@ -52,102 +52,93 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 
 	@Override
 	public QueryResult<T> queryByMapParam(MultiValueMap<String, String> mapParam) {
-		
+
 		return queryByMapParam(mapParam, this.getTargetClass());
 	}
-	
+
 	@Override
 	public QueryResult<T> queryByMapParam(MultiValueMap<String, String> mapParam, List<DateRange> dateRanges) {
-		
+
 		Criteria criteria = this.getCriteriaByMapParam(mapParam, this.getTargetClass());
 
 		/** start query */
 		QueryResult<T> queryResult = null;
-		
-		org.springframework.data.mongodb.core.query.Query query = 
-				new org.springframework.data.mongodb.core.query.Query();
-				
+
+		org.springframework.data.mongodb.core.query.Query query = new org.springframework.data.mongodb.core.query.Query();
+
 		List<org.springframework.data.mongodb.core.query.Criteria> andCriterias = this.getMongoCriterias(criteria);
-		
+
 		for (org.springframework.data.mongodb.core.query.Criteria andCriteria : andCriterias) {
 			query.addCriteria(andCriteria);
 		}
-		
+
 		for (DateRange dateRange : dateRanges) {
-			
-			LocalDateTime startDate = LocalDateTime.of(dateRange.getStartDate().getYear(), 
-					dateRange.getStartDate().getMonthValue(), 
-					dateRange.getStartDate().getDayOfMonth(),
-					0,
-					0,
-					0);
-			
+
+			LocalDateTime startDate = LocalDateTime.of(dateRange.getStartDate().getYear(), dateRange.getStartDate().getMonthValue(),
+					dateRange.getStartDate().getDayOfMonth(), 0, 0, 0);
+
 			if (dateRange.getEndDate() != null) {
-				LocalDateTime endDate = LocalDateTime.of(dateRange.getEndDate().getYear(), 
-						dateRange.getEndDate().getMonthValue(), 
-						dateRange.getEndDate().getDayOfMonth(),
-						0,
-						0);
+				LocalDateTime endDate = LocalDateTime.of(dateRange.getEndDate().getYear(), dateRange.getEndDate().getMonthValue(),
+						dateRange.getEndDate().getDayOfMonth(), 0, 0);
 				endDate = endDate.plusDays(1);
-								
-				query.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where(
-					dateRange.getPropertyPath()).gte(startDate).lt(endDate));
+
+				query.addCriteria(
+						org.springframework.data.mongodb.core.query.Criteria.where(dateRange.getPropertyPath()).gte(startDate).lt(endDate));
 			} else {
-				query.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where(
-						dateRange.getPropertyPath()).gte(startDate));
+				query.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where(dateRange.getPropertyPath()).gte(startDate));
 			}
 		}
-		
+
 		if (criteria.getOrder() != null) {
-			
-			for (Order order : criteria.getOrder()) {				
+
+			for (Order order : criteria.getOrder()) {
 				if (order.getIsAscending()) {
-					query.with(new Sort(Sort.Direction.ASC, order.getProperty()));					
+					query.with(new Sort(Sort.Direction.ASC, order.getProperty()));
 				} else {
-					query.with(new Sort(Sort.Direction.DESC, order.getProperty()));					
+					query.with(new Sort(Sort.Direction.DESC, order.getProperty()));
 				}
-			}			
+			}
 		}
-		
+
 		long total = 0;
 		if (!criteria.isFetchAll()) {
-			
+
 			int page = criteria.getRequestedPage();
 			int pageSize = criteria.getPageSize();
 			total = mongoTemplate.count(query, this.getTargetClass());
-			
+
 			final Pageable pageableRequest = new PageRequest(page, pageSize);
 			query.with(pageableRequest);
 		}
-			
-		List<T> result = (List<T>) mongoTemplate.find(query, this.getTargetClass());		
+
+		List<T> result = (List<T>) mongoTemplate.find(query, this.getTargetClass());
 		queryResult = new QueryResult<T>(Math.toIntExact(total), result);
 
-		return queryResult;		
+		return queryResult;
 	}
-	
+
 	@Override
 	public QueryResult<T> queryByMapParam(MultiValueMap<String, String> andParam, MultiValueMap<String, String> orParam) {
-		
+
 		Criteria andCriteria = this.getCriteriaByMapParam(andParam, this.getTargetClass());
 		Criteria orCriteria = this.getCriteriaByMapParam(orParam, this.getTargetClass());
-		
+
 		return this.queryByCriteria(andCriteria, orCriteria, this.getTargetClass());
 	}
 
 	/**
 	 * convert map to criteria and inquiry, normally use for Search Form, with
 	 * pagination
-	 */	
+	 */
 	public QueryResult<T> queryByMapParam(MultiValueMap<String, String> mapParam, Class<?> targetClass) {
-		
+
 		Criteria criteria = this.getCriteriaByMapParam(mapParam, targetClass);
 		return this.queryByCriteria(criteria, targetClass);
 	}
 
 	/**
 	 * convert map to criteria
-	 */	
+	 */
 	public Criteria getCriteriaByMapParam(MultiValueMap<String, String> mapParam, Class<?> targetClass) {
 		int page = mapParam.get(_PAGE) != null ? Integer.parseInt(mapParam.getFirst(_PAGE)) : 0;
 		int pageSize = mapParam.get(_PAGESIZE) != null ? Integer.parseInt(mapParam.getFirst(_PAGESIZE)) : 0;
@@ -156,14 +147,14 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 
 		try {
 			Object targetObj = targetClass.newInstance();
-			if ( targetObj instanceof BaseModel && !(targetObj instanceof GlobalData)) {
-				
+			if (targetObj instanceof BaseModel && !(targetObj instanceof GlobalData)) {
+
 				Long companyId = PrincipalUtil.getCompanyID();
-				
+
 				if (companyId != null) {
 					String[] values = { String.valueOf(companyId) };
 					mapParam.put("companyId", Arrays.asList(values));
-				}				
+				}
 			}
 		} catch (InstantiationException | IllegalAccessException e1) {
 			// TODO Auto-generated catch block
@@ -174,7 +165,7 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 		acceCriteria.setRequestedPage(page);
 		acceCriteria.setPageSize(pageSize);
 		acceCriteria.setFetchAll(isFetchAll);
-		
+
 		// order
 		if (CollectionUtils.isNotEmpty(lstSort)) {
 			List<Order> lstOrder = new ArrayList<>();
@@ -188,7 +179,7 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 		List<Criterion> lstCrriterion = new ArrayList<>();
 		for (String key : mapParam.keySet()) {
 
-			if (_PAGE.equals(key) || _PAGESIZE.equals(key) || _SORT.equals(key) || _FETCHALL.equals(key) 
+			if (_PAGE.equals(key) || _PAGESIZE.equals(key) || _SORT.equals(key) || _FETCHALL.equals(key)
 					|| (mapParam.getFirst(key) != null && StringUtils.trim(mapParam.getFirst(key)).length() == 0)) {
 				continue;
 			}
@@ -240,102 +231,96 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 
 		return acceCriteria;
 	}
-	
+
 	public QueryResult<T> queryByCriteria(Criteria andCriteria, Criteria orCriteria, Class<?> targetClass) {
-		
+
 		/** start query */
 		QueryResult<T> queryResult = null;
-		
-		org.springframework.data.mongodb.core.query.Query query = 
-				new org.springframework.data.mongodb.core.query.Query();
-				
+
+		org.springframework.data.mongodb.core.query.Query query = new org.springframework.data.mongodb.core.query.Query();
+
 		List<org.springframework.data.mongodb.core.query.Criteria> andCriterias = this.getMongoCriterias(andCriteria);
-		
+
 		for (org.springframework.data.mongodb.core.query.Criteria criteria : andCriterias) {
 			query.addCriteria(criteria);
 		}
-		
+
 		List<org.springframework.data.mongodb.core.query.Criteria> orCriterias = this.getMongoCriterias(orCriteria);
-		org.springframework.data.mongodb.core.query.Criteria[] orCriteriaArray = orCriterias.toArray(
-				new org.springframework.data.mongodb.core.query.Criteria[orCriterias.size()]);
-		org.springframework.data.mongodb.core.query.Criteria criteria = 
-				new org.springframework.data.mongodb.core.query.Criteria();
+		org.springframework.data.mongodb.core.query.Criteria[] orCriteriaArray =
+				orCriterias.toArray(new org.springframework.data.mongodb.core.query.Criteria[orCriterias.size()]);
+		org.springframework.data.mongodb.core.query.Criteria criteria = new org.springframework.data.mongodb.core.query.Criteria();
 		criteria.orOperator(orCriteriaArray);
-		
+
 		query.addCriteria(criteria);
-		
-		
+
 		if (andCriteria.getOrder() != null) {
-			
-			for (Order order : andCriteria.getOrder()) {				
+
+			for (Order order : andCriteria.getOrder()) {
 				if (order.getIsAscending()) {
-					query.with(new Sort(Sort.Direction.ASC, order.getProperty()));					
+					query.with(new Sort(Sort.Direction.ASC, order.getProperty()));
 				} else {
-					query.with(new Sort(Sort.Direction.DESC, order.getProperty()));					
+					query.with(new Sort(Sort.Direction.DESC, order.getProperty()));
 				}
-			}			
+			}
 		}
-		
+
 		long total = 0;
 		if (!andCriteria.isFetchAll()) {
-			
+
 			int page = andCriteria.getRequestedPage();
 			int pageSize = andCriteria.getPageSize();
 			total = mongoTemplate.count(query, this.getTargetClass());
-			
+
 			final Pageable pageableRequest = new PageRequest(page, pageSize);
 			query.with(pageableRequest);
-		} 
-			
+		}
+
 		List<T> result = (List<T>) mongoTemplate.find(query, this.getTargetClass());
-		
+
 		if (!andCriteria.isFetchAll()) {
 			queryResult = new QueryResult<T>(Math.toIntExact(total), result);
 		} else {
 			queryResult = new QueryResult<T>(result.size(), result);
 		}
-		
-		
 
 		return queryResult;
 	}
-	
+
 	public QueryResult<T> queryByCriteria(Criteria acceCriteria, Class<?> targetClass) {
 
 		/** start query */
 		QueryResult<T> queryResult = null;
-		
-		org.springframework.data.mongodb.core.query.Query query = 
-				new org.springframework.data.mongodb.core.query.Query();
-		
+
+		org.springframework.data.mongodb.core.query.Query query = new org.springframework.data.mongodb.core.query.Query();
+
 		List<org.springframework.data.mongodb.core.query.Criteria> criterias = this.getMongoCriterias(acceCriteria);
-		
+
 		for (org.springframework.data.mongodb.core.query.Criteria criteria : criterias) {
 			query.addCriteria(criteria);
 		}
-		
+
 		if (acceCriteria.getOrder() != null) {
-			
-			for (Order order : acceCriteria.getOrder()) {				
+
+			for (Order order : acceCriteria.getOrder()) {
 				if (order.getIsAscending()) {
-					query.with(new Sort(Sort.Direction.ASC, order.getProperty()));					
+					query.with(new Sort(Sort.Direction.ASC, order.getProperty()));
 				} else {
-					query.with(new Sort(Sort.Direction.DESC, order.getProperty()));					
+					query.with(new Sort(Sort.Direction.DESC, order.getProperty()));
 				}
-			}			
+			}
 		}
-		
+
 		long total = 0;
 		if (!acceCriteria.isFetchAll()) {
-			
+
 			int page = acceCriteria.getRequestedPage();
 			int pageSize = acceCriteria.getPageSize();
 			total = mongoTemplate.count(query, this.getTargetClass());
-			
+
 			final Pageable pageableRequest = new PageRequest(page, pageSize);
 			query.with(pageableRequest);
 		}
-			
+
 		List<T> result = (List<T>) mongoTemplate.find(query, this.getTargetClass());
 
 		if (!acceCriteria.isFetchAll()) {
@@ -346,43 +331,44 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 
 		return queryResult;
 	}
-	
+
 	protected List<org.springframework.data.mongodb.core.query.Criteria> getMongoCriterias(Criteria acceCriteria) {
 
-		List<org.springframework.data.mongodb.core.query.Criteria> mongoCriterias = 
+		List<org.springframework.data.mongodb.core.query.Criteria> mongoCriterias =
 				new ArrayList<org.springframework.data.mongodb.core.query.Criteria>();
-		
+
 		/** criteria */
+		Map<String, org.springframework.data.mongodb.core.query.Criteria> mapCriteria = new HashMap<>();
 		for (Criterion criterion : acceCriteria.getCriterion()) {
 			String property = getMapPropertyResolver().containsKey(criterion.getPropertyName())
 					? getMapPropertyResolver().get(criterion.getPropertyName())
 					: criterion.getPropertyName();
+			org.springframework.data.mongodb.core.query.Criteria mongoCri = mapCriteria.get(property);
+
 			Object value = criterion.getSearchValue();
 			Object[] values = criterion.getSearchValues();
 			RestrictionType restrictionType = criterion.getRestrictionType();
-			
+
 			Class<?> attrClass = null;
 			try {
 				Field field = this.getField(this.getTargetClass(), property);
-			
+
 				attrClass = field.getType();
-			} catch(NoSuchFieldException ex) {
+			} catch (NoSuchFieldException ex) {
 				ex.printStackTrace();
 				continue;
 			}
-			
 
 			// Null
 			if (Criterion.RestrictionType.IS_NULL.equals(restrictionType)) {
 				mongoCriterias.add(org.springframework.data.mongodb.core.query.Criteria.where(property).exists(false));
-				
+
 			} else if (Criterion.RestrictionType.IS_NOT_NULL.equals(restrictionType)) {
 				mongoCriterias.add(org.springframework.data.mongodb.core.query.Criteria.where(property).exists(true));
 			}
 			// LIKE
 			else if (!criterion.isExactSearch() && value instanceof String) {
-				mongoCriterias.add(org.springframework.data.mongodb.core.query.Criteria.where(property)
-						.regex(value.toString(), "i"));
+				mongoCriterias.add(org.springframework.data.mongodb.core.query.Criteria.where(property).regex(value.toString(), "i"));
 			}
 			// EQUAL
 			else if (Criterion.RestrictionType.EQUAL.equals(restrictionType)) {
@@ -419,64 +405,56 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 						month = vLocalDate.getMonthValue();
 						day = vLocalDate.getDayOfMonth();
 					}
-									
-					LocalDate startDate = LocalDate.of(year, month, day);						
+
+					LocalDate startDate = LocalDate.of(year, month, day);
 					LocalDate endDate = startDate.plusDays(1);
-					
-					mongoCriterias.add(org.springframework.data.mongodb.core.query.Criteria.where(property)
-							.gte(startDate).lte(endDate));
-					
-				} else {					
+
+					mongoCriterias.add(org.springframework.data.mongodb.core.query.Criteria.where(property).gte(startDate).lte(endDate));
+
+				} else {
 					mongoCriterias.add(org.springframework.data.mongodb.core.query.Criteria.where(property).is(value));
 				}
 			} else if (Criterion.RestrictionType.IN.equals(restrictionType)) {
-
-				mongoCriterias.add(org.springframework.data.mongodb.core.query.Criteria.where(property).in(values));				
-
+				mongoCriterias.add(org.springframework.data.mongodb.core.query.Criteria.where(property).in(values));
 			} else if (Criterion.RestrictionType.NOT_IN.equals(restrictionType)) {
-
-				mongoCriterias.add(org.springframework.data.mongodb.core.query.Criteria.where(property).nin(values));				
+				mongoCriterias.add(org.springframework.data.mongodb.core.query.Criteria.where(property).nin(values));
 			}
 			// GREAT/LESS
 			else if (Criterion.RestrictionType.GREATER.equals(restrictionType)) {
-				if (value instanceof LocalDate) {					
-					mongoCriterias.add(org.springframework.data.mongodb.core.query.Criteria.where(property).gt((LocalDate) value));					
-				} else if (value instanceof Date) {
-					mongoCriterias.add(org.springframework.data.mongodb.core.query.Criteria.where(property).gt((Date) value));					
-				} else if (value instanceof LocalDateTime) {
-					mongoCriterias.add(org.springframework.data.mongodb.core.query.Criteria.where(property).gt((LocalDateTime) value));					
-				} else if (value instanceof Number) {
-					mongoCriterias.add(org.springframework.data.mongodb.core.query.Criteria.where(property).gt((Number) value));					
+				org.springframework.data.mongodb.core.query.Criteria criteria =
+						org.springframework.data.mongodb.core.query.Criteria.where(property).gt(value);
+				if (mongoCri != null) {
+					mongoCri.andOperator(criteria);
+				} else {
+					mongoCriterias.add(criteria);
+					mapCriteria.put(property, criteria);
 				}
 			} else if (Criterion.RestrictionType.GREATER_OR_EQUAL.equals(restrictionType)) {
-				if (value instanceof LocalDate) {
-					mongoCriterias.add(org.springframework.data.mongodb.core.query.Criteria.where(property).gte((LocalDate) value));					
-				} else if (value instanceof Date) {
-					mongoCriterias.add(org.springframework.data.mongodb.core.query.Criteria.where(property).gte((Date) value));
-				} else if (value instanceof LocalDateTime) {
-					mongoCriterias.add(org.springframework.data.mongodb.core.query.Criteria.where(property).gte((LocalDateTime) value));
-				} else if (value instanceof Number) {
-					mongoCriterias.add(org.springframework.data.mongodb.core.query.Criteria.where(property).gte((Number) value));
+				org.springframework.data.mongodb.core.query.Criteria criteria =
+						org.springframework.data.mongodb.core.query.Criteria.where(property).gte(value);
+				if (mongoCri != null) {
+					mongoCri.andOperator(criteria);
+				} else {
+					mongoCriterias.add(criteria);
+					mapCriteria.put(property, criteria);
 				}
 			} else if (Criterion.RestrictionType.LESS.equals(restrictionType)) {
-				if (value instanceof LocalDate) {
-					mongoCriterias.add(org.springframework.data.mongodb.core.query.Criteria.where(property).lt((LocalDate) value));
-				} else if (value instanceof Date) {
-					mongoCriterias.add(org.springframework.data.mongodb.core.query.Criteria.where(property).lt((Date) value));
-				} else if (value instanceof LocalDateTime) {
-					mongoCriterias.add(org.springframework.data.mongodb.core.query.Criteria.where(property).lt((LocalDateTime) value));
-				} else if (value instanceof Number) {
-					mongoCriterias.add(org.springframework.data.mongodb.core.query.Criteria.where(property).lt((Number) value));
+				org.springframework.data.mongodb.core.query.Criteria criteria =
+						org.springframework.data.mongodb.core.query.Criteria.where(property).lt(value);
+				if (mongoCri != null) {
+					mongoCri.andOperator(criteria);
+				} else {
+					mongoCriterias.add(criteria);
+					mapCriteria.put(property, criteria);
 				}
 			} else if (Criterion.RestrictionType.LESS_OR_EQUAL.equals(restrictionType)) {
-				if (value instanceof LocalDate) {
-					mongoCriterias.add(org.springframework.data.mongodb.core.query.Criteria.where(property).lte((LocalDate) value));
-				} else if (value instanceof Date) {
-					mongoCriterias.add(org.springframework.data.mongodb.core.query.Criteria.where(property).lte((Date) value));
-				} else if (value instanceof LocalDateTime) {
-					mongoCriterias.add(org.springframework.data.mongodb.core.query.Criteria.where(property).lte((LocalDateTime) value));
-				} else if (value instanceof Number) {
-					mongoCriterias.add(org.springframework.data.mongodb.core.query.Criteria.where(property).lte((Number) value));
+				org.springframework.data.mongodb.core.query.Criteria criteria =
+						org.springframework.data.mongodb.core.query.Criteria.where(property).lte(value);
+				if (mongoCri != null) {
+					mongoCri.andOperator(criteria);
+				} else {
+					mongoCriterias.add(criteria);
+					mapCriteria.put(property, criteria);
 				}
 			}
 			// unknown
@@ -484,23 +462,21 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 				LOGGER.error("Criterion for [" + criterion.getPropertyName() + "] failed!");
 			}
 		}
-		
+
 		return mongoCriterias;
 	}
 
+	protected Field getField(Class<?> javaClass, String property) throws NoSuchFieldException, SecurityException {
 
-	protected Field getField(Class<?> javaClass, String property) 
-			throws NoSuchFieldException, SecurityException {
-		
 		String[] splitProperty = property.split("[.]");
 		Field field = null;
 		for (String prop : splitProperty) {
 			if (field == null) {
 				Map<String, Field> fields = this.getAllFields(javaClass, new HashMap<String, Field>());
-				field = fields.get(prop);				
+				field = fields.get(prop);
 			} else {
 				Class<?> attrClass = field.getType();
-				if (attrClass.getName().equals("java.util.List") ||  attrClass.getName().equals("java.util.Map")) {
+				if (attrClass.getName().equals("java.util.List") || attrClass.getName().equals("java.util.Map")) {
 					ParameterizedType collectionType = (ParameterizedType) field.getGenericType();
 					attrClass = (Class<?>) collectionType.getActualTypeArguments()[0];
 				}
@@ -510,22 +486,21 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 		}
 		return field;
 	}
-	
-	private Map<String, Field> getAllFields(Class clazz, Map<String, Field> fields) {
-		
-	    Class superClazz = clazz.getSuperclass();
-	    
-	    if (superClazz != null) {
-	        this.getAllFields(superClazz, fields);
-	    }
-	    
-	    for (Field field: clazz.getDeclaredFields()) {
-	    		fields.put(field.getName(), field);
-	    }
-	    
-	    return fields;
-	}
 
+	private Map<String, Field> getAllFields(Class clazz, Map<String, Field> fields) {
+
+		Class superClazz = clazz.getSuperclass();
+
+		if (superClazz != null) {
+			this.getAllFields(superClazz, fields);
+		}
+
+		for (Field field : clazz.getDeclaredFields()) {
+			fields.put(field.getName(), field);
+		}
+
+		return fields;
+	}
 
 	/**
 	 * provide Map to translate short property to full property path eg.
