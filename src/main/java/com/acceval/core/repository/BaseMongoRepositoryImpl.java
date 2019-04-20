@@ -125,6 +125,105 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 
 		return this.queryByCriteria(andCriteria, orCriteria, this.getTargetClass());
 	}
+	
+
+	@Override
+	public QueryResult<T> queryByMapParam(MultiValueMap<String, String> andParam, MultiValueMap<String, String> orParam, List<DateRange> dateRanges) {
+		
+		Criteria andCriteria = this.getCriteriaByMapParam(andParam, this.getTargetClass());
+		Criteria orCriteria = this.getCriteriaByMapParam(orParam, this.getTargetClass());
+		
+		Criterion companyCriterion = null;
+		for (Criterion criterion: orCriteria.getCriterion()) {
+			if (criterion.getPropertyName().equalsIgnoreCase("companyId")) {
+				companyCriterion = criterion;
+				break;
+			}
+		}
+		if (companyCriterion != null) {
+			orCriteria.getCriterion().remove(companyCriterion);
+		}
+
+		/** start query */
+		QueryResult<T> queryResult = null;
+		
+		org.springframework.data.mongodb.core.query.Query query = 
+				new org.springframework.data.mongodb.core.query.Query();
+				
+		List<org.springframework.data.mongodb.core.query.Criteria> andCriterias = this.getMongoCriterias(andCriteria);
+		
+		for (org.springframework.data.mongodb.core.query.Criteria criteria : andCriterias) {
+			query.addCriteria(criteria);
+		}
+		
+
+		List<org.springframework.data.mongodb.core.query.Criteria> orCriterias = this.getMongoCriterias(orCriteria);
+		org.springframework.data.mongodb.core.query.Criteria[] orCriteriaArray = orCriterias.toArray(
+				new org.springframework.data.mongodb.core.query.Criteria[orCriterias.size()]);
+		org.springframework.data.mongodb.core.query.Criteria criteria = 
+				new org.springframework.data.mongodb.core.query.Criteria();
+		criteria.orOperator(orCriteriaArray);
+		
+		query.addCriteria(criteria);
+		
+		for (DateRange dateRange : dateRanges) {
+			
+			LocalDateTime startDate = LocalDateTime.of(dateRange.getStartDate().getYear(), 
+					dateRange.getStartDate().getMonthValue(), 
+					dateRange.getStartDate().getDayOfMonth(),
+					0,
+					0,
+					0);
+			
+			if (dateRange.getEndDate() != null) {
+				LocalDateTime endDate = LocalDateTime.of(dateRange.getEndDate().getYear(), 
+						dateRange.getEndDate().getMonthValue(), 
+						dateRange.getEndDate().getDayOfMonth(),
+						0,
+						0);
+				endDate = endDate.plusDays(1);
+								
+				query.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where(
+					dateRange.getPropertyPath()).gte(startDate).lt(endDate));
+			} else {
+				query.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where(
+						dateRange.getPropertyPath()).gte(startDate));
+			}
+		}
+
+		if (andCriteria.getOrder() != null) {
+			
+			for (Order order : andCriteria.getOrder()) {				
+				if (order.getIsAscending()) {
+					query.with(new Sort(Sort.Direction.ASC, order.getProperty()));					
+				} else {
+					query.with(new Sort(Sort.Direction.DESC, order.getProperty()));					
+				}
+			}			
+		}
+
+		long total = 0;
+		if (!andCriteria.isFetchAll()) {
+			
+			int page = andCriteria.getRequestedPage();
+			int pageSize = andCriteria.getPageSize();
+			total = mongoTemplate.count(query, this.getTargetClass());
+			
+			final Pageable pageableRequest = new PageRequest(page, pageSize);
+			query.with(pageableRequest);
+		}
+			
+		List<T> result = (List<T>) mongoTemplate.find(query, this.getTargetClass());
+		
+		if (!andCriteria.isFetchAll()) {
+			queryResult = new QueryResult<T>(Math.toIntExact(total), result);
+		} else {
+			queryResult = new QueryResult<T>(result.size(), result);
+		}
+				
+		return queryResult;	
+	}
+	
 
 	/**
 	 * convert map to criteria and inquiry, normally use for Search Form, with
@@ -140,6 +239,7 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 	 * convert map to criteria
 	 */
 	public Criteria getCriteriaByMapParam(MultiValueMap<String, String> mapParam, Class<?> targetClass) {
+		
 		int page = mapParam.get(_PAGE) != null ? Integer.parseInt(mapParam.getFirst(_PAGE)) : 0;
 		int pageSize = mapParam.get(_PAGESIZE) != null ? Integer.parseInt(mapParam.getFirst(_PAGESIZE)) : 0;
 		boolean isFetchAll = mapParam.get(_FETCHALL) != null ? Boolean.parseBoolean(mapParam.getFirst(_FETCHALL)) : false;
@@ -192,7 +292,7 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 					lstCrriterion.add(new Criterion(resolveKey, RestrictionType.IS_NULL, mapParam.getFirst(key)));
 				} else if (ClassUtils.isAssignable(attrClass, Long.class, true)) {
 					lstCrriterion.add(new Criterion(resolveKey, Long.valueOf(mapParam.getFirst(key))));
-				} else if (attrClass.isAssignableFrom(String.class)) {
+				} else if (attrClass.isAssignableFrom(String.class) || attrClass.isAssignableFrom(String[].class)) {
 					List<String> searchValue = mapParam.get(key);
 
 					if (searchValue.size() > 1) {
