@@ -6,7 +6,7 @@ import java.util.List;
 public class OrCriterion extends Criterion {
 	private static final long serialVersionUID = 1L;
 
-	List<Criterion> criterions = new ArrayList<Criterion>();
+	private List<Criterion> criterions = new ArrayList<Criterion>();
 
 	public OrCriterion() {
 		super();
@@ -21,6 +21,12 @@ public class OrCriterion extends Criterion {
 	public OrCriterion(String propertyName, Object[] searchValues) {
 		super();
 		Criterion firstC = new Criterion(propertyName, searchValues);
+		criterions.add(firstC);
+	}
+
+	public OrCriterion(String propertyName, RestrictionType reType, Object searchValue) {
+		super();
+		Criterion firstC = new Criterion(propertyName, reType, searchValue);
 		criterions.add(firstC);
 	}
 
