@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -31,6 +30,8 @@ import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
 import org.springframework.util.MultiValueMap;
 
+import com.acceval.core.model.BaseEntity;
+import com.acceval.core.model.BaseEntity.STATUS;
 import com.acceval.core.model.BaseModel;
 import com.acceval.core.model.GlobalData;
 import com.acceval.core.model.VariableContext;
@@ -83,21 +84,6 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 		int pageSize = mapParam.get(_PAGESIZE) != null ? Integer.parseInt(mapParam.getFirst(_PAGESIZE)) : 0;
 		boolean isFetchAll = mapParam.get(_FETCHALL) != null ? Boolean.parseBoolean(mapParam.getFirst(_FETCHALL)) : false;
 		List<String> lstSort = mapParam.get(_SORT);
-
-		try {
-			Object targetObj = targetClass.newInstance();
-			if (targetObj instanceof BaseModel && !(targetObj instanceof GlobalData)) {
-
-				Long companyId = PrincipalUtil.getCompanyID();
-
-				if (companyId != null) {
-					String[] values = { String.valueOf(companyId) };
-					mapParam.put("companyId", Arrays.asList(values));
-				}
-			}
-		} catch (InstantiationException | IllegalAccessException e1) {
-			e1.printStackTrace();
-		}
 
 		Criteria acceCriteria = new Criteria();
 		acceCriteria.setRequestedPage(page);
@@ -166,6 +152,17 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 			}
 		}
 		acceCriteria.setCriterion(lstCrriterion);
+
+		// base entity
+		if (BaseEntity.class.isAssignableFrom(targetClass)) {
+			acceCriteria.appendCriterion(new Criterion("recordStatus", STATUS.ACTIVE, true));
+		}
+		if (BaseModel.class.isAssignableFrom(targetClass) && !(GlobalData.class.isAssignableFrom(targetClass))) {
+			Long companyId = PrincipalUtil.getCompanyID();
+			if (companyId != null) {
+				acceCriteria.appendCriterion(new Criterion("companyId", companyId));
+			}
+		}
 
 		return acceCriteria;
 	}

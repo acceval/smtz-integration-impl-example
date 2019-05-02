@@ -248,6 +248,16 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 		List<Predicate> lstPredicate = new ArrayList<>();
 		Map<String, Join<?, ?>> mapDefinedPath = new HashMap<>();
 
+		/** append company criteria for BaseModel */
+		if (BaseModel.class.isAssignableFrom(getTargetClass()) && !GlobalData.class.isAssignableFrom(getTargetClass())
+				&& acceCriteria.getCriterion() != null) {
+			boolean companyKeyFound =
+					acceCriteria.getCriterion().stream().filter(c -> "companyId".equals(c.getPropertyName())).findFirst().isPresent();
+			if (!companyKeyFound) {
+				acceCriteria.appendCriterion(new Criterion("companyId", PrincipalUtil.getCompanyID()));
+			}
+		}
+
 		/** criteria */
 		for (Criterion criterion : acceCriteria.getCriterion()) {
 			Predicate[] arrPre = buildPredicate(criterion, root, builder);
@@ -474,26 +484,6 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 		boolean isFetchAll = mapParam.get(_FETCHALL) != null ? Boolean.parseBoolean(mapParam.getFirst(_FETCHALL)) : false;
 		List<String> lstSort = mapParam.get(_SORT);
 
-		try {
-			Object targetObj = targetClass.newInstance();
-
-			if (targetObj instanceof BaseEntity) {
-				mapParam.put("recordStatus", Arrays.asList(STATUS.ACTIVE.name()));
-			}
-			if (targetObj instanceof BaseModel && !(targetObj instanceof GlobalData)) {
-
-				Long companyId = PrincipalUtil.getCompanyID();
-
-				if (companyId != null) {
-					String[] values = { String.valueOf(companyId) };
-					mapParam.put("companyId", Arrays.asList(values));
-				}
-			}
-		} catch (InstantiationException | IllegalAccessException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-
 		Criteria acceCriteria = new Criteria();
 		acceCriteria.setRequestedPage(page);
 		acceCriteria.setPageSize(pageSize);
@@ -564,6 +554,17 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 			}
 		}
 		acceCriteria.setCriterion(lstCrriterion);
+
+		// base entity
+		if (BaseEntity.class.isAssignableFrom(targetClass)) {
+			acceCriteria.appendCriterion(new Criterion("recordStatus", STATUS.ACTIVE, true));
+		}
+		if (BaseModel.class.isAssignableFrom(targetClass) && !(GlobalData.class.isAssignableFrom(targetClass))) {
+			Long companyId = PrincipalUtil.getCompanyID();
+			if (companyId != null) {
+				acceCriteria.appendCriterion(new Criterion("companyId", companyId));
+			}
+		}
 
 		return acceCriteria;
 	}
