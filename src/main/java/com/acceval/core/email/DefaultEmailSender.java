@@ -53,7 +53,11 @@ class DefaultEmailSender implements EmailSender {
         }
 
 	    data.getContext().put("YEAR", Calendar.getInstance().get(Calendar.YEAR));
-	    data.getContext().put("DOMAIN_PATH", this.webappURL);
+	    if (data.getDomainPath() != null && data.getDomainPath().trim().length() > 0) {
+	    	data.getContext().put("DOMAIN_PATH", data.getDomainPath());	    	
+	    } else {
+	    	data.getContext().put("DOMAIN_PATH", this.webappURL);
+	    }
 
 	    data.setSubject(this.titlePrefix + data.getSubject());
     }

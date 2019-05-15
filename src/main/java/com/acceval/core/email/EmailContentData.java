@@ -12,6 +12,7 @@ public class EmailContentData implements Serializable {
     private String subject;
     private String title;
     private String text;
+    private String domainPath;
     private String template = "default";
 	private Map<String, Object> context;
 
@@ -100,4 +101,13 @@ public class EmailContentData implements Serializable {
     public void setText(String text) {
         this.text = text;
     }
+
+	public String getDomainPath() {
+		return domainPath;
+	}
+
+	public void setDomainPath(String domainPath) {
+		this.domainPath = domainPath;
+	}
+    
 }
