@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @Configuration
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
-class AuditorConfig {
+public class AuditorConfig {
 	
     @Bean
     public AuditorAware<String> auditorAware() {
