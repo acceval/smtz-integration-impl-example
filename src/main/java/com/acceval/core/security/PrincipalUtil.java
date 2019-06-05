@@ -28,9 +28,11 @@ public class PrincipalUtil {
 	}
 
 	public static CurrentUser getCurrentUser() {
+		
 		CurrentUser tokenUser = getUserFromToken();
 
-		if (tokenUser.getCompanyId() == null || tokenUser == null) {
+		if ((tokenUser == null || tokenUser.getCompanyId() == null) 
+				&&  RequestContextHolder.getRequestAttributes() != null) {
 			// system user
 			HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 			String companyID = request.getHeader(PrincipalUtil.HDRKEY_COMPANYID);
