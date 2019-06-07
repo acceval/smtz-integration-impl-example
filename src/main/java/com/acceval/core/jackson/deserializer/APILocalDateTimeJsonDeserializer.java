@@ -20,8 +20,7 @@ public class APILocalDateTimeJsonDeserializer extends JsonDeserializer<LocalDate
 	}
 
 	@Override
-	public LocalDateTime deserialize(JsonParser p, DeserializationContext ctx)
-			throws IOException, JsonProcessingException {
+	public LocalDateTime deserialize(JsonParser p, DeserializationContext ctx) throws IOException, JsonProcessingException {
 		if (p.currentToken() == JsonToken.VALUE_NULL) {
 			return null;
 		}
@@ -34,7 +33,7 @@ public class APILocalDateTimeJsonDeserializer extends JsonDeserializer<LocalDate
 			return null;
 		}
 
-		Map<String, Integer> mapVal = new HashMap<>(3);
+		Map<String, Integer> mapVal = new HashMap<>(6);
 
 		String field = p.getCurrentName();
 		int val = p.nextIntValue(-1);
@@ -64,13 +63,8 @@ public class APILocalDateTimeJsonDeserializer extends JsonDeserializer<LocalDate
 			ctx.reportWrongTokenException(p, JsonToken.END_OBJECT, "Expected end object for date");
 		}
 
-		return LocalDateTime.of(
-				mapVal.getOrDefault(Fields.YEAR, -1),
-				mapVal.getOrDefault(Fields.MONTH, -1),
-				mapVal.getOrDefault(Fields.DAY, -1),
-				mapVal.getOrDefault(Fields.HOUR, -1),
-				mapVal.getOrDefault(Fields.MINUTE, -1),
-				mapVal.getOrDefault(Fields.SECOND, -1)
-		);
+		return LocalDateTime.of(mapVal.getOrDefault(Fields.YEAR, -1), mapVal.getOrDefault(Fields.MONTH, -1),
+				mapVal.getOrDefault(Fields.DAY, -1), mapVal.getOrDefault(Fields.HOUR, -1), mapVal.getOrDefault(Fields.MINUTE, -1),
+				mapVal.getOrDefault(Fields.SECOND, -1));
 	}
 }

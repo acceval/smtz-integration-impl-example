@@ -13,7 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 public class VariableContext implements Serializable, Cloneable {
 
 	private static final long serialVersionUID = 3457134321135281269L;
-	
+
 	public static final String CURRENCY_CODE = "CURRENCY_CODE";
 	public static final String UOM_CODE = "UOM_CODE";
 	public static final String QUANTITY = "QUANTITY";
@@ -25,12 +25,13 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String CURRENCY_EXCHANGE_RATE_TYPE = "CURRENCY_EXCHANGE_RATE_TYPE";
 	public static final String COMPANY_ID = "COMPANY_ID";
 	public static final String COMPANY_CODE = "COMPANY_CODE";
-	
+
 	public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
+	public static final String DEFAULT_DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
 	// Pricing Technique Condition Table Code
 	public static final String PRICETECH_DECIDER = "PRICING_TECHNIQUE_DECIDER";
-	
+
 	public static final String FLOOR_PRICE_TECHNIQUE_DECIDER = "FLOOR_PRICE_TECHNIQUE_DECIDER";
 
 	// Deal Mgt Object
@@ -110,9 +111,9 @@ public class VariableContext implements Serializable, Cloneable {
 
 		if (!(data instanceof LocalDate)) {
 			if (data instanceof String) {
-				
+
 				DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT);
-				retVal = LocalDate.parse((String) data, formatter);			
+				retVal = LocalDate.parse((String) data, formatter);
 			}
 		} else {
 			retVal = (LocalDate) data;
@@ -205,7 +206,7 @@ public class VariableContext implements Serializable, Cloneable {
 		setVariable(COMPANY_CODE, companyCode);
 		this.companyCode = companyCode;
 	}
-	
+
 	public Map<String, Object> getNonBaseModelMap() {
 		Map<String, Object> map = new HashMap<>();
 		for (String key : getVariableMap().keySet()) {
