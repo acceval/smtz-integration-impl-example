@@ -1,5 +1,6 @@
 package com.acceval.core.audit;
 
+import java.util.Date;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,7 +42,8 @@ public class PathAuthenticationLogger {
         PathAuthenticationRequest pathRequest = new PathAuthenticationRequest();
         pathRequest.setPrincipal(auditEvent.getPrincipal());
         pathRequest.setType(auditEvent.getType());
-        pathRequest.setTimestamp(auditEvent.getTimestamp());
+//        pathRequest.setTimestamp(auditEvent.getTimestamp());
+        pathRequest.setTimestamp(new Date());
 		
         for (Map.Entry<String, Object> entry: data.entrySet()) {
         	
