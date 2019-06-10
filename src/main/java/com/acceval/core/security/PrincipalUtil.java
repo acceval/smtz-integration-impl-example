@@ -1,21 +1,45 @@
 package com.acceval.core.security;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang3.StringUtils;
+import com.acceval.core.model.ServicePackage;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
-import com.acceval.core.model.ServicePackage;
+import javax.validation.constraints.NotNull;
 
 public class PrincipalUtil {
+	private static final ThreadLocal<PrincipalProvider> provider = new ThreadLocal<>();
 
 	public static final String HDRKEY_COMPANYID = "COMPANYID";
 	public static final String HDRKEY_COMPANYCODE = "COMPANYCODE";
 	public static final String HDRKEY_SERVICEPACKAGE = "SERVICEPACKAGE";
+
+	public static void setProvider(PrincipalProvider provider) {
+		if (PrincipalUtil.provider.get() != null) {
+			throw new IllegalStateException("a principal provider already exists, unable to set provider again");
+		}
+
+		PrincipalUtil.provider.set(provider);
+	}
+
+	@NotNull
+	private static PrincipalProvider getProvider() {
+		PrincipalProvider provider = PrincipalUtil.provider.get();
+
+		if (provider == null) {
+			throw new IllegalStateException("a provider has not been set");
+		}
+
+		return provider;
+	}
+
+	public static CurrentUser getCurrentUser() {
+		return getProvider().currentUser();
+	}
+
+	public static String getToken() {
+		return getProvider().getToken();
+	}
 
 	public static void setSystemUser(Long companyID, String companyCode, String servicePackage) {
 		CurrentUser sysUser = getCurrentUser();
@@ -25,65 +49,6 @@ public class PrincipalUtil {
 		if (servicePackage != null) {
 			sysUser.setServicePackage(ServicePackage.valueOf(servicePackage));
 		}
-	}
-
-	public static CurrentUser getCurrentUser() {
-		
-		CurrentUser tokenUser = getUserFromToken();
-
-		if ((tokenUser == null || tokenUser.getCompanyId() == null) 
-				&&  RequestContextHolder.getRequestAttributes() != null) {
-			// system user
-			HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-			String companyID = request.getHeader(PrincipalUtil.HDRKEY_COMPANYID);
-			String companyCode = request.getHeader(PrincipalUtil.HDRKEY_COMPANYCODE);
-			String servicePackage = request.getHeader(PrincipalUtil.HDRKEY_SERVICEPACKAGE);
-			//			System.out.println("principal " + request.getRequestURI());
-			if (StringUtils.isNotBlank(companyID)) {
-				if (tokenUser == null) {
-					CurrentUser sysUser = new CurrentUser();
-					sysUser.setSystemUser(true);
-					sysUser.setCompanyId(Long.valueOf(companyID));
-					sysUser.setCompanyCode(companyCode);
-					if (servicePackage != null) {
-						sysUser.setServicePackage(ServicePackage.valueOf(servicePackage));
-					}
-					return sysUser;
-				} else {
-					tokenUser.setCompanyId(Long.valueOf(companyID));
-					tokenUser.setSystemUser(true);
-					if (StringUtils.isNotBlank(companyCode)) {
-						tokenUser.setCompanyCode(companyCode);
-					}
-					if (StringUtils.isNotBlank(servicePackage)) {
-						tokenUser.setServicePackage(ServicePackage.valueOf(servicePackage));
-					}
-				}
-			}
-		}
-
-		return tokenUser;
-	}
-
-	public static String getToken() {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-		if (auth == null) return null;
-
-		OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) auth.getDetails();
-		String token = details.getTokenType() + " " + details.getTokenValue();
-		return token;
-	}
-
-	public static CurrentUser getUserFromToken() {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (auth != null) {
-			Object principal = auth.getPrincipal();
-			if (principal != null && principal instanceof CurrentUser) {
-				return (CurrentUser) principal;
-			}
-		}
-		return null;
 	}
 
 	public static String getSchemaName() {
