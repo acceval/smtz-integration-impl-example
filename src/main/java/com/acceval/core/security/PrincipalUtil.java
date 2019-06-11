@@ -22,6 +22,10 @@ public class PrincipalUtil {
 		PrincipalUtil.provider.set(provider);
 	}
 
+	public static void removeProvider() {
+		PrincipalUtil.provider.remove();
+	}
+
 	@NotNull
 	private static PrincipalProvider getProvider() {
 		PrincipalProvider provider = PrincipalUtil.provider.get();

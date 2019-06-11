@@ -48,7 +48,8 @@ public class RequestContextPrincipalProvider implements PrincipalProvider {
 
 		return tokenUser;
 	}
-	public static CurrentUser getUserFromToken() {
+
+	private CurrentUser getUserFromToken() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if (auth != null) {
 			Object principal = auth.getPrincipal();
