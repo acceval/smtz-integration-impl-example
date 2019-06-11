@@ -32,6 +32,11 @@ public class JsonNodeUtil {
 		return jNode == null ? null : jNode.asBoolean();
 	}
 
+	public static JsonNode get(JsonNode node, String property) {
+		JsonNode jNode = recursiveProperty(node, property);
+		return jNode;
+	}
+
 	public static Iterator<JsonNode> getAsCollection(JsonNode node, String property) {
 		JsonNode jNode = recursiveProperty(node, property);
 		if (jNode != null && jNode instanceof ArrayNode) {
