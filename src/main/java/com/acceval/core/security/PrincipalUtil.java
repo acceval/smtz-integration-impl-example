@@ -31,7 +31,17 @@ public class PrincipalUtil {
 		PrincipalProvider provider = PrincipalUtil.provider.get();
 
 		if (provider == null) {
-			throw new IllegalStateException("a provider has not been set");
+			return new PrincipalProvider() {
+				@Override
+				public CurrentUser currentUser() {
+					return null;
+				}
+
+				@Override
+				public String getToken() {
+					return null;
+				}	
+			};
 		}
 
 		return provider;
