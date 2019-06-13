@@ -15,6 +15,7 @@ public class CurrentUser implements AuthUser {
 	private ServicePackage servicePackage;
 	private boolean enabled;
 	private boolean systemUser;
+	private String schemaName;
 	
 	public boolean isSystemUser() {
 		return systemUser;
@@ -99,6 +100,14 @@ public class CurrentUser implements AuthUser {
 
 	public void setServicePackage(ServicePackage servicePackage) {
 		this.servicePackage = servicePackage;
+	}
+
+	public String getSchemaName() {
+		return schemaName;
+	}
+
+	public void setSchemaName(String schemaName) {
+		this.schemaName = schemaName;
 	}
 
 }

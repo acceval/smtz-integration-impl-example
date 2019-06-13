@@ -7,4 +7,6 @@ public interface AuthUser {
 	public Long getCompanyId();
 	
 	public String getCompanyCode(); 
+	
+	public String getSchemaName();
 }

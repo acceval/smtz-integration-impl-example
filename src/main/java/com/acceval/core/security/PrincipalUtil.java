@@ -13,6 +13,7 @@ public class PrincipalUtil {
 	public static final String HDRKEY_COMPANYID = "COMPANYID";
 	public static final String HDRKEY_COMPANYCODE = "COMPANYCODE";
 	public static final String HDRKEY_SERVICEPACKAGE = "SERVICEPACKAGE";
+	public static final String HDRKEY_SCHEMANAME = "SCHEMANAME";
 
 	public static void setProvider(PrincipalProvider provider) {
 		if (PrincipalUtil.provider.get() != null) {
@@ -56,10 +57,11 @@ public class PrincipalUtil {
 	}
 
 	public static void setSystemUser(Long companyID, String companyCode, String servicePackage) {
+		
 		CurrentUser sysUser = getCurrentUser();
 		sysUser.setSystemUser(true);
 		sysUser.setCompanyId(companyID);
-		sysUser.setCompanyCode(companyCode);
+		sysUser.setCompanyCode(companyCode);		
 		if (servicePackage != null) {
 			sysUser.setServicePackage(ServicePackage.valueOf(servicePackage));
 		}
@@ -68,8 +70,8 @@ public class PrincipalUtil {
 	public static String getSchemaName() {
 		String schemaName = "shared";
 		CurrentUser user = getCurrentUser();
-		if (user != null && user.getCompanyCode() != null) {
-			schemaName = user.getCompanyCode().toLowerCase();
+		if (user != null && user.getSchemaName() != null) {
+			schemaName = user.getSchemaName().toLowerCase();
 		}
 		return schemaName;
 	}
