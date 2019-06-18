@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.audit.AuditEvent;
 import org.springframework.boot.actuate.audit.listener.AuditApplicationEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Component;
@@ -20,10 +22,10 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import com.acceval.core.amqp.MessageBody;
 import com.acceval.core.amqp.audit.PathAuditQueueSender;
 import com.acceval.core.amqp.audit.PathAuthenticationRequest;
+import com.acceval.core.security.PrincipalUtil;
 
 
 @Component
-@IgnoreAuditScan
 public class PathAuthenticationLogger {
 	
 	private  final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -40,7 +42,7 @@ public class PathAuthenticationLogger {
         Map<String, Object> data = (Map<String, Object>) auditEvent.getData();
         
         PathAuthenticationRequest pathRequest = new PathAuthenticationRequest();
-        pathRequest.setPrincipal(auditEvent.getPrincipal());
+        pathRequest.setPrincipal(auditEvent.getPrincipal());        
         pathRequest.setType(auditEvent.getType());
 //        pathRequest.setTimestamp(auditEvent.getTimestamp());
         pathRequest.setTimestamp(new Date());
@@ -80,8 +82,8 @@ public class PathAuthenticationLogger {
     			logger.info("token value : " + details.getTokenValue());
     			pathRequest.setRemoteAddress(details.getRemoteAddress());
     			pathRequest.setTokenType(details.getTokenType());
-    			pathRequest.setRemoteAddress(details.getRemoteAddress());
-    			
+    			pathRequest.setTokenValue(details.getTokenValue());
+    			    			
     		//OAuth login authentication
     		} //else if (entry.getValue() instanceof Map) {
 //        		Map<String, String> details = (Map<String, String>) entry.getValue();
