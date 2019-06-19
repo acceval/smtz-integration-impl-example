@@ -12,6 +12,12 @@ public class QueryResult<T> implements Serializable {
 	public QueryResult() {
 		super();
 	}
+	
+	public QueryResult(List<T> results) {
+		super();
+		this.total = results.size();
+		this.results = results;
+	}
 
 	public QueryResult(int total, List<T> results) {
 		super();

@@ -13,6 +13,7 @@ public class TaskView<T> {
 	public final T dataObject;
 
 	public final String assignee;
+	public String assigneeName;
 	public final String taskDescription;
 
 	public TaskView(
@@ -30,6 +31,14 @@ public class TaskView<T> {
 		this.dataObject = dataObject;
 		this.assignee = assignee;
 		this.taskDescription = taskDescription;
+	}
+	
+	public String getAssigneeName() {
+		return assigneeName;
+	}
+
+	public void setAssigneeName(String assigneeName) {
+		this.assigneeName = assigneeName;
 	}
 
 	@Override
