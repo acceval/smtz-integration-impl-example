@@ -62,6 +62,7 @@ public class PathAuthenticationLogger {
     			 }
     			 
     			 if (pathRequest.getRequestUrl() == null) {
+    				 
     				 pathRequest.setRequestUrl(this.getRequestUrl());
     			 }
     		//Error for access denied (without token)
@@ -103,13 +104,15 @@ public class PathAuthenticationLogger {
 
 	private String getRequestUrl() {
 		
-		String className = RequestContextHolder.getRequestAttributes().getClass().getSimpleName();
-		
-		if (className.equals("ServletRequestAttributes")) {
+		if (RequestContextHolder.getRequestAttributes() != null) {
+			String className = RequestContextHolder.getRequestAttributes().getClass().getSimpleName();
 			
-			ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-			HttpServletRequest httpRequest = attributes.getRequest();
-			return httpRequest.getRequestURI();    			
+			if (className.equals("ServletRequestAttributes")) {
+				
+				ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+				HttpServletRequest httpRequest = attributes.getRequest();
+				return httpRequest.getRequestURI();    			
+			}
 		}
 		
 		return null;
