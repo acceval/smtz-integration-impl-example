@@ -1,5 +1,6 @@
 package com.acceval.core.workflow.model;
 
+import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
 
@@ -16,6 +17,9 @@ public class TaskView<T> {
 	public String assigneeName;
 	public final String taskDescription;
 
+	public final Date createTime;
+	public final Date dueDate;
+
 	public TaskView(
 			@JsonProperty("id") String id,
 			@JsonProperty("processInstanceId") String processInstanceId,
@@ -23,7 +27,8 @@ public class TaskView<T> {
 			@JsonProperty("variables") Map<String, Object> variables,
 			@JsonProperty("dataObject") T dataObject,
 			@JsonProperty("assignee") String assignee, 
-			@JsonProperty("taskDescription") String taskDescription) {
+			@JsonProperty("taskDescription") String taskDescription, @JsonProperty("createTime") Date createTime,
+			@JsonProperty("dueDate") Date dueDate) {
 		this.id = id;
 		this.processInstanceId = processInstanceId;
 		this.name = name;
@@ -31,6 +36,8 @@ public class TaskView<T> {
 		this.dataObject = dataObject;
 		this.assignee = assignee;
 		this.taskDescription = taskDescription;
+		this.createTime = createTime;
+		this.dueDate = dueDate;
 	}
 	
 	public String getAssigneeName() {
