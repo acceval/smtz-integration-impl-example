@@ -1,5 +1,5 @@
 package com.acceval.core.model;
 
-public interface GlobalData {
+public interface TenantData {
 
 }

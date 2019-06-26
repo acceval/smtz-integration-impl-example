@@ -33,7 +33,7 @@ import org.springframework.util.MultiValueMap;
 import com.acceval.core.model.BaseEntity;
 import com.acceval.core.model.BaseEntity.STATUS;
 import com.acceval.core.model.BaseModel;
-import com.acceval.core.model.GlobalData;
+import com.acceval.core.model.TenantData;
 import com.acceval.core.model.VariableContext;
 import com.acceval.core.repository.Criterion.RestrictionType;
 import com.acceval.core.security.PrincipalUtil;
@@ -157,7 +157,7 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 		if (BaseEntity.class.isAssignableFrom(targetClass)) {
 			acceCriteria.appendCriterion(new Criterion("recordStatus", STATUS.ACTIVE, true));
 		}
-		if (BaseModel.class.isAssignableFrom(targetClass) && !(GlobalData.class.isAssignableFrom(targetClass))) {
+		if (BaseModel.class.isAssignableFrom(targetClass) && !(TenantData.class.isAssignableFrom(targetClass))) {
 			Long companyId = PrincipalUtil.getCompanyID();
 			if (companyId != null) {
 				acceCriteria.appendCriterion(new Criterion("companyId", companyId));
@@ -217,7 +217,7 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 	protected Object[] getMongoCriterias(Criteria acceCriteria) {
 
 		/** append company criteria for BaseModel */
-		if (BaseModel.class.isAssignableFrom(getTargetClass()) && !GlobalData.class.isAssignableFrom(getTargetClass())
+		if (BaseModel.class.isAssignableFrom(getTargetClass()) && !TenantData.class.isAssignableFrom(getTargetClass())
 				&& acceCriteria.getCriterion() != null) {
 			boolean companyKeyFound =
 					acceCriteria.getCriterion().stream().filter(c -> "companyId".equals(c.getPropertyName())).findFirst().isPresent();

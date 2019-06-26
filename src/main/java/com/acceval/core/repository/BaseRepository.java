@@ -7,6 +7,8 @@ import org.springframework.util.MultiValueMap;
 import com.acceval.core.model.BaseEntity.STATUS;
 
 public interface BaseRepository<T> {
+	
+	Long generateId();
 
 	List<T> findAll();
 

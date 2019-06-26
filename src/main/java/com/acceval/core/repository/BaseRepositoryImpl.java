@@ -1,6 +1,7 @@
 package com.acceval.core.repository;
 
 import java.lang.reflect.Field;
+import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -19,6 +20,7 @@ import java.util.StringTokenizer;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.Id;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -44,10 +46,11 @@ import org.springframework.util.MultiValueMap;
 import com.acceval.core.model.BaseEntity;
 import com.acceval.core.model.BaseEntity.STATUS;
 import com.acceval.core.model.BaseModel;
-import com.acceval.core.model.GlobalData;
+import com.acceval.core.model.TenantData;
 import com.acceval.core.repository.Criterion.RestrictionType;
 import com.acceval.core.security.PrincipalUtil;
 import com.acceval.core.util.ClassUtil;
+import com.acceval.core.util.TemplateUtil;
 
 public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 
@@ -68,6 +71,27 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 	protected abstract EntityManager getEntityManager();
 
 	protected abstract Class<?> getTargetClass();
+	
+	
+	public Long generateId() {
+		
+		Class<?> baseEntity = this.checkParentBaseEntity(this.getTargetClass());
+		String sequenceName = TemplateUtil.getEntityCode(baseEntity) + "_seq";
+		
+		String nextVal = "select nextval ('" + sequenceName + "')";
+				
+		Query seqQuery = this.getEntityManager().createNativeQuery(nextVal);
+		
+		BigInteger value = (BigInteger) seqQuery.getSingleResult();
+		long sequenceNo = value.longValue();
+		
+		LocalDate localDate = LocalDate.now();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+		String result = localDate.format(formatter);
+
+		return Long.valueOf(result + StringUtils.leftPad(String.valueOf(sequenceNo), 7, '0'));
+		
+	}
 
 	public List<T> findAll() {
 
@@ -249,7 +273,7 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 		Map<String, Join<?, ?>> mapDefinedPath = new HashMap<>();
 
 		/** append company criteria for BaseModel */
-		if (BaseModel.class.isAssignableFrom(getTargetClass()) && !GlobalData.class.isAssignableFrom(getTargetClass())
+		if (BaseModel.class.isAssignableFrom(getTargetClass()) && !TenantData.class.isAssignableFrom(getTargetClass())
 				&& acceCriteria.getCriterion() != null) {
 			boolean companyKeyFound =
 					acceCriteria.getCriterion().stream().filter(c -> "companyId".equals(c.getPropertyName())).findFirst().isPresent();
@@ -559,7 +583,7 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 		if (BaseEntity.class.isAssignableFrom(targetClass)) {
 			acceCriteria.appendCriterion(new Criterion("recordStatus", STATUS.ACTIVE, true));
 		}
-		if (BaseModel.class.isAssignableFrom(targetClass) && !(GlobalData.class.isAssignableFrom(targetClass))) {
+		if (BaseModel.class.isAssignableFrom(targetClass) && !(TenantData.class.isAssignableFrom(targetClass))) {
 			Long companyId = PrincipalUtil.getCompanyID();
 			if (companyId != null) {
 				acceCriteria.appendCriterion(new Criterion("companyId", companyId));
@@ -656,8 +680,8 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 		return query;
 	}
 
-	@Transactional
-	@Modifying
+//	@Transactional
+//	@Modifying
 	@Override
 	public void softDelete(T entity) {
 		Long id = null;
@@ -680,14 +704,21 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.US);
 		
-		@SuppressWarnings("null")
+//		@SuppressWarnings("null")
+		
+		EntityManager entityManager = this.getEntityManager();
+		EntityTransaction tx = entityManager.getTransaction();
+		tx.begin();
 		String updateSql = "UPDATE " + (parentEntity != null ? parentEntity.getSimpleName() : entity.getClass().getSimpleName())
 				+ " e SET e.recordStatus = 'ARCHIVE', e.dateArchived ='" + LocalDateTime.now().format(formatter) + "' WHERE e." + idField + " = " + id;
-		Query query = getEntityManager().createQuery(updateSql);
+		Query query = entityManager.createQuery(updateSql);
+//		this.getEntityManager().joinTransaction();
 		int updatedCount = query.executeUpdate();
+		tx.commit();
 	}
 	
 	private Class<?> checkParentBaseEntity(Class<?> clazz){
+		
 		if (clazz == null) {
 			return null;
 		}
@@ -695,17 +726,16 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 		if (clazz.getSuperclass().equals(BaseEntity.class)) {
 			if (clazz.isAnnotationPresent(Entity.class)) {
 				return clazz;
-			}else {
+			} else {
 				return null;
-			}
-			
-		}else {
+			}			
+		} else {
 			return checkParentBaseEntity(clazz.getSuperclass());
 		}
 	}
 
-	@Transactional
-	@Modifying
+//	@Transactional
+//	@Modifying
 	@Override
 	public void softDelete(List<T> entities) {
 		for (T entity : entities) {
