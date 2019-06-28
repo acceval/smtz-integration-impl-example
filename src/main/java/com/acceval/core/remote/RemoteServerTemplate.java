@@ -4,6 +4,7 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -54,6 +55,28 @@ public class RemoteServerTemplate {
         
         ResponseEntity<T> response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, 
         		bearerEntity, responseType);
+        
+        return response.getBody();
+		
+	}
+	
+	public <T> T exchange(String url, HttpMethod httpMethod, ParameterizedTypeReference<T> typeReference, Map<String, ?> uriVariables) {
+		
+		String token = this.getRemoteServerToken();
+		String completeUrl = "http://" + this.remoteConfig.getRemoteIp() + ":"
+				+ this.remoteConfig.getRemotePort() + url;
+
+		HttpHeaders bearerHeaders = this.createBearerHeaders(token);
+        HttpEntity<String> bearerEntity = new HttpEntity<String>(bearerHeaders);
+        
+        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(completeUrl);
+        
+        for (String key: uriVariables.keySet()) {
+        	Object values = uriVariables.get(key);
+        	uriBuilder.queryParam(key, values);
+        }
+        
+        ResponseEntity<T> response =  restTemplate.exchange(uriBuilder.toUriString(), httpMethod, bearerEntity, typeReference);
         
         return response.getBody();
 		
