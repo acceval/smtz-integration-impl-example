@@ -1,13 +1,11 @@
 package com.acceval.core.security;
 
-import com.acceval.core.model.ServicePackage;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
-
 import javax.validation.constraints.NotNull;
 
+import com.acceval.core.model.ServicePackage;
+
 public class PrincipalUtil {
+	
 	private static final ThreadLocal<PrincipalProvider> provider = new ThreadLocal<>();
 
 	public static final String HDRKEY_COMPANYID = "COMPANYID";
@@ -16,8 +14,10 @@ public class PrincipalUtil {
 	public static final String HDRKEY_SCHEMANAME = "SCHEMANAME";
 
 	public static void setProvider(PrincipalProvider provider) {
+		
 		if (PrincipalUtil.provider.get() != null) {
-			throw new IllegalStateException("a principal provider already exists, unable to set provider again");
+			return;
+//			throw new IllegalStateException("a principal provider already exists, unable to set provider again");
 		}
 
 		PrincipalUtil.provider.set(provider);
