@@ -1,22 +1,28 @@
 package com.acceval.core.repository;
 
+import org.bson.Document;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperationContext;
 
-import com.mongodb.DBObject;
+import com.mongodb.BasicDBObject;
 
 public class BasicAggregationOperation implements AggregationOperation {
 
-	private DBObject basicDBObject;
+	private Document document;
 
-	public BasicAggregationOperation(DBObject basicDBObject) {
+	public BasicAggregationOperation(Document document) {
 		super();
-		this.basicDBObject = basicDBObject;
+		this.document = document;
+	}
+
+	public BasicAggregationOperation(BasicDBObject basicDBObject) {
+		super();
+		this.document = new Document(basicDBObject.toMap());
 	}
 
 	@Override
-	public DBObject toDBObject(AggregationOperationContext context) {
-		return context.getMappedObject(basicDBObject);
+	public Document toDocument(AggregationOperationContext context) {
+		return context.getMappedObject(document);
 	}
 
 }

@@ -6,13 +6,13 @@ import java.time.format.DateTimeFormatter;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.HibernateException;
-import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.id.enhanced.SequenceStyleGenerator;
 
 public class SequenceGeneratorYYYYMMDD extends SequenceStyleGenerator {
 
 	@Override
-	public Serializable generate(SessionImplementor session, Object object) throws HibernateException {
+	public Serializable generate(SharedSessionContractImplementor session, Object object) throws HibernateException {
 		long seqNum = 0L;
 		LocalDate localDate = LocalDate.now();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");

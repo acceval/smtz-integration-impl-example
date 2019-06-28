@@ -1,5 +1,6 @@
 package com.acceval.core.util;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,13 +10,13 @@ import org.springframework.beans.BeansException;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.support.Repositories;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.acceval.core.MicroServiceUtilException;
 import com.acceval.core.repository.BaseRepository;
-import com.acceval.core.util.ClassUtil;
 
 @Service
 public class BaseBeanUtil implements ApplicationContextAware {
@@ -49,7 +50,16 @@ public class BaseBeanUtil implements ApplicationContextAware {
 
 	public static BaseRepository<?> getRepositoryBaseOnEntityName(String entityName) {
 		try {
-			return (BaseRepository) repositories.getRepositoryFor(ClassUtil.getClass(entityName));
+			return (BaseRepository) repositories.getRepositoryFor(ClassUtil.getClass(entityName)).orElse(null);
+		} catch (MicroServiceUtilException e) {
+			Logger.error(e.getMessage(), e);
+		}
+		return null;
+	}
+
+	public static <T, ID extends Serializable> Repository<T, ID> getSpringRepositoryBaseOnEntityName(String entityName) {
+		try {
+			return (Repository<T, ID>) repositories.getRepositoryFor(ClassUtil.getClass(entityName)).orElse(null);
 		} catch (MicroServiceUtilException e) {
 			Logger.error(e.getMessage(), e);
 		}

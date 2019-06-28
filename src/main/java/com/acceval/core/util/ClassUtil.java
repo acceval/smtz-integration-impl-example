@@ -181,7 +181,7 @@ public class ClassUtil {
 			try {
 				getter = new PropertyDescriptor(field.getName(), object.getClass()).getReadMethod();
 			} catch (IntrospectionException e) {
-				// TODO Auto-generated catch block
+				Logger.error(e.getMessage(), e);
 			}
 			if (getter != null) {
 				Annotation getterAnnotations[] = getter.getDeclaredAnnotations();

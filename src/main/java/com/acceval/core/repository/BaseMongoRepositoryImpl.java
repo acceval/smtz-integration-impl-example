@@ -19,6 +19,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -263,7 +264,7 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 								.orOperator(lstOrCri.toArray(new org.springframework.data.mongodb.core.query.Criteria[lstOrCri.size()]));
 				mongoCriterias.add(mongoOrCriteria);//[0]
 
-				lstOperation.add(new BasicAggregationOperation(new BasicDBObject("$match", orDbo)));//[1]
+				lstOperation.add(new BasicAggregationOperation(new Document("$match", orDbo)));//[1]
 				continue;
 			}
 
@@ -283,7 +284,7 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 
 			/** for [1] */
 			if (convertions.length == 2 && convertions[1] != null) {
-				lstOperation.add(new BasicAggregationOperation(new BasicDBObject("$match", (DBObject) convertions[1])));
+				lstOperation.add(new BasicAggregationOperation(new Document("$match", (DBObject) convertions[1])));
 			} else {
 				lstOperation.add(Aggregation.match(criteria));
 			}
