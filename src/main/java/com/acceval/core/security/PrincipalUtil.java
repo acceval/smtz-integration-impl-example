@@ -59,7 +59,7 @@ public class PrincipalUtil {
 	public static void setSystemUser(Long companyID, String companyCode, String servicePackage) {
 		
 		CurrentUser sysUser = getCurrentUser();
-		sysUser.setSystemUser(true);
+//		sysUser.setSystemUser(true);
 		sysUser.setCompanyId(companyID);
 		sysUser.setCompanyCode(companyCode);		
 		if (servicePackage != null) {

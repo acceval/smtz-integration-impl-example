@@ -24,11 +24,11 @@ public class RequestContextPrincipalProvider implements PrincipalProvider {
 			String servicePackage = request.getHeader(PrincipalUtil.HDRKEY_SERVICEPACKAGE);
 			String schemaName = request.getHeader(PrincipalUtil.HDRKEY_SCHEMANAME);
 			
-			//			System.out.println("principal " + request.getRequestURI());
+			//	System.out.println("principal " + request.getRequestURI());
 			if (StringUtils.isNotBlank(companyID)) {
 				if (tokenUser == null) {
 					CurrentUser sysUser = new CurrentUser();
-					sysUser.setSystemUser(true);
+//					sysUser.setSystemUser(true);
 					sysUser.setCompanyId(Long.valueOf(companyID));
 					sysUser.setCompanyCode(companyCode);
 					sysUser.setSchemaName(schemaName);
@@ -39,7 +39,7 @@ public class RequestContextPrincipalProvider implements PrincipalProvider {
 				} else {
 					tokenUser.setCompanyId(Long.valueOf(companyID));
 					tokenUser.setSchemaName(schemaName);
-					tokenUser.setSystemUser(true);
+//					tokenUser.setSystemUser(true);
 					if (StringUtils.isNotBlank(companyCode)) {
 						tokenUser.setCompanyCode(companyCode);
 					}

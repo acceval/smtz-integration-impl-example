@@ -13,13 +13,13 @@ public class RequestInterceptorUtil {
 
 			// forward company info
 			CurrentUser user = PrincipalUtil.getCurrentUser();
-			if (user.isSystemUser()) {
+//			if (user.isSystemUser()) {
 				template.header(PrincipalUtil.HDRKEY_COMPANYID, String.valueOf(user.getCompanyId()));
 				template.header(PrincipalUtil.HDRKEY_COMPANYCODE, user.getCompanyCode());
 				if (user.getServicePackage() != null) {
 					template.header(PrincipalUtil.HDRKEY_SERVICEPACKAGE, user.getServicePackage().toString());
 				}
-			}
+//			}
 		}
 	}
 

@@ -14,16 +14,16 @@ public class CurrentUser implements AuthUser {
 	private String companyCode;
 	private ServicePackage servicePackage;
 	private boolean enabled;
-	private boolean systemUser;
+//	private boolean systemUser;
 	private String schemaName;
 	
-	public boolean isSystemUser() {
-		return systemUser;
-	}
-
-	public void setSystemUser(boolean systemUser) {
-		this.systemUser = systemUser;
-	}
+//	public boolean isSystemUser() {
+//		return systemUser;
+//	}
+//
+//	public void setSystemUser(boolean systemUser) {
+//		this.systemUser = systemUser;
+//	}
 
 	@Override
 	public String toString() {
