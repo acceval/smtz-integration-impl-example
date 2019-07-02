@@ -5,7 +5,16 @@ import java.io.Serializable;
 public class TaskPayload implements Serializable{
 	private static final long serialVersionUID = 1L;
 
+	private String entityClassName;
 	private String taskDescription;
+
+	public String getEntityClassName() {
+		return entityClassName;
+	}
+
+	public void setEntityClassName(String entityClassName) {
+		this.entityClassName = entityClassName;
+	}
 
 	public String getTaskDescription() {
 		return taskDescription;

@@ -14,7 +14,7 @@ public abstract class BaseEntity extends BaseModel {
 	private static final long serialVersionUID = 1L;
 
 	public enum STATUS {
-		ACTIVE, ARCHIVE, PENDING_APPROVAL, PENDING_ARCHIVE;
+		ACTIVE, ARCHIVE, PENDING_APPROVAL, PENDING_ARCHIVE, REJECTED;
 	}
 
 	@JsonIgnore

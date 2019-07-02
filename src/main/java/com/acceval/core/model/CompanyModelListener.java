@@ -6,6 +6,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.acceval.core.security.PrincipalUtil;
+
 @Service
 public class CompanyModelListener {
 
@@ -13,6 +15,7 @@ public class CompanyModelListener {
 	public void setCompanyId(BaseModel baseModel) {
 		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Long companyId = PrincipalUtil.getCompanyID();
 		
 		if (auth != null) {
 			Object principal = auth.getPrincipal();
@@ -24,6 +27,11 @@ public class CompanyModelListener {
 					baseModel.setCompanyId(authUser.getCompanyId());				
 				}					
 			}
+		} else if (companyId != null) {
+			// backup plan for Auth not found
+			baseModel.setCompanyId(companyId);
+			baseModel.setCreatedBy(PrincipalUtil.getUsername());
+			baseModel.setModifiedBy(PrincipalUtil.getUsername());
 		}
 	}
 }

@@ -168,12 +168,12 @@ public class ClassUtil {
 		}
 	}
 
-	public static String getPrimaryKeyName(Object object) {
+	public static Field getPrimaryKeyField(Object object) {
 		Field fields[] = object.getClass().getDeclaredFields();
 		for (Field field : fields) {
 			Annotation annotations[] = field.getDeclaredAnnotations();
 			for (Annotation annotation : annotations) {
-				if (annotation instanceof javax.persistence.Id) return field.getName();
+				if (annotation instanceof javax.persistence.Id) return field;
 			}
 			// only getter methods can have persistence annotations, setters
 			// cannot
@@ -181,16 +181,24 @@ public class ClassUtil {
 			try {
 				getter = new PropertyDescriptor(field.getName(), object.getClass()).getReadMethod();
 			} catch (IntrospectionException e) {
-				Logger.error(e.getMessage(), e);
+				// do nothing, not all property has getter
 			}
 			if (getter != null) {
 				Annotation getterAnnotations[] = getter.getDeclaredAnnotations();
 				for (Annotation annotation : getterAnnotations) {
-					if (annotation instanceof javax.persistence.Id) return field.getName();
+					if (annotation instanceof javax.persistence.Id) return field;
 				}
 			}
 		}
 		return null; // no primary key found
+	}
+
+	public static String getPrimaryKeyName(Object object) {
+		Field field = getPrimaryKeyField(object);
+
+		if (field == null) return null;
+
+		return field.getName();
 	}
 
 	public static Class<?> getClass(String clazzName) throws MicroServiceUtilException {
@@ -332,7 +340,7 @@ public class ClassUtil {
 		}
 	}
 
-	public static String getGetterMethod(Class<?> clz, String propName) {
+	public static String getGetterMethodName(Class<?> clz, String propName) {
 		char[] propNameChars = propName.toCharArray();
 		propNameChars[0] = Character.toUpperCase(propNameChars[0]);
 		String getterName = "get" + new String(propNameChars);
@@ -346,9 +354,21 @@ public class ClassUtil {
 		return null;
 	}
 
+	public static Method getGetterMethod(Class<?> clz, String propName) {
+		Method getter = null;
+		try {
+			getter = new PropertyDescriptor(propName, clz).getReadMethod();
+			return getter;
+		} catch (IntrospectionException e) {
+			Logger.error(e.getMessage(), e);
+		}
+
+		return null;
+	}
+
 	public static Object getPropertyValue(Object target, String property) {
 		try {
-			return invokeMethod(target, getGetterMethod(target.getClass(), property), null, null);
+			return invokeMethod(target, getGetterMethodName(target.getClass(), property), null, null);
 		} catch (MicroServiceUtilException e) {
 			Logger.error(e.getMessage(), e);
 		}
