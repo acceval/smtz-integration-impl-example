@@ -68,7 +68,7 @@ public class PrincipalUtil {
 	}
 
 	public static String getSchemaName() {
-		String schemaName = "shared";
+		String schemaName = "public";
 		CurrentUser user = getCurrentUser();
 		if (user != null && user.getSchemaName() != null) {
 			schemaName = user.getSchemaName().toLowerCase();
