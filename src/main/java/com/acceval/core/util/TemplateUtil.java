@@ -30,6 +30,28 @@ public class TemplateUtil {
 				&& Character.isLowerCase(after));
 	}
 	
+
+	public static List<Class<?>> getDocumentClassesFromPackage(String packageName) 
+			throws ClassNotFoundException, IOException, URISyntaxException {
+	    
+		List<String> classNames = getClassNamesFromPackage(packageName);
+	    List<Class<?>> classes = new ArrayList<Class<?>>();
+	    
+	    for (String className : classNames) {
+	        Class<?> cls = Class.forName(packageName + "." + className);
+	        Annotation[] annotations = cls.getAnnotations();
+
+	        for (Annotation annotation : annotations) {
+	            System.out.println(cls.getCanonicalName() + ": " + annotation.toString());
+	            if (annotation instanceof org.springframework.data.mongodb.core.mapping.Document) {
+	                classes.add(cls);
+	            }
+	        }
+	    }
+
+	    return classes;
+	}
+	
 	public static List<Class<?>> getEntityClassesFromPackage(String packageName) 
 			throws ClassNotFoundException, IOException, URISyntaxException {
 	    
