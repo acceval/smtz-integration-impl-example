@@ -13,7 +13,8 @@ public class HistoryTask implements Serializable {
 	private String assigneeName;
 	private long durationInMillis;
 	private String durationInString;
-	private String comment;
+	private String decision;
+	private String reason;
 
 	public String getActivityName() {
 		return activityName;
@@ -71,11 +72,19 @@ public class HistoryTask implements Serializable {
 		this.durationInString = durationInString;
 	}
 
-	public String getComment() {
-		return comment;
+	public String getDecision() {
+		return decision;
 	}
 
-	public void setComment(String comment) {
-		this.comment = comment;
+	public void setDecision(String decision) {
+		this.decision = decision;
+	}
+
+	public String getReason() {
+		return reason;
+	}
+
+	public void setReason(String reason) {
+		this.reason = reason;
 	}
 }
