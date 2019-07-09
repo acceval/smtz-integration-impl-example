@@ -35,8 +35,12 @@ public abstract class QueueSender {
   		    		
 		logger.info("Sending message...");
 		try {
+			if (rabbitTemplate.getMessageConverter().getClass().getSimpleName().equals("Jackson2JsonMessageConverter")) {
 			rabbitTemplate.convertAndSend(this.getTopicExchageName(), this.getSenderQueueName(), 
 				this.messageBody.getBody());
+			} else {
+				logger.warn("Queue message not send due to wrong rabbit mq message converter. Must be json format.");
+			}
 		} catch (AmqpConnectException ex) {
 			ex.printStackTrace();
 		}
