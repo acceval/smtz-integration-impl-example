@@ -1,14 +1,14 @@
 package com.acceval.core.workflow.model;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class HistoryTask implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private String activityName;
-	private Date startTime;
-	private Date endTime;
+	private LocalDateTime startTime;
+	private LocalDateTime endTime;
 	private String assignee;
 	private String assigneeName;
 	private long durationInMillis;
@@ -24,19 +24,19 @@ public class HistoryTask implements Serializable {
 		this.activityName = activityName;
 	}
 
-	public Date getStartTime() {
+	public LocalDateTime getStartTime() {
 		return startTime;
 	}
 
-	public void setStartTime(Date startTime) {
+	public void setStartTime(LocalDateTime startTime) {
 		this.startTime = startTime;
 	}
 
-	public Date getEndTime() {
+	public LocalDateTime getEndTime() {
 		return endTime;
 	}
 
-	public void setEndTime(Date endTime) {
+	public void setEndTime(LocalDateTime endTime) {
 		this.endTime = endTime;
 	}
 
