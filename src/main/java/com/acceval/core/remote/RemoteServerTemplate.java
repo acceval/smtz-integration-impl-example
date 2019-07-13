@@ -4,6 +4,7 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -23,17 +24,18 @@ public class RemoteServerTemplate {
 	
 	private List<HttpMessageConverter<?>> messageConverters;
 	
+	@Autowired
 	private RestTemplate restTemplate;
 	
 	public RemoteServerTemplate() {
-		this.restTemplate = new RestTemplate();
+//		this.restTemplate = new RestTemplate();
 	}
 	
 	public RemoteServerTemplate(RemoteConfig config, List<HttpMessageConverter<?>> converters) {
 		
 		this.remoteConfig = config;
 		this.messageConverters = converters;
-		this.restTemplate = new RestTemplate();
+//		this.restTemplate = new RestTemplate();
 	}
 		
 	
@@ -76,7 +78,7 @@ public class RemoteServerTemplate {
         	uriBuilder.queryParam(key, values);
         }
         
-        ResponseEntity<T> response =  restTemplate.exchange(uriBuilder.toUriString(), httpMethod, bearerEntity, typeReference);
+        ResponseEntity<T> response = restTemplate.exchange(uriBuilder.toUriString(), httpMethod, bearerEntity, typeReference);
         
         return response.getBody();
 		
