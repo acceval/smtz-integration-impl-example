@@ -1,10 +1,8 @@
 package com.acceval.core.remote;
 
 import java.util.Base64;
-import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -13,16 +11,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.security.oauth2.client.OAuth2RestTemplate;
-import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.acceval.core.jackson.module.APIJavaTimeModule;
-import com.acceval.core.remote.AuthToken;
-import com.acceval.core.remote.RemoteConfig;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
 public class RemoteServerTemplate {
@@ -81,10 +74,6 @@ public class RemoteServerTemplate {
 	
 	public <T> T exchange(String url, HttpMethod httpMethod, ParameterizedTypeReference<T> typeReference, Map<String, ?> uriVariables) {
 		
-
-//		RestTemplate exchangeRestTemplate = new RestTemplate();
-
-        
 		String token = this.getRemoteServerToken();
 		String completeUrl = "http://" + this.remoteConfig.getRemoteIp() + ":"
 				+ this.remoteConfig.getRemotePort() + url;
@@ -111,17 +100,12 @@ public class RemoteServerTemplate {
         	if (converter instanceof MappingJackson2HttpMessageConverter) {
         		
         		MappingJackson2HttpMessageConverter jsonConverter = (MappingJackson2HttpMessageConverter) converter;        		
-//        		jsonConverter.getObjectMapper().getRegisteredModuleIds().add(new APIJavaTimeModule());
-        		
         		jsonConverter.getObjectMapper().registerModule(new APIJavaTimeModule());
         		
 //        		objectMapper.registerModule(new APIJavaTimeModule());
 //        		jsonConverter.setObjectMapper(objectMapper);
         	}
         }
-        
-//        RestTemplate exchangeRestTemplate = new RestTemplate();
-//        exchangeRestTemplate.setMessageConverters(messageConverters);
         
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(completeUrl);
         
@@ -144,8 +128,6 @@ public class RemoteServerTemplate {
 
 		HttpHeaders bearerHeaders = this.createBearerHeaders(token);		
 
-//        restTemplate.setMessageConverters(messageConverters);
-		
 		for (HttpMessageConverter converter: restTemplate.getMessageConverters()) {
         	if (converter instanceof MappingJackson2HttpMessageConverter) {
         		
@@ -241,13 +223,5 @@ public class RemoteServerTemplate {
 	public void setRemoteConfig(RemoteConfig remoteConfig) {
 		this.remoteConfig = remoteConfig;
 	}
-
-//	public List<HttpMessageConverter<?>> getMessageConverters() {
-//		return messageConverters;
-//	}
-//
-//	public void setMessageConverters(List<HttpMessageConverter<?>> messageConverters) {
-//		this.messageConverters = messageConverters;
-//	}
 
 }
