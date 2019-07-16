@@ -1,5 +1,5 @@
 package com.acceval.core.model;
 
-public enum IndustryTemplate {
+public enum IndustryTemplateType {
 	PETROCHEMICAL
 }

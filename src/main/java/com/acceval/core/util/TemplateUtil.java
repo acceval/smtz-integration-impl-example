@@ -9,6 +9,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.acceval.core.model.OwnerEntity;
+import com.acceval.core.model.OwnerModel;
+
 public class TemplateUtil {
 	
 	public static String getEntityCode(Class<?> entityClass) {
@@ -68,6 +71,23 @@ public class TemplateUtil {
 	                classes.add(cls);
 	            }
 	        }
+	    }
+
+	    return classes;
+	}
+	
+	public static List<Class<?>> getOwnerClassesFromPackage(String packageName) 
+			throws ClassNotFoundException, IOException, URISyntaxException {
+	    
+		List<String> classNames = getClassNamesFromPackage(packageName);
+	    List<Class<?>> classes = new ArrayList<Class<?>>();
+	    
+	    for (String className : classNames) {
+	        Class<?> cls = Class.forName(packageName + "." + className);
+	        
+	        if (OwnerModel.class.isAssignableFrom(cls) || OwnerEntity.class.isAssignableFrom(cls)) {
+	        	classes.add(cls);
+	        }	        
 	    }
 
 	    return classes;
