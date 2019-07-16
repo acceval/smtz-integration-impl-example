@@ -24,7 +24,6 @@ import com.acceval.core.remote.AuthToken;
 import com.acceval.core.remote.RemoteConfig;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-
 @Component
 public class RemoteServerTemplate {
 		
@@ -35,11 +34,10 @@ public class RemoteServerTemplate {
 //	@Autowired
 //	private ObjectMapper objectMapper;
 	
-	@Autowired
 	private RestTemplate restTemplate;
 	
 	public RemoteServerTemplate() {
-//		this.restTemplate = new RestTemplate();
+		this.restTemplate = new RestTemplate();
 	}
 	
 	public RemoteServerTemplate(RemoteConfig config) {
@@ -91,11 +89,11 @@ public class RemoteServerTemplate {
 		String completeUrl = "http://" + this.remoteConfig.getRemoteIp() + ":"
 				+ this.remoteConfig.getRemotePort() + url;
 		
-		DefaultOAuth2AccessToken authToken = new DefaultOAuth2AccessToken(
-				token);
-        authToken.setTokenType(DefaultOAuth2AccessToken.BEARER_TYPE);
-        OAuth2RestTemplate oauthRestTemplate = (OAuth2RestTemplate) this.restTemplate;
-        oauthRestTemplate.getOAuth2ClientContext().setAccessToken(authToken);
+//		DefaultOAuth2AccessToken authToken = new DefaultOAuth2AccessToken(
+//				token);
+//        authToken.setTokenType(DefaultOAuth2AccessToken.BEARER_TYPE);
+//        OAuth2RestTemplate oauthRestTemplate = (OAuth2RestTemplate) this.restTemplate;
+//        oauthRestTemplate.getOAuth2ClientContext().setAccessToken(authToken);
         
 		HttpHeaders bearerHeaders = this.createBearerHeaders(token);
         HttpEntity<String> bearerEntity = new HttpEntity<String>(bearerHeaders);
