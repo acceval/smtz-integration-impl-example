@@ -38,8 +38,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -68,7 +66,7 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 
 	protected abstract EntityManagerFactory getEntityManagerFactory();
 
-	protected abstract EntityManager getEntityManager();
+//	protected abstract EntityManager getEntityManager();
 
 	protected abstract Class<?> getTargetClass();
 	
@@ -80,14 +78,27 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 		
 		String nextVal = "select nextval ('" + sequenceName + "')";
 				
-		Query seqQuery = this.getEntityManager().createNativeQuery(nextVal);
+		EntityManager entityManager = this.getEntityManagerFactory().createEntityManager();
 		
-		BigInteger value = (BigInteger) seqQuery.getSingleResult();
+		BigInteger value = null;
+		
+		try {
+			Query seqQuery = entityManager.createNativeQuery(nextVal);
+			
+			value = (BigInteger) seqQuery.getSingleResult();
+			
+		} finally {
+			if (entityManager != null) {
+				entityManager.close();
+            }
+		}
+		
 		long sequenceNo = value.longValue();
 		
 		LocalDate localDate = LocalDate.now();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
 		String result = localDate.format(formatter);
+		
 
 		return Long.valueOf(result + StringUtils.leftPad(String.valueOf(sequenceNo), 7, '0'));
 		
@@ -315,29 +326,39 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 
 		/** start query */
 		QueryResult queryResult = null;
-		Query query = getEntityManager().createQuery(criteria);
-		int total = 0;
-		if (!acceCriteria.isFetchAll()) {
-			int page = acceCriteria.getRequestedPage();
-			int pageSize = acceCriteria.getPageSize();
-
-			CriteriaQuery<Long> cCount = builder.createQuery(Long.class);
-			cCount.multiselect(builder.count(cCount.from(targetClass)));
-			if (!lstPredicate.isEmpty()) {
-				cCount.where(lstPredicate.stream().toArray(Predicate[]::new));
+		EntityManager entityManager = this.getEntityManagerFactory().createEntityManager();
+		
+		try {
+			Query query = entityManager.createQuery(criteria);
+			int total = 0;
+			if (!acceCriteria.isFetchAll()) {
+				int page = acceCriteria.getRequestedPage();
+				int pageSize = acceCriteria.getPageSize();
+	
+				CriteriaQuery<Long> cCount = builder.createQuery(Long.class);
+				cCount.multiselect(builder.count(cCount.from(targetClass)));
+				if (!lstPredicate.isEmpty()) {
+					cCount.where(lstPredicate.stream().toArray(Predicate[]::new));
+				}
+	
+				query.setFirstResult(page * pageSize);
+				query.setMaxResults(pageSize);
+				total = entityManager.createQuery(cCount).getSingleResult().intValue();
 			}
+		
 
-			query.setFirstResult(page * pageSize);
-			query.setMaxResults(pageSize);
-			total = getEntityManager().createQuery(cCount).getSingleResult().intValue();
-		}
-
-		List<T> result = query.getResultList();
-
-		if (!acceCriteria.isFetchAll()) {
-			queryResult = new QueryResult(total, result);
-		} else {
-			queryResult = new QueryResult(result.size(), result);
+			List<T> result = query.getResultList();
+	
+			if (!acceCriteria.isFetchAll()) {
+				queryResult = new QueryResult(total, result);
+			} else {
+				queryResult = new QueryResult(result.size(), result);
+			}
+			
+		} finally {
+			if (entityManager != null) {
+				entityManager.close();
+			}
 		}
 
 		return queryResult;
@@ -658,22 +679,45 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 			}
 		}
 
-		Query query = prepareSelectQuery(status, idField, id);
-		return (T) query.getSingleResult();
+		EntityManager entityManager = this.getEntityManagerFactory().createEntityManager();
+		Object result = null;
+		try {
+			Query query = prepareSelectQuery(entityManager, status, idField, id);
+			result = query.getSingleResult();
+		} finally {
+			if (entityManager != null) {
+				entityManager.close();
+			}
+		}
+		
+		return (T) result;
 	}
 
 	@Override
 	public List<T> findAllByRecordStatus(STATUS status) {
-		Query query = prepareSelectQuery(status, null, null);
-		return query.getResultList();
+		
+		EntityManager entityManager = this.getEntityManagerFactory().createEntityManager();
+		
+		List<T> result = null; 
+		try {
+			Query query = prepareSelectQuery(entityManager, status, null, null);
+			result = query.getResultList();
+		} finally {
+			if (entityManager != null) {
+				entityManager.close();
+			}
+		}
+		return result;
 	}
 
-	private Query prepareSelectQuery(STATUS status, String idField, Long id) {
+	private Query prepareSelectQuery(EntityManager entityManager, STATUS status, String idField, Long id) {
+		
 		String selectQuery = "SELECT e FROM " + getTargetClass().getSimpleName() + " e WHERE e.recordStatus = :status";
 		if (StringUtils.isNotEmpty(idField) && id != null) {
 			selectQuery += " AND e." + idField + " = :id";
 		}
-		Query query = getEntityManager().createQuery(selectQuery, getTargetClass());
+		
+		Query query = entityManager.createQuery(selectQuery, getTargetClass());
 		query.setParameter("status", status == null ? STATUS.ACTIVE : status);
 		if (id != null) query.setParameter("id", id);
 
@@ -706,15 +750,25 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 		
 //		@SuppressWarnings("null")
 		
-		EntityManager entityManager = this.getEntityManager();
-		EntityTransaction tx = entityManager.getTransaction();
-		tx.begin();
-		String updateSql = "UPDATE " + (parentEntity != null ? parentEntity.getSimpleName() : entity.getClass().getSimpleName())
-				+ " e SET e.recordStatus = 'ARCHIVE', e.dateArchived ='" + LocalDateTime.now().format(formatter) + "' WHERE e." + idField + " = " + id;
-		Query query = entityManager.createQuery(updateSql);
-//		this.getEntityManager().joinTransaction();
-		int updatedCount = query.executeUpdate();
-		tx.commit();
+		EntityManager entityManager = this.getEntityManagerFactory().createEntityManager();
+		
+		try {
+			
+			EntityTransaction tx = entityManager.getTransaction();
+			tx.begin();
+			String updateSql = "UPDATE " + (parentEntity != null ? parentEntity.getSimpleName() : entity.getClass().getSimpleName())
+					+ " e SET e.recordStatus = 'ARCHIVE', e.dateArchived ='" + LocalDateTime.now().format(formatter) + "' WHERE e." + idField + " = " + id;
+			Query query = entityManager.createQuery(updateSql);
+	//		this.getEntityManager().joinTransaction();
+			query.executeUpdate();
+			
+			tx.commit();
+			
+		} finally {
+			if (entityManager != null) {
+				entityManager.close();
+			}
+		}
 	}
 	
 	private Class<?> checkParentBaseEntity(Class<?> clazz){
