@@ -11,24 +11,24 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 
 public class RequestContextPrincipalProvider implements PrincipalProvider {
+	
 	@Override
 	public CurrentUser currentUser() {
+		
 		CurrentUser tokenUser = getUserFromToken();
 
 		if ((tokenUser == null || tokenUser.getCompanyId() == null)
 				&& RequestContextHolder.getRequestAttributes() != null) {
-			// system user
+			
 			HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 			String companyID = request.getHeader(PrincipalUtil.HDRKEY_COMPANYID);
 			String companyCode = request.getHeader(PrincipalUtil.HDRKEY_COMPANYCODE);
 			String servicePackage = request.getHeader(PrincipalUtil.HDRKEY_SERVICEPACKAGE);
 			String schemaName = request.getHeader(PrincipalUtil.HDRKEY_SCHEMANAME);
-			
-			//	System.out.println("principal " + request.getRequestURI());
+						
 			if (StringUtils.isNotBlank(companyID)) {
 				if (tokenUser == null) {
 					CurrentUser sysUser = new CurrentUser();
-//					sysUser.setSystemUser(true);
 					sysUser.setCompanyId(Long.valueOf(companyID));
 					sysUser.setCompanyCode(companyCode);
 					sysUser.setSchemaName(schemaName);
@@ -39,7 +39,6 @@ public class RequestContextPrincipalProvider implements PrincipalProvider {
 				} else {
 					tokenUser.setCompanyId(Long.valueOf(companyID));
 					tokenUser.setSchemaName(schemaName);
-//					tokenUser.setSystemUser(true);
 					if (StringUtils.isNotBlank(companyCode)) {
 						tokenUser.setCompanyCode(companyCode);
 					}
@@ -54,7 +53,9 @@ public class RequestContextPrincipalProvider implements PrincipalProvider {
 	}
 
 	private CurrentUser getUserFromToken() {
+		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		
 		if (auth != null) {
 			Object principal = auth.getPrincipal();
 			if (principal != null && principal instanceof CurrentUser) {
