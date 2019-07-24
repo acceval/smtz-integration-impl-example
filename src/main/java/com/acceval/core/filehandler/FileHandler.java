@@ -1,14 +1,20 @@
 package com.acceval.core.filehandler;
 
+import java.io.BufferedReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Reader;
 import java.io.Writer;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.dozer.DozerBeanMapper;
 import org.dozer.MappingException;
@@ -17,133 +23,204 @@ import com.opencsv.bean.CsvBindByName;
 
 public abstract class FileHandler<T> {
 
-	protected Path path;
-	protected Class<T> fileHolder;	
-	protected Reader reader;
-	protected List records;
+	protected Iterator<T> iterator;
 	protected DozerBeanMapper beanMapper;
-	
 	protected Object holderRecord;
+	protected Class entityClass;
+	protected Class templateClass;
+	protected Path filePath;
+	protected FileHandlerConfig fileHandlerConfig;
+
 	protected List<ErrorRecord> errorRecords;
-	
 	private int index;
-	private int totalCount;
-	private int successCount;	
+	private LocalDateTime startTime;	
+
+	protected abstract void initializeFileReader()
+			throws FileHandlerException;
 	
-	public void initWithFileHolder(Class<T> fileHolder) throws IOException {
+	public UploadResult getUploadResult() {
+		
+		UploadResult uploadResult = new UploadResult();
+		uploadResult.setName(this.fileHandlerConfig.getName());
+		uploadResult.setStartTime(this.startTime);
+		uploadResult.setEndTime(LocalDateTime.now());
+		uploadResult.setProcessSeconds(ChronoUnit.SECONDS.between(uploadResult.getStartTime(), 
+				uploadResult.getEndTime()));
+		uploadResult.setFailureCount(this.getFailureCount());
+		uploadResult.setFileFunction(this.fileHandlerConfig.getFileFunction());
+		uploadResult.setFilename(filePath.getFileName().toString());
+		uploadResult.setTotalRecord(this.getTotalCount());
+		uploadResult.setFailureCount(this.getFailureCount());
+		uploadResult.setSuccessCount(this.getSuccessCount());
+		
+		if (errorRecords.size() > 0) {
+			
+			List<Integer> lineNumbers = new ArrayList<Integer>();
+			Map<Integer, ErrorRecord> errorMap = new HashMap<Integer, ErrorRecord>();
+			
+			for (ErrorRecord error: this.errorRecords) {
+				lineNumbers.add(Integer.valueOf(error.getLineNumber()));
+				errorMap.put(Integer.valueOf(error.getLineNumber()), error);
+			}
+			
+			String csvFile = filePath.toString().replace(".xlsx", ".csv").replace(".xls", ".csv");
+						
+			try {
+				BufferedReader reader = Files.newBufferedReader(Paths.get(csvFile));
 				
-		this.fileHolder = fileHolder;		
-		this.reader = Files.newBufferedReader(path);
+				for (int i = 0; i < this.fileHandlerConfig.getIgnoreLines(); i++) {
+					reader.readLine();
+				}
+	
+				String line = null;
+				
+				int index = 0;
+				
+				while ((line = reader.readLine()) != null) {
+				    
+					if (lineNumbers.contains(Integer.valueOf(index))) {
+						ErrorRecord error = errorMap.get(Integer.valueOf(index));
+						error.setLineContent(line);
+					}
+					index++;
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}			
+		}
+		
+		uploadResult.setErrorRecords(this.getErrorRecords().toArray(new ErrorRecord[this.getErrorRecords().size()]));
+		
+		return uploadResult;
+	}
+
+	public void initWithFileHolder(Path filePath, FileHandlerConfig config)
+			throws FileHandlerException {
+
+		this.filePath = filePath;
+		this.fileHandlerConfig = config;
 		this.errorRecords = new ArrayList<ErrorRecord>();
 
 		this.beanMapper = new DozerBeanMapper();
 		List<String> mappingFiles = new ArrayList<String>();
 		mappingFiles.add("dozerJdk8Converters.xml");
-		beanMapper.setMappingFiles(mappingFiles);
-		
+		this.beanMapper.setMappingFiles(mappingFiles);
+		try {
+			this.entityClass = Class.forName(config.getEntityClass());
+			this.templateClass = Class.forName(config.getFileTemplateClass());
+		} catch (ClassNotFoundException e) {			
+			e.printStackTrace();
+			throw new FileHandlerException(this.getClass(), e.getLocalizedMessage());
+		}
 		
 		this.initializeFileReader();
-		
-		this.totalCount = records.size();
-		
+		this.startTime = LocalDateTime.now();
+
 	}
-	
-	public void writeTemplateFile(Path templateFile, Class<T> templateClass) throws IOException {
-				
+
+	public void writeTemplateFile(Path templateFile) throws FileHandlerException {
+
 		Writer writer = null;
-		
+
 		try {
-			
+
 			writer = new FileWriter(templateFile.toFile());
-			Field[] fields = templateClass.getDeclaredFields();	
-			
+			Field[] fields = this.templateClass.getDeclaredFields();
+
 			ArrayList<String> columns = new ArrayList<String>();
-			
-			for (Field field : fields) {			
-							
+
+			for (Field field : fields) {
+
 				if (field.isAnnotationPresent(CsvBindByName.class)) {
-					
+
 					CsvBindByName bindByName = field.getAnnotation(CsvBindByName.class);
 					columns.add(bindByName.column());
-				}			
+				}
 			}
-			
+
 			int index = 0;
 			for (String column : columns) {
-				
+
 				if (index < columns.size() - 1) {
 					writer.write(column);
 					writer.write(",");
 				} else {
 					writer.write(column);
 				}
-				
+
 				index++;
 			}
+		} catch (IOException e) {
+			
+			e.printStackTrace();
+			throw new FileHandlerException(this.getClass(), e.getLocalizedMessage());
+			
 		} finally {
 			if (writer != null) {
-				writer.close();
+				try {
+					writer.close();
+				} catch (IOException e) {					
+					e.printStackTrace();
+					throw new FileHandlerException(this.getClass(), e.getLocalizedMessage());
+				}
 			}
 		}
 	}
-		
-	protected abstract void initializeFileReader() throws IOException;
-	
+
 	public boolean hasNext() {
-		
-		if (index <= records.size() - 1) {			
-			return true;
-		} else {
-			return false;
-		}
+
+		return this.iterator.hasNext();
 	}
-	
-	public <T> T next(Class<T> valueClass) {
-		
-		if (index > records.size() - 1) {
-			throw new ArrayIndexOutOfBoundsException();
-		}
-		
-		this.holderRecord = this.records.get(index);
-		
-		Object valueObject = null;
-		
+
+	public <T> T next() {
+
 		try {
-			
-			valueObject = beanMapper.map(holderRecord, valueClass);
-			
-		} catch (MappingException ex) {
-			ErrorRecord errorRecord = new ErrorRecord(index, ex, holderRecord);			
+
+			this.holderRecord = iterator.next();
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			ErrorRecord errorRecord = new ErrorRecord(index, ex.getLocalizedMessage());
 			this.errorRecords.add(errorRecord);
+
+			return null;
 		}
+
+		Object valueObject = null;
+
+		try {
+
+			valueObject = beanMapper.map(holderRecord, this.entityClass);
+
+		} catch (MappingException ex) {
+			ex.printStackTrace();
+			ErrorRecord errorRecord = new ErrorRecord(index, ex.getLocalizedMessage());
+			this.errorRecords.add(errorRecord);
+
+			return null;
+		}
+
 		index++;
-		successCount++;
-		
-		return (T) valueObject;		
+		return (T) valueObject;
 	}
-	
-	public <T> T getHolderRecord() {		
-		return (T) this.holderRecord;		
-	}
-	
-	public Path getPath() {
-		return path;
-	}
-	
-	public void setPath(Path path) {
-		this.path = path;
+
+	public Object getHolderRecord() {
+		return holderRecord;
 	}
 
 	public int getTotalCount() {
-		return totalCount;
+
+		return index + 1;
 	}
 
 	public int getSuccessCount() {
-		return successCount;
+
+		return index + 1 - errorRecords.size();
 	}
 
-	public int getErrorCount() {
-		return totalCount - successCount;
+	public int getFailureCount() {
+
+		return errorRecords.size();
 	}
 
 	public List<ErrorRecord> getErrorRecords() {

@@ -1,7 +1,7 @@
 package com.acceval.core.filehandler;
 
+import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Map;
 
 import com.acceval.core.filehandler.impl.CsvFileHandler;
 import com.acceval.core.filehandler.impl.XlsFileHandler;
@@ -10,18 +10,19 @@ import com.acceval.core.filehandler.impl.XlsxFileHandler;
 
 public class FileHandlerFactory {
 		
-	public static FileHandler getFileHandler(Path path) {
+	public static FileHandler getFileHandler(Path path, FileHandlerConfig config) 
+		throws FileHandlerException {
 		
 		String extension = null;
     	
-	    	int index = path.getFileName().toString().lastIndexOf('.');
-	    	if (index > 0) {
-	    	    extension = path.getFileName().toString().substring(index+1);
-	    	}
-    	
-	    	extension = extension.toUpperCase();		
-					
-	    	FileHandler fileHandler = null;
+    	int index = path.getFileName().toString().lastIndexOf('.');
+    	if (index > 0) {
+    	    extension = path.getFileName().toString().substring(index+1);
+    	}
+	
+    	extension = extension.toUpperCase();		
+				
+    	FileHandler fileHandler = null;
 	    	
 		switch (extension) {
 			case FileType.CSV_FILE: fileHandler = new CsvFileHandler(); break;					
@@ -30,8 +31,8 @@ public class FileHandlerFactory {
 			default: fileHandler = new CsvFileHandler(); break;
 		}
 		
-		fileHandler.setPath(path);
-		
+		fileHandler.initWithFileHolder(path, config);
+						
 		return fileHandler;
 	}
 }

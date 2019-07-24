@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.Reader;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -15,24 +17,25 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import com.acceval.core.filehandler.ErrorRecord;
 import com.acceval.core.filehandler.FileHandler;
+import com.acceval.core.filehandler.FileHandlerConfig;
+import com.acceval.core.filehandler.FileHandlerException;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 
 public class XlsxFileHandler extends FileHandler {
 
-	@Override
-	public void initializeFileReader() throws IOException {
+	@Override	
+	public void initializeFileReader() throws FileHandlerException {
 		
-		String csvFile = this.getPath().toString().replace(".xlsx", ".csv");
-				
+		String csvFile = filePath.toString().replace(".xlsx", ".csv");
+								
 		try {
-			Workbook workbook = new XSSFWorkbook(new File(path.toString()));
-				
+			Workbook workbook  = new XSSFWorkbook(new File(filePath.toString()));
+			
 			DataFormatter formatter = new DataFormatter();
-			PrintStream out = new PrintStream(new FileOutputStream(csvFile),
-			                                  true, "UTF-8");
+			PrintStream out = new PrintStream(new FileOutputStream(csvFile), true, "UTF-8");
+			
 			for (Sheet sheet : workbook) {
 			    for (Row row : sheet) {
 			        boolean firstCell = true;
@@ -46,27 +49,20 @@ public class XlsxFileHandler extends FileHandler {
 			    }
 			}	       
 			
-			this.path = Paths.get(csvFile);
-			this.reader = Files.newBufferedReader(this.path);
+			filePath = Paths.get(csvFile);
+			Reader fileReader = Files.newBufferedReader(filePath);
 			
-			CsvToBean csvToBean = new CsvToBeanBuilder(this.reader)
-					.withType(this.fileHolder)
-					.withIgnoreLeadingWhiteSpace(true).build();
+			CsvToBean csvToBeans = new CsvToBeanBuilder(fileReader)
+					.withType(Class.forName(this.fileHandlerConfig.getFileTemplateClass()))
+					.withIgnoreLeadingWhiteSpace(true)
+					.withSkipLines(this.fileHandlerConfig.getIgnoreLines())
+					.build();
 					
-			this.records = csvToBean.parse();
+			this.iterator = csvToBeans.iterator();
 			
-		} catch (InvalidFormatException ex) {
-						
-			ex.printStackTrace();
-			ErrorRecord errorRecord = new ErrorRecord(0, ex, this.holderRecord);			
-			this.errorRecords.add(errorRecord);	
-			throw new IOException(ex);
-					
-		} catch (Exception ex) {
-			
-			ex.printStackTrace();
-			ErrorRecord errorRecord = new ErrorRecord(0, ex, this.holderRecord);			
-			this.errorRecords.add(errorRecord);					
+		} catch (IOException | InvalidFormatException | IllegalStateException | ClassNotFoundException e) {			
+			e.printStackTrace();
+			throw new FileHandlerException(this.getClass(), e.getLocalizedMessage());
 		}
 	}
 }
