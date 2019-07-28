@@ -1,6 +1,7 @@
 package com.acceval.core.filehandler;
 
 import java.io.BufferedReader;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -21,7 +22,12 @@ import org.dozer.MappingException;
 
 import com.opencsv.bean.CsvBindByName;
 
+
 public abstract class FileHandler<T> {
+	
+	public enum FileMode {
+		READ, WRITE
+	}
 
 	protected Iterator<T> iterator;
 	protected DozerBeanMapper beanMapper;
@@ -35,8 +41,7 @@ public abstract class FileHandler<T> {
 	private int index;
 	private LocalDateTime startTime;	
 
-	protected abstract void initializeFileReader()
-			throws FileHandlerException;
+	protected abstract void initializeFileReader() throws FileHandlerException;
 	
 	public UploadResult getUploadResult() {
 		
@@ -94,9 +99,9 @@ public abstract class FileHandler<T> {
 		return uploadResult;
 	}
 
-	public void initWithFileHolder(Path filePath, FileHandlerConfig config)
+	public void initWithFileHolder(FileMode fileMode, Path filePath, FileHandlerConfig config)
 			throws FileHandlerException {
-
+		
 		this.filePath = filePath;
 		this.fileHandlerConfig = config;
 		this.errorRecords = new ArrayList<ErrorRecord>();
@@ -113,13 +118,19 @@ public abstract class FileHandler<T> {
 			throw new FileHandlerException(this.getClass(), e.getLocalizedMessage());
 		}
 		
-		this.initializeFileReader();
+		if (fileMode == FileMode.READ) {
+			this.initializeFileReader();
+		}
+		
 		this.startTime = LocalDateTime.now();
-
 	}
 
 	public void writeTemplateFile(Path templateFile) throws FileHandlerException {
 
+		if (this.fileHandlerConfig.isSampleTemplate()) {
+			return;
+		}
+		
 		Writer writer = null;
 
 		try {

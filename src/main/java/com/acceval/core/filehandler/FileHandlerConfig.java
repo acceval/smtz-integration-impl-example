@@ -10,6 +10,7 @@ public class FileHandlerConfig {
 	private String downloadTemplateUrl;
 	private String fileUploadUrl;
 	private int ignoreLines;
+	private boolean isSampleTemplate;
 	
 	public String getFileFunction() {
 		return fileFunction;
@@ -58,6 +59,12 @@ public class FileHandlerConfig {
 	}
 	public void setIgnoreLines(int ignoreLines) {
 		this.ignoreLines = ignoreLines;
+	}
+	public boolean isSampleTemplate() {
+		return isSampleTemplate;
+	}
+	public void setSampleTemplate(boolean isSampleTemplate) {
+		this.isSampleTemplate = isSampleTemplate;
 	}	
 	
 }
