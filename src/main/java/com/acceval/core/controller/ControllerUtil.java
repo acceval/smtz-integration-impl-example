@@ -37,7 +37,7 @@ public class ControllerUtil {
 			String urlPattern = mapingInfo.getPatternsCondition().getPatterns().stream().findFirst().orElse("");
 			Optional<RequestMethod> firstMethodCod = mapingInfo.getMethodsCondition().getMethods().stream().findFirst();
 			String httpMethod = firstMethodCod.isPresent() ? firstMethodCod.get().toString() : "";
-			System.out.println(mapingInfo + " : " + method.getMethod().isAnnotationPresent(Function.class));
+			//			System.out.println(mapingInfo + " : " + method.getMethod().isAnnotationPresent(Function.class));
 
 			if (StringUtils.isNotBlank(urlPattern)) {
 				String[] splitPattern = urlPattern.split("/");
