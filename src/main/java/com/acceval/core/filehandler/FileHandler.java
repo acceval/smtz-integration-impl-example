@@ -111,8 +111,12 @@ public abstract class FileHandler<T> {
 		mappingFiles.add("dozerJdk8Converters.xml");
 		this.beanMapper.setMappingFiles(mappingFiles);
 		try {
-			this.entityClass = Class.forName(config.getEntityClass());
-			this.templateClass = Class.forName(config.getFileTemplateClass());
+			if (config.getEntityClass() != null) {
+				this.entityClass = Class.forName(config.getEntityClass());
+			}
+			if (config.getFileTemplateClass() != null) {
+				this.templateClass = Class.forName(config.getFileTemplateClass());
+			}
 		} catch (ClassNotFoundException e) {			
 			e.printStackTrace();
 			throw new FileHandlerException(this.getClass(), e.getLocalizedMessage());
@@ -127,7 +131,7 @@ public abstract class FileHandler<T> {
 
 	public void writeTemplateFile(Path templateFile) throws FileHandlerException {
 
-		if (this.fileHandlerConfig.isSampleTemplate()) {
+		if (this.fileHandlerConfig.isHasSampleTemplate()) {
 			return;
 		}
 		
