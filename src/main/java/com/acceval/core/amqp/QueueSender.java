@@ -8,19 +8,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class QueueSender {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
-    
-    protected MessageBody<?> messageBody = null;
-            
+	public static final String SMARTTRADZ_TOPIC = "smarttradz.topic";
+	public static final String QUEUE_NAME_EVENTLOG = "commons-eventlog-queue";
+
+	private final Logger logger = LoggerFactory.getLogger(getClass());
+
+	protected MessageBody<?> messageBody = null;
+
 	@Autowired
-    private RabbitTemplate rabbitTemplate;
+	private RabbitTemplate rabbitTemplate;
 
-    protected abstract String getTopicExchageName();
-    
-    protected abstract String getSenderQueueName();
-    
+	protected abstract String getTopicExchageName();
 
-    public MessageBody<?> getMessageBody() {
+	protected abstract String getSenderQueueName();
+
+	public MessageBody<?> getMessageBody() {
 		return messageBody;
 	}
 
@@ -28,22 +30,31 @@ public abstract class QueueSender {
 		this.messageBody = messageBody;
 	}
 
+	//  @Scheduled(cron = "0 0 21 * * *")
+	//  @Scheduled(fixedDelay = 3000L)        
+	public void sendMessage() {
 
-//  @Scheduled(cron = "0 0 21 * * *")
-//  @Scheduled(fixedDelay = 3000L)        
-    public void sendMessage() {
-  		    		
 		logger.info("Sending message...");
 		try {
 			if (rabbitTemplate.getMessageConverter().getClass().getSimpleName().equals("Jackson2JsonMessageConverter")) {
-			rabbitTemplate.convertAndSend(this.getTopicExchageName(), this.getSenderQueueName(), 
-				this.messageBody.getBody());
+				rabbitTemplate.convertAndSend(this.getTopicExchageName(), this.getSenderQueueName(), this.messageBody.getBody());
 			} else {
 				logger.warn("Queue message not send due to wrong rabbit mq message converter. Must be json format.");
 			}
 		} catch (AmqpConnectException ex) {
 			ex.printStackTrace();
 		}
-    }
+	}
 
+	public void sendMessage(Object objMsg) {
+		try {
+			if (rabbitTemplate.getMessageConverter().getClass().getSimpleName().equals("Jackson2JsonMessageConverter")) {
+				rabbitTemplate.convertAndSend(this.getTopicExchageName(), this.getSenderQueueName(), objMsg);
+			} else {
+				logger.warn("Queue message not send due to wrong rabbit mq message converter. Must be json format.");
+			}
+		} catch (AmqpConnectException ex) {
+			ex.printStackTrace();
+		}
+	}
 }
