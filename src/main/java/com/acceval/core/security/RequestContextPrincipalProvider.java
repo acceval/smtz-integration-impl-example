@@ -1,6 +1,7 @@
 package com.acceval.core.security;
 
-import com.acceval.core.model.ServicePackage;
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -8,7 +9,7 @@ import org.springframework.security.oauth2.provider.authentication.OAuth2Authent
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletRequest;
+import com.acceval.core.model.ServicePackage;
 
 public class RequestContextPrincipalProvider implements PrincipalProvider {
 	
@@ -71,8 +72,12 @@ public class RequestContextPrincipalProvider implements PrincipalProvider {
 
 		if (auth == null) return null;
 
-		OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) auth.getDetails();
-		String token = details.getTokenType() + " " + details.getTokenValue();
-		return token;
+		if (auth.getDetails() instanceof OAuth2AuthenticationDetails) {
+			OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) auth.getDetails();
+			String token = details.getTokenType() + " " + details.getTokenValue();
+			return token;
+		}
+
+		return null;
 	}
 }
