@@ -1,7 +1,6 @@
 package com.acceval.core.filehandler;
 
 import java.io.BufferedReader;
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -187,7 +186,7 @@ public abstract class FileHandler<T> {
 		return this.iterator.hasNext();
 	}
 
-	public <T> T next() {
+	public <T> T next() throws FileMappingException {
 
 		try {
 
@@ -198,7 +197,7 @@ public abstract class FileHandler<T> {
 			ErrorRecord errorRecord = new ErrorRecord(index, ex.getLocalizedMessage());
 			this.errorRecords.add(errorRecord);
 
-			return null;
+			throw new FileMappingException(this.getClass(), ex.getLocalizedMessage());
 		}
 
 		Object valueObject = null;
@@ -212,11 +211,18 @@ public abstract class FileHandler<T> {
 			ErrorRecord errorRecord = new ErrorRecord(index, ex.getLocalizedMessage());
 			this.errorRecords.add(errorRecord);
 
-			return null;
+			throw new FileMappingException(this.getClass(), ex.getLocalizedMessage());
 		}
 
 		index++;
 		return (T) valueObject;
+	}
+	
+	public void logErrorRecord(Exception ex) {
+		
+		ErrorRecord errorRecord = new ErrorRecord(index, ex.getLocalizedMessage());
+		this.errorRecords.add(errorRecord);
+
 	}
 
 	public Object getHolderRecord() {
