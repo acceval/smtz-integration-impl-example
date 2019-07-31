@@ -54,6 +54,7 @@ public class EventLogHandlerInterceptor implements HandlerInterceptor {
 			/** controller path */
 			RequestMapping beanRM = handlerMethod.getBeanType().getDeclaredAnnotation(RequestMapping.class);
 			String[] beanPaths = beanRM.value();
+			beanPaths = beanPaths == null || beanPaths.length == 0 ? beanRM.path() : beanPaths;
 			if (beanPaths != null && beanPaths.length > 0) {
 				url = beanPaths[0];
 			}
@@ -63,26 +64,32 @@ public class EventLogHandlerInterceptor implements HandlerInterceptor {
 			RequestMapping requestMapping = method.getDeclaredAnnotation(RequestMapping.class);
 			if (requestMapping != null) {
 				values = requestMapping.value();
+				values = values == null || values.length == 0 ? requestMapping.path() : values;
 			}
 			PostMapping postMapping = method.getDeclaredAnnotation(PostMapping.class);
 			if (postMapping != null) {
-				values = postMapping.value();
+				values = postMapping.path();
+				values = values == null || values.length == 0 ? postMapping.path() : values;
 			}
 			PutMapping putMapping = method.getDeclaredAnnotation(PutMapping.class);
 			if (putMapping != null) {
-				values = putMapping.value();
+				values = putMapping.path();
+				values = values == null || values.length == 0 ? putMapping.path() : values;
 			}
 			DeleteMapping deleteMapping = method.getDeclaredAnnotation(DeleteMapping.class);
 			if (deleteMapping != null) {
-				values = deleteMapping.value();
+				values = deleteMapping.path();
+				values = values == null || values.length == 0 ? deleteMapping.path() : values;
 			}
 			PatchMapping patchMapping = method.getDeclaredAnnotation(PatchMapping.class);
 			if (patchMapping != null) {
-				values = patchMapping.value();
+				values = patchMapping.path();
+				values = values == null || values.length == 0 ? patchMapping.path() : values;
 			}
 			GetMapping getMapping = method.getDeclaredAnnotation(GetMapping.class);
 			if (getMapping != null) {
-				values = getMapping.value();
+				values = getMapping.path();
+				values = values == null || values.length == 0 ? getMapping.path() : values;
 			}
 			if (values != null && values.length > 0) {
 				url += values[0];
