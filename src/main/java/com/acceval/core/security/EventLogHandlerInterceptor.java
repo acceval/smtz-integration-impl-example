@@ -1,7 +1,10 @@
 package com.acceval.core.security;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -85,7 +88,41 @@ public class EventLogHandlerInterceptor implements HandlerInterceptor {
 				url += values[0];
 			}
 
-			/** try scan standard CRUD event action */
+			/** parsing Keys here */
+			Map<String, String> mapValues =
+					(Map<String, String>) request.getAttribute("org.springframework.web.servlet.HandlerMapping.uriTemplateVariables");
+			List<String> lstPathVariable = new ArrayList<>();
+			int index = -1;
+			Integer start = null;
+			Integer end = null;
+			while (++index < url.length()) {
+				switch (url.charAt(index)) {
+					case '{':
+						start = index;
+						break;
+					case '}':
+						end = index;
+						break;
+					default:
+						break;
+				}
+				if (start != null && end != null) {
+					lstPathVariable.add(url.substring(start + 1, end));
+					start = null;
+					end = null;
+				}
+			}
+			if (lstPathVariable.size() >= 1) {
+				logRequest.setKey1(mapValues.get(lstPathVariable.get(0)));
+			}
+			if (lstPathVariable.size() >= 2) {
+				logRequest.setKey1(mapValues.get(lstPathVariable.get(1)));
+			}
+			if (lstPathVariable.size() >= 3) {
+				logRequest.setKey1(mapValues.get(lstPathVariable.get(2)));
+			}
+
+			/** try scan standard CRUD Event Action */
 			if (StringUtils.isNotBlank(url)) {
 				String[] splitPattern = url.split("/");
 				if (splitPattern.length == 3) {
@@ -103,7 +140,7 @@ public class EventLogHandlerInterceptor implements HandlerInterceptor {
 				}
 			}
 
-			/** logging defined Event Action */
+			/** logging defined Event Action in controller with @EventLog */
 			EventLog annoEventLog = method.getDeclaredAnnotation(EventLog.class);
 			if (annoEventLog != null) {
 				if (annoEventLog.eventAction() != null) {
@@ -116,7 +153,7 @@ public class EventLogHandlerInterceptor implements HandlerInterceptor {
 
 			/** other info */
 			CurrentUser currentUser = PrincipalUtil.getCurrentUser();
-			if (currentUser != null) {
+			if (currentUser != null && currentUser.getId() != null) {
 				logRequest.setUserID(currentUser.getId());
 				logRequest.setEmail(currentUser.getEmail());
 				logRequest.setCompanyID(currentUser.getCompanyId());
@@ -125,7 +162,7 @@ public class EventLogHandlerInterceptor implements HandlerInterceptor {
 			logRequest.setHttpMethod(request.getMethod());
 			logRequest.setLogTime(new Date());
 
-			/** sending log request */
+			/** sending log request to MQ */
 			if (isLog && StringUtils.isNotBlank(eventLogUUID)) {
 				logRequest.setUuid(eventLogUUID);
 				logRequest.setRequestType(RequestType.CONTROLLER);
