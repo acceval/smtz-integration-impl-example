@@ -34,6 +34,6 @@ public @interface EventLog {
 
 	}
 
-	EventAction eventAction() default EventAction.OTHER;
+	EventAction eventAction();
 
 }

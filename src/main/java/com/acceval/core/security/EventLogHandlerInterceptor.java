@@ -1,7 +1,10 @@
 package com.acceval.core.security;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -51,6 +54,7 @@ public class EventLogHandlerInterceptor implements HandlerInterceptor {
 			/** controller path */
 			RequestMapping beanRM = handlerMethod.getBeanType().getDeclaredAnnotation(RequestMapping.class);
 			String[] beanPaths = beanRM.value();
+			beanPaths = beanPaths == null || beanPaths.length == 0 ? beanRM.path() : beanPaths;
 			if (beanPaths != null && beanPaths.length > 0) {
 				url = beanPaths[0];
 			}
@@ -60,32 +64,72 @@ public class EventLogHandlerInterceptor implements HandlerInterceptor {
 			RequestMapping requestMapping = method.getDeclaredAnnotation(RequestMapping.class);
 			if (requestMapping != null) {
 				values = requestMapping.value();
+				values = values == null || values.length == 0 ? requestMapping.path() : values;
 			}
 			PostMapping postMapping = method.getDeclaredAnnotation(PostMapping.class);
 			if (postMapping != null) {
-				values = postMapping.value();
+				values = postMapping.path();
+				values = values == null || values.length == 0 ? postMapping.path() : values;
 			}
 			PutMapping putMapping = method.getDeclaredAnnotation(PutMapping.class);
 			if (putMapping != null) {
-				values = putMapping.value();
+				values = putMapping.path();
+				values = values == null || values.length == 0 ? putMapping.path() : values;
 			}
 			DeleteMapping deleteMapping = method.getDeclaredAnnotation(DeleteMapping.class);
 			if (deleteMapping != null) {
-				values = deleteMapping.value();
+				values = deleteMapping.path();
+				values = values == null || values.length == 0 ? deleteMapping.path() : values;
 			}
 			PatchMapping patchMapping = method.getDeclaredAnnotation(PatchMapping.class);
 			if (patchMapping != null) {
-				values = patchMapping.value();
+				values = patchMapping.path();
+				values = values == null || values.length == 0 ? patchMapping.path() : values;
 			}
 			GetMapping getMapping = method.getDeclaredAnnotation(GetMapping.class);
 			if (getMapping != null) {
-				values = getMapping.value();
+				values = getMapping.path();
+				values = values == null || values.length == 0 ? getMapping.path() : values;
 			}
 			if (values != null && values.length > 0) {
 				url += values[0];
 			}
 
-			/** try scan standard CRUD event action */
+			/** parsing Keys here */
+			Map<String, String> mapValues =
+					(Map<String, String>) request.getAttribute("org.springframework.web.servlet.HandlerMapping.uriTemplateVariables");
+			List<String> lstPathVariable = new ArrayList<>();
+			int index = -1;
+			Integer start = null;
+			Integer end = null;
+			while (++index < url.length()) {
+				switch (url.charAt(index)) {
+					case '{':
+						start = index;
+						break;
+					case '}':
+						end = index;
+						break;
+					default:
+						break;
+				}
+				if (start != null && end != null) {
+					lstPathVariable.add(url.substring(start + 1, end));
+					start = null;
+					end = null;
+				}
+			}
+			if (lstPathVariable.size() >= 1) {
+				logRequest.setKey1(mapValues.get(lstPathVariable.get(0)));
+			}
+			if (lstPathVariable.size() >= 2) {
+				logRequest.setKey1(mapValues.get(lstPathVariable.get(1)));
+			}
+			if (lstPathVariable.size() >= 3) {
+				logRequest.setKey1(mapValues.get(lstPathVariable.get(2)));
+			}
+
+			/** try scan standard CRUD Event Action */
 			if (StringUtils.isNotBlank(url)) {
 				String[] splitPattern = url.split("/");
 				if (splitPattern.length == 3) {
@@ -99,11 +143,14 @@ public class EventLogHandlerInterceptor implements HandlerInterceptor {
 						}
 					} else if ("search".equals(splitPattern[2])) {
 						eventAction = EventAction.SEARCH;
+
 					}
+				} else if (splitPattern.length == 2 && RequestMethod.POST.toString().equals(httpMethod)) {
+					eventAction = EventAction.CREATE;
 				}
 			}
 
-			/** logging defined Event Action */
+			/** logging defined Event Action in controller with @EventLog */
 			EventLog annoEventLog = method.getDeclaredAnnotation(EventLog.class);
 			if (annoEventLog != null) {
 				if (annoEventLog.eventAction() != null) {
@@ -116,16 +163,20 @@ public class EventLogHandlerInterceptor implements HandlerInterceptor {
 
 			/** other info */
 			CurrentUser currentUser = PrincipalUtil.getCurrentUser();
-			if (currentUser != null) {
+			if (currentUser != null && currentUser.getId() != null) {
 				logRequest.setUserID(currentUser.getId());
 				logRequest.setEmail(currentUser.getEmail());
 				logRequest.setCompanyID(currentUser.getCompanyId());
 			}
-			logRequest.setIpAddress(request.getRemoteAddr());
+			logRequest.setIpAddress(request.getLocalAddr());
 			logRequest.setHttpMethod(request.getMethod());
 			logRequest.setLogTime(new Date());
+			String token = PrincipalUtil.getToken();
+			if (StringUtils.isNotBlank(token)) {
+				logRequest.setToken(token.replace("Bearer ", ""));
+			}
 
-			/** sending log request */
+			/** sending log request to MQ */
 			if (isLog && StringUtils.isNotBlank(eventLogUUID)) {
 				logRequest.setUuid(eventLogUUID);
 				logRequest.setRequestType(RequestType.CONTROLLER);
