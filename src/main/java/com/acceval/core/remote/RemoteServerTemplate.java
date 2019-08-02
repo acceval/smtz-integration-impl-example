@@ -238,7 +238,7 @@ public class RemoteServerTemplate {
 		HttpHeaders bearerHeaders = this.createBearerHeaders(token);
         HttpEntity<String> bearerEntity = new HttpEntity<String>(bearerHeaders);
         
-		String url = "http://" + this.remoteConfig.getRemoteIp() + ":"
+		String url = "https://" + this.remoteConfig.getRemoteIp() + ":"
 				+ this.remoteConfig.getRemotePort() 
 				+ "/identity-service/company/getObjByUuid/" + getSellerUuid();
 
