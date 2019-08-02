@@ -43,7 +43,7 @@ public class RemoteServerTemplate {
 	public <T> T getForObject(String url, Class<T> responseType, Map<String, ?> uriVariables) {
 		
 		String token = this.getRemoteServerToken();
-		String completeUrl = "http://" + this.remoteConfig.getRemoteIp() + ":"
+		String completeUrl = "https://" + this.remoteConfig.getRemoteIp() + ":"
 				+ this.remoteConfig.getRemotePort() + url;
 
 		HttpHeaders bearerHeaders = this.createBearerHeaders(token);
@@ -75,7 +75,7 @@ public class RemoteServerTemplate {
 	public <T> T exchange(String url, HttpMethod httpMethod, ParameterizedTypeReference<T> typeReference, Map<String, ?> uriVariables) {
 		
 		String token = this.getRemoteServerToken();
-		String completeUrl = "http://" + this.remoteConfig.getRemoteIp() + ":"
+		String completeUrl = "https://" + this.remoteConfig.getRemoteIp() + ":"
 				+ this.remoteConfig.getRemotePort() + url;
 		
 //		DefaultOAuth2AccessToken authToken = new DefaultOAuth2AccessToken(
@@ -123,7 +123,7 @@ public class RemoteServerTemplate {
 	public <T> T postForObject(String url, Object requestBody, Class<T> responseType) {
 
 		String token = this.getRemoteServerToken();
-		String completeUrl = "http://" + this.remoteConfig.getRemoteIp() + ":"
+		String completeUrl = "https://" + this.remoteConfig.getRemoteIp() + ":"
 				+ this.remoteConfig.getRemotePort() + url;
 
 		HttpHeaders bearerHeaders = this.createBearerHeaders(token);		
@@ -148,7 +148,7 @@ public class RemoteServerTemplate {
 	public <T> T putForObject(String url, Object requestBody, Class<T> responseType) {
 
 		String token = this.getRemoteServerToken();
-		String completeUrl = "http://" + this.remoteConfig.getRemoteIp() + ":"
+		String completeUrl = "https://" + this.remoteConfig.getRemoteIp() + ":"
 				+ this.remoteConfig.getRemotePort() + url;
 
 		HttpHeaders bearerHeaders = this.createBearerHeaders(token);
@@ -171,7 +171,7 @@ public class RemoteServerTemplate {
 
 	public String getRemoteServerToken() {
 		
-		String authUrl = "http://" + this.remoteConfig.getRemoteIp() + ":"
+		String authUrl = "https://" + this.remoteConfig.getRemoteIp() + ":"
 				+ this.remoteConfig.getRemotePort() 
 				+ "/auth-service/uaa/oauth/token";						
 	    
