@@ -17,6 +17,7 @@ public class EventLogRequest implements Serializable {
 	private String email;
 	private long companyID;
 	private String ipAddress;
+	private String token;
 	private String url;
 	private String httpMethod;
 	private int httpStatus;
@@ -73,6 +74,14 @@ public class EventLogRequest implements Serializable {
 
 	public void setIpAddress(String ipAddress) {
 		this.ipAddress = ipAddress;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
 	}
 
 	public String getUrl() {

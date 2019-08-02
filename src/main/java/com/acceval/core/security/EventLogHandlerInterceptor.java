@@ -143,7 +143,10 @@ public class EventLogHandlerInterceptor implements HandlerInterceptor {
 						}
 					} else if ("search".equals(splitPattern[2])) {
 						eventAction = EventAction.SEARCH;
+
 					}
+				} else if (splitPattern.length == 2 && RequestMethod.POST.toString().equals(httpMethod)) {
+					eventAction = EventAction.CREATE;
 				}
 			}
 
@@ -165,9 +168,13 @@ public class EventLogHandlerInterceptor implements HandlerInterceptor {
 				logRequest.setEmail(currentUser.getEmail());
 				logRequest.setCompanyID(currentUser.getCompanyId());
 			}
-			logRequest.setIpAddress(request.getRemoteAddr());
+			logRequest.setIpAddress(request.getLocalAddr());
 			logRequest.setHttpMethod(request.getMethod());
 			logRequest.setLogTime(new Date());
+			String token = PrincipalUtil.getToken();
+			if (StringUtils.isNotBlank(token)) {
+				logRequest.setToken(token.replace("Bearer ", ""));
+			}
 
 			/** sending log request to MQ */
 			if (isLog && StringUtils.isNotBlank(eventLogUUID)) {
