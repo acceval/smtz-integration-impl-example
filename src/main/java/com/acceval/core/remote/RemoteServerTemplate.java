@@ -238,9 +238,12 @@ public class RemoteServerTemplate {
 		HttpHeaders bearerHeaders = this.createBearerHeaders(token);
         HttpEntity<String> bearerEntity = new HttpEntity<String>(bearerHeaders);
         
-		String url = "https://" + this.remoteConfig.getRemoteIp() + ":"
-				+ this.remoteConfig.getRemotePort() 
-				+ "/identity-service/company/getObjByUuid/" + getSellerUuid();
+//		String url = "https://" + this.remoteConfig.getRemoteIp() + ":"
+//				+ this.remoteConfig.getRemotePort() 
+//				+ "/identity-service/company/getObjByUuid/" + getSellerUuid();
+		String url = "http://identity-service:8093" 
+				+ "/company/getObjByUuid/" + getSellerUuid();
+		
 
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(url);
         
@@ -251,7 +254,8 @@ public class RemoteServerTemplate {
         
         ResponseEntity<Company> response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, 
         		bearerEntity, Company.class);
-        Company comp = (Company) response.getBody();
+        Company comp = (Company) response.getBody();        
+        System.out.println("remote server company: " + comp.getCode());
         this.setHttpCompanyHeader(requestBearerHeaders, comp);
 		
 		
