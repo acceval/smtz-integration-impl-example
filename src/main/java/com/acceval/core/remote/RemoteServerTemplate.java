@@ -21,20 +21,13 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.acceval.core.jackson.module.APIJavaTimeModule;
 import com.acceval.core.model.Company;
-import com.acceval.core.model.CompanyModelListener;
-import com.acceval.core.security.PrincipalUtil;
 
 @Component
 public class RemoteServerTemplate {
 		
 	private RemoteConfig remoteConfig;
 	private String sellerUuid;
-	
-//	private List<HttpMessageConverter<?>> messageConverters;
-//	
-//	@Autowired
-//	private ObjectMapper objectMapper;
-	
+		
 	public String getSellerUuid() {
 		return sellerUuid;
 	}
@@ -42,28 +35,26 @@ public class RemoteServerTemplate {
 	public void setSellerUuid(String sellerUuid) {
 		this.sellerUuid = sellerUuid;
 	}
-
-	private RestTemplate restTemplate;
 	
 	public RemoteServerTemplate() {
-		this.restTemplate = new RestTemplate();
 	}
 	
 	public RemoteServerTemplate(RemoteConfig config) {
 		
 		this.remoteConfig = config;
-		this.restTemplate = new RestTemplate();
 	}
-		
 	
 	public <T> T getForObject(String url, Class<T> responseType, Map<String, ?> uriVariables) {
+		
+		RestTemplate restTemplate = new RestTemplate();
 		
 		String token = this.getRemoteServerToken();
 		String completeUrl = "https://" + this.remoteConfig.getRemoteIp() + ":"
 				+ this.remoteConfig.getRemotePort() + url;
 
 		HttpHeaders bearerHeaders = this.createBearerHeaders(token);
-		this.getRemoteSystemCompany(token,new HashMap<String, String>(), bearerHeaders);
+		Company company = this.getRemoteSystemCompany(token, new HashMap<String, String>());
+		this.setHttpCompanyHeader(bearerHeaders, company);
         HttpEntity<String> bearerEntity = new HttpEntity<String>(bearerHeaders);
         
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(completeUrl);
@@ -91,25 +82,12 @@ public class RemoteServerTemplate {
 	
 	public <T> T exchange(String url, HttpMethod httpMethod, ParameterizedTypeReference<T> typeReference, Map<String, ?> uriVariables) {
 		
+		RestTemplate restTemplate = new RestTemplate();
 		String token = this.getRemoteServerToken();
 		String completeUrl = "https://" + this.remoteConfig.getRemoteIp() + ":"
 				+ this.remoteConfig.getRemotePort() + url;
 		
-//		DefaultOAuth2AccessToken authToken = new DefaultOAuth2AccessToken(
-//				token);
-//        authToken.setTokenType(DefaultOAuth2AccessToken.BEARER_TYPE);
-//        OAuth2RestTemplate oauthRestTemplate = (OAuth2RestTemplate) this.restTemplate;
-//        oauthRestTemplate.getOAuth2ClientContext().setAccessToken(authToken);
-        
 		HttpHeaders bearerHeaders = this.createBearerHeaders(token);
-//        MappingJackson2HttpMessageConverter jsonConverter = new MappingJackson2HttpMessageConverter();
-//        objectMapper.findAndRegisterModules();
-//        jsonConverter.setObjectMapper(objectMapper);
-//        if (messageConverters == null) {
-//        	messageConverters = new ArrayList<HttpMessageConverter<?>>();
-//        }
-//        messageConverters.add(jsonConverter);
-//        restTemplate.setMessageConverters(messageConverters);
         
         for (HttpMessageConverter converter: restTemplate.getMessageConverters()) {
         	if (converter instanceof MappingJackson2HttpMessageConverter) {
@@ -117,12 +95,11 @@ public class RemoteServerTemplate {
         		MappingJackson2HttpMessageConverter jsonConverter = (MappingJackson2HttpMessageConverter) converter;        		
         		jsonConverter.getObjectMapper().registerModule(new APIJavaTimeModule());
         		
-//        		objectMapper.registerModule(new APIJavaTimeModule());
-//        		jsonConverter.setObjectMapper(objectMapper);
         	}
         }
         
-        this.getRemoteSystemCompany(token,new HashMap<String, String>(), bearerHeaders);
+        Company company = this.getRemoteSystemCompany(token, new HashMap<String, String>());
+		this.setHttpCompanyHeader(bearerHeaders, company);
         
         HttpEntity<String> bearerEntity = new HttpEntity<String>(bearerHeaders);
         
@@ -142,14 +119,17 @@ public class RemoteServerTemplate {
 	
 	private void setHttpCompanyHeader(HttpHeaders bearerHeaders, Company company) {
 		
-		bearerHeaders.add("COMPANYID", String.valueOf(company.getId()));
-		bearerHeaders.add("COMPANYCODE", company.getCode());
-		bearerHeaders.add("SERVICEPACKAGE", company.getServicePackage());
-		bearerHeaders.add("SCHEMANAME", company.getCode());
+		if (company != null) {
+			bearerHeaders.add("COMPANYID", String.valueOf(company.getId()));
+			bearerHeaders.add("COMPANYCODE", company.getCode());
+			bearerHeaders.add("SERVICEPACKAGE", company.getServicePackage());
+			bearerHeaders.add("SCHEMANAME", company.getCode());
+		}
 	}
 	
 	public <T> T postForObject(String url, Object requestBody, Class<T> responseType) {
 
+		RestTemplate restTemplate = new RestTemplate();
 		String token = this.getRemoteServerToken();
 		String completeUrl = "https://" + this.remoteConfig.getRemoteIp() + ":"
 				+ this.remoteConfig.getRemotePort() + url;
@@ -171,7 +151,8 @@ public class RemoteServerTemplate {
 		
 		restTemplate.setMessageConverters(messageConverters);
 		
-		this.getRemoteSystemCompany(token,new HashMap<String, String>(), bearerHeaders);
+		Company company = this.getRemoteSystemCompany(token, new HashMap<String, String>());
+		this.setHttpCompanyHeader(bearerHeaders, company);
         HttpEntity<?> bearerEntity = new HttpEntity<>(requestBody, bearerHeaders);
                 
         ResponseEntity<T> response = restTemplate.postForEntity(completeUrl, bearerEntity, responseType);                		
@@ -181,15 +162,18 @@ public class RemoteServerTemplate {
 	
 	public <T> T putForObject(String url, Object requestBody, Class<T> responseType) {
 
+		RestTemplate restTemplate = new RestTemplate();
 		String token = this.getRemoteServerToken();
 		String completeUrl = "https://" + this.remoteConfig.getRemoteIp() + ":"
 				+ this.remoteConfig.getRemotePort() + url;
 
 		HttpHeaders bearerHeaders = this.createBearerHeaders(token);
-		this.getRemoteSystemCompany(token,new HashMap<String, String>(), bearerHeaders);
+		Company company = this.getRemoteSystemCompany(token, new HashMap<String, String>());
+		this.setHttpCompanyHeader(bearerHeaders, company);
         HttpEntity<?> bearerEntity = new HttpEntity<>(requestBody, bearerHeaders);
         
         for (HttpMessageConverter converter: restTemplate.getMessageConverters()) {
+        	
         	if (converter instanceof MappingJackson2HttpMessageConverter) {
         		
         		MappingJackson2HttpMessageConverter jsonConverter = (MappingJackson2HttpMessageConverter) converter;        		
@@ -233,16 +217,15 @@ public class RemoteServerTemplate {
 	    return null;
 	}
 	
-	public void getRemoteSystemCompany(String token, Map<String, ?> uriVariables, HttpHeaders requestBearerHeaders) {
+	public Company getRemoteSystemCompany(String token, Map<String, ?> uriVariables) {
 
+		RestTemplate getRestTemplate = new RestTemplate();
 		HttpHeaders bearerHeaders = this.createBearerHeaders(token);
         HttpEntity<String> bearerEntity = new HttpEntity<String>(bearerHeaders);
         
-//		String url = "https://" + this.remoteConfig.getRemoteIp() + ":"
-//				+ this.remoteConfig.getRemotePort() 
-//				+ "/identity-service/company/getObjByUuid/" + getSellerUuid();
-		String url = "http://identity-service/company/getObjByUuid/" + getSellerUuid();
-		
+		String url = "https://" + this.remoteConfig.getRemoteIp() + ":"
+				+ this.remoteConfig.getRemotePort() 
+				+ "/identity-service/company/getObjByUuid/" + getSellerUuid();		
 
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(url);
         
@@ -251,12 +234,12 @@ public class RemoteServerTemplate {
         	uriBuilder.queryParam(key, values);
         }
         
-        ResponseEntity<Company> response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, 
+        ResponseEntity<Company> response = getRestTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, 
         		bearerEntity, Company.class);
-        Company comp = (Company) response.getBody();        
-        System.out.println("remote server company: " + comp.getCode());
-        this.setHttpCompanyHeader(requestBearerHeaders, comp);
-		
+        Company company = (Company) response.getBody();        
+        System.out.println("remote server company: " + company.getCode());
+        
+		return company;
 		
 	}
 	    
