@@ -168,7 +168,6 @@ public class EventLogHandlerInterceptor implements HandlerInterceptor {
 				logRequest.setEmail(currentUser.getEmail());
 				logRequest.setCompanyID(currentUser.getCompanyId());
 			}
-			logRequest.setIpAddress(request.getLocalAddr());
 			logRequest.setHttpMethod(request.getMethod());
 			logRequest.setLogTime(new Date());
 			String token = PrincipalUtil.getToken();

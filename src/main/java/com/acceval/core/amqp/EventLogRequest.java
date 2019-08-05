@@ -9,7 +9,7 @@ public class EventLogRequest implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	public enum RequestType {
-		PRE_ZUUL, POST_ZUUL, CONTROLLER, SERVICE, FORGET_PASSWORD
+		PRE_ZUUL, POST_ZUUL, CONTROLLER, SERVICE, FORGET_PASSWORD, LOGIN
 	}
 
 	private String uuid;
