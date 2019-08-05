@@ -241,8 +241,7 @@ public class RemoteServerTemplate {
 //		String url = "https://" + this.remoteConfig.getRemoteIp() + ":"
 //				+ this.remoteConfig.getRemotePort() 
 //				+ "/identity-service/company/getObjByUuid/" + getSellerUuid();
-		String url = "http://identity-service:8093" 
-				+ "/company/getObjByUuid/" + getSellerUuid();
+		String url = "http://identity-service/company/getObjByUuid/" + getSellerUuid();
 		
 
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(url);
