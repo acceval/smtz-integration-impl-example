@@ -190,42 +190,40 @@ public class RemoteServerTemplate {
 
 	public String getRemoteServerToken() {
 		
-		String authUrl = "https://" + this.remoteConfig.getRemoteIp() + ":"
-				+ this.remoteConfig.getRemotePort() 
-				+ "/auth-service/uaa/oauth/token";						
+//		String authUrl = "https://" + this.remoteConfig.getRemoteIp() + ":"
+//				+ this.remoteConfig.getRemotePort() 
+//				+ "/auth-service/uaa/oauth/token";	
+		
+		String authUrl = "http://zuul-server:8000/auth-service/uaa/oauth/token";
+	    	    
+        HttpHeaders basicHeaders = this.createBasicHeaders(this.remoteConfig.getCredentialUser(), 
+        		this.remoteConfig.getCredentialPassword());
+        	        
+        RestTemplate authRestTemplate = new RestTemplate();
+        HttpEntity<String> basicEntity = new HttpEntity<String>(basicHeaders);
+        
+        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(authUrl)
+                .queryParam("grant_type", "client_credentials");
+        
+        ResponseEntity<AuthToken> authResponse = authRestTemplate.exchange(uriBuilder.toUriString(), 
+        		HttpMethod.POST, basicEntity, AuthToken.class);
+        AuthToken authToken = authResponse.getBody();
+        
+        return authToken.getAccess_token();
 	    
-	    try {
-	        HttpHeaders basicHeaders = this.createBasicHeaders(this.remoteConfig.getCredentialUser(), 
-	        		this.remoteConfig.getCredentialPassword());
-	        	        
-	        RestTemplate authRestTemplate = new RestTemplate();
-	        HttpEntity<String> basicEntity = new HttpEntity<String>(basicHeaders);
-	        
-	        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(authUrl)
-	                .queryParam("grant_type", "client_credentials");
-	        
-	        ResponseEntity<AuthToken> authResponse = authRestTemplate.exchange(uriBuilder.toUriString(), 
-	        		HttpMethod.POST, basicEntity, AuthToken.class);
-	        AuthToken authToken = authResponse.getBody();
-	        
-	        return authToken.getAccess_token();
-	    }
-	    catch (Exception ex) {
-	        System.out.println("** Exception: "+ ex.getMessage());
-	    }
-	    
-	    return null;
 	}
 	
 	public Company getRemoteSystemCompany(String token, Map<String, ?> uriVariables) {
 
-		RestTemplate getRestTemplate = new RestTemplate();
+		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders bearerHeaders = this.createBearerHeaders(token);
         HttpEntity<String> bearerEntity = new HttpEntity<String>(bearerHeaders);
         
-		String url = "https://" + this.remoteConfig.getRemoteIp() + ":"
-				+ this.remoteConfig.getRemotePort() 
-				+ "/identity-service/company/getObjByUuid/" + getSellerUuid();		
+//		String url = "https://" + this.remoteConfig.getRemoteIp() + ":"
+//				+ this.remoteConfig.getRemotePort() 
+//				+ "/identity-service/company/getObjByUuid/" + getSellerUuid();		
+		
+		String url = "http://zuul-server:8000/identity-service/company/getObjByUuid/" + this.getSellerUuid();
 
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(url);
         
@@ -234,7 +232,7 @@ public class RemoteServerTemplate {
         	uriBuilder.queryParam(key, values);
         }
         
-        ResponseEntity<Company> response = getRestTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, 
+        ResponseEntity<Company> response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, 
         		bearerEntity, Company.class);
         Company company = (Company) response.getBody();        
         System.out.println("remote server company: " + company.getCode());
