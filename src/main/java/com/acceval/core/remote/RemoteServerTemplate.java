@@ -190,12 +190,10 @@ public class RemoteServerTemplate {
 
 	public String getRemoteServerToken() {
 		
-//		String authUrl = "https://" + this.remoteConfig.getRemoteIp() + ":"
-//				+ this.remoteConfig.getRemotePort() 
-//				+ "/auth-service/uaa/oauth/token";	
-		
-		String authUrl = "http://zuul-server:8000/auth-service/uaa/oauth/token";
-	    	    
+		String authUrl = "https://" + this.remoteConfig.getRemoteIp() + ":"
+				+ this.remoteConfig.getRemotePort() 
+				+ "/auth-service/uaa/oauth/token";	
+			    
         HttpHeaders basicHeaders = this.createBasicHeaders(this.remoteConfig.getCredentialUser(), 
         		this.remoteConfig.getCredentialPassword());
         	        
@@ -219,12 +217,10 @@ public class RemoteServerTemplate {
 		HttpHeaders bearerHeaders = this.createBearerHeaders(token);
         HttpEntity<String> bearerEntity = new HttpEntity<String>(bearerHeaders);
         
-//		String url = "https://" + this.remoteConfig.getRemoteIp() + ":"
-//				+ this.remoteConfig.getRemotePort() 
-//				+ "/identity-service/company/getObjByUuid/" + getSellerUuid();		
+		String url = "https://" + this.remoteConfig.getRemoteIp() + ":"
+				+ this.remoteConfig.getRemotePort() 
+				+ "/identity-service/company/getObjByUuid/" + getSellerUuid();		
 		
-		String url = "http://zuul-server:8000/identity-service/company/getObjByUuid/" + this.getSellerUuid();
-
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(url);
         
         for (String key: uriVariables.keySet()) {
