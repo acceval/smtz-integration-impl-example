@@ -1,6 +1,7 @@
 package com.acceval.core.security;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -10,8 +11,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -28,12 +33,21 @@ import com.acceval.core.amqp.EventLogRequest;
 import com.acceval.core.amqp.EventLogRequest.RequestType;
 import com.acceval.core.controller.EventLog;
 import com.acceval.core.controller.EventLog.EventAction;
+import com.acceval.core.controller.GenericCommonController;
+import com.acceval.core.util.ClassUtil;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
 public class EventLogHandlerInterceptor implements HandlerInterceptor {
 
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
 	@Autowired
 	private EventLogQueueSender eventLogQueueSender;
+
+	@Autowired
+	private GenericCommonController genericCommonController;
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -51,7 +65,7 @@ public class EventLogHandlerInterceptor implements HandlerInterceptor {
 			EventAction eventAction = null;
 			String url = null;
 
-			/** controller path */
+			/** controller path, for generate URL */
 			RequestMapping beanRM = handlerMethod.getBeanType().getDeclaredAnnotation(RequestMapping.class);
 			String[] beanPaths = beanRM.value();
 			beanPaths = beanPaths == null || beanPaths.length == 0 ? beanRM.path() : beanPaths;
@@ -59,7 +73,7 @@ public class EventLogHandlerInterceptor implements HandlerInterceptor {
 				url = beanPaths[0];
 			}
 
-			/** method path */
+			/** method path, for generate URL */
 			String[] values = null;
 			RequestMapping requestMapping = method.getDeclaredAnnotation(RequestMapping.class);
 			if (requestMapping != null) {
@@ -123,10 +137,10 @@ public class EventLogHandlerInterceptor implements HandlerInterceptor {
 				logRequest.setKey1(mapValues.get(lstPathVariable.get(0)));
 			}
 			if (lstPathVariable.size() >= 2) {
-				logRequest.setKey1(mapValues.get(lstPathVariable.get(1)));
+				logRequest.setKey2(mapValues.get(lstPathVariable.get(1)));
 			}
 			if (lstPathVariable.size() >= 3) {
-				logRequest.setKey1(mapValues.get(lstPathVariable.get(2)));
+				logRequest.setKey3(mapValues.get(lstPathVariable.get(2)));
 			}
 
 			/** try scan standard CRUD Event Action */
@@ -161,6 +175,35 @@ public class EventLogHandlerInterceptor implements HandlerInterceptor {
 				isLog = true;
 			}
 
+			/** try jsoning the object for update Event Action (this is old value) */
+			if (EventLog.EventAction.UPDATE.equals(eventAction)) {
+				try {
+					Type returnType = method.getGenericReturnType();// get entity base on return type!
+					String typeName = returnType.getTypeName();
+					String[] splitTypeName = typeName.split("[<>]");
+					String entityName = splitTypeName != null && splitTypeName.length > -1 ? splitTypeName[splitTypeName.length - 1] : null;
+					if (entityName != null && entityName.indexOf("com.acceval.") > -1 && lstPathVariable.size() == 1) {
+						String pkName = ClassUtil.getPrimaryKeyName(ClassUtil.getClass(entityName));
+						if (StringUtils.isNotBlank(pkName)) {
+							MultiValueMap<String, String> mvm = new LinkedMultiValueMap<>();
+							mvm.add(GenericCommonController.KEY_IS_COLLECTION, "N");
+							mvm.add(GenericCommonController.KEY_ENTITY_CLASS, entityName);
+							mvm.add(pkName, logRequest.getKey1());
+							Object obj = genericCommonController.query(mvm);
+
+							// Jsoning
+							if (obj != null) {
+								ObjectMapper objectMapper = new ObjectMapper();
+								JsonNode jsonNode = objectMapper.valueToTree(obj);
+								logRequest.setJson1(jsonNode.toString());
+							}
+						}
+					}
+				} catch (Throwable t) {
+					logger.error(t.getMessage(), t);
+				}
+			}
+
 			/** other info */
 			CurrentUser currentUser = PrincipalUtil.getCurrentUser();
 			if (currentUser != null && currentUser.getId() != null) {
@@ -191,7 +234,6 @@ public class EventLogHandlerInterceptor implements HandlerInterceptor {
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView)
 			throws Exception {
-
 	}
 
 	@Override

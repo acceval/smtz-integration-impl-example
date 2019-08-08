@@ -9,7 +9,7 @@ public class EventLogRequest implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	public enum RequestType {
-		PRE_ZUUL, POST_ZUUL, CONTROLLER, SERVICE, FORGET_PASSWORD, LOGIN
+		PRE_ZUUL, POST_ZUUL, CONTROLLER, SERVICE, FORGET_PASSWORD, LOGIN, REQUEST_BODY_ADV
 	}
 
 	private String uuid;
@@ -33,6 +33,11 @@ public class EventLogRequest implements Serializable {
 	private String param1;
 	private String param2;
 	private String param3;
+
+	/** jsons */
+	private String json1;
+	private String json2;
+	private String json3;
 
 	private RequestType requestType;// use for listener
 
@@ -170,6 +175,30 @@ public class EventLogRequest implements Serializable {
 
 	public void setParam3(String param3) {
 		this.param3 = param3;
+	}
+
+	public String getJson1() {
+		return json1;
+	}
+
+	public void setJson1(String json1) {
+		this.json1 = json1;
+	}
+
+	public String getJson2() {
+		return json2;
+	}
+
+	public void setJson2(String json2) {
+		this.json2 = json2;
+	}
+
+	public String getJson3() {
+		return json3;
+	}
+
+	public void setJson3(String json3) {
+		this.json3 = json3;
 	}
 
 	public RequestType getRequestType() {

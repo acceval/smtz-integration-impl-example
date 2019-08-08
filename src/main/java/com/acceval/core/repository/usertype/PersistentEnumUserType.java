@@ -1,4 +1,4 @@
-package com.acceval.core.repository;
+package com.acceval.core.repository.usertype;
 
 import java.io.Serializable;
 import java.sql.PreparedStatement;

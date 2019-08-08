@@ -169,7 +169,11 @@ public class ClassUtil {
 	}
 
 	public static Field getPrimaryKeyField(Object object) {
-		Field fields[] = object.getClass().getDeclaredFields();
+		return getPrimaryKeyField(object.getClass());
+	}
+
+	public static Field getPrimaryKeyField(Class<?> clazz) {
+		Field fields[] = clazz.getDeclaredFields();
 		for (Field field : fields) {
 			Annotation annotations[] = field.getDeclaredAnnotations();
 			for (Annotation annotation : annotations) {
@@ -179,7 +183,7 @@ public class ClassUtil {
 			// cannot
 			Method getter = null;
 			try {
-				getter = new PropertyDescriptor(field.getName(), object.getClass()).getReadMethod();
+				getter = new PropertyDescriptor(field.getName(), clazz).getReadMethod();
 			} catch (IntrospectionException e) {
 				// do nothing, not all property has getter
 			}
@@ -195,6 +199,14 @@ public class ClassUtil {
 
 	public static String getPrimaryKeyName(Object object) {
 		Field field = getPrimaryKeyField(object);
+
+		if (field == null) return null;
+
+		return field.getName();
+	}
+
+	public static String getPrimaryKeyName(Class<?> clzz) {
+		Field field = getPrimaryKeyField(clzz);
 
 		if (field == null) return null;
 
