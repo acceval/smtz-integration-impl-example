@@ -26,7 +26,7 @@ public class FileHandlerFactory {
 	    	
 		switch (extension) {
 			case FileType.CSV_FILE: fileHandler = new CsvFileHandler(); break;					
-			case FileType.XLSX_FILE: fileHandler = new XlsxFileHandler();	 break;	
+			case FileType.XLSX_FILE: fileHandler = new XlsxFileHandler(); break;	
 			case FileType.XLS_FILE: fileHandler = new XlsFileHandler(); break;
 			default: fileHandler = new CsvFileHandler(); break;
 		}

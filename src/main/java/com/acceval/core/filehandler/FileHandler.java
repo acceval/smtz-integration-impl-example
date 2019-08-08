@@ -37,7 +37,7 @@ public abstract class FileHandler<T> {
 	protected FileHandlerConfig fileHandlerConfig;
 
 	protected List<ErrorRecord> errorRecords;
-	private int index;
+	protected int fileIndex;
 	private LocalDateTime startTime;	
 
 	protected abstract void initializeFileReader() throws FileHandlerException;
@@ -194,7 +194,7 @@ public abstract class FileHandler<T> {
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			ErrorRecord errorRecord = new ErrorRecord(index, ex.getLocalizedMessage());
+			ErrorRecord errorRecord = new ErrorRecord(this.fileIndex, ex.getLocalizedMessage());
 			this.errorRecords.add(errorRecord);
 
 			throw new FileMappingException(this.getClass(), ex.getLocalizedMessage());
@@ -208,19 +208,19 @@ public abstract class FileHandler<T> {
 
 		} catch (MappingException ex) {
 			ex.printStackTrace();
-			ErrorRecord errorRecord = new ErrorRecord(index, ex.getLocalizedMessage());
+			ErrorRecord errorRecord = new ErrorRecord(this.fileIndex, ex.getLocalizedMessage());
 			this.errorRecords.add(errorRecord);
 
 			throw new FileMappingException(this.getClass(), ex.getLocalizedMessage());
 		}
 
-		index++;
+		this.fileIndex++;
 		return (T) valueObject;
 	}
 	
 	public void logErrorRecord(Exception ex) {
 		
-		ErrorRecord errorRecord = new ErrorRecord(index, ex.getLocalizedMessage());
+		ErrorRecord errorRecord = new ErrorRecord(this.fileIndex, ex.getLocalizedMessage());
 		this.errorRecords.add(errorRecord);
 
 	}
@@ -231,12 +231,12 @@ public abstract class FileHandler<T> {
 
 	public int getTotalCount() {
 
-		return index + 1;
+		return this.fileIndex + 1;
 	}
 
 	public int getSuccessCount() {
 
-		return index + 1 - errorRecords.size();
+		return this.fileIndex + 1 - errorRecords.size();
 	}
 
 	public int getFailureCount() {

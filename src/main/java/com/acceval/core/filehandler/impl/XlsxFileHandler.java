@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.Reader;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -18,7 +17,6 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.acceval.core.filehandler.FileHandler;
-import com.acceval.core.filehandler.FileHandlerConfig;
 import com.acceval.core.filehandler.FileHandlerException;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
@@ -37,13 +35,23 @@ public class XlsxFileHandler extends FileHandler {
 			PrintStream out = new PrintStream(new FileOutputStream(csvFile), true, "UTF-8");
 			
 			for (Sheet sheet : workbook) {
-			    for (Row row : sheet) {
-			        boolean firstCell = true;
+			    for (Row row : sheet) {			        
+			        int index = 0;
 			        for (Cell cell : row) {
-			            if (!firstCell) out.print(',');
+			            if (index != 0) {
+			            	out.print(',');
+			            }
+			            
+			            if (index < cell.getColumnIndex()) {
+			            	int loop = cell.getColumnIndex() - index;
+			            	for (int i = 0; i < loop; i++) {	            		
+			            		out.print(',');
+			            		index++;
+			            	}
+			            }
 			            String text = formatter.formatCellValue(cell);
 			            out.print(text);
-			            firstCell = false;
+			            index++;
 			        }
 			        out.println();
 			    }
