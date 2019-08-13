@@ -76,12 +76,11 @@ public class FileStorageServiceImpl implements FileStorageService {
             env.put("create", String.valueOf(Files.notExists(zipLocation)));
             
             URI fileUri = zipLocation.toUri();
-            URI zipUri = new URI("jar:" + fileUri.getScheme(), fileUri.getPath(), null);
-            System.out.println(zipUri);
+            URI zipUri = new URI("jar:" + fileUri.getScheme(), fileUri.getPath(), null);           
             
             try (FileSystem zipfs = FileSystems.newFileSystem(zipUri, env)) {
                 // Create internal path in the zipfs
-                Path internalTargetPath = zipfs.getPath("product.csv");
+                Path internalTargetPath = zipfs.getPath(file.getOriginalFilename());
                 
                 // copy a file into the zip file
                 Files.copy(toBeAdded, internalTargetPath, StandardCopyOption.REPLACE_EXISTING);
