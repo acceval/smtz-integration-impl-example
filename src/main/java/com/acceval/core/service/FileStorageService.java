@@ -17,9 +17,13 @@ public interface FileStorageService {
     Path load(String filename);
 
     Resource loadAsResource(String filename);
+    
+    Resource loadAsResource(Path filePath);
 
     void deleteAll();
 
 	void store(String filename, String content);
+	
+	String archive(MultipartFile file, Path archiveLocation);
 
 }

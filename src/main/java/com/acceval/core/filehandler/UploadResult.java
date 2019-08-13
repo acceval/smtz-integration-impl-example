@@ -1,13 +1,13 @@
 package com.acceval.core.filehandler;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 public class UploadResult {
 
 	private String name;
 	private String fileFunction;
 	private String filename;
+	private String archiveFile;
 	private int totalRecord;
 	private int successCount;
 	private int failureCount;
@@ -75,6 +75,12 @@ public class UploadResult {
 	}
 	public void setProcessSeconds(long processSeconds) {
 		this.processSeconds = processSeconds;
+	}
+	public String getArchiveFile() {
+		return archiveFile;
+	}
+	public void setArchiveFile(String archiveFile) {
+		this.archiveFile = archiveFile;
 	}
 	
 }
