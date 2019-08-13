@@ -442,6 +442,49 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 			} else {
 				return new Predicate[] { builder.equal(path, value) };
 			}
+		}
+		// NOT EQUAL
+		else if (Criterion.RestrictionType.NOT_EQUAL.equals(restrictionType)) {
+			// handle Date
+			if (ClassUtils.isAssignable(attrClass, Date.class)
+					|| ClassUtils.isAssignable(attrClass, LocalDateTime.class)
+					|| ClassUtils.isAssignable(attrClass, LocalDate.class)) {
+				int year = 0;
+				int month = 0;
+				int day = 0;
+				if (value instanceof String) {
+					try {
+						Calendar calendar = Calendar.getInstance();
+						calendar.setTime(DateUtils.parseDateStrictly((String) value, STD_DATEFORMAT));
+						year = calendar.get(Calendar.YEAR);
+						month = calendar.get(Calendar.MONTH) + 1;
+						day = calendar.get(Calendar.DAY_OF_MONTH);
+					} catch (ParseException e) {
+						LOGGER.error(e.getMessage(), e);
+					}
+				} else if (value instanceof Date) {
+					Calendar calendar = Calendar.getInstance();
+					calendar.setTime((Date) value);
+					year = calendar.get(Calendar.YEAR);
+					month = calendar.get(Calendar.MONTH) + 1;
+					day = calendar.get(Calendar.DAY_OF_MONTH);
+				} else if (value instanceof LocalDate) {
+					LocalDate vLocalDate = (LocalDate) value;
+					year = vLocalDate.getYear();
+					month = vLocalDate.getMonthValue();
+					day = vLocalDate.getDayOfMonth();
+				} else if (value instanceof LocalDateTime) {
+					LocalDateTime vLocalDate = (LocalDateTime) value;
+					year = vLocalDate.getYear();
+					month = vLocalDate.getMonthValue();
+					day = vLocalDate.getDayOfMonth();
+				}
+				return new Predicate[] { builder.notEqual(builder.function("year", Integer.class, path), year),
+						builder.notEqual(builder.function("month", Integer.class, path), month),
+						builder.notEqual(builder.function("day", Integer.class, path), day) };
+			} else {
+				return new Predicate[] { builder.notEqual(path, value) };
+			}
 		} else if (Criterion.RestrictionType.IN.equals(restrictionType)) {
 			return new Predicate[] { path.in(Arrays.asList(values)) };
 		} else if (Criterion.RestrictionType.NOT_IN.equals(restrictionType)) {
