@@ -8,7 +8,6 @@ import com.acceval.core.filehandler.FileHandler;
 import com.acceval.core.filehandler.FileHandlerException;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
-import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 
 public class CsvFileHandler extends FileHandler {
 
