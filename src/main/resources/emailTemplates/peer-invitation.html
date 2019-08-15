@@ -1,8 +1,33 @@
 {{#partial "content"}}
-<p style="margin: 0 0 20px 0;">Dear {{this.receiverName}},</p>
-<p style="margin: 0 0 10px 0;">{{this.context.COMPANY_NAME}} has invited you to sign up Smart Tradzt so you can perform online trades directly with {{this.context.COMPANY_NAME}} and others. 
-To sign up Smart Tradzt, click on the following button and fill up the sign up form.
-</p>
+	<p style="margin: 0 0 20px 0;">Dear {{this.receiverName}},</p>
+	<p style="margin:0 0 10px 0">
+		{{this.context.USER}} from {{this.context.COMPANY_NAME}} has invited you to join Smart Tradzt.
+	</p>
+	
+	<br/>
+	{{#if this.context.MESSAGE}}
+	<p style="margin:0 0 10px 0">
+		Here are the message from {{this.context.USER}}:
+	</p>
+	<blockquote class="m_6490526938793487392blockquote" style="background:#fafafa;color:#7a7a7a">
+		<div style="float:left;font-family:Georgia,serif;font-size:5em;line-height:0.1;display:inline-block;text-align:left">
+		<br />
+		<br />
+		<br />“</div>
+		<div style="padding:0em 2em 0em 2em;text-align:left;display:block;word-break:break-word">
+		<br />
+		<p>{{this.context.MESSAGE}}</p>
+		</div> 
+		<div style="padding:0em 0em 0em 0em;font-family:Georgia,serif;float:right;font-size:5em;line-height:1;display:inline-block">
+		”</div>
+    </blockquote>
+    <br />
+    {{/if}}
+    
+	
+	<p style="margin:0 0 10px 0">
+    	To register Smart Tradzt, click on the following button and fill up the registration form.
+    </p>
 
 <table align="center" role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin: auto;">
     <tr>
