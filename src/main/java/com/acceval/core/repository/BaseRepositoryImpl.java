@@ -69,39 +69,37 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 //	protected abstract EntityManager getEntityManager();
 
 	protected abstract Class<?> getTargetClass();
-	
-	
+
 	public Long generateId() {
-		
+
 		Class<?> baseEntity = this.checkParentBaseEntity(this.getTargetClass());
 		String sequenceName = TemplateUtil.getEntityCode(baseEntity) + "_seq";
-		
+
 		String nextVal = "select nextval ('" + sequenceName + "')";
-				
+
 		EntityManager entityManager = this.getEntityManagerFactory().createEntityManager();
-		
+
 		BigInteger value = null;
-		
+
 		try {
 			Query seqQuery = entityManager.createNativeQuery(nextVal);
-			
+
 			value = (BigInteger) seqQuery.getSingleResult();
-			
+
 		} finally {
 			if (entityManager != null) {
 				entityManager.close();
-            }
+			}
 		}
-		
+
 		long sequenceNo = value.longValue();
-		
+
 		LocalDate localDate = LocalDate.now();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
 		String result = localDate.format(formatter);
-		
 
 		return Long.valueOf(result + StringUtils.leftPad(String.valueOf(sequenceNo), 7, '0'));
-		
+
 	}
 
 	public List<T> findAll() {
@@ -239,15 +237,16 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 		Criteria criteria = this.getCriteriaByMapParam(mapParam, getTargetClass());
 		for (DateRange dateRange : dateRanges) {
 
-			LocalDateTime startDate = LocalDateTime.of(dateRange.getStartDate().getYear(), dateRange.getStartDate().getMonthValue(),
-					dateRange.getStartDate().getDayOfMonth(), 0, 0, 0);
+			LocalDateTime startDate = LocalDateTime.of(dateRange.getStartDate().getYear(),
+					dateRange.getStartDate().getMonthValue(), dateRange.getStartDate().getDayOfMonth(), 0, 0, 0);
 
 			if (dateRange.getEndDate() != null) {
-				LocalDateTime endDate = LocalDateTime.of(dateRange.getEndDate().getYear(), dateRange.getEndDate().getMonthValue(),
-						dateRange.getEndDate().getDayOfMonth(), 0, 0);
+				LocalDateTime endDate = LocalDateTime.of(dateRange.getEndDate().getYear(),
+						dateRange.getEndDate().getMonthValue(), dateRange.getEndDate().getDayOfMonth(), 0, 0);
 				endDate = endDate.plusDays(1);
 
-				Criterion startCriterion = new Criterion(dateRange.getPropertyPath(), RestrictionType.GREATER_OR_EQUAL, startDate);
+				Criterion startCriterion = new Criterion(dateRange.getPropertyPath(), RestrictionType.GREATER_OR_EQUAL,
+						startDate);
 				startCriterion.setSearchValueDataType(Criterion.DATE);
 				criteria.appendCriterion(startCriterion);
 
@@ -256,7 +255,8 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 				criteria.appendCriterion(endCriterion);
 
 			} else {
-				Criterion startCriterion = new Criterion(dateRange.getPropertyPath(), RestrictionType.GREATER_OR_EQUAL, startDate);
+				Criterion startCriterion = new Criterion(dateRange.getPropertyPath(), RestrictionType.GREATER_OR_EQUAL,
+						startDate);
 				startCriterion.setSearchValueDataType(Criterion.DATE);
 				criteria.appendCriterion(startCriterion);
 
@@ -286,8 +286,8 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 		/** append company criteria for BaseModel */
 		if (BaseModel.class.isAssignableFrom(getTargetClass()) && !TenantData.class.isAssignableFrom(getTargetClass())
 				&& acceCriteria.getCriterion() != null) {
-			boolean companyKeyFound =
-					acceCriteria.getCriterion().stream().filter(c -> "companyId".equals(c.getPropertyName())).findFirst().isPresent();
+			boolean companyKeyFound = acceCriteria.getCriterion().stream()
+					.filter(c -> "companyId".equals(c.getPropertyName())).findFirst().isPresent();
 			if (!companyKeyFound) {
 				acceCriteria.appendCriterion(new Criterion("companyId", PrincipalUtil.getCompanyID()));
 			}
@@ -327,34 +327,33 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 		/** start query */
 		QueryResult queryResult = null;
 		EntityManager entityManager = this.getEntityManagerFactory().createEntityManager();
-		
+
 		try {
 			Query query = entityManager.createQuery(criteria);
 			int total = 0;
 			if (!acceCriteria.isFetchAll()) {
 				int page = acceCriteria.getRequestedPage();
 				int pageSize = acceCriteria.getPageSize();
-	
+
 				CriteriaQuery<Long> cCount = builder.createQuery(Long.class);
 				cCount.multiselect(builder.count(cCount.from(targetClass)));
 				if (!lstPredicate.isEmpty()) {
 					cCount.where(lstPredicate.stream().toArray(Predicate[]::new));
 				}
-	
+
 				query.setFirstResult(page * pageSize);
 				query.setMaxResults(pageSize);
 				total = entityManager.createQuery(cCount).getSingleResult().intValue();
 			}
-		
 
 			List<T> result = query.getResultList();
-	
+
 			if (!acceCriteria.isFetchAll()) {
 				queryResult = new QueryResult(total, result);
 			} else {
 				queryResult = new QueryResult(result.size(), result);
 			}
-			
+
 		} finally {
 			if (entityManager != null) {
 				entityManager.close();
@@ -404,7 +403,8 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 		// EQUAL
 		else if (Criterion.RestrictionType.EQUAL.equals(restrictionType)) {
 			// handle Date
-			if (ClassUtils.isAssignable(attrClass, Date.class) || ClassUtils.isAssignable(attrClass, LocalDateTime.class)
+			if (ClassUtils.isAssignable(attrClass, Date.class)
+					|| ClassUtils.isAssignable(attrClass, LocalDateTime.class)
 					|| ClassUtils.isAssignable(attrClass, LocalDate.class)) {
 				int year = 0;
 				int month = 0;
@@ -569,7 +569,8 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 	public Criteria getCriteriaByMapParam(MultiValueMap<String, String> mapParam, Class<?> targetClass) {
 		int page = mapParam.get(_PAGE) != null ? Integer.parseInt(mapParam.getFirst(_PAGE)) : 0;
 		int pageSize = mapParam.get(_PAGESIZE) != null ? Integer.parseInt(mapParam.getFirst(_PAGESIZE)) : 0;
-		boolean isFetchAll = mapParam.get(_FETCHALL) != null ? Boolean.parseBoolean(mapParam.getFirst(_FETCHALL)) : (pageSize <= 0);
+		boolean isFetchAll = mapParam.get(_FETCHALL) != null ? Boolean.parseBoolean(mapParam.getFirst(_FETCHALL))
+				: (pageSize <= 0);
 		List<String> lstSort = mapParam.get(_SORT);
 
 		Criteria acceCriteria = new Criteria();
@@ -614,7 +615,8 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 						Object searchValues = searchValue.toArray();
 						lstCrriterion.add(new Criterion(resolveKey, searchValues));
 					} else {
-						lstCrriterion.add(new Criterion(resolveKey, "%" + mapParam.getFirst(key).toLowerCase() + "%", false));
+						lstCrriterion.add(
+								new Criterion(resolveKey, "%" + mapParam.getFirst(key).toLowerCase() + "%", false));
 					}
 				} else if (ClassUtils.isAssignable(attrClass, Double.class, true)) {
 					lstCrriterion.add(new Criterion(resolveKey, Double.parseDouble(mapParam.getFirst(key))));
@@ -622,16 +624,18 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 					lstCrriterion.add(new Criterion(resolveKey, Float.parseFloat(mapParam.getFirst(key))));
 				} else if (ClassUtils.isAssignable(attrClass, Integer.class, true)) {
 					lstCrriterion.add(new Criterion(resolveKey, Integer.parseInt(mapParam.getFirst(key))));
-				} else if (ClassUtils.isAssignable(attrClass, Date.class) || ClassUtils.isAssignable(attrClass, LocalDate.class)
+				} else if (ClassUtils.isAssignable(attrClass, Date.class)
+						|| ClassUtils.isAssignable(attrClass, LocalDate.class)
 						|| ClassUtils.isAssignable(attrClass, LocalDateTime.class)) {
 					try {
-						lstCrriterion.add(new Criterion(resolveKey, DateUtils.parseDateStrictly(mapParam.getFirst(key), STD_DATEFORMAT)));
+						lstCrriterion.add(new Criterion(resolveKey,
+								DateUtils.parseDateStrictly(mapParam.getFirst(key), STD_DATEFORMAT)));
 					} catch (ParseException e) {
 						LOGGER.error("Date Parsing Error.", e);
 					}
 				} else if (ClassUtils.isAssignable(attrClass, Enum.class)) {
-					lstCrriterion
-							.add(new Criterion(resolveKey, Enum.valueOf(attrClass.asSubclass(Enum.class), mapParam.getFirst(key)), true));
+					lstCrriterion.add(new Criterion(resolveKey,
+							Enum.valueOf(attrClass.asSubclass(Enum.class), mapParam.getFirst(key)), true));
 				} else {
 					LOGGER.error("[" + attrClass.getName() + "] is not support in Acceval Base Criteria Search yet!");
 				}
@@ -703,8 +707,8 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 	}
 
 	/**
-	 * provide Map to translate short property to full property path eg.
-	 * customerID => customer.customerID
+	 * provide Map to translate short property to full property path eg. customerID
+	 * => customer.customerID
 	 */
 	protected Map<String, String> getMapPropertyResolver() {
 		return new HashMap<>();
@@ -732,16 +736,16 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 				entityManager.close();
 			}
 		}
-		
+
 		return (T) result;
 	}
 
 	@Override
 	public List<T> findAllByRecordStatus(STATUS status) {
-		
+
 		EntityManager entityManager = this.getEntityManagerFactory().createEntityManager();
-		
-		List<T> result = null; 
+
+		List<T> result = null;
 		try {
 			Query query = prepareSelectQuery(entityManager, status, null, null);
 			result = query.getResultList();
@@ -754,21 +758,20 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 	}
 
 	private Query prepareSelectQuery(EntityManager entityManager, STATUS status, String idField, Long id) {
-		
+
 		String selectQuery = "SELECT e FROM " + getTargetClass().getSimpleName() + " e WHERE e.recordStatus = :status";
 		if (StringUtils.isNotEmpty(idField) && id != null) {
 			selectQuery += " AND e." + idField + " = :id";
 		}
-		
+
 		Query query = entityManager.createQuery(selectQuery, getTargetClass());
 		query.setParameter("status", status == null ? STATUS.ACTIVE : status);
-		if (id != null) query.setParameter("id", id);
+		if (id != null)
+			query.setParameter("id", id);
 
 		return query;
 	}
 
-//	@Transactional
-//	@Modifying
 	@Override
 	public void softDelete(T entity) {
 		Long id = null;
@@ -790,49 +793,48 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 		}
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.US);
-		
+
 //		@SuppressWarnings("null")
-		
+
 		EntityManager entityManager = this.getEntityManagerFactory().createEntityManager();
-		
+
 		try {
-			
+
 			EntityTransaction tx = entityManager.getTransaction();
 			tx.begin();
-			String updateSql = "UPDATE " + (parentEntity != null ? parentEntity.getSimpleName() : entity.getClass().getSimpleName())
-					+ " e SET e.recordStatus = 'ARCHIVE', e.dateArchived ='" + LocalDateTime.now().format(formatter) + "' WHERE e." + idField + " = " + id;
+			String updateSql = "UPDATE "
+					+ (parentEntity != null ? parentEntity.getSimpleName() : entity.getClass().getSimpleName())
+					+ " e SET e.recordStatus = 'ARCHIVE', e.dateArchived ='" + LocalDateTime.now().format(formatter)
+					+ "' WHERE e." + idField + " = " + id;
 			Query query = entityManager.createQuery(updateSql);
-	//		this.getEntityManager().joinTransaction();
 			query.executeUpdate();
-			
+
 			tx.commit();
-			
+
 		} finally {
 			if (entityManager != null) {
 				entityManager.close();
 			}
 		}
 	}
-	
-	private Class<?> checkParentBaseEntity(Class<?> clazz){
-		
+
+	private Class<?> checkParentBaseEntity(Class<?> clazz) {
+
 		if (clazz == null) {
 			return null;
 		}
-		
+
 		if (clazz.getSuperclass().equals(BaseEntity.class)) {
 			if (clazz.isAnnotationPresent(Entity.class)) {
 				return clazz;
 			} else {
 				return null;
-			}			
+			}
 		} else {
 			return checkParentBaseEntity(clazz.getSuperclass());
 		}
 	}
 
-//	@Transactional
-//	@Modifying
 	@Override
 	public void softDelete(List<T> entities) {
 		for (T entity : entities) {
