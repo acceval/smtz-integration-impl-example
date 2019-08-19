@@ -5,6 +5,7 @@ public class FunctionObject {
 	public static final String CRUD_READ = "READ";
 	public static final String CRUD_UPDATE = "UPDATE";
 	public static final String CRUD_DELETE = "DELETE";
+	public static final String SYSTEM = "SYSTEM";// mark as system, use for bypass function access
 
 	public static String ACCESS_ALL = "ALL";
 
