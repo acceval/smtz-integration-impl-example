@@ -8,9 +8,13 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+
+import org.reflections.Reflections;
 
 import com.acceval.core.model.OwnerEntity;
 import com.acceval.core.model.OwnerModel;
+import com.acceval.core.model.BaseModel;
 
 public class TemplateUtil {
 	
@@ -58,22 +62,13 @@ public class TemplateUtil {
 	public static List<Class<?>> getEntityClassesFromPackage(String packageName) 
 			throws ClassNotFoundException, IOException, URISyntaxException {
 	    
-		List<String> classNames = getClassNamesFromPackage(packageName);
-	    List<Class<?>> classes = new ArrayList<Class<?>>();
-	    
-	    for (String className : classNames) {
-	        Class<?> cls = Class.forName(packageName + "." + className);
-	        Annotation[] annotations = cls.getAnnotations();
+		
+		Reflections reflections = new Reflections(packageName);
 
-	        for (Annotation annotation : annotations) {
-	            System.out.println(cls.getCanonicalName() + ": " + annotation.toString());
-	            if (annotation instanceof javax.persistence.Entity) {
-	                classes.add(cls);
-	            }
-	        }
-	    }
-
-	    return classes;
+		Set<Class<? extends BaseModel>> baseModelClasses = reflections.getSubTypesOf(BaseModel.class);
+				
+		return new ArrayList<Class<?>>(baseModelClasses);
+				
 	}
 	
 	public static List<Class<?>> getOwnerClassesFromPackage(String packageName) 

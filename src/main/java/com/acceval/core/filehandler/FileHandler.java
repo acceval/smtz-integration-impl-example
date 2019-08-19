@@ -231,12 +231,12 @@ public abstract class FileHandler<T> {
 
 	public int getTotalCount() {
 
-		return this.fileIndex + 1;
+		return this.fileIndex;
 	}
 
 	public int getSuccessCount() {
 
-		return this.fileIndex + 1 - errorRecords.size();
+		return this.fileIndex - errorRecords.size();
 	}
 
 	public int getFailureCount() {
