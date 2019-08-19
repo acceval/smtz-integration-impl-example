@@ -4,7 +4,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-import com.acceval.core.security.EventLogHandlerInterceptor;
+import com.acceval.core.eventlog.EventLogHandlerInterceptor;
 import com.acceval.core.security.PrincipalProviderHandlerInterceptor;
 
 @Configuration

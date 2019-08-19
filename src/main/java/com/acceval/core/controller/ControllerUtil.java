@@ -37,7 +37,6 @@ public class ControllerUtil {
 			String urlPattern = mapingInfo.getPatternsCondition().getPatterns().stream().findFirst().orElse("");
 			Optional<RequestMethod> firstMethodCod = mapingInfo.getMethodsCondition().getMethods().stream().findFirst();
 			String httpMethod = firstMethodCod.isPresent() ? firstMethodCod.get().toString() : "";
-			//			System.out.println(mapingInfo + " : " + method.getMethod().isAnnotationPresent(Function.class));
 
 			if (StringUtils.isNotBlank(urlPattern)) {
 				String[] splitPattern = urlPattern.split("/");
@@ -79,12 +78,18 @@ public class ControllerUtil {
 						} else if (RequestMethod.GET.toString().equals(httpMethod)) {
 							lstAC.add(new FunctionObject(microService, module, "view", newUrlSB.toString(),
 									"CRUD." + FunctionObject.CRUD_READ, httpMethod));
-							lstAC.add(new FunctionObject(microService, module, "view", newUrlSB.toString().replace("{}", "search"),
-									"CRUD." + FunctionObject.CRUD_READ, httpMethod));
 						}
+					} else if (RequestMethod.GET.toString().equals(httpMethod) && splitPattern.length == 3
+							&& "search".equals(splitPattern[2])) {
+						lstAC.add(new FunctionObject(microService, module, "view", newUrlSB.toString(), "CRUD." + FunctionObject.CRUD_READ,
+								httpMethod));
 					} else if (splitPattern.length == 2 && RequestMethod.POST.toString().equals(httpMethod)) {
 						lstAC.add(new FunctionObject(microService, module, "create", newUrlSB.toString(),
 								"CRUD." + FunctionObject.CRUD_CREATE, httpMethod));
+					} else {
+						// mark as system, use for bypass function access
+						lstAC.add(new FunctionObject(microService, module, FunctionObject.SYSTEM, newUrlSB.toString(),
+								FunctionObject.SYSTEM, httpMethod));
 					}
 				}
 			}

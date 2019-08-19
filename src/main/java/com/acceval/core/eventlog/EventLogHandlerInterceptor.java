@@ -1,4 +1,4 @@
-package com.acceval.core.security;
+package com.acceval.core.eventlog;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -33,6 +33,8 @@ import com.acceval.core.amqp.EventLogRequest;
 import com.acceval.core.amqp.EventLogRequest.RequestType;
 import com.acceval.core.controller.EventLog;
 import com.acceval.core.controller.EventLog.EventAction;
+import com.acceval.core.security.CurrentUser;
+import com.acceval.core.security.PrincipalUtil;
 import com.acceval.core.controller.GenericCommonController;
 import com.acceval.core.util.ClassUtil;
 import com.fasterxml.jackson.databind.JsonNode;
