@@ -2,9 +2,13 @@ package com.acceval.core.repository;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+
+import com.acceval.core.repository.Criterion.RestrictionType;
 
 public class Criteria implements Serializable {
 
@@ -32,6 +36,41 @@ public class Criteria implements Serializable {
 
 		}
 		criterion.removeAll(list);
+	}
+
+	public void regroupCriteria() {
+		Map<String, List<Criterion>> mapCri = new HashMap<String, List<Criterion>>();
+		List<Criterion> newCriterion = new ArrayList<>();
+		for (Criterion cri : this.criterion) {
+			List<Criterion> criList = mapCri.get(cri.getPropertyName());
+			if (criList == null) {
+				criList = new ArrayList<>();
+				mapCri.put(cri.getPropertyName(), criList);
+			}
+			criList.add(cri);
+		}
+		for(String key : mapCri.keySet()) {
+			List<Criterion> criList = mapCri.get(key);
+			if(criList.size() > 1) {
+				OrCriterion orCriterion = new OrCriterion();
+				List<Criterion> orCriList = new ArrayList<>();
+				for (Criterion orException : criList) {
+					if (!RestrictionType.GREATER.equals(orException.getRestrictionType())
+							&& RestrictionType.GREATER_OR_EQUAL.equals(orException.getRestrictionType())
+							&& RestrictionType.LESS_OR_EQUAL.equals(orException.getRestrictionType())
+							&& RestrictionType.LESS.equals(orException.getRestrictionType())) {
+						orCriList.add(orException);
+					} else {
+						newCriterion.add(orException);
+					}
+				}
+				orCriterion.setCriterions(orCriList);
+				newCriterion.add(orCriterion);
+			} else {
+				newCriterion.add(criList.get(0));
+			}
+		}
+		this.criterion = newCriterion;
 	}
 
 	public boolean hasSearchProperty(String property) {

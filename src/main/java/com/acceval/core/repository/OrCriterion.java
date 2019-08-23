@@ -43,6 +43,10 @@ public class OrCriterion extends Criterion {
 		return criterions;
 	}
 
+	public void setCriterions(List<Criterion> criterions) {
+		this.criterions = criterions;
+	}
+
 	@Override
 	public OrCriterion clone() {
 		return (OrCriterion) super.clone();
