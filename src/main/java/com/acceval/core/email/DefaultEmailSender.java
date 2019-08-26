@@ -59,6 +59,6 @@ class DefaultEmailSender implements EmailSender {
 	    	data.getContext().put("DOMAIN_PATH", this.webappURL);
 	    }
 
-	    data.setSubject(this.titlePrefix + data.getSubject());
+	    data.setSubject(data.getSubject());
     }
 }

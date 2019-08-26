@@ -1,20 +1,24 @@
 package com.acceval.core.util;
 
-import java.io.File;
 import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.Entity;
+
 import org.reflections.Reflections;
+import org.reflections.scanners.ResourcesScanner;
+import org.reflections.scanners.SubTypesScanner;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
+import org.reflections.util.FilterBuilder;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.acceval.core.model.OwnerEntity;
 import com.acceval.core.model.OwnerModel;
-import com.acceval.core.model.BaseModel;
 
 public class TemplateUtil {
 	
@@ -35,81 +39,60 @@ public class TemplateUtil {
 		
 		return (Character.isLowerCase(before) && Character.isUpperCase(current)
 				&& Character.isLowerCase(after));
-	}
-	
+	}	
 
 	public static List<Class<?>> getDocumentClassesFromPackage(String packageName) 
 			throws ClassNotFoundException, IOException, URISyntaxException {
-	    
-		List<String> classNames = getClassNamesFromPackage(packageName);
-	    List<Class<?>> classes = new ArrayList<Class<?>>();
-	    
-	    for (String className : classNames) {
-	        Class<?> cls = Class.forName(packageName + "." + className);
-	        Annotation[] annotations = cls.getAnnotations();
 
-	        for (Annotation annotation : annotations) {
-	            System.out.println(cls.getCanonicalName() + ": " + annotation.toString());
-	            if (annotation instanceof org.springframework.data.mongodb.core.mapping.Document) {
-	                classes.add(cls);
-	            }
-	        }
-	    }
 
-	    return classes;
+		Reflections reflections = new Reflections(packageName);
+	    final Set<Class<?>> documentClasses = reflections.getTypesAnnotatedWith(Document.class);
+	    	    
+	    return new ArrayList<Class<?>>(documentClasses);
+
 	}
 	
 	public static List<Class<?>> getEntityClassesFromPackage(String packageName) 
 			throws ClassNotFoundException, IOException, URISyntaxException {
-	    
-		
-		Reflections reflections = new Reflections(packageName);
 
-		Set<Class<? extends BaseModel>> baseModelClasses = reflections.getSubTypesOf(BaseModel.class);
-				
-		return new ArrayList<Class<?>>(baseModelClasses);
-				
+		Reflections reflections = new Reflections(packageName);
+	    final Set<Class<?>> entityClasses = reflections.getTypesAnnotatedWith(Entity.class);
+	    	    
+	    return new ArrayList<Class<?>>(entityClasses);
 	}
 	
 	public static List<Class<?>> getOwnerClassesFromPackage(String packageName) 
 			throws ClassNotFoundException, IOException, URISyntaxException {
-	    
-		List<String> classNames = getClassNamesFromPackage(packageName);
-	    List<Class<?>> classes = new ArrayList<Class<?>>();
-	    
-	    for (String className : classNames) {
-	        Class<?> cls = Class.forName(packageName + "." + className);
-	        
-	        if (OwnerModel.class.isAssignableFrom(cls) || OwnerEntity.class.isAssignableFrom(cls)) {
-	        	classes.add(cls);
-	        }	        
-	    }
 
-	    return classes;
+		Reflections reflections = new Reflections(packageName);
+
+		final Set<Class<? extends OwnerModel>> ownerModelClasses = reflections.getSubTypesOf(OwnerModel.class);
+		final Set<Class<? extends OwnerEntity>> ownerEntityClasses = reflections.getSubTypesOf(OwnerEntity.class);
+						
+	    List<Class<?>> ownerClasses = new ArrayList<Class<?>>();
+	    
+	    ownerClasses.addAll(ownerModelClasses);
+	    ownerClasses.addAll(ownerEntityClasses);
+
+	    return ownerClasses;
 	}
 	
-	public static List<String> getClassNamesFromPackage(String packageName) 
-			throws IOException, URISyntaxException, ClassNotFoundException {
-		
-	    ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-	    ArrayList<String> names = new ArrayList<String>();
+	public static Set<Class<?>> getClassesFromPackage(String packageName) {
+		 
+		List<ClassLoader> classLoadersList = new LinkedList<ClassLoader>();
+		classLoadersList.add(ClasspathHelper.contextClassLoader());
+		classLoadersList.add(ClasspathHelper.staticClassLoader());
 
-	    packageName = packageName.replace(".", "/");
-	    URL packageURL = classLoader.getResource(packageName);
+		/* don't exclude Object.class */
+		Reflections reflections = new Reflections(new ConfigurationBuilder()
+		    .setScanners(new SubTypesScanner(false), new ResourcesScanner())
+		    .setUrls(ClasspathHelper.forClassLoader(classLoadersList.toArray(new ClassLoader[0])))
+		    .filterInputsBy(new FilterBuilder().include(FilterBuilder.prefix(packageName))));
+	    				
 
-	    URI uri = new URI(packageURL.toString());
-	    File folder = new File(uri.getPath());
-	    File[] files = folder.listFiles();
-	    for (File file: files) {
-	        String name = file.getName();
-	        if (name.lastIndexOf('.') == -1) {
-	        	continue;
-	        }
-	        name = name.substring(0, name.lastIndexOf('.'));
-	        names.add(name);
-	    }
-
-	    return names;
+		Set<Class<?>> allClasses = reflections.getSubTypesOf(Object.class);
+				
+		return allClasses;
 	}
-
+	
 }
