@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
 import com.acceval.core.MicroServiceUtilException;
 import com.acceval.core.model.BaseModel;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Defaults;
 
 public class ClassUtil {
 	private static Logger Logger = LoggerFactory.getLogger(ClassUtil.class);
@@ -120,6 +121,41 @@ public class ClassUtil {
 		}
 
 		return fields;
+	}
+
+	public static void copyNotNullProperties(Object dest, Object orig) throws IllegalAccessException, InvocationTargetException {
+		copyNotNullPropertiesWithFilter(dest, orig);
+	}
+
+	public static void copyNotNullPropertiesWithFilter(Object dest, Object orig, String... filter)
+			throws IllegalAccessException, InvocationTargetException {
+		final PropertyDescriptor[] origDescriptors = PropertyUtils.getPropertyDescriptors(orig);
+		final List<String> ignoreFiels = Arrays.asList(filter);
+		for (PropertyDescriptor origDescriptor : origDescriptors) {
+			final String name = origDescriptor.getName();
+
+			if (ignoreFiels.contains(name)) continue;
+
+			if (PropertyUtils.isReadable(orig, name) && PropertyUtils.isWriteable(dest, name)) {
+				try {
+					final Object value = PropertyUtils.getSimpleProperty(orig, name);
+
+					if (value == null) continue;
+
+					boolean primitive = origDescriptor.getPropertyType().isPrimitive();
+					if (primitive) {
+						Object defaultValue = Defaults.defaultValue(origDescriptor.getPropertyType());
+						if (value.equals(defaultValue)) continue;
+					}
+
+					PropertyUtils.setSimpleProperty(dest, name, value);
+				} catch (final NoSuchMethodException e) {
+					if (Logger.isDebugEnabled()) {
+						Logger.debug("Error writing to '" + name + "' on class '" + dest.getClass() + "'", e);
+					}
+				}
+			}
+		}
 	}
 
 	public static void copyProperties(Object dest, Object orig) {

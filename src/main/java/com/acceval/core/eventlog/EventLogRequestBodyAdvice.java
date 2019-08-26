@@ -11,11 +11,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.RequestBodyAdvice;
 
 import com.acceval.core.amqp.EventLogQueueSender;
-import com.acceval.core.amqp.EventLogRequest;
-import com.acceval.core.amqp.EventLogRequest.RequestType;
-import com.acceval.core.security.PrincipalUtil;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.jknack.handlebars.internal.lang3.StringUtils;
 
 @ControllerAdvice
 public class EventLogRequestBodyAdvice implements RequestBodyAdvice {
@@ -39,15 +34,16 @@ public class EventLogRequestBodyAdvice implements RequestBodyAdvice {
 			Class<? extends HttpMessageConverter<?>> converterType) {
 
 		// send log request
-		String logEventID = PrincipalUtil.getEventLogUUID();
-		if (StringUtils.isNotBlank(logEventID)) {
-			EventLogRequest logRequest = new EventLogRequest();
-			logRequest.setRequestType(RequestType.REQUEST_BODY_ADV);
-			logRequest.setUuid(logEventID);
-			ObjectMapper objectMapper = new ObjectMapper();
-			logRequest.setJson2(objectMapper.valueToTree(body).toString());
-			eventLogQueueSender.sendMessage(logRequest);
-		}
+		// purpose of remark: new object will recapture in post EventLogHandlerInterceptor
+		//		String logEventID = PrincipalUtil.getEventLogUUID();
+		//		if (StringUtils.isNotBlank(logEventID)) {
+		//			EventLogRequest logRequest = new EventLogRequest();
+		//			logRequest.setRequestType(RequestType.REQUEST_BODY_ADV);
+		//			logRequest.setUuid(logEventID);
+		//			ObjectMapper objectMapper = new ObjectMapper();
+		//			logRequest.setJson2(objectMapper.valueToTree(body).toString());
+		//			eventLogQueueSender.sendMessage(logRequest);
+		//		}
 
 		return body;
 	}
