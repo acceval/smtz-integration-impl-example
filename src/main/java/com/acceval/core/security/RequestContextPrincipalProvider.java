@@ -23,6 +23,7 @@ public class RequestContextPrincipalProvider implements PrincipalProvider {
 			
 			HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 			String companyID = request.getHeader(PrincipalUtil.HDRKEY_COMPANYID);
+			companyID = "null".equalsIgnoreCase(companyID) ? null : companyID;
 			String companyCode = request.getHeader(PrincipalUtil.HDRKEY_COMPANYCODE);
 			String servicePackage = request.getHeader(PrincipalUtil.HDRKEY_SERVICEPACKAGE);
 			String schemaName = request.getHeader(PrincipalUtil.HDRKEY_SCHEMANAME);
