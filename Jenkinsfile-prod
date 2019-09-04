@@ -1,0 +1,16 @@
+node {
+    withMaven(maven:'maven') {
+
+        stage('Checkout') {
+       
+          git url: 'https://github.com/acceval/ms-util.git', 
+            credentialsId: '68ba1716-58f2-414c-a779-5632b10c38a7', 
+            branch: 'master'
+        }
+        
+        stage('Build') {
+            
+            sh 'mvn clean install'
+        }
+    }
+}
