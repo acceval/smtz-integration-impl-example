@@ -20,34 +20,33 @@ import com.acceval.core.util.ClassUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @MappedSuperclass
-@EntityListeners({AuditingEntityListener.class, CompanyModelListener.class})
+@EntityListeners({ AuditingEntityListener.class, CompanyModelListener.class })
 public abstract class BaseModel implements Serializable {
-	
+
 	private static final long serialVersionUID = 1L;
 
-	@JsonIgnore
 	@Column(nullable = false, updatable = false)
-    private Long companyId;
-    
+	private Long companyId;
+
 	@JsonIgnore
 	@CreatedBy
-    @Column(nullable = false, updatable = false)	
-    private String createdBy;
+	@Column(nullable = false, updatable = false)
+	private String createdBy;
 
 	@JsonIgnore
-    @CreatedDate
-    @Column(nullable = false, updatable = false)    
-    private LocalDateTime created;
+	@CreatedDate
+	@Column(nullable = false, updatable = false)
+	private LocalDateTime created;
 
 	@JsonIgnore
-    @LastModifiedBy
-    @Column(nullable = false)    
-    private String modifiedBy;
+	@LastModifiedBy
+	@Column(nullable = false)
+	private String modifiedBy;
 
 	@JsonIgnore
-    @LastModifiedDate
-    @Column(nullable = false)    
-    private LocalDateTime modified;
+	@LastModifiedDate
+	@Column(nullable = false)
+	private LocalDateTime modified;
 
 	public Object retrievePrimaryKey() {
 		if (this.getClass().isAnnotationPresent(Entity.class)) {
@@ -64,32 +63,41 @@ public abstract class BaseModel implements Serializable {
 	public Long getCompanyId() {
 		return companyId;
 	}
+
 	public void setCompanyId(Long companyId) {
 		this.companyId = companyId;
 	}
+
 	public String getCreatedBy() {
 		return createdBy;
 	}
+
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
 	}
+
 	public LocalDateTime getCreated() {
 		return created;
 	}
+
 	public void setCreated(LocalDateTime created) {
 		this.created = created;
 	}
+
 	public String getModifiedBy() {
 		return modifiedBy;
 	}
+
 	public void setModifiedBy(String modifiedBy) {
 		this.modifiedBy = modifiedBy;
 	}
+
 	public LocalDateTime getModified() {
 		return modified;
 	}
+
 	public void setModified(LocalDateTime modified) {
 		this.modified = modified;
-	}	
-        
+	}
+
 }
