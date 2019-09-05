@@ -1,4 +1,4 @@
-package com.acceval.core.eventlog;
+package com.acceval.core.audit;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -10,13 +10,13 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.RequestBodyAdvice;
 
-import com.acceval.core.amqp.EventLogQueueSender;
+import com.acceval.core.amqp.AuditLogQueueSender;
 
 @ControllerAdvice
-public class EventLogRequestBodyAdvice implements RequestBodyAdvice {
+public class AuditLogRequestBodyAdvice implements RequestBodyAdvice {
 
 	@Autowired
-	private EventLogQueueSender eventLogQueueSender;
+	private AuditLogQueueSender auditLogQueueSender;
 
 	@Override
 	public boolean supports(MethodParameter methodParameter, Type targetType, Class<? extends HttpMessageConverter<?>> converterType) {

@@ -7,7 +7,7 @@ import com.acceval.core.model.ServicePackage;
 public class PrincipalUtil {
 	
 	private static final ThreadLocal<PrincipalProvider> provider = new ThreadLocal<>();
-	private static final ThreadLocal<String> eventLogUUID = new ThreadLocal<>();
+	private static final ThreadLocal<String> auditLogUUID = new ThreadLocal<>();
 
 	public static final String HDRKEY_COMPANYID = "COMPANYID";
 	public static final String HDRKEY_COMPANYCODE = "COMPANYCODE";
@@ -23,18 +23,18 @@ public class PrincipalUtil {
 		PrincipalUtil.provider.set(provider);
 	}
 
-	public static void setProvider(PrincipalProvider provider, String eventLogUUID) {
-		PrincipalUtil.eventLogUUID.set(eventLogUUID);
+	public static void setProvider(PrincipalProvider provider, String auditLogUUID) {
+		PrincipalUtil.auditLogUUID.set(auditLogUUID);
 		PrincipalUtil.setProvider(provider);
 	}
 
-	public static String getEventLogUUID() {
-		return PrincipalUtil.eventLogUUID.get();
+	public static String getAuditLogUUID() {
+		return PrincipalUtil.auditLogUUID.get();
 	}
 
 	public static void removeProvider() {
 		PrincipalUtil.provider.remove();
-		PrincipalUtil.eventLogUUID.remove();
+		PrincipalUtil.auditLogUUID.remove();
 	}
 
 	@NotNull

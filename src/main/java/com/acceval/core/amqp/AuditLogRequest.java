@@ -3,9 +3,9 @@ package com.acceval.core.amqp;
 import java.io.Serializable;
 import java.util.Date;
 
-import com.acceval.core.controller.EventLog.EventAction;
+import com.acceval.core.controller.AuditLog.AuditAction;
 
-public class EventLogRequest implements Serializable {
+public class AuditLogRequest implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	public enum RequestType {
@@ -22,7 +22,7 @@ public class EventLogRequest implements Serializable {
 	private String httpMethod;
 	private int httpStatus;
 	private Date logTime;
-	private EventAction eventAction;
+	private AuditAction auditAction;
 
 	/** keys */
 	private String key1;
@@ -121,12 +121,12 @@ public class EventLogRequest implements Serializable {
 		this.logTime = logTime;
 	}
 
-	public EventAction getEventAction() {
-		return eventAction;
+	public AuditAction getAuditAction() {
+		return auditAction;
 	}
 
-	public void setEventAction(EventAction eventAction) {
-		this.eventAction = eventAction;
+	public void setAuditAction(AuditAction auditAction) {
+		this.auditAction = auditAction;
 	}
 
 	public String getKey1() {

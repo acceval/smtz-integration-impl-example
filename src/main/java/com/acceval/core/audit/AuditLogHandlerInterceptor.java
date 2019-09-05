@@ -1,4 +1,4 @@
-package com.acceval.core.eventlog;
+package com.acceval.core.audit;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -28,11 +28,11 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.acceval.core.amqp.EventLogQueueSender;
-import com.acceval.core.amqp.EventLogRequest;
-import com.acceval.core.amqp.EventLogRequest.RequestType;
-import com.acceval.core.controller.EventLog;
-import com.acceval.core.controller.EventLog.EventAction;
+import com.acceval.core.amqp.AuditLogQueueSender;
+import com.acceval.core.amqp.AuditLogRequest;
+import com.acceval.core.amqp.AuditLogRequest.RequestType;
+import com.acceval.core.controller.AuditLog;
+import com.acceval.core.controller.AuditLog.AuditAction;
 import com.acceval.core.controller.GenericCommonController;
 import com.acceval.core.security.CurrentUser;
 import com.acceval.core.security.PrincipalUtil;
@@ -41,12 +41,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
-public class EventLogHandlerInterceptor implements HandlerInterceptor {
+public class AuditLogHandlerInterceptor implements HandlerInterceptor {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
-	private EventLogQueueSender eventLogQueueSender;
+	private AuditLogQueueSender auditLogQueueSender;
 
 	@Autowired
 	private GenericCommonController genericCommonController;
@@ -59,11 +59,11 @@ public class EventLogHandlerInterceptor implements HandlerInterceptor {
 			Method method = handlerMethod.getMethod();
 			String httpMethod = request.getMethod();
 
-			String eventLogUUID = request.getHeader("event-log-id");
-			if (StringUtils.isBlank(eventLogUUID)) return true;
+			String auditLogUUID = request.getHeader("audit-log-id");
+			if (StringUtils.isBlank(auditLogUUID)) return true;
 
 			boolean isLog = false;
-			EventLogRequest logRequest = new EventLogRequest();
+			AuditLogRequest logRequest = new AuditLogRequest();
 			String url = buildUrl(handlerMethod);
 
 			/** parsing Keys here */
@@ -80,13 +80,13 @@ public class EventLogHandlerInterceptor implements HandlerInterceptor {
 				logRequest.setKey3(mapValues.get(lstPathVariable.get(2)));
 			}
 
-			EventAction eventAction = buildEventAction(url, httpMethod, method);
-			if (eventAction != null) {
+			AuditAction auditAction = buildAuditAction(url, httpMethod, method);
+			if (auditAction != null) {
 				isLog = true;
 			}
 
-			/** try jsoning the object for update Event Action (this is old value) */
-			if (EventLog.EventAction.UPDATE.equals(eventAction)) {
+			/** try jsoning the object for update Audit Action (this is old value) */
+			if (AuditLog.AuditAction.UPDATE.equals(auditAction)) {
 				try {
 					Type returnType = method.getGenericReturnType();// get entity base on return type!
 					String typeName = returnType.getTypeName();
@@ -129,12 +129,12 @@ public class EventLogHandlerInterceptor implements HandlerInterceptor {
 			}
 
 			/** sending log request to MQ */
-			if (isLog && StringUtils.isNotBlank(eventLogUUID)) {
-				logRequest.setUuid(eventLogUUID);
+			if (isLog && StringUtils.isNotBlank(auditLogUUID)) {
+				logRequest.setUuid(auditLogUUID);
 				logRequest.setRequestType(RequestType.CONTROLLER);
-				logRequest.setEventAction(eventAction);
+				logRequest.setAuditAction(auditAction);
 				logRequest.setUrl(url);
-				eventLogQueueSender.sendMessage(logRequest);
+				auditLogQueueSender.sendMessage(logRequest);
 			}
 		}
 
@@ -150,11 +150,11 @@ public class EventLogHandlerInterceptor implements HandlerInterceptor {
 			Method method = handlerMethod.getMethod();
 			String httpMethod = request.getMethod();
 
-			String eventLogUUID = request.getHeader("event-log-id");
-			if (StringUtils.isBlank(eventLogUUID)) return;
+			String auditLogUUID = request.getHeader("audit-log-id");
+			if (StringUtils.isBlank(auditLogUUID)) return;
 
 			boolean isLog = false;
-			EventLogRequest logRequest = new EventLogRequest();
+			AuditLogRequest logRequest = new AuditLogRequest();
 			String url = buildUrl(handlerMethod);
 
 			/** parsing Keys here */
@@ -164,10 +164,10 @@ public class EventLogHandlerInterceptor implements HandlerInterceptor {
 			if (lstPathVariable.size() > 0) {
 				String key1 = mapValues.get(lstPathVariable.get(0));
 
-				EventAction eventAction = buildEventAction(url, httpMethod, method);
+				AuditAction auditAction = buildAuditAction(url, httpMethod, method);
 
-				/** try jsoning the object for update Event Action (this is new value) */
-				if (EventLog.EventAction.UPDATE.equals(eventAction)) {
+				/** try jsoning the object for update Audit Action (this is new value) */
+				if (AuditLog.AuditAction.UPDATE.equals(auditAction)) {
 					try {
 						Type returnType = method.getGenericReturnType();// get entity base on return type!
 						String typeName = returnType.getTypeName();
@@ -199,10 +199,10 @@ public class EventLogHandlerInterceptor implements HandlerInterceptor {
 			}
 
 			/** sending log request to MQ */
-			if (isLog && StringUtils.isNotBlank(eventLogUUID)) {
-				logRequest.setUuid(eventLogUUID);
+			if (isLog && StringUtils.isNotBlank(auditLogUUID)) {
+				logRequest.setUuid(auditLogUUID);
 				logRequest.setRequestType(RequestType.CONTROLLER);
-				eventLogQueueSender.sendMessage(logRequest);
+				auditLogQueueSender.sendMessage(logRequest);
 			}
 		}
 
@@ -267,38 +267,38 @@ public class EventLogHandlerInterceptor implements HandlerInterceptor {
 		return url;
 	}
 
-	private EventAction buildEventAction(String url, String httpMethod, Method method) {
-		EventAction eventAction = null;
-		/** try scan standard CRUD Event Action */
+	private AuditAction buildAuditAction(String url, String httpMethod, Method method) {
+		AuditAction auditAction = null;
+		/** try scan standard CRUD Audit Action */
 		if (StringUtils.isNotBlank(url)) {
 			String[] splitPattern = url.split("/");
 			if (splitPattern.length == 3) {
 				if (splitPattern[2].contains("{")) {
 					if (RequestMethod.DELETE.toString().equals(httpMethod)) {
-						eventAction = EventAction.DELETE;
+						auditAction = AuditAction.DELETE;
 					} else if (RequestMethod.PUT.toString().equals(httpMethod)) {
-						eventAction = EventAction.UPDATE;
+						auditAction = AuditAction.UPDATE;
 					} else if (RequestMethod.GET.toString().equals(httpMethod)) {
-						eventAction = EventAction.READ;
+						auditAction = AuditAction.READ;
 					}
 				} else if ("search".equals(splitPattern[2])) {
-					eventAction = EventAction.SEARCH;
+					auditAction = AuditAction.SEARCH;
 
 				}
 			} else if (splitPattern.length == 2 && RequestMethod.POST.toString().equals(httpMethod)) {
-				eventAction = EventAction.CREATE;
+				auditAction = AuditAction.CREATE;
 			}
 		}
 
-		/** logging defined Event Action in controller with @EventLog */
-		EventLog annoEventLog = method.getDeclaredAnnotation(EventLog.class);
-		if (annoEventLog != null) {
-			if (annoEventLog.eventAction() != null) {
-				eventAction = annoEventLog.eventAction();
+		/** logging defined Audit Action in controller with @AuditLog */
+		AuditLog annoAuditLog = method.getDeclaredAnnotation(AuditLog.class);
+		if (annoAuditLog != null) {
+			if (annoAuditLog.auditAction() != null) {
+				auditAction = annoAuditLog.auditAction();
 			}
 		}
 
-		return eventAction;
+		return auditAction;
 	}
 
 	private List<String> buildLstPathVariable(String url) {

@@ -3,7 +3,7 @@ package com.acceval.core.amqp;
 import org.springframework.stereotype.Component;
 
 @Component
-public class EventLogQueueSender extends QueueSender {
+public class AuditLogQueueSender extends QueueSender {
 
 	/**
 	 * @Deprecated use sendMessage(Object)
@@ -21,7 +21,7 @@ public class EventLogQueueSender extends QueueSender {
 
 	@Override
 	protected String getSenderQueueName() {
-		return QUEUE_NAME_EVENTLOG;
+		return QUEUE_NAME_AUDITLOG;
 	}
 
 }

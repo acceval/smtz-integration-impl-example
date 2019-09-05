@@ -9,9 +9,9 @@ import com.acceval.core.repository.usertype.PersistentEnum;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface EventLog {
+public @interface AuditLog {
 
-	public enum EventAction implements PersistentEnum {
+	public enum AuditAction implements PersistentEnum {
 		// @formatter:off
 		READ(0), 
 		CREATE(1), 
@@ -27,13 +27,13 @@ public @interface EventLog {
 		OTHER(99);
 
 		private final int id;
-		private EventAction(int id) { this.id = id; }
+		private AuditAction(int id) { this.id = id; }
 		@Override
 		public int getID() { return this.id; }
 		// @formatter:on
 
 	}
 
-	EventAction eventAction();
+	AuditAction auditAction();
 
 }
