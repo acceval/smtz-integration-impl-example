@@ -16,7 +16,7 @@ public class PrincipalProviderHandlerInterceptor implements HandlerInterceptor {
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-		PrincipalUtil.setProvider(principalProvider, request.getHeader("event-log-id"));
+		PrincipalUtil.setProvider(principalProvider, request.getHeader("audit-log-id"));
 
 		return true;
 	}

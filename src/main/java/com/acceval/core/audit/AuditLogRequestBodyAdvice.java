@@ -3,6 +3,7 @@ package com.acceval.core.audit;
 import java.io.IOException;
 import java.lang.reflect.Type;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpInputMessage;
@@ -11,6 +12,10 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.RequestBodyAdvice;
 
 import com.acceval.core.amqp.AuditLogQueueSender;
+import com.acceval.core.amqp.AuditLogRequest;
+import com.acceval.core.amqp.AuditLogRequest.RequestType;
+import com.acceval.core.security.PrincipalUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ControllerAdvice
 public class AuditLogRequestBodyAdvice implements RequestBodyAdvice {
@@ -34,16 +39,15 @@ public class AuditLogRequestBodyAdvice implements RequestBodyAdvice {
 			Class<? extends HttpMessageConverter<?>> converterType) {
 
 		// send log request
-		// purpose of remark: new object will recapture in post EventLogHandlerInterceptor
-		//		String logEventID = PrincipalUtil.getEventLogUUID();
-		//		if (StringUtils.isNotBlank(logEventID)) {
-		//			EventLogRequest logRequest = new EventLogRequest();
-		//			logRequest.setRequestType(RequestType.REQUEST_BODY_ADV);
-		//			logRequest.setUuid(logEventID);
-		//			ObjectMapper objectMapper = new ObjectMapper();
-		//			logRequest.setJson2(objectMapper.valueToTree(body).toString());
-		//			eventLogQueueSender.sendMessage(logRequest);
-		//		}
+		String logEventID = PrincipalUtil.getAuditLogUUID();
+		if (StringUtils.isNotBlank(logEventID)) {
+			AuditLogRequest logRequest = new AuditLogRequest();
+			logRequest.setRequestType(RequestType.REQUEST_BODY_ADV);
+			logRequest.setUuid(logEventID);
+			ObjectMapper objectMapper = new ObjectMapper();
+			logRequest.setJson1(objectMapper.valueToTree(body).toString());
+			auditLogQueueSender.sendMessage(logRequest);
+		}
 
 		return body;
 	}
