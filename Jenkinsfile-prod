@@ -4,7 +4,7 @@ node {
         stage('Checkout') {
        
           git url: 'https://github.com/acceval/ms-util.git', 
-            credentialsId: '68ba1716-58f2-414c-a779-5632b10c38a7', 
+            credentialsId: 'c24eaaf9-1d02-4ab9-922c-e1a4e6973a44', 
             branch: 'master'
         }
         
