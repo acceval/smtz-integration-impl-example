@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @MappedSuperclass
 @EntityListeners(BaseEntityListener.class)
-public abstract class BaseEntity extends BaseModel implements EntityIF {
+public abstract class BaseEntity extends BaseModel {
 
 	private static final long serialVersionUID = 1L;
 

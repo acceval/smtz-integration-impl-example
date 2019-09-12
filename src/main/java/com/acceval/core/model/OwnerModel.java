@@ -8,10 +8,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @MappedSuperclass
 @EntityListeners(OwnerModelListener.class)
-public abstract class OwnerModel extends BaseModel implements OwnerIF {
+public abstract class OwnerModel extends BaseModel {
     
-	private static final long serialVersionUID = 1L;
-
 	@JsonIgnore
     @Column(nullable = false, updatable = true)
     private String recordOwner;

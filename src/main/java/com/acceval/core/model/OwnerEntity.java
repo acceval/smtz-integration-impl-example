@@ -6,7 +6,7 @@ import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
 @EntityListeners(OwnerEntityListener.class)
-public abstract class OwnerEntity extends BaseEntity implements EntityIF, OwnerIF {
+public abstract class OwnerEntity extends BaseEntity {
     
     @Column(nullable = false, updatable = true)
     private String recordOwner;
