@@ -12,26 +12,28 @@ import com.acceval.core.security.PrincipalUtil;
 public class CompanyModelListener {
 
 	@PrePersist
-	public void setCompanyId(BaseModel baseModel) {
-		
+	public void setCompanyId(CompanyIF companyIF) {
+
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Long companyId = PrincipalUtil.getCompanyID();
-		
+
 		if (auth != null) {
 			Object principal = auth.getPrincipal();
-			
+
 			if (principal != null && principal instanceof AuthUser) {
-				AuthUser authUser = (AuthUser) principal; 
-				
-				if (baseModel.getCompanyId() == null && authUser.getCompanyId() != null) {					
-					baseModel.setCompanyId(authUser.getCompanyId());				
-				}					
+				AuthUser authUser = (AuthUser) principal;
+
+				if (companyIF.getCompanyId() == null && authUser.getCompanyId() != null) {
+					companyIF.setCompanyId(authUser.getCompanyId());
+				}
 			}
 		} else if (companyId != null) {
 			// backup plan for Auth not found
-			baseModel.setCompanyId(companyId);
-			baseModel.setCreatedBy(PrincipalUtil.getUsername());
-			baseModel.setModifiedBy(PrincipalUtil.getUsername());
+			companyIF.setCompanyId(companyId);
+			if (companyIF instanceof BaseModel) {
+				((BaseModel) companyIF).setCreatedBy(PrincipalUtil.getUsername());
+				((BaseModel) companyIF).setModifiedBy(PrincipalUtil.getUsername());
+			}
 		}
 	}
 }

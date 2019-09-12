@@ -43,8 +43,7 @@ import org.springframework.util.MultiValueMap;
 
 import com.acceval.core.model.BaseEntity;
 import com.acceval.core.model.BaseEntity.STATUS;
-import com.acceval.core.model.BaseModel;
-import com.acceval.core.model.TenantData;
+import com.acceval.core.model.CompanyIF;
 import com.acceval.core.repository.Criterion.RestrictionType;
 import com.acceval.core.security.PrincipalUtil;
 import com.acceval.core.util.ClassUtil;
@@ -284,8 +283,7 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 		Map<String, Join<?, ?>> mapDefinedPath = new HashMap<>();
 
 		/** append company criteria for BaseModel */
-		if (BaseModel.class.isAssignableFrom(getTargetClass()) && !TenantData.class.isAssignableFrom(getTargetClass())
-				&& acceCriteria.getCriterion() != null) {
+		if (CompanyIF.class.isAssignableFrom(getTargetClass()) && acceCriteria.getCriterion() != null) {
 			boolean companyKeyFound = acceCriteria.getCriterion().stream()
 					.filter(c -> "companyId".equals(c.getPropertyName())).findFirst().isPresent();
 			if (!companyKeyFound) {
@@ -651,7 +649,7 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 		if (BaseEntity.class.isAssignableFrom(targetClass)) {
 			acceCriteria.appendCriterion(new Criterion("recordStatus", STATUS.ACTIVE, true));
 		}
-		if (BaseModel.class.isAssignableFrom(targetClass) && !(TenantData.class.isAssignableFrom(targetClass))) {
+		if (CompanyIF.class.isAssignableFrom(targetClass)) {
 			Long companyId = PrincipalUtil.getCompanyID();
 			if (companyId != null) {
 				acceCriteria.appendCriterion(new Criterion("companyId", companyId));

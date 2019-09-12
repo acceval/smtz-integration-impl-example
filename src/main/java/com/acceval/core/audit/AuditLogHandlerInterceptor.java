@@ -119,7 +119,7 @@ public class AuditLogHandlerInterceptor implements HandlerInterceptor {
 			if (currentUser != null && currentUser.getId() != null) {
 				logRequest.setUserID(currentUser.getId());
 				logRequest.setEmail(currentUser.getEmail());
-				logRequest.setCompanyID(currentUser.getCompanyId());
+				logRequest.setCompanyID(currentUser.getCompanyId() != null ? currentUser.getCompanyId() : 0L);
 			}
 			logRequest.setHttpMethod(request.getMethod());
 			logRequest.setLogTime(new Date());
