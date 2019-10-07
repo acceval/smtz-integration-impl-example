@@ -2,6 +2,7 @@ package com.acceval.core.microservice;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +47,7 @@ public class MicroServiceUtil {
 			throw new MicroServiceUtilException(MicroServiceUtil.class, zuulService + " Service is Not Available!");
 		ServiceInstance instance = instances.get(0);
 		String host = instance.getHost();
-		String url = "http:// " + msService + "/" + msFunction + "/" + param;
+		String url = "http:// " + msService.replaceFirst(Pattern.quote("/"), "") + "/" + msFunction + "/" + param;
 
 		if (mvmValue != null && !mvmValue.keySet().isEmpty()) {
 			UriComponentsBuilder uriCompBuilder = UriComponentsBuilder.fromHttpUrl(url);
