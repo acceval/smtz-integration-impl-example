@@ -20,16 +20,18 @@ import com.acceval.core.MicroServiceUtilException;
 public class MicroServiceUtil {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MicroServiceUtil.class);
 
-	public static Object getForObject(MicroServiceRequest microServiceRequest, Class<?> type) throws MicroServiceUtilException {
+	public static Object getForObject(MicroServiceRequest microServiceRequest, Class<?> type)
+			throws MicroServiceUtilException {
 		return getForObject(microServiceRequest, null, type);
 	}
 
-	public static Object getForObject(MicroServiceRequest microServiceRequest, MultiValueMap<String, String> mvmValue, Class<?> type)
-			throws MicroServiceUtilException {
+	public static Object getForObject(MicroServiceRequest microServiceRequest, MultiValueMap<String, String> mvmValue,
+			Class<?> type) throws MicroServiceUtilException {
 
 		/** null checking */
 		microServiceRequest.assertNull();
-		Optional.ofNullable(type).orElseThrow(() -> new MicroServiceUtilException(MicroServiceUtil.class, "REST Type is null."));
+		Optional.ofNullable(type)
+				.orElseThrow(() -> new MicroServiceUtilException(MicroServiceUtil.class, "REST Type is null."));
 
 		DiscoveryClient discoveryClient = microServiceRequest.getDiscoveryClient();
 		RestTemplate restTemplate = microServiceRequest.getRestTemplate();
@@ -40,10 +42,12 @@ public class MicroServiceUtil {
 		String token = microServiceRequest.getToken();
 
 		List<ServiceInstance> instances = discoveryClient.getInstances(zuulService);
-		if (instances.isEmpty()) throw new MicroServiceUtilException(MicroServiceUtil.class, zuulService + " Service is Not Available!");
+		if (instances.isEmpty())
+			throw new MicroServiceUtilException(MicroServiceUtil.class, zuulService + " Service is Not Available!");
 		ServiceInstance instance = instances.get(0);
 		String host = instance.getHost();
-		String url = "http://" + host + ":" + instance.getPort() + "/" + msService + "/" + msFunction + "/" + param;
+		String url = "https://www.smarttradzt.com:" + instance.getPort() + "/" + msService + "/" + msFunction + "/"
+				+ param;
 
 		if (mvmValue != null && !mvmValue.keySet().isEmpty()) {
 			UriComponentsBuilder uriCompBuilder = UriComponentsBuilder.fromHttpUrl(url);
@@ -60,7 +64,7 @@ public class MicroServiceUtil {
 			Object object = null;
 			if (token != null) {
 				HttpHeaders headers = new HttpHeaders();
-				//											headers.setContentType(MediaType.APPLICATION_JSON);
+				// headers.setContentType(MediaType.APPLICATION_JSON);
 				headers.set("Authorization", token);
 				HttpEntity<String> entity = new HttpEntity<String>("", headers);
 				ResponseEntity respEntity = restTemplate.exchange(url, HttpMethod.GET, entity, type);
