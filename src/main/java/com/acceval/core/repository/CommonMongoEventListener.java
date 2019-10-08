@@ -24,9 +24,9 @@ public class CommonMongoEventListener extends AbstractMongoEventListener<Object>
 
 		if (source instanceof BaseModel) {
 			BaseModel baseModel = (BaseModel) source;
-			if (baseModel.getCompanyId() == null) {
+			//			if (baseModel.getCompanyId() == null) {
 				baseModel.setCompanyId(PrincipalUtil.getCompanyID());
-			}
+			//			}
 		}
 	}
 
@@ -42,9 +42,9 @@ public class CommonMongoEventListener extends AbstractMongoEventListener<Object>
 
 		if (source instanceof BaseModel) {
 			BaseModel baseModel = (BaseModel) source;
-			if (baseModel.getCompanyId() == null) {
+			//			if (baseModel.getCompanyId() == null) {
 				baseModel.setCompanyId(PrincipalUtil.getCompanyID());
-			}
+			//			}
 		}
 	}
 }

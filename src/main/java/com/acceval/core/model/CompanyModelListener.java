@@ -13,19 +13,20 @@ public class CompanyModelListener {
 
 	@PrePersist
 	public void setCompanyId(BaseModel baseModel) {
-		
+
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Long companyId = PrincipalUtil.getCompanyID();
-		
+
 		if (auth != null) {
 			Object principal = auth.getPrincipal();
-			
+
 			if (principal != null && principal instanceof AuthUser) {
-				AuthUser authUser = (AuthUser) principal; 
-				
-				if (baseModel.getCompanyId() == null && authUser.getCompanyId() != null) {					
-					baseModel.setCompanyId(authUser.getCompanyId());				
-				}					
+				AuthUser authUser = (AuthUser) principal;
+
+				//				if (baseModel.getCompanyId() == null && authUser.getCompanyId() != null) {// before BaseCompanyModel
+				if (authUser.getCompanyId() != null) {
+					baseModel.setCompanyId(authUser.getCompanyId());
+				}
 			}
 		} else if (companyId != null) {
 			// backup plan for Auth not found
