@@ -1,12 +1,16 @@
 package com.acceval.core.security;
 
+import com.acceval.core.model.ServicePackage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.validation.constraints.NotNull;
 
-import com.acceval.core.model.ServicePackage;
-
 public class PrincipalUtil {
-	
+	private final Logger logger = LoggerFactory.getLogger(getClass());
+
 	private static final ThreadLocal<PrincipalProvider> provider = new ThreadLocal<>();
+	private static final ThreadLocal<CurrentUser> systemUser = new ThreadLocal<>();
 	private static final ThreadLocal<String> auditLogUUID = new ThreadLocal<>();
 
 	public static final String HDRKEY_COMPANYID = "COMPANYID";
@@ -69,12 +73,19 @@ public class PrincipalUtil {
 	public static void setSystemUser(Long companyID, String companyCode, String servicePackage) {
 		
 		CurrentUser sysUser = getCurrentUser();
+		if (sysUser == null) sysUser = new CurrentUser();
 //		sysUser.setSystemUser(true);
 		sysUser.setCompanyId(companyID);
-		sysUser.setCompanyCode(companyCode);		
+		sysUser.setCompanyCode(companyCode);
+		sysUser.setSchemaName(companyCode);
 		if (servicePackage != null) {
 			sysUser.setServicePackage(ServicePackage.valueOf(servicePackage));
 		}
+		PrincipalUtil.systemUser.set(sysUser);
+	}
+
+	public static CurrentUser getSystemUser() {
+		return systemUser.get();
 	}
 
 	public static String getSchemaName() {
