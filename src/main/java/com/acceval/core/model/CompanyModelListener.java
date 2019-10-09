@@ -6,13 +6,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.acceval.core.model.company.BaseCompanyModel;
 import com.acceval.core.security.PrincipalUtil;
 
 @Service
 public class CompanyModelListener {
 
 	@PrePersist
-	public void setCompanyId(BaseModel baseModel) {
+	public void setCompanyId(Object baseModel) {
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Long companyId = PrincipalUtil.getCompanyID();
@@ -20,19 +21,19 @@ public class CompanyModelListener {
 		if (auth != null) {
 			Object principal = auth.getPrincipal();
 
-			if (principal != null && principal instanceof AuthUser) {
+			if (principal != null && principal instanceof AuthUser && baseModel instanceof BaseCompanyModel) {
 				AuthUser authUser = (AuthUser) principal;
 
 				//				if (baseModel.getCompanyId() == null && authUser.getCompanyId() != null) {// before BaseCompanyModel
 				if (authUser.getCompanyId() != null) {
-					baseModel.setCompanyId(authUser.getCompanyId());
+					((BaseCompanyModel) baseModel).setCompanyId(authUser.getCompanyId());
 				}
 			}
-		} else if (companyId != null) {
+		} else if (companyId != null && baseModel instanceof BaseCompanyModel) {
 			// backup plan for Auth not found
-			baseModel.setCompanyId(companyId);
-			baseModel.setCreatedBy(PrincipalUtil.getUsername());
-			baseModel.setModifiedBy(PrincipalUtil.getUsername());
+			((BaseCompanyModel) baseModel).setCompanyId(companyId);
+			((BaseCompanyModel) baseModel).setCreatedBy(PrincipalUtil.getUsername());
+			((BaseCompanyModel) baseModel).setModifiedBy(PrincipalUtil.getUsername());
 		}
 	}
 }

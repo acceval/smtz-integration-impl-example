@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import com.acceval.core.model.BaseModel;
 import com.acceval.core.model.OwnerModel;
+import com.acceval.core.model.company.BaseCompanyModel;
 import com.acceval.core.security.PrincipalUtil;
 
 @Component
@@ -22,10 +23,10 @@ public class CommonMongoEventListener extends AbstractMongoEventListener<Object>
 			}
 		}
 
-		if (source instanceof BaseModel) {
-			BaseModel baseModel = (BaseModel) source;
+		if (source instanceof BaseCompanyModel) {
+			BaseCompanyModel baseCompanyModel = (BaseCompanyModel) source;
 			//			if (baseModel.getCompanyId() == null) {
-				baseModel.setCompanyId(PrincipalUtil.getCompanyID());
+				baseCompanyModel.setCompanyId(PrincipalUtil.getCompanyID());
 			//			}
 		}
 	}
@@ -40,10 +41,10 @@ public class CommonMongoEventListener extends AbstractMongoEventListener<Object>
 			}
 		}
 
-		if (source instanceof BaseModel) {
-			BaseModel baseModel = (BaseModel) source;
+		if (source instanceof BaseCompanyModel) {
+			BaseCompanyModel baseCompanyModel = (BaseCompanyModel) source;
 			//			if (baseModel.getCompanyId() == null) {
-				baseModel.setCompanyId(PrincipalUtil.getCompanyID());
+				baseCompanyModel.setCompanyId(PrincipalUtil.getCompanyID());
 			//			}
 		}
 	}

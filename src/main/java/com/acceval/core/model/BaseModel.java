@@ -25,9 +25,6 @@ public abstract class BaseModel implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@Column(nullable = false, updatable = false)
-	private Long companyId;
-
 	@JsonIgnore
 	@CreatedBy
 	@Column(nullable = false, updatable = false)
@@ -58,14 +55,6 @@ public abstract class BaseModel implements Serializable {
 			}
 		}
 		return null;
-	}
-
-	public Long getCompanyId() {
-		return companyId;
-	}
-
-	public void setCompanyId(Long companyId) {
-		this.companyId = companyId;
 	}
 
 	public String getCreatedBy() {
