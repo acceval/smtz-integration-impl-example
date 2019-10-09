@@ -47,7 +47,7 @@ public class MicroServiceUtil {
 			throw new MicroServiceUtilException(MicroServiceUtil.class, zuulService + " Service is Not Available!");
 		ServiceInstance instance = instances.get(0);
 		String host = instance.getHost();
-		String url = "http:// " + msService.replaceFirst(Pattern.quote("/"), "") + "/" + msFunction + "/" + param;
+		String url = "http://" + msService.replaceFirst(Pattern.quote("/"), "") + "/" + msFunction + "/" + param;
 
 		if (mvmValue != null && !mvmValue.keySet().isEmpty()) {
 			UriComponentsBuilder uriCompBuilder = UriComponentsBuilder.fromHttpUrl(url);
