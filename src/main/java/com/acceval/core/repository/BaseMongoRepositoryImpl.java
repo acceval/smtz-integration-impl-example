@@ -33,7 +33,6 @@ import org.springframework.util.MultiValueMap;
 
 import com.acceval.core.model.BaseEntity;
 import com.acceval.core.model.BaseEntity.STATUS;
-import com.acceval.core.model.BaseModel;
 import com.acceval.core.model.VariableContext;
 import com.acceval.core.model.company.BaseCompanyModel;
 import com.acceval.core.repository.Criterion.RestrictionType;
@@ -218,7 +217,7 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 	protected Object[] getMongoCriterias(Criteria acceCriteria) {
 
 		/** append company criteria for BaseModel */
-		if (BaseModel.class.isAssignableFrom(getTargetClass()) && acceCriteria.getCriterion() != null) {
+		if (BaseCompanyModel.class.isAssignableFrom(getTargetClass()) && acceCriteria.getCriterion() != null) {
 			boolean companyKeyFound =
 					acceCriteria.getCriterion().stream().filter(c -> "companyId".equals(c.getPropertyName())).findFirst().isPresent();
 			if (!companyKeyFound) {
@@ -308,6 +307,10 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 		Class<?> attrClass = null;
 		try {
 			Field field = this.getField(this.getTargetClass(), property);
+
+			if (field == null) {
+				return null;
+			}
 
 			attrClass = field.getType();
 		} catch (NoSuchFieldException ex) {
