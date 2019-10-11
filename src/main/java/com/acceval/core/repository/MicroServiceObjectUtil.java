@@ -38,8 +38,29 @@ public class MicroServiceObjectUtil {
 	/**
 	 * initialise all fields with MicroServiceField annotation
 	 */
+	public static void refreshObjectDependency(Object target, RestTemplate restTemplate,
+			DiscoveryClient discoveryClient) throws MicroServiceUtilException, Exception {
+		refreshObjectDependency(target, true, restTemplate, discoveryClient);
+	}
+
 	public static void refreshObjectDependency(Object target) throws MicroServiceUtilException, Exception {
-		refreshObjectDependency(target, true);
+		OAuth2RestTemplate restTemplate = BaseBeanUtil.getBean(OAuth2RestTemplate.class);
+		DiscoveryClient discoveryClient = (DiscoveryClient) BaseBeanUtil.getBean(DiscoveryClient.class);
+		refreshObjectDependency(target, true, restTemplate, discoveryClient);
+	}
+
+	public static void refreshObjectDependency(Object target, boolean isForceRefresh)
+			throws MicroServiceUtilException, Exception {
+		OAuth2RestTemplate restTemplate = BaseBeanUtil.getBean(OAuth2RestTemplate.class);
+		DiscoveryClient discoveryClient = (DiscoveryClient) BaseBeanUtil.getBean(DiscoveryClient.class);
+		refreshObjectDependency(target, isForceRefresh, restTemplate, discoveryClient);
+	}
+
+	public static boolean refreshField(Object target, String fieldName, boolean isForceRefresh,
+			RestTemplate restTemplate, DiscoveryClient discoveryClient) throws MicroServiceUtilException, Exception {
+		String token = PrincipalUtil.getToken();
+
+		return refreshField(discoveryClient, restTemplate, token, target, fieldName, isForceRefresh);
 	}
 
 	/**
@@ -48,16 +69,15 @@ public class MicroServiceObjectUtil {
 	 * @param isForceRefresh force refresh? Or do nothing if PK are same
 	 * @throws Exception
 	 */
-	public static void refreshObjectDependency(Object target, boolean isForceRefresh) throws MicroServiceUtilException, Exception {
+	public static void refreshObjectDependency(Object target, boolean isForceRefresh, RestTemplate restTemplate,
+			DiscoveryClient discoveryClient) throws MicroServiceUtilException, Exception {
 
-		if (target == null) return;
-
-		OAuth2RestTemplate restTemplate = BaseBeanUtil.getBean(OAuth2RestTemplate.class);
-		DiscoveryClient discoveryClient = (DiscoveryClient) BaseBeanUtil.getBean(DiscoveryClient.class);
+		if (target == null)
+			return;
 
 		if (target instanceof Collection) {
 			for (Object obj : (Collection<?>) target) {
-				refreshObjectDependency(obj, isForceRefresh);
+				refreshObjectDependency(obj, isForceRefresh, restTemplate, discoveryClient);
 			}
 		}
 
@@ -73,13 +93,14 @@ public class MicroServiceObjectUtil {
 					if (Collection.class.isAssignableFrom(field.getType())) {
 						PropertyDescriptor getter = new PropertyDescriptor(field.getName(), field.getDeclaringClass());
 						Object childObj = getter.getReadMethod().invoke(target);
-						refreshObjectDependency(childObj, isForceRefresh);
+						refreshObjectDependency(childObj, isForceRefresh, restTemplate, discoveryClient);
 					} else {
 						// multi-thread
 						String token = PrincipalUtil.getToken();
 						executor.submit(() -> {
 							try {
-								refreshField(discoveryClient, restTemplate, token, target, field.getName(), isForceRefresh);
+								refreshField(discoveryClient, restTemplate, token, target, field.getName(),
+										isForceRefresh);
 							} catch (Exception e) {
 								LOGGER.error(e.getMessage(), e);
 							}
@@ -93,7 +114,7 @@ public class MicroServiceObjectUtil {
 					PropertyDescriptor getter = new PropertyDescriptor(field.getName(), field.getDeclaringClass());
 					Object childObj = getter.getReadMethod().invoke(target);
 					if (childObj != null && !childObj.getClass().isEnum()) {
-						refreshObjectDependency(childObj, isForceRefresh);
+						refreshObjectDependency(childObj, isForceRefresh, restTemplate, discoveryClient);
 					}
 				}
 			}
@@ -102,7 +123,8 @@ public class MicroServiceObjectUtil {
 			executor.awaitTermination(10, TimeUnit.MINUTES);
 			if (LOGGER.isDebugEnabled()) {
 				if ((System.currentTimeMillis() - longStart) > 500) {
-					LOGGER.debug("Object Initialised in (more than 500 ms): " + (System.currentTimeMillis() - longStart) + " ms");
+					LOGGER.debug("Object Initialised in (more than 500 ms): " + (System.currentTimeMillis() - longStart)
+							+ " ms");
 				}
 			}
 		}
@@ -139,9 +161,8 @@ public class MicroServiceObjectUtil {
 	 * @param isForceRefresh force refresh? Or do nothing if PK are same
 	 * @return object refreshed
 	 */
-	public static boolean refreshField(DiscoveryClient discoveryClient, RestTemplate restTemplate, String token, Object target,
-			String fieldName,
-			boolean isForceRefresh) throws MicroServiceUtilException, Exception {
+	public static boolean refreshField(DiscoveryClient discoveryClient, RestTemplate restTemplate, String token,
+			Object target, String fieldName, boolean isForceRefresh) throws MicroServiceUtilException, Exception {
 		Class<?> classToFind = target.getClass();
 
 		Field field = ReflectionUtils.findField(classToFind, fieldName);
@@ -158,17 +179,19 @@ public class MicroServiceObjectUtil {
 			String msFunction = fieldAnno.function();
 			String mockTarget = fieldAnno.mockTarget();
 			if (StringUtils.isBlank(mockTarget)) {
-				throw new MicroServiceUtilException(MicroServiceObjectUtil.class,
-						"Mock Target is not define for [" + field.getName() + "] field! Class [" + classToFind.getName() + "]");
+				throw new MicroServiceUtilException(MicroServiceObjectUtil.class, "Mock Target is not define for ["
+						+ field.getName() + "] field! Class [" + classToFind.getName() + "]");
 			}
 			PropertyDescriptor pdMockTarget = new PropertyDescriptor(mockTarget, classToFind);
 			if (!pdMockTarget.getPropertyType().isAnnotationPresent(MicroServiceObject.class)) {
 				throw new MicroServiceUtilException(MicroServiceObjectUtil.class,
-						"MicroServiceObject is not define for [" + field.getName() + "] field! Class [" + classToFind.getName() + "]");
+						"MicroServiceObject is not define for [" + field.getName() + "] field! Class ["
+								+ classToFind.getName() + "]");
 			}
 			Annotation objAnno = pdMockTarget.getPropertyType().getAnnotation(MicroServiceObject.class);
 			MicroServiceObject msObject = (MicroServiceObject) objAnno;
-			// if MS info not from MicroServiceField level, get from MicroServiceObject level
+			// if MS info not from MicroServiceField level, get from MicroServiceObject
+			// level
 			if (StringUtils.isBlank(msFunction)) {
 				msFunction = msObject.module() + "/" + MicroServiceObject.COMMON_GT_OBJ;
 				if (msObject.useCommonQuery()) {
@@ -182,11 +205,13 @@ public class MicroServiceObjectUtil {
 			/** validation */
 			if (StringUtils.isBlank(msService)) {
 				throw new MicroServiceUtilException(MicroServiceObjectUtil.class,
-						"MS Service ID not define in POJO for [" + field.getName() + "] field! Class [" + classToFind.getName() + "]");
+						"MS Service ID not define in POJO for [" + field.getName() + "] field! Class ["
+								+ classToFind.getName() + "]");
 			}
 			if (StringUtils.isBlank(msFunction)) {
 				throw new MicroServiceUtilException(MicroServiceObjectUtil.class,
-						"MS Function is not define in POJO for [" + field.getName() + "] field! Class [" + classToFind.getName() + "]");
+						"MS Function is not define in POJO for [" + field.getName() + "] field! Class ["
+								+ classToFind.getName() + "]");
 			}
 
 			/** get Primary Key */
@@ -211,7 +236,10 @@ public class MicroServiceObjectUtil {
 				}
 			}
 
-			/** if not Force Refresh, check between Primary Key to decide Refresh or not (Performance) */
+			/**
+			 * if not Force Refresh, check between Primary Key to decide Refresh or not
+			 * (Performance)
+			 */
 			if (!isForceRefresh) {
 				Object mockObj = pdMockTarget.getReadMethod().invoke(target);
 				if (mockObj != null) {
@@ -219,10 +247,12 @@ public class MicroServiceObjectUtil {
 						// handler collection
 						List<Object> lst = new ArrayList<>();
 						for (Object objMock : (Collection<?>) mockObj) {
-							if (!objMock.getClass().isAnnotationPresent(MicroServiceObject.class)) continue;
+							if (!objMock.getClass().isAnnotationPresent(MicroServiceObject.class))
+								continue;
 							Annotation objPrixObjAnno = objMock.getClass().getAnnotation(MicroServiceObject.class);
 							MicroServiceObject prixObjAnno = (MicroServiceObject) objPrixObjAnno;
-							PropertyDescriptor pdChildPK = new PropertyDescriptor(prixObjAnno.primaryKey(), objMock.getClass());
+							PropertyDescriptor pdChildPK = new PropertyDescriptor(prixObjAnno.primaryKey(),
+									objMock.getClass());
 							Method getterChildPK = pdChildPK.getReadMethod();
 							Object childObjPK = getterChildPK.invoke(objMock);
 							lst.add(childObjPK);
@@ -233,7 +263,8 @@ public class MicroServiceObjectUtil {
 					} else {
 						Annotation objPrixObjAnno = mockObj.getClass().getAnnotation(MicroServiceObject.class);
 						MicroServiceObject prixObjAnno = (MicroServiceObject) objPrixObjAnno;
-						PropertyDescriptor pdChildPK = new PropertyDescriptor(prixObjAnno.primaryKey(), mockObj.getClass());
+						PropertyDescriptor pdChildPK = new PropertyDescriptor(prixObjAnno.primaryKey(),
+								mockObj.getClass());
 						Method getterChildPK = pdChildPK.getReadMethod();
 						Object childObjPK = getterChildPK.invoke(mockObj);
 						if (StringUtils.equals(id, String.valueOf(childObjPK))) {
@@ -254,11 +285,12 @@ public class MicroServiceObjectUtil {
 					mvm.add(GenericCommonController.KEY_ENTITY_CLASS, msObject.originEntityClass());
 					mvm.add(GenericCommonController.KEY_IS_COLLECTION, "true");
 					resJson = (String) MicroServiceUtil.getForObject(
-							new MicroServiceRequest(discoveryClient, restTemplate, token, msService, msFunction, ""), mvm, String.class);
+							new MicroServiceRequest(discoveryClient, restTemplate, token, msService, msFunction, ""),
+							mvm, String.class);
 				} else {
-					resJson = (String) MicroServiceUtil
-							.getForObject(new MicroServiceRequest(discoveryClient, restTemplate, token, msService, msFunction, id),
-									String.class);
+					resJson = (String) MicroServiceUtil.getForObject(
+							new MicroServiceRequest(discoveryClient, restTemplate, token, msService, msFunction, id),
+							String.class);
 				}
 				ObjectMapper maple = new ObjectMapper();
 				Field mockfield = ReflectionUtils.findField(classToFind, mockTarget);
@@ -269,21 +301,19 @@ public class MicroServiceObjectUtil {
 					MultiValueMap<String, String> mvm = new LinkedMultiValueMap<>();
 					mvm.add(msObject.primaryKey(), id);
 					mvm.add(GenericCommonController.KEY_ENTITY_CLASS, msObject.originEntityClass());
-					childObj =
-							MicroServiceUtil.getForObject(
-									new MicroServiceRequest(discoveryClient, restTemplate, token, msService, msFunction, ""),
-									mvm, pdMockTarget.getPropertyType());
+					childObj = MicroServiceUtil.getForObject(
+							new MicroServiceRequest(discoveryClient, restTemplate, token, msService, msFunction, ""),
+							mvm, pdMockTarget.getPropertyType());
 				} else {
-					childObj =
-							MicroServiceUtil.getForObject(
-									new MicroServiceRequest(discoveryClient, restTemplate, token, msService, msFunction, id),
-									pdMockTarget.getPropertyType());
+					childObj = MicroServiceUtil.getForObject(
+							new MicroServiceRequest(discoveryClient, restTemplate, token, msService, msFunction, id),
+							pdMockTarget.getPropertyType());
 				}
 			}
 
 			/** fields recursive */
 			if (childObj != null) {
-				refreshObjectDependency(childObj, isForceRefresh);
+				refreshObjectDependency(childObj, isForceRefresh, restTemplate, discoveryClient);
 			}
 
 			/** reflection to set Mocked object */
@@ -294,8 +324,8 @@ public class MicroServiceObjectUtil {
 		return false;
 	}
 
-	public static void mappingFields(Object targetObj, List<MappingRequest> lstMappingRequest) throws Exception {
-		OAuth2RestTemplate restTemplate = BaseBeanUtil.getBean(OAuth2RestTemplate.class);
+	public static void mappingFields(Object targetObj, List<MappingRequest> lstMappingRequest,
+			RestTemplate restTemplate) throws Exception {
 		DiscoveryClient discoveryClient = (DiscoveryClient) BaseBeanUtil.getBean(DiscoveryClient.class);
 
 		ExecutorService executor = Executors.newFixedThreadPool(20);
@@ -319,8 +349,11 @@ public class MicroServiceObjectUtil {
 					}
 
 					try {
-						Object mappedObj = MicroServiceUtil.getForObject(new MicroServiceRequest(discoveryClient, restTemplate, token,
-								getServiceID(msObject), MicroServiceObject.COMMON_QUERY, ""), mapParam, mappingClass);
+						Object mappedObj = MicroServiceUtil
+								.getForObject(
+										new MicroServiceRequest(discoveryClient, restTemplate, token,
+												getServiceID(msObject), MicroServiceObject.COMMON_QUERY, ""),
+										mapParam, mappingClass);
 						if (mappedObj != null) {
 							Object targetField = ClassUtil.getProperty(mappedObj, strMappingField);
 							if (targetField != null) {
@@ -339,8 +372,9 @@ public class MicroServiceObjectUtil {
 		executor.shutdown();
 		executor.awaitTermination(10, TimeUnit.MINUTES);
 	}
-	
-	public static void poMappingFields(Object targetObject, Object sourceTargetObject, List<POMappingRequest> mappingRequestLst) {
+
+	public static void poMappingFields(Object targetObject, Object sourceTargetObject,
+			List<POMappingRequest> mappingRequestLst) {
 		for (POMappingRequest rq : mappingRequestLst) {
 			try {
 				Object value = ClassUtil.getProperty(sourceTargetObject, rq.getSourceObject());
@@ -359,18 +393,18 @@ public class MicroServiceObjectUtil {
 			String[] split = entityClass.split("[.]");
 			if (split.length >= 3) {
 				switch (split[2]) {
-					case "masterdata":
-						return MicroServiceObject.SRC_MASTERDATA;
-					case "identitymanagement":
-						return MicroServiceObject.SRC_IDENTITY;
-					case "industryanalysis":
-						return MicroServiceObject.SRC_INDUSTRY_ANALYSIS;
-					case "pricing":
-						return MicroServiceObject.SRC_PRICING;
-					case "etl":
-						return MicroServiceObject.SRC_ETL;
-					case "pricingpower":
-						return MicroServiceObject.SRC_PRICING_POWER;
+				case "masterdata":
+					return MicroServiceObject.SRC_MASTERDATA;
+				case "identitymanagement":
+					return MicroServiceObject.SRC_IDENTITY;
+				case "industryanalysis":
+					return MicroServiceObject.SRC_INDUSTRY_ANALYSIS;
+				case "pricing":
+					return MicroServiceObject.SRC_PRICING;
+				case "etl":
+					return MicroServiceObject.SRC_ETL;
+				case "pricingpower":
+					return MicroServiceObject.SRC_PRICING_POWER;
 				}
 			}
 		}
