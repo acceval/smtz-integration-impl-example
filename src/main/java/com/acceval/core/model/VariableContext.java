@@ -32,7 +32,9 @@ public class VariableContext implements Serializable, Cloneable {
 	// Pricing Technique Condition Table Code
 	public static final String PRICETECH_DECIDER = "PRICING_TECHNIQUE_DECIDER";
 
+	// Various Decider
 	public static final String FLOOR_PRICE_TECHNIQUE_DECIDER = "FLOOR_PRICE_TECHNIQUE_DECIDER";
+	public static final String NORMALISATION_TECHNIQUE_DECIDER = "NORMALISATION_TECHNIQUE_DECIDER";
 
 	// Deal Mgt Object
 	public static final String OBJ_SALES_DOC = "salesDoc";
