@@ -20,7 +20,7 @@ import com.acceval.core.util.ClassUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @MappedSuperclass
-@EntityListeners({ AuditingEntityListener.class, CompanyModelListener.class })
+@EntityListeners({ AuditingEntityListener.class })
 public abstract class BaseModel implements Serializable {
 
 	private static final long serialVersionUID = 1L;
