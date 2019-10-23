@@ -16,7 +16,8 @@ public class CurrentUser implements AuthUser {
 	private boolean enabled;
 //	private boolean systemUser;
 	private String schemaName;
-	
+	private String timeZone;
+
 //	public boolean isSystemUser() {
 //		return systemUser;
 //	}
@@ -108,6 +109,14 @@ public class CurrentUser implements AuthUser {
 
 	public void setSchemaName(String schemaName) {
 		this.schemaName = schemaName;
+	}
+
+	public String getTimeZone() {
+		return timeZone;
+	}
+
+	public void setTimeZone(String timeZone) {
+		this.timeZone = timeZone;
 	}
 
 }

@@ -2,26 +2,34 @@ package com.acceval.core.jackson.serializer;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import com.acceval.core.jackson.Fields;
+import com.acceval.core.security.PrincipalUtil;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import com.github.jknack.handlebars.internal.lang3.StringUtils;
 
 public class APILocalDateTimeJsonSerializer extends JsonSerializer<LocalDateTime> {
-	public static final APILocalDateTimeJsonSerializer INSTANCE =  new APILocalDateTimeJsonSerializer();
+	public static final APILocalDateTimeJsonSerializer INSTANCE = new APILocalDateTimeJsonSerializer();
 
 	private APILocalDateTimeJsonSerializer() {
 		super();
 	}
 
 	@Override
-	public void serialize(LocalDateTime value, JsonGenerator gen,
-			SerializerProvider serializerProvider) throws IOException, JsonProcessingException {
+	public void serialize(LocalDateTime value, JsonGenerator gen, SerializerProvider serializerProvider)
+			throws IOException, JsonProcessingException {
 		if (value == null) {
 			gen.writeNull();
 			return;
+		}
+
+		String timeZone = PrincipalUtil.getTimeZone();
+		if (StringUtils.isNotBlank(timeZone)) {
+			value = value.atZone(ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of(timeZone)).toLocalDateTime();
 		}
 
 		gen.writeStartObject();

@@ -2,15 +2,18 @@ package com.acceval.core.jackson.deserializer;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.acceval.core.jackson.Fields;
+import com.acceval.core.security.PrincipalUtil;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.github.jknack.handlebars.internal.lang3.StringUtils;
 
 public class APILocalDateTimeJsonDeserializer extends JsonDeserializer<LocalDateTime> {
 	public static final APILocalDateTimeJsonDeserializer INSTANCE = new APILocalDateTimeJsonDeserializer();
@@ -20,7 +23,8 @@ public class APILocalDateTimeJsonDeserializer extends JsonDeserializer<LocalDate
 	}
 
 	@Override
-	public LocalDateTime deserialize(JsonParser p, DeserializationContext ctx) throws IOException, JsonProcessingException {
+	public LocalDateTime deserialize(JsonParser p, DeserializationContext ctx)
+			throws IOException, JsonProcessingException {
 		if (p.currentToken() == JsonToken.VALUE_NULL) {
 			return null;
 		}
@@ -63,8 +67,17 @@ public class APILocalDateTimeJsonDeserializer extends JsonDeserializer<LocalDate
 			ctx.reportWrongTokenException(p, JsonToken.END_OBJECT, "Expected end object for date");
 		}
 
-		return LocalDateTime.of(mapVal.getOrDefault(Fields.YEAR, -1), mapVal.getOrDefault(Fields.MONTH, -1),
-				mapVal.getOrDefault(Fields.DAY, -1), mapVal.getOrDefault(Fields.HOUR, -1), mapVal.getOrDefault(Fields.MINUTE, -1),
+		LocalDateTime localDateTime = LocalDateTime.of(mapVal.getOrDefault(Fields.YEAR, -1),
+				mapVal.getOrDefault(Fields.MONTH, -1), mapVal.getOrDefault(Fields.DAY, -1),
+				mapVal.getOrDefault(Fields.HOUR, -1), mapVal.getOrDefault(Fields.MINUTE, -1),
 				mapVal.getOrDefault(Fields.SECOND, -1));
+
+		String timeZone = PrincipalUtil.getTimeZone();
+		if (StringUtils.isNotBlank(timeZone)) {
+			localDateTime = localDateTime.atZone(ZoneId.of(timeZone)).withZoneSameInstant(ZoneId.systemDefault())
+					.toLocalDateTime();
+		}
+
+		return localDateTime;
 	}
 }

@@ -59,13 +59,14 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 	public static String _ASC = "asc";
 	public static String _DESC = "desc";
 
-	public static String[] STD_DATEFORMAT = new String[] { "yyyy-MM-dd", "dd-MM-yyyy", "dd/MM/yyyy", "yyyy/MM/dd" };
+	public static String[] STD_DATEFORMAT = new String[] { "yyyy-MM-dd", "dd-MM-yyyy", "dd/MM/yyyy", "yyyy/MM/dd",
+			"yyyy-MM-dd HH:mm:ss", "dd-MM-yyyy HH:mm:ss", "dd/MM/yyyy HH:mm:ss", "yyyy/MM/dd HH:mm:ss" };
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BaseRepositoryImpl.class);
 
 	protected abstract EntityManagerFactory getEntityManagerFactory();
 
-	//	protected abstract EntityManager getEntityManager();
+	// protected abstract EntityManager getEntityManager();
 
 	protected abstract Class<?> getTargetClass();
 
@@ -236,15 +237,16 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 		Criteria criteria = this.getCriteriaByMapParam(mapParam, getTargetClass());
 		for (DateRange dateRange : dateRanges) {
 
-			LocalDateTime startDate = LocalDateTime.of(dateRange.getStartDate().getYear(), dateRange.getStartDate().getMonthValue(),
-					dateRange.getStartDate().getDayOfMonth(), 0, 0, 0);
+			LocalDateTime startDate = LocalDateTime.of(dateRange.getStartDate().getYear(),
+					dateRange.getStartDate().getMonthValue(), dateRange.getStartDate().getDayOfMonth(), 0, 0, 0);
 
 			if (dateRange.getEndDate() != null) {
-				LocalDateTime endDate = LocalDateTime.of(dateRange.getEndDate().getYear(), dateRange.getEndDate().getMonthValue(),
-						dateRange.getEndDate().getDayOfMonth(), 0, 0);
+				LocalDateTime endDate = LocalDateTime.of(dateRange.getEndDate().getYear(),
+						dateRange.getEndDate().getMonthValue(), dateRange.getEndDate().getDayOfMonth(), 0, 0);
 				endDate = endDate.plusDays(1);
 
-				Criterion startCriterion = new Criterion(dateRange.getPropertyPath(), RestrictionType.GREATER_OR_EQUAL, startDate);
+				Criterion startCriterion = new Criterion(dateRange.getPropertyPath(), RestrictionType.GREATER_OR_EQUAL,
+						startDate);
 				startCriterion.setSearchValueDataType(Criterion.DATE);
 				criteria.appendCriterion(startCriterion);
 
@@ -253,7 +255,8 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 				criteria.appendCriterion(endCriterion);
 
 			} else {
-				Criterion startCriterion = new Criterion(dateRange.getPropertyPath(), RestrictionType.GREATER_OR_EQUAL, startDate);
+				Criterion startCriterion = new Criterion(dateRange.getPropertyPath(), RestrictionType.GREATER_OR_EQUAL,
+						startDate);
 				startCriterion.setSearchValueDataType(Criterion.DATE);
 				criteria.appendCriterion(startCriterion);
 
@@ -282,8 +285,8 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 
 		/** append company criteria for BaseModel */
 		if (BaseCompanyModel.class.isAssignableFrom(getTargetClass()) && acceCriteria.getCriterion() != null) {
-			boolean companyKeyFound =
-					acceCriteria.getCriterion().stream().filter(c -> "companyId".equals(c.getPropertyName())).findFirst().isPresent();
+			boolean companyKeyFound = acceCriteria.getCriterion().stream()
+					.filter(c -> "companyId".equals(c.getPropertyName())).findFirst().isPresent();
 			if (!companyKeyFound) {
 				acceCriteria.appendCriterion(new Criterion("companyId", PrincipalUtil.getCompanyID()));
 			}
@@ -399,8 +402,7 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 		// EQUAL
 		else if (Criterion.RestrictionType.EQUAL.equals(restrictionType)) {
 			// handle Date
-			if (ClassUtils.isAssignable(attrClass, Date.class) || ClassUtils.isAssignable(attrClass, LocalDateTime.class)
-					|| ClassUtils.isAssignable(attrClass, LocalDate.class)) {
+			if (ClassUtils.isAssignable(attrClass, Date.class) || ClassUtils.isAssignable(attrClass, LocalDate.class)) {
 				int year = 0;
 				int month = 0;
 				int day = 0;
@@ -422,11 +424,6 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 					day = calendar.get(Calendar.DAY_OF_MONTH);
 				} else if (value instanceof LocalDate) {
 					LocalDate vLocalDate = (LocalDate) value;
-					year = vLocalDate.getYear();
-					month = vLocalDate.getMonthValue();
-					day = vLocalDate.getDayOfMonth();
-				} else if (value instanceof LocalDateTime) {
-					LocalDateTime vLocalDate = (LocalDateTime) value;
 					year = vLocalDate.getYear();
 					month = vLocalDate.getMonthValue();
 					day = vLocalDate.getDayOfMonth();
@@ -434,6 +431,42 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 				return new Predicate[] { builder.equal(builder.function("year", Integer.class, path), year),
 						builder.equal(builder.function("month", Integer.class, path), month),
 						builder.equal(builder.function("day", Integer.class, path), day) };
+			} else if (ClassUtils.isAssignable(attrClass, LocalDateTime.class)) {
+				int year = 0;
+				int month = 0;
+				int day = 0;
+				int hour = 0;
+				int minute = 0;
+				int second = 0;
+				if (value instanceof String) {
+					try {
+						Calendar calendar = Calendar.getInstance();
+						calendar.setTime(DateUtils.parseDateStrictly((String) value, STD_DATEFORMAT));
+						year = calendar.get(Calendar.YEAR);
+						month = calendar.get(Calendar.MONTH) + 1;
+						day = calendar.get(Calendar.DAY_OF_MONTH);
+						hour = calendar.get(Calendar.HOUR);
+						minute = calendar.get(Calendar.MINUTE);
+						second = calendar.get(Calendar.SECOND);
+					} catch (ParseException e) {
+						LOGGER.error(e.getMessage(), e);
+					}
+				} else if (value instanceof LocalDateTime) {
+					LocalDateTime vLocalDate = (LocalDateTime) value;
+					year = vLocalDate.getYear();
+					month = vLocalDate.getMonthValue();
+					day = vLocalDate.getDayOfMonth();
+					hour = vLocalDate.getHour();
+					minute = vLocalDate.getMinute();
+					second = vLocalDate.getSecond();
+				}
+
+				return new Predicate[] { builder.equal(builder.function("year", Integer.class, path), year),
+						builder.equal(builder.function("month", Integer.class, path), month),
+						builder.equal(builder.function("day", Integer.class, path), day),
+						builder.equal(builder.function("hour", Integer.class, path), hour),
+						builder.equal(builder.function("minute", Integer.class, path), minute),
+						builder.equal(builder.function("second", Integer.class, path), second) };
 			} else {
 				return new Predicate[] { builder.equal(path, value) };
 			}
@@ -441,8 +474,7 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 		// NOT EQUAL
 		else if (Criterion.RestrictionType.NOT_EQUAL.equals(restrictionType)) {
 			// handle Date
-			if (ClassUtils.isAssignable(attrClass, Date.class) || ClassUtils.isAssignable(attrClass, LocalDateTime.class)
-					|| ClassUtils.isAssignable(attrClass, LocalDate.class)) {
+			if (ClassUtils.isAssignable(attrClass, Date.class) || ClassUtils.isAssignable(attrClass, LocalDate.class)) {
 				int year = 0;
 				int month = 0;
 				int day = 0;
@@ -467,15 +499,46 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 					year = vLocalDate.getYear();
 					month = vLocalDate.getMonthValue();
 					day = vLocalDate.getDayOfMonth();
+				}
+				return new Predicate[] { builder.notEqual(builder.function("year", Integer.class, path), year),
+						builder.notEqual(builder.function("month", Integer.class, path), month),
+						builder.notEqual(builder.function("day", Integer.class, path), day) };
+			} else if (ClassUtils.isAssignable(attrClass, LocalDateTime.class)) {
+				int year = 0;
+				int month = 0;
+				int day = 0;
+				int hour = 0;
+				int minute = 0;
+				int second = 0;
+				if (value instanceof String) {
+					try {
+						Calendar calendar = Calendar.getInstance();
+						calendar.setTime(DateUtils.parseDateStrictly((String) value, STD_DATEFORMAT));
+						year = calendar.get(Calendar.YEAR);
+						month = calendar.get(Calendar.MONTH) + 1;
+						day = calendar.get(Calendar.DAY_OF_MONTH);
+						hour = calendar.get(Calendar.HOUR);
+						minute = calendar.get(Calendar.MINUTE);
+						second = calendar.get(Calendar.SECOND);
+					} catch (ParseException e) {
+						LOGGER.error(e.getMessage(), e);
+					}
 				} else if (value instanceof LocalDateTime) {
 					LocalDateTime vLocalDate = (LocalDateTime) value;
 					year = vLocalDate.getYear();
 					month = vLocalDate.getMonthValue();
 					day = vLocalDate.getDayOfMonth();
+					hour = vLocalDate.getHour();
+					minute = vLocalDate.getMinute();
+					second = vLocalDate.getSecond();
 				}
-				return new Predicate[] { builder.notEqual(builder.function("year", Integer.class, path), year),
-						builder.notEqual(builder.function("month", Integer.class, path), month),
-						builder.notEqual(builder.function("day", Integer.class, path), day) };
+
+				return new Predicate[] { builder.equal(builder.function("year", Integer.class, path), year),
+						builder.equal(builder.function("month", Integer.class, path), month),
+						builder.equal(builder.function("day", Integer.class, path), day),
+						builder.equal(builder.function("hour", Integer.class, path), hour),
+						builder.equal(builder.function("minute", Integer.class, path), minute),
+						builder.equal(builder.function("second", Integer.class, path), second) };
 			} else {
 				return new Predicate[] { builder.notEqual(path, value) };
 			}
@@ -563,7 +626,8 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 	public Criteria getCriteriaByMapParam(MultiValueMap<String, String> mapParam, Class<?> targetClass) {
 		int page = mapParam.get(_PAGE) != null ? Integer.parseInt(mapParam.getFirst(_PAGE)) : 0;
 		int pageSize = mapParam.get(_PAGESIZE) != null ? Integer.parseInt(mapParam.getFirst(_PAGESIZE)) : 0;
-		boolean isFetchAll = mapParam.get(_FETCHALL) != null ? Boolean.parseBoolean(mapParam.getFirst(_FETCHALL)) : (pageSize <= 0);
+		boolean isFetchAll = mapParam.get(_FETCHALL) != null ? Boolean.parseBoolean(mapParam.getFirst(_FETCHALL))
+				: (pageSize <= 0);
 		List<String> lstSort = mapParam.get(_SORT);
 
 		Criteria acceCriteria = new Criteria();
@@ -608,7 +672,8 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 						Object searchValues = searchValue.toArray();
 						lstCrriterion.add(new Criterion(resolveKey, searchValues));
 					} else {
-						lstCrriterion.add(new Criterion(resolveKey, "%" + mapParam.getFirst(key).toLowerCase() + "%", false));
+						lstCrriterion.add(
+								new Criterion(resolveKey, "%" + mapParam.getFirst(key).toLowerCase() + "%", false));
 					}
 				} else if (ClassUtils.isAssignable(attrClass, Double.class, true)) {
 					lstCrriterion.add(new Criterion(resolveKey, Double.parseDouble(mapParam.getFirst(key))));
@@ -616,16 +681,18 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 					lstCrriterion.add(new Criterion(resolveKey, Float.parseFloat(mapParam.getFirst(key))));
 				} else if (ClassUtils.isAssignable(attrClass, Integer.class, true)) {
 					lstCrriterion.add(new Criterion(resolveKey, Integer.parseInt(mapParam.getFirst(key))));
-				} else if (ClassUtils.isAssignable(attrClass, Date.class) || ClassUtils.isAssignable(attrClass, LocalDate.class)
+				} else if (ClassUtils.isAssignable(attrClass, Date.class)
+						|| ClassUtils.isAssignable(attrClass, LocalDate.class)
 						|| ClassUtils.isAssignable(attrClass, LocalDateTime.class)) {
 					try {
-						lstCrriterion.add(new Criterion(resolveKey, DateUtils.parseDateStrictly(mapParam.getFirst(key), STD_DATEFORMAT)));
+						lstCrriterion.add(new Criterion(resolveKey,
+								DateUtils.parseDateStrictly(mapParam.getFirst(key), STD_DATEFORMAT)));
 					} catch (ParseException e) {
 						LOGGER.error("Date Parsing Error.", e);
 					}
 				} else if (ClassUtils.isAssignable(attrClass, Enum.class)) {
-					lstCrriterion
-							.add(new Criterion(resolveKey, Enum.valueOf(attrClass.asSubclass(Enum.class), mapParam.getFirst(key)), true));
+					lstCrriterion.add(new Criterion(resolveKey,
+							Enum.valueOf(attrClass.asSubclass(Enum.class), mapParam.getFirst(key)), true));
 				} else {
 					LOGGER.error("[" + attrClass.getName() + "] is not support in Acceval Base Criteria Search yet!");
 				}
@@ -756,7 +823,8 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 
 		Query query = entityManager.createQuery(selectQuery, getTargetClass());
 		query.setParameter("status", status == null ? STATUS.ACTIVE : status);
-		if (id != null) query.setParameter("id", id);
+		if (id != null)
+			query.setParameter("id", id);
 
 		return query;
 	}
@@ -783,7 +851,7 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.US);
 
-		//		@SuppressWarnings("null")
+		// @SuppressWarnings("null")
 
 		EntityManager entityManager = this.getEntityManagerFactory().createEntityManager();
 
@@ -791,9 +859,10 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 
 			EntityTransaction tx = entityManager.getTransaction();
 			tx.begin();
-			String updateSql = "UPDATE " + (parentEntity != null ? parentEntity.getSimpleName() : entity.getClass().getSimpleName())
-					+ " e SET e.recordStatus = 'ARCHIVE', e.dateArchived ='" + LocalDateTime.now().format(formatter) + "' WHERE e."
-					+ idField + " = " + id;
+			String updateSql = "UPDATE "
+					+ (parentEntity != null ? parentEntity.getSimpleName() : entity.getClass().getSimpleName())
+					+ " e SET e.recordStatus = 'ARCHIVE', e.dateArchived ='" + LocalDateTime.now().format(formatter)
+					+ "' WHERE e." + idField + " = " + id;
 			Query query = entityManager.createQuery(updateSql);
 			query.executeUpdate();
 

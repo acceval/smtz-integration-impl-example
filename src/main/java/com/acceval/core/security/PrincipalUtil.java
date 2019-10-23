@@ -1,10 +1,11 @@
 package com.acceval.core.security;
 
-import com.acceval.core.model.ServicePackage;
+import javax.validation.constraints.NotNull;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.validation.constraints.NotNull;
+import com.acceval.core.model.ServicePackage;
 
 public class PrincipalUtil {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -17,9 +18,10 @@ public class PrincipalUtil {
 	public static final String HDRKEY_COMPANYCODE = "COMPANYCODE";
 	public static final String HDRKEY_SERVICEPACKAGE = "SERVICEPACKAGE";
 	public static final String HDRKEY_SCHEMANAME = "SCHEMANAME";
+	public static final String HDRKEY_TIMEZONEID = "TIMEZONEID";
 
 	public static void setProvider(PrincipalProvider provider) {
-		
+
 		if (PrincipalUtil.provider.get() != null) {
 			return;
 //			throw new IllegalStateException("a principal provider already exists, unable to set provider again");
@@ -55,7 +57,7 @@ public class PrincipalUtil {
 				@Override
 				public String getToken() {
 					return null;
-				}	
+				}
 			};
 		}
 
@@ -71,9 +73,10 @@ public class PrincipalUtil {
 	}
 
 	public static void setSystemUser(Long companyID, String companyCode, String servicePackage) {
-		
+
 		CurrentUser sysUser = getCurrentUser();
-		if (sysUser == null) sysUser = new CurrentUser();
+		if (sysUser == null)
+			sysUser = new CurrentUser();
 //		sysUser.setSystemUser(true);
 		sysUser.setCompanyId(companyID);
 		sysUser.setCompanyCode(companyCode);
@@ -117,6 +120,14 @@ public class PrincipalUtil {
 		CurrentUser user = getCurrentUser();
 		if (user != null) {
 			return user.getCompanyCode();
+		}
+		return null;
+	}
+
+	public static String getTimeZone() {
+		CurrentUser user = getCurrentUser();
+		if (user != null) {
+			return user.getTimeZone();
 		}
 		return null;
 	}

@@ -21,6 +21,7 @@ public class RequestInterceptorUtil {
 			template.header(PrincipalUtil.HDRKEY_COMPANYID, String.valueOf(user.getCompanyId()));
 			template.header(PrincipalUtil.HDRKEY_COMPANYCODE, user.getCompanyCode());
 			template.header(PrincipalUtil.HDRKEY_SCHEMANAME, user.getSchemaName());
+			template.header(PrincipalUtil.HDRKEY_TIMEZONEID, user.getTimeZone());
 			if (user.getServicePackage() != null) {
 				template.header(PrincipalUtil.HDRKEY_SERVICEPACKAGE, user.getServicePackage().toString());
 			}
@@ -32,6 +33,7 @@ public class RequestInterceptorUtil {
 				template.header(PrincipalUtil.HDRKEY_COMPANYID, String.valueOf(user.getCompanyId()));
 				template.header(PrincipalUtil.HDRKEY_COMPANYCODE, user.getCompanyCode());
 				template.header(PrincipalUtil.HDRKEY_SCHEMANAME, user.getSchemaName());
+				template.header(PrincipalUtil.HDRKEY_TIMEZONEID, user.getTimeZone());
 				if (user.getServicePackage() != null) {
 					template.header(PrincipalUtil.HDRKEY_SERVICEPACKAGE, user.getServicePackage().toString());
 				}
@@ -39,6 +41,7 @@ public class RequestInterceptorUtil {
 				template.header(PrincipalUtil.HDRKEY_COMPANYID, "");
 				template.header(PrincipalUtil.HDRKEY_COMPANYCODE, "");
 				template.header(PrincipalUtil.HDRKEY_SCHEMANAME, "");
+				template.header(PrincipalUtil.HDRKEY_TIMEZONEID, "");
 			}
 		}
 	}
