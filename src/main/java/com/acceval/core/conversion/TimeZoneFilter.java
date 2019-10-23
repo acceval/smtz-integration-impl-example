@@ -51,6 +51,7 @@ public class TimeZoneFilter implements Filter {
 		}
 
 		if (StringUtils.isBlank(timeZone)) {
+			chain.doFilter(request, res);
 			return;
 		}
 
