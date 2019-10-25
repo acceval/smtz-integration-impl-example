@@ -18,6 +18,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.time.DateUtils;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -26,6 +28,7 @@ import com.acceval.core.security.CurrentUser;
 import com.github.jknack.handlebars.internal.lang3.StringUtils;
 
 @Component
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class TimeZoneFilter implements Filter {
 	private static String[] STD_DATEFORMAT = new String[] { "yyyy-MM-dd", "dd-MM-yyyy", "dd/MM/yyyy", "yyyy/MM/dd" };
 	private static String[] STD_DATETIMEFORMAT = new String[] { "yyyy-MM-dd HH:mm:ss", "dd-MM-yyyy HH:mm:ss",
@@ -50,37 +53,37 @@ public class TimeZoneFilter implements Filter {
 			}
 		}
 
-		if (StringUtils.isBlank(timeZone)) {
-			chain.doFilter(request, res);
-			return;
-		}
+		if (StringUtils.isNotBlank(timeZone)) {
+			Map<String, String[]> reqParam = request.getParameterMap();
+			Map<String, String[]> convertedDateTime = new HashMap<String, String[]>();
+			DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+			DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-		Map<String, String[]> reqParam = request.getParameterMap();
-		Map<String, String[]> convertedDateTime = new HashMap<String, String[]>();
-		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+			for (String key : reqParam.keySet()) {
+				String[] values = reqParam.get(key);
 
-		for (String key : reqParam.keySet()) {
-			String[] values = reqParam.get(key);
+				for (String value : values) {
+					if (isValidDate(value)) {
+						LocalDate localDate = LocalDate.parse(value, dateFormatter);
+						LocalDateTime localDateTime = localDate.atStartOfDay().atZone(ZoneId.of(timeZone))
+								.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
+						convertedDateTime.put(key, new String[] { localDateTime.format(dateTimeFormatter) });
+					} else if (isValidDateTime(value)) {
+						LocalDateTime localDateTime = LocalDateTime.parse(value, dateTimeFormatter);
+						localDateTime = localDateTime.atZone(ZoneId.of(timeZone))
+								.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
+						convertedDateTime.put(key, new String[] { localDateTime.format(dateTimeFormatter) });
+					}
 
-			for (String value : values) {
-				if (isValidDate(value)) {
-					LocalDate localDate = LocalDate.parse(value, dateFormatter);
-					LocalDateTime localDateTime = localDate.atStartOfDay().atZone(ZoneId.of(timeZone))
-							.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
-					convertedDateTime.put(key, new String[] { localDateTime.format(dateTimeFormatter) });
-				} else if (isValidDateTime(value)) {
-					LocalDateTime localDateTime = LocalDateTime.parse(value, dateTimeFormatter);
-					localDateTime = localDateTime.atZone(ZoneId.of(timeZone))
-							.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
-					convertedDateTime.put(key, new String[] { localDateTime.format(dateTimeFormatter) });
 				}
-
 			}
+
+			HttpServletRequest wrappedRequest = new TimeZoneWrappedRequest(request, convertedDateTime);
+			chain.doFilter(wrappedRequest, res);
+		} else {
+			chain.doFilter(request, res);
 		}
 
-		HttpServletRequest wrappedRequest = new TimeZoneWrappedRequest(request, convertedDateTime);
-		chain.doFilter(wrappedRequest, res);
 	}
 
 	@Override
