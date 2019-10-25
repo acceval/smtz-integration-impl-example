@@ -18,8 +18,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.time.DateUtils;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -28,7 +26,6 @@ import com.acceval.core.security.CurrentUser;
 import com.github.jknack.handlebars.internal.lang3.StringUtils;
 
 @Component
-@Order(Ordered.HIGHEST_PRECEDENCE)
 public class TimeZoneFilter implements Filter {
 	private static String[] STD_DATEFORMAT = new String[] { "yyyy-MM-dd", "dd-MM-yyyy", "dd/MM/yyyy", "yyyy/MM/dd" };
 	private static String[] STD_DATETIMEFORMAT = new String[] { "yyyy-MM-dd HH:mm:ss", "dd-MM-yyyy HH:mm:ss",
