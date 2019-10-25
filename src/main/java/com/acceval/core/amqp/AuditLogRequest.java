@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.acceval.core.controller.AuditLog.AuditAction;
+import com.acceval.core.model.ServicePackage;
 
 public class AuditLogRequest implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -23,6 +24,10 @@ public class AuditLogRequest implements Serializable {
 	private int httpStatus;
 	private Date logTime;
 	private AuditAction auditAction;
+	private String companyCode;				
+	private String schemaName;
+	private String timeZone;
+	private ServicePackage servicePackage;
 
 	/** keys */
 	private String key1;
@@ -209,4 +214,37 @@ public class AuditLogRequest implements Serializable {
 		this.requestType = requestType;
 	}
 
+	public String getCompanyCode() {
+		return companyCode;
+	}
+
+	public void setCompanyCode(String companyCode) {
+		this.companyCode = companyCode;
+	}
+
+	public String getSchemaName() {
+		return schemaName;
+	}
+
+	public void setSchemaName(String schemaName) {
+		this.schemaName = schemaName;
+	}
+
+	public String getTimeZone() {
+		return timeZone;
+	}
+
+	public void setTimeZone(String timeZone) {
+		this.timeZone = timeZone;
+	}
+
+	public ServicePackage getServicePackage() {
+		return servicePackage;
+	}
+
+	public void setServicePackage(ServicePackage servicePackage) {
+		this.servicePackage = servicePackage;
+	}
+	
+	
 }
