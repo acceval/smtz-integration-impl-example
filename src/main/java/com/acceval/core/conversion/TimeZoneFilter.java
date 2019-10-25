@@ -50,37 +50,37 @@ public class TimeZoneFilter implements Filter {
 			}
 		}
 
-		if (StringUtils.isBlank(timeZone)) {
-			chain.doFilter(request, res);
-			return;
-		}
+		if (StringUtils.isNotBlank(timeZone)) {
+			Map<String, String[]> reqParam = request.getParameterMap();
+			Map<String, String[]> convertedDateTime = new HashMap<String, String[]>();
+			DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+			DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-		Map<String, String[]> reqParam = request.getParameterMap();
-		Map<String, String[]> convertedDateTime = new HashMap<String, String[]>();
-		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+			for (String key : reqParam.keySet()) {
+				String[] values = reqParam.get(key);
 
-		for (String key : reqParam.keySet()) {
-			String[] values = reqParam.get(key);
+				for (String value : values) {
+					if (isValidDate(value)) {
+						LocalDate localDate = LocalDate.parse(value, dateFormatter);
+						LocalDateTime localDateTime = localDate.atStartOfDay().atZone(ZoneId.of(timeZone))
+								.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
+						convertedDateTime.put(key, new String[] { localDateTime.format(dateTimeFormatter) });
+					} else if (isValidDateTime(value)) {
+						LocalDateTime localDateTime = LocalDateTime.parse(value, dateTimeFormatter);
+						localDateTime = localDateTime.atZone(ZoneId.of(timeZone))
+								.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
+						convertedDateTime.put(key, new String[] { localDateTime.format(dateTimeFormatter) });
+					}
 
-			for (String value : values) {
-				if (isValidDate(value)) {
-					LocalDate localDate = LocalDate.parse(value, dateFormatter);
-					LocalDateTime localDateTime = localDate.atStartOfDay().atZone(ZoneId.of(timeZone))
-							.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
-					convertedDateTime.put(key, new String[] { localDateTime.format(dateTimeFormatter) });
-				} else if (isValidDateTime(value)) {
-					LocalDateTime localDateTime = LocalDateTime.parse(value, dateTimeFormatter);
-					localDateTime = localDateTime.atZone(ZoneId.of(timeZone))
-							.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
-					convertedDateTime.put(key, new String[] { localDateTime.format(dateTimeFormatter) });
 				}
-
 			}
+
+			HttpServletRequest wrappedRequest = new TimeZoneWrappedRequest(request, convertedDateTime);
+			chain.doFilter(wrappedRequest, res);
+		} else {
+			chain.doFilter(request, res);
 		}
 
-		HttpServletRequest wrappedRequest = new TimeZoneWrappedRequest(request, convertedDateTime);
-		chain.doFilter(wrappedRequest, res);
 	}
 
 	@Override
