@@ -2,6 +2,7 @@ package com.acceval.core.model;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.HashMap;
@@ -75,6 +76,9 @@ public class VariableContext implements Serializable, Cloneable {
 		if (value instanceof LocalDate) {
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT);
 			variableMap.put(key, ((LocalDate) value).format(formatter));
+		} else if (value instanceof LocalDateTime) {
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT);
+			variableMap.put(key, ((LocalDateTime) value).format(formatter));
 		} else {
 			variableMap.put(key, value);
 		}
