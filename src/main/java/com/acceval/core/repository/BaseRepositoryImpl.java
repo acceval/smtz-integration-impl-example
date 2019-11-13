@@ -549,6 +549,7 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 		}
 		// GREAT/LESS
 		else if (Criterion.RestrictionType.GREATER.equals(restrictionType)) {
+			value = convertStringToDate(attrClass, value);
 			if (value instanceof LocalDate) {
 				return new Predicate[] { builder.greaterThan(path, (LocalDate) value) };
 			} else if (value instanceof Date) {
@@ -559,6 +560,7 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 				return new Predicate[] { builder.gt(path, (Number) value) };
 			}
 		} else if (Criterion.RestrictionType.GREATER_OR_EQUAL.equals(restrictionType)) {
+			value = convertStringToDate(attrClass, value);
 			if (value instanceof LocalDate) {
 				return new Predicate[] { builder.greaterThanOrEqualTo(path, (LocalDate) value) };
 			} else if (value instanceof Date) {
@@ -569,6 +571,7 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 				return new Predicate[] { builder.ge(path, (Number) value) };
 			}
 		} else if (Criterion.RestrictionType.LESS.equals(restrictionType)) {
+			value = convertStringToDate(attrClass, value);
 			if (value instanceof LocalDate) {
 				return new Predicate[] { builder.lessThan(path, (LocalDate) value) };
 			} else if (value instanceof Date) {
@@ -579,6 +582,7 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 				return new Predicate[] { builder.lt(path, (Number) value) };
 			}
 		} else if (Criterion.RestrictionType.LESS_OR_EQUAL.equals(restrictionType)) {
+			value = convertStringToDate(attrClass, value);
 			if (value instanceof LocalDate) {
 				return new Predicate[] { builder.lessThanOrEqualTo(path, (LocalDate) value) };
 			} else if (value instanceof Date) {
@@ -595,6 +599,26 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 		}
 
 		return null;
+	}
+
+	private Object convertStringToDate(Class<?> attrClass, Object value) {
+		if (value instanceof String) {
+			String strDate = (String) value;
+			if (ClassUtils.isAssignable(attrClass, Date.class) || ClassUtils.isAssignable(attrClass, LocalDate.class)) {
+				if (strDate.length() == 10) {
+					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+					return LocalDate.parse(strDate, formatter);
+				}
+			} else if (ClassUtils.isAssignable(attrClass, LocalDateTime.class)) {
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+				if (strDate.length() == 19) {
+					return LocalDate.parse(strDate, formatter);
+				} else if (strDate.length() == 10) {
+					return LocalDate.parse(strDate + " 00:00:00", formatter);
+				}
+			}
+		}
+		return value;
 	}
 
 	@Override
