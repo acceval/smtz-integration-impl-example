@@ -13,7 +13,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.StringTokenizer;
 
@@ -606,11 +605,11 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 			String strDate = (String) value;
 			if (ClassUtils.isAssignable(attrClass, Date.class) || ClassUtils.isAssignable(attrClass, LocalDate.class)) {
 				if (strDate.length() == 10) {
-					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 					return LocalDate.parse(strDate, formatter);
 				}
 			} else if (ClassUtils.isAssignable(attrClass, LocalDateTime.class)) {
-				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 				if (strDate.length() == 19) {
 					return LocalDate.parse(strDate, formatter);
 				} else if (strDate.length() == 10) {
@@ -873,7 +872,7 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 			}
 		}
 
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.US);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 
 		// @SuppressWarnings("null")
 
