@@ -27,8 +27,8 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String COMPANY_ID = "COMPANY_ID";
 	public static final String COMPANY_CODE = "COMPANY_CODE";
 
-	public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
-	public static final String DEFAULT_DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+	public static final String DEFAULT_DATE_FORMAT = "dd-MM-yyyy";
+	public static final String DEFAULT_DATE_TIME_FORMAT = "dd-MM-yyyy HH:mm:ss";
 
 	// Pricing Technique Condition Table Code
 	public static final String PRICETECH_DECIDER = "PRICING_TECHNIQUE_DECIDER";
@@ -93,7 +93,8 @@ public class VariableContext implements Serializable, Cloneable {
 	}
 
 	public void removeVariable(String key) {
-		if (variableMap.containsKey(key)) variableMap.remove(key);
+		if (variableMap.containsKey(key))
+			variableMap.remove(key);
 	}
 
 	public <T> T getVariable(String key) {

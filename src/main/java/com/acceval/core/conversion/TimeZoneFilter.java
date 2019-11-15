@@ -53,8 +53,8 @@ public class TimeZoneFilter implements Filter {
 		if (StringUtils.isNotBlank(timeZone)) {
 			Map<String, String[]> reqParam = request.getParameterMap();
 			Map<String, String[]> convertedDateTime = new HashMap<String, String[]>();
-			DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-			DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+			DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+			DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 
 			for (String key : reqParam.keySet()) {
 				String[] values = reqParam.get(key);
