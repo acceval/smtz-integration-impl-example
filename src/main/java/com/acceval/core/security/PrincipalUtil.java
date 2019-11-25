@@ -72,7 +72,7 @@ public class PrincipalUtil {
 		return getProvider().getToken();
 	}
 
-	public static void setSystemUser(Long companyID, String companyCode, String servicePackage) {
+	public static void setSystemUser(Long companyID, String companyCode, String timezone, String servicePackage) {
 
 		CurrentUser sysUser = getCurrentUser();
 		if (sysUser == null)
@@ -81,6 +81,7 @@ public class PrincipalUtil {
 		sysUser.setCompanyId(companyID);
 		sysUser.setCompanyCode(companyCode);
 		sysUser.setSchemaName(companyCode);
+		sysUser.setTimeZone(timezone);
 		if (servicePackage != null) {
 			sysUser.setServicePackage(ServicePackage.valueOf(servicePackage));
 		}
