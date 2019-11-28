@@ -10,6 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -714,8 +715,17 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 						LOGGER.error("Date Parsing Error.", e);
 					}
 				} else if (ClassUtils.isAssignable(attrClass, Enum.class)) {
-					lstCrriterion.add(new Criterion(resolveKey,
-							Enum.valueOf(attrClass.asSubclass(Enum.class), mapParam.getFirst(key)), true));
+					if (mapParam.get(key) instanceof Collection && mapParam.get(key).size() > 1) {
+						List<String> searchValues = mapParam.get(key);
+						List<Enum> enumValues = new ArrayList<Enum>();
+						for (String enumString : searchValues) {
+							enumValues.add(Enum.valueOf(attrClass.asSubclass(Enum.class), enumString));
+						}
+						lstCrriterion.add(new Criterion(resolveKey, enumValues.toArray()));
+					} else {
+						lstCrriterion.add(new Criterion(resolveKey,
+								Enum.valueOf(attrClass.asSubclass(Enum.class), mapParam.getFirst(key)), true));
+					}
 				} else {
 					LOGGER.error("[" + attrClass.getName() + "] is not support in Acceval Base Criteria Search yet!");
 				}
