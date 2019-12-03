@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,6 +24,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.acceval.core.security.CurrentUser;
+import com.acceval.core.security.PrincipalUtil;
 import com.github.jknack.handlebars.internal.lang3.StringUtils;
 
 @Component
@@ -48,6 +50,15 @@ public class TimeZoneFilter implements Filter {
 				CurrentUser currentUser = (CurrentUser) principal;
 				timeZone = currentUser.getTimeZone();
 			}
+		}
+
+		// check for feign client session without login user
+		if (StringUtils.isBlank(timeZone)) {
+			Enumeration<String> headerNames = request.getHeaderNames();
+			if (headerNames != null) {
+				timeZone = request.getHeader(PrincipalUtil.HDRKEY_TIMEZONEID);
+			}
+
 		}
 
 		if (StringUtils.isNotBlank(timeZone)) {

@@ -77,7 +77,7 @@ public class VariableContext implements Serializable, Cloneable {
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT);
 			variableMap.put(key, ((LocalDate) value).format(formatter));
 		} else if (value instanceof LocalDateTime) {
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT);
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_FORMAT);
 			variableMap.put(key, ((LocalDateTime) value).format(formatter));
 		} else {
 			variableMap.put(key, value);
@@ -118,12 +118,36 @@ public class VariableContext implements Serializable, Cloneable {
 
 		if (!(data instanceof LocalDate)) {
 			if (data instanceof String) {
+				String date = (String) data;
 
-				DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT);
-				retVal = LocalDate.parse((String) data, formatter);
+				if (date.length() == 10) {
+					DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT);
+					retVal = LocalDate.parse((String) date, formatter);
+				} else {
+					DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_FORMAT);
+					retVal = LocalDateTime.parse((String) date, formatter).toLocalDate();
+				}
 			}
 		} else {
 			retVal = (LocalDate) data;
+		}
+
+		return retVal;
+	}
+
+	public LocalDateTime getVariableAsDateTime(String key) {
+		Object data = getVariable(key);
+
+		LocalDateTime retVal = null;
+
+		if (!(data instanceof LocalDateTime)) {
+			if (data instanceof String) {
+
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_FORMAT);
+				retVal = LocalDateTime.parse((String) data, formatter);
+			}
+		} else {
+			retVal = (LocalDateTime) data;
 		}
 
 		return retVal;
