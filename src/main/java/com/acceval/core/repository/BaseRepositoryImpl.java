@@ -726,6 +726,9 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 						lstCrriterion.add(new Criterion(resolveKey,
 								Enum.valueOf(attrClass.asSubclass(Enum.class), mapParam.getFirst(key)), true));
 					}
+				} else if (ClassUtils.isAssignable(attrClass, Boolean.class, true)){
+					lstCrriterion.add(new Criterion(resolveKey, Boolean.parseBoolean(mapParam.getFirst(key))));
+					
 				} else {
 					LOGGER.error("[" + attrClass.getName() + "] is not support in Acceval Base Criteria Search yet!");
 				}
