@@ -10,6 +10,9 @@ public class Criterion implements Serializable {
 	public static final String STRING = "STRING";
 	public static final String DATE = "DATE";
 
+	public static final String DEFAULT_DATE_FORMAT = "dd-MM-yyyy";
+	public static final String DEFAULT_DATE_TIME_FORMAT = "dd-MM-yyyy HH:mm:ss";
+
 	public enum RestrictionType {
 		EQUAL("="), LESS_OR_EQUAL("<="), GREATER_OR_EQUAL(">="), GREATER(">"), LESS("<"), NOT_EQUAL("<>"), IN("in"), NOT_IN("not in"),
 		IS_NULL("is null"), IS_NOT_NULL("is not null");

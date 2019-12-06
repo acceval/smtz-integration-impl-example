@@ -11,6 +11,8 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.acceval.core.repository.Criterion;
+
 public class VariableContext implements Serializable, Cloneable {
 
 	private static final long serialVersionUID = 3457134321135281269L;
@@ -27,8 +29,8 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String COMPANY_ID = "COMPANY_ID";
 	public static final String COMPANY_CODE = "COMPANY_CODE";
 
-	public static final String DEFAULT_DATE_FORMAT = "dd-MM-yyyy";
-	public static final String DEFAULT_DATE_TIME_FORMAT = "dd-MM-yyyy HH:mm:ss";
+	public static final String DEFAULT_DATE_FORMAT = Criterion.DEFAULT_DATE_FORMAT;
+	public static final String DEFAULT_DATE_TIME_FORMAT = Criterion.DEFAULT_DATE_TIME_FORMAT;
 
 	// Pricing Technique Condition Table Code
 	public static final String PRICETECH_DECIDER = "PRICING_TECHNIQUE_DECIDER";
@@ -161,7 +163,7 @@ public class VariableContext implements Serializable, Cloneable {
 		if (value == null) {
 			return 0;
 		}
-		if (StringUtils.isBlank(String.valueOf(value))) {
+		if (StringUtils.isBlank(String.valueOf(value)) || "null".equals(value)) {
 			return 0;
 		}
 		Double retVal = Double.parseDouble(String.valueOf(value));
