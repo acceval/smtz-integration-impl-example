@@ -1,5 +1,8 @@
 package com.acceval.core.model;
 
+import com.acceval.core.repository.Criterion;
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -8,10 +11,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-
-import com.acceval.core.repository.Criterion;
 
 public class VariableContext implements Serializable, Cloneable {
 
@@ -33,7 +32,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String DEFAULT_DATE_TIME_FORMAT = Criterion.DEFAULT_DATE_TIME_FORMAT;
 
 	// Pricing Technique Condition Table Code
-	public static final String PRICETECH_DECIDER = "PRICING_TECHNIQUE_DECIDER";
+	//public static final String PRICETECH_DECIDER = "PRICING_TECHNIQUE_DECIDER";
 
 	// Various Decider
 	public static final String FLOOR_PRICE_TECHNIQUE_DECIDER = "FLOOR_PRICE_TECHNIQUE_DECIDER";
