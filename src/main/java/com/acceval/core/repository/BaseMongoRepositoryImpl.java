@@ -434,7 +434,8 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 		return new BasicDBObject("$expr",
 				new BasicDBObject(operator,
 						new Object[] { "$" + property, new BasicDBObject("$dateFromString", new BasicDBObject("dateString", strDate)
-								.append("format", "%Y-%m-%d").append("timezone", ZoneId.systemDefault().toString())) }));
+										.append("format", Criterion.DEFAULT_MONGO_DATE_FORMAT)
+										.append("timezone", ZoneId.systemDefault().toString())) }));
 	}
 
 	protected Field getField(Class<?> javaClass, String property) throws NoSuchFieldException, SecurityException {

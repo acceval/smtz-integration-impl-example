@@ -13,6 +13,8 @@ public class Criterion implements Serializable {
 	public static final String DEFAULT_DATE_FORMAT = "dd-MM-yyyy";
 	public static final String DEFAULT_DATE_TIME_FORMAT = "dd-MM-yyyy HH:mm:ss";
 
+	public static final String DEFAULT_MONGO_DATE_FORMAT = "%d-%m-%Y";
+
 	public enum RestrictionType {
 		EQUAL("="), LESS_OR_EQUAL("<="), GREATER_OR_EQUAL(">="), GREATER(">"), LESS("<"), NOT_EQUAL("<>"), IN("in"), NOT_IN("not in"),
 		IS_NULL("is null"), IS_NOT_NULL("is not null");
