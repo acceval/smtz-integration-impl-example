@@ -43,6 +43,7 @@ import org.springframework.util.MultiValueMap;
 
 import com.acceval.core.model.BaseEntity;
 import com.acceval.core.model.BaseEntity.STATUS;
+import com.acceval.core.model.company.BaseCompanyEntity;
 import com.acceval.core.model.company.BaseCompanyModel;
 import com.acceval.core.repository.Criterion.RestrictionType;
 import com.acceval.core.security.PrincipalUtil;
@@ -741,7 +742,7 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 		acceCriteria.setCriterion(lstCrriterion);
 
 		// base entity
-		if (BaseEntity.class.isAssignableFrom(targetClass)) {
+		if (BaseEntity.class.isAssignableFrom(targetClass) || BaseCompanyEntity.class.isAssignableFrom(targetClass)) {
 			acceCriteria.appendCriterion(new Criterion("recordStatus", STATUS.ACTIVE, true));
 		}
 		if (BaseCompanyModel.class.isAssignableFrom(targetClass)) {
@@ -917,7 +918,7 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 			return null;
 		}
 
-		if (clazz.getSuperclass().equals(BaseEntity.class)) {
+		if (clazz.getSuperclass().equals(BaseEntity.class) || clazz.getSuperclass().equals(BaseCompanyEntity.class)) {
 			if (clazz.isAnnotationPresent(Entity.class)) {
 				return clazz;
 			} else {
