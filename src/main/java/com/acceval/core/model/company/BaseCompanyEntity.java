@@ -5,9 +5,8 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.MappedSuperclass;
 
-import com.acceval.core.model.BaseEntityListener;
 import com.acceval.core.model.BaseEntity.STATUS;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.acceval.core.model.BaseEntityListener;
 
 @MappedSuperclass
 @EntityListeners(BaseEntityListener.class)
@@ -15,7 +14,6 @@ public abstract class BaseCompanyEntity extends BaseCompanyModel {
 
 	private static final long serialVersionUID = 1L;
 
-	@JsonIgnore
 	@Enumerated(EnumType.STRING)
 	private STATUS recordStatus = STATUS.ACTIVE;
 	

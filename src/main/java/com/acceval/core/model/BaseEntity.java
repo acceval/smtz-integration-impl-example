@@ -5,19 +5,18 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.MappedSuperclass;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 @MappedSuperclass
 @EntityListeners(BaseEntityListener.class)
 public abstract class BaseEntity extends BaseModel {
 
 	private static final long serialVersionUID = 1L;
 
+	public static final String STATUS_ALL = "ALL";
+
 	public enum STATUS {
 		ACTIVE, ARCHIVE, PENDING_APPROVAL, PENDING_ARCHIVE, REJECTED;
 	}
 
-	@JsonIgnore
 	@Enumerated(EnumType.STRING)
 	private STATUS recordStatus = STATUS.ACTIVE;
 	

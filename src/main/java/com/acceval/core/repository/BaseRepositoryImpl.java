@@ -724,8 +724,12 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 						}
 						lstCrriterion.add(new Criterion(resolveKey, enumValues.toArray()));
 					} else {
-						lstCrriterion.add(new Criterion(resolveKey,
-								Enum.valueOf(attrClass.asSubclass(Enum.class), mapParam.getFirst(key)), true));
+						if ("recordStatus".equals(key) && BaseEntity.STATUS_ALL.equalsIgnoreCase(mapParam.getFirst(key))) {
+							// do nothing, going to search ALL
+						} else {
+							lstCrriterion.add(new Criterion(resolveKey,
+									Enum.valueOf(attrClass.asSubclass(Enum.class), mapParam.getFirst(key)), true));
+						}
 					}
 				} else if (ClassUtils.isAssignable(attrClass, Boolean.class, true)){
 					lstCrriterion.add(new Criterion(resolveKey, Boolean.parseBoolean(mapParam.getFirst(key))));
@@ -742,10 +746,12 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 		acceCriteria.setCriterion(lstCrriterion);
 
 		// base entity
-		if (BaseEntity.class.isAssignableFrom(targetClass) || BaseCompanyEntity.class.isAssignableFrom(targetClass)) {
+		if ((!mapParam.containsKey("recordStatus") || StringUtils.isBlank(mapParam.getFirst("recordStatus")))
+				&& (BaseEntity.class.isAssignableFrom(targetClass) || BaseCompanyEntity.class.isAssignableFrom(targetClass))) {
 			acceCriteria.appendCriterion(new Criterion("recordStatus", STATUS.ACTIVE, true));
 		}
-		if (BaseCompanyModel.class.isAssignableFrom(targetClass)) {
+
+		if (BaseCompanyModel.class.isAssignableFrom(targetClass) && !mapParam.containsKey("companyId")) {
 			Long companyId = PrincipalUtil.getCompanyID();
 			if (companyId != null) {
 				acceCriteria.appendCriterion(new Criterion("companyId", companyId));
