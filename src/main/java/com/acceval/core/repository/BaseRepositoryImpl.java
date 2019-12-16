@@ -751,7 +751,8 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 			acceCriteria.appendCriterion(new Criterion("recordStatus", STATUS.ACTIVE, true));
 		}
 
-		if (BaseCompanyModel.class.isAssignableFrom(targetClass) && !mapParam.containsKey("companyId")) {
+		if ((BaseCompanyModel.class.isAssignableFrom(targetClass) || BaseCompanyEntity.class.isAssignableFrom(targetClass))
+				&& !mapParam.containsKey("companyId")) {
 			Long companyId = PrincipalUtil.getCompanyID();
 			if (companyId != null) {
 				acceCriteria.appendCriterion(new Criterion("companyId", companyId));
@@ -860,14 +861,23 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 	private Query prepareSelectQuery(EntityManager entityManager, STATUS status, String idField, Long id) {
 
 		String selectQuery = "SELECT e FROM " + getTargetClass().getSimpleName() + " e WHERE e.recordStatus = :status";
+		boolean isCompany =
+				BaseCompanyModel.class.isAssignableFrom(getTargetClass()) || BaseCompanyEntity.class.isAssignableFrom(getTargetClass());
 		if (StringUtils.isNotEmpty(idField) && id != null) {
 			selectQuery += " AND e." + idField + " = :id";
+		}
+		if (isCompany) {
+			selectQuery += " AND e.companyId = :companyId ";
 		}
 
 		Query query = entityManager.createQuery(selectQuery, getTargetClass());
 		query.setParameter("status", status == null ? STATUS.ACTIVE : status);
-		if (id != null)
+		if (id != null) {
 			query.setParameter("id", id);
+		}
+		if (isCompany) {
+			query.setParameter("companyId", PrincipalUtil.getCompanyID());
+		}
 
 		return query;
 	}
