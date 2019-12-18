@@ -50,7 +50,11 @@ public class BaseBeanUtil implements ApplicationContextAware {
 
 	public static BaseRepository<?> getRepositoryBaseOnEntityName(String entityName) {
 		try {
-			return (BaseRepository) repositories.getRepositoryFor(ClassUtil.getClass(entityName)).orElse(null);
+			Object objRepo = repositories.getRepositoryFor(ClassUtil.getClass(entityName)).orElse(null);
+			if (objRepo instanceof BaseRepository) {
+				return (BaseRepository) objRepo;
+			}
+			return null; // BaseMongoRepo not support yet
 		} catch (MicroServiceUtilException e) {
 			Logger.error(e.getMessage(), e);
 		}

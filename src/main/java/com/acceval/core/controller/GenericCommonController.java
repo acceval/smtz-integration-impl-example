@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.acceval.core.repository.BaseRepository;
 import com.acceval.core.repository.Criteria;
 import com.acceval.core.repository.Criterion;
 import com.acceval.core.repository.QueryResult;
@@ -32,14 +33,17 @@ public class GenericCommonController {
 			criteria.appendCriterion(new Criterion(key, mapParam.get(key).toArray()));
 		}
 
-		boolean isCollection = BooleanUtils.toBoolean(mapParam.getFirst(KEY_IS_COLLECTION));
-		QueryResult qResult = BaseBeanUtil.getRepositoryBaseOnEntityName(entityClass).queryByCriteria(criteria);
 		Object obj = null;
-		if (qResult != null && !CollectionUtils.isEmpty(qResult.getResults())) {
-			if (isCollection) {
-				obj = qResult.getResults();
-			} else {
-				obj = qResult.getResults().iterator().next();
+		boolean isCollection = BooleanUtils.toBoolean(mapParam.getFirst(KEY_IS_COLLECTION));
+		BaseRepository baseRepo = BaseBeanUtil.getRepositoryBaseOnEntityName(entityClass);
+		if (baseRepo != null) {
+			QueryResult qResult = baseRepo.queryByCriteria(criteria);
+			if (qResult != null && !CollectionUtils.isEmpty(qResult.getResults())) {
+				if (isCollection) {
+					obj = qResult.getResults();
+				} else {
+					obj = qResult.getResults().iterator().next();
+				}
 			}
 		}
 
