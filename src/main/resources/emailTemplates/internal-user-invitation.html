@@ -1,0 +1,25 @@
+{{#partial "content"}}
+<p style="margin: 0 0 10px 0;">Dear <span style="color: #EB547C">{{this.receiverName}}</span>,</p>
+
+<p style="margin: 0 0 20px 0;">Smart Tradzt is a digital commerce platform which enables online buying and selling</p>
+
+<p style="margin: 0 0 20px 0;">As one of the key personnel involved in this area, internally we have identified you as one of the potential users for this Smart Tradzt platform. </p>
+
+<p style="margin: 0 0 20px 0;">Please sign up by clicking the button below.</p.>
+
+
+<table align="center" role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin: auto;">
+    <tr>
+        <td class="button-td button-td-primary" style="border-radius: 4px; background: #247BA0;">
+            <a class="button-a button-a-primary" href="{{this.context.DOMAIN_PATH}}{{this.context.LINK}}" style="background: #247BA0; border: 1px solid #247BA0; font-family: sans-serif; font-size: 15px; line-height: 15px; text-decoration: none; padding: 13px 17px; color: #ffffff; display: block; border-radius: 4px;">Sign Up Smart Tradzt</a>
+        </td>
+    </tr>
+</table>
+
+
+<p style="margin: 20px 0 10px 0;">If the button does not work, you can copy and paste the link below into your browser address bar:</p>
+<p style="margin: 0 0 10px 0;">{{this.context.DOMAIN_PATH}}{{this.context.LINK}}</p>
+
+{{/partial}}
+
+{{> internal-user-invitation-base}}

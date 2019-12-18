@@ -6,6 +6,7 @@ import com.acceval.core.model.ServicePackage;
 public class CurrentUser implements AuthUser {
 
 	private Long id;
+	private String name;
 	private String username;
 	private String firstName;
 	private String lastName;
@@ -29,6 +30,14 @@ public class CurrentUser implements AuthUser {
 	@Override
 	public String toString() {
 		return username;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public Long getId() {
