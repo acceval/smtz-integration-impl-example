@@ -24,8 +24,9 @@ public class CompanyModelListener {
 			if (principal != null && principal instanceof AuthUser && baseModel instanceof BaseCompanyModel) {
 				AuthUser authUser = (AuthUser) principal;
 
-				//				if (baseModel.getCompanyId() == null && authUser.getCompanyId() != null) {// before BaseCompanyModel
-				if (authUser.getCompanyId() != null) {
+				//if (baseModel.getCompanyId() == null && authUser.getCompanyId() != null) {// before BaseCompanyModel
+				if (((BaseCompanyModel)baseModel).getCompanyId() == null && authUser.getCompanyId() != null) {
+					
 					((BaseCompanyModel) baseModel).setCompanyId(authUser.getCompanyId());
 				}
 			}
