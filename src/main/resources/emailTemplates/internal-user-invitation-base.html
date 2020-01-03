@@ -248,9 +248,8 @@
 		                <td style="padding: 50px 0 0px; text-align: center">
 		                    <img src="{{this.context.COMPANY_LOGO}}" width="106" height="106" alt="alt_text" border="0" style="height: auto; font-family: sans-serif; font-size: 15px; line-height: 15px; color: #555555;">
 		                </td>
-		            </tr>
-		            {{/if}}
-                        <tr>
+		            </tr>                       
+		            <tr>
                             <td style="padding: 0px 0 20px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555; text-align: center">
                                 <h4 style="margin: 0; font-family: sans-serif; font-size: 25px; line-height: 30px; color: #333333; font-weight: normal;">
                                 <span>{{this.context.SENDER_NAME}}</span> of<br/>
@@ -259,6 +258,17 @@
                                 </h4>
                             </td>
                         </tr>
+                        {{else}}
+                        <tr>
+                            <td style="padding: 40px 0 20px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555; text-align: center">
+                                <h4 style="margin: 0; font-family: sans-serif; font-size: 25px; line-height: 30px; color: #333333; font-weight: normal;">
+                                <span>{{this.context.SENDER_NAME}}</span> of<br/>
+                                <span><b>{{this.context.COMPANY_NAME}}</b></span><br/>
+                                has invited you to join Smart Tradzt Platform
+                                </h4>
+                            </td>
+                        </tr>
+		            {{/if}}
                     </table>
                 </td>
             </tr>
