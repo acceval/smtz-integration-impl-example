@@ -249,15 +249,22 @@
 		                    <img src="{{this.context.COMPANY_LOGO}}" width="106" height="106" alt="alt_text" border="0" style="height: auto; font-family: sans-serif; font-size: 15px; line-height: 15px; color: #555555;">
 		                </td>
 		            </tr>
-		            {{/if}}
-                        <tr>
+		            <tr>
                             <td style="padding: 0px 0 20px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555; text-align: center">
                                 <h4 style="margin: 0; font-family: sans-serif; font-size: 25px; line-height: 30px; color: #333333; font-weight: normal;">
-                                <span>{{this.context.COMPANY_NAME}} has request an RFQ for</span><br/>
-                                {{this.context.PRODUCT_NAME}}
+                                <span>RFQ for {{this.context.PRODUCT_NAME}}</span>
                                 </h4>
                             </td>
                         </tr>
+                        {{else}}
+                        <tr>
+                            <td style="padding: 40px 0 20px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555; text-align: center">
+                                <h4 style="margin: 0; font-family: sans-serif; font-size: 25px; line-height: 30px; color: #333333; font-weight: normal;">
+                                <span>RFQ for {{this.context.PRODUCT_NAME}}</span>
+                                </h4>
+                            </td>
+                        </tr>
+		            {{/if}}   
                     </table>
                 </td>
             </tr>
