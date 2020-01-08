@@ -23,6 +23,11 @@ public class LabelValue implements Comparable<LabelValue> {
 	public LabelValue() {
 		
 	}
+
+	public LabelValue(String value) {
+		this.label = value;
+		this.value = value;
+	}
 	
 	public LabelValue(String label, String value) {
 		super();
