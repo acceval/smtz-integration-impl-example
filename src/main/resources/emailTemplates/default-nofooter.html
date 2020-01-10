@@ -67,18 +67,18 @@
         table table table {
             table-layout: auto;
         }
-        
+
         .rfq-details th, .rfq-details td{
-		  	border: 1px solid lightgrey;
-		  	border-collapse: collapse;
-			padding: 5px;
-		}
-		.rfq-details tr:nth-child(odd) {
-		  	background-color: #f1f1f1;
-		}
-		.rfq-details tr:nth-child(even) {
-		 	 background-color: #ffffff;
-		}
+            border: 1px solid lightgrey;
+            border-collapse: collapse;
+            padding: 5px;
+        }
+        .rfq-details tr:nth-child(odd) {
+            background-color: #f1f1f1;
+        }
+        .rfq-details tr:nth-child(even) {
+            background-color: #ffffff;
+        }
 
         /* What it does: Uses a better rendering method when resizing images in IE. */
         img {
@@ -241,16 +241,38 @@
             <!-- Email Header : END -->
 
             <tr>
-                <td style="background-color: #ffffff;">
+                <td style="padding-top: 50px; background-color: #ffffff;">
                     <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                        {{#if this.context.COMPANY_LOGO}}
                         <tr>
-                            <td style="padding: 40px 0 20px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555; text-align: center">
-                                <h1 style="margin: 0; font-family: sans-serif; font-size: 25px; line-height: 30px; color: #333333; font-weight: normal;">{{this.title}}</h1>
+                            <td style="padding: 0px 0 0px; text-align: center">
+                                <img src="{{this.context.COMPANY_LOGO}}" width="106" height="106" alt="alt_text" border="0" style="height: auto; font-family: sans-serif; font-size: 15px; line-height: 15px; color: #555555;">
+                            </td>
+                        </tr>
+                        {{/if}}
+                        <tr>
+                            <td style="padding: 0px 0 20px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555; text-align: center">
+                                <h4 style="margin: 0; font-family: sans-serif; font-size: 25px; line-height: 30px; color: #333333; font-weight: normal;">
+                                    <span>{{this.context.INVITER_COMPANY}}</span><br/>
+                                    <span>is inviting {{this.context.CUSTOMER_COMPANY}} to onboard Smart Tradzt Platform</span><br/>
+                                </h4>
                             </td>
                         </tr>
                     </table>
                 </td>
             </tr>
+
+            <!-- Divider : BEGIN -->
+            <tr>
+                <td style="background-color: #ffffff; padding: 0 20px;">
+                    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                        <tr>
+                            <td style="border-bottom: 1px dashed #cdcdcd;"></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <!-- Divider : END -->
 
             <!-- 1 Column Text + Button : BEGIN -->
             <tr>
@@ -267,6 +289,24 @@
                 </td>
             </tr>
             <!-- 1 Column Text + Button : END -->
+
+            <!-- Regards : BEGIN -->
+            <tr>
+                <td style="background-color: #ffffff;">
+                    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                        <tr>
+                            <td style="padding: 0 20px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555;">
+
+                                <p style="margin: 0 0 10px 0;">Regards,</p>
+                                <p style="margin: 0 0 10px 0;">Smart Tradzt Team on behalf of </p>
+                                <p><span>{{this.context.SENDER_NAME}}</span></p>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <!-- Regards : END -->
+
 
             <!-- End Padding : BEGIN -->
             <tr>
