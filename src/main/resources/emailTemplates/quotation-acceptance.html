@@ -1,0 +1,30 @@
+{{#partial "content"}}
+<p style="margin: 0 0 10px 0;">Dear <span>{{this.receiverName}}</span>,</p>
+
+<p style="margin: 0 0 20px 0;">{{this.context.COMPANY_NAME}} has accepted your quotation  {{this.context.QUOTATION_NO}}.</p>
+
+<p style="margin: 0 0 20px 0;">
+	Sales Order # : <span style="text-decoration: none;"><a href="{{this.context.DOMAIN_PATH}}{{this.context.LINK}}">{{this.context.SO_NUMBER}}</a></span><br>
+	Purchase Order # : {{this.context.PO_NUMBER}}
+</p>
+
+<p style="margin: 0 0 20px 0;">What's next? You can change the Sales Order status, update on each stages so your buyer will be in the loop on the latest status of the order.</p>
+
+<p style="margin: 0 0 20px 0;">You can click below link to check the sales order.</p>
+
+
+<table align="center" role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin: auto;">
+    <tr>
+        <td class="button-td button-td-primary" style="border-radius: 4px; background: #247BA0;">
+            <a class="button-a button-a-primary" href="{{this.context.DOMAIN_PATH}}{{this.context.LINK}}" style="background: #247BA0; border: 1px solid #247BA0; font-family: sans-serif; font-size: 15px; line-height: 15px; text-decoration: none; padding: 13px 17px; color: #ffffff; display: block; border-radius: 4px;">Check Sales Order</a>
+        </td>
+    </tr>
+</table>
+
+
+<p style="margin: 20px 0 10px 0;">If the button does not work, copy and paste the link below into your browser:</p>
+<p style="margin: 0 0 10px 0; text-decoration: none;"><a href="{{this.context.DOMAIN_PATH}}{{this.context.LINK}}">{{this.context.DOMAIN_PATH}}{{this.context.LINK}}</a></p>
+
+{{/partial}}
+
+{{> default-customizable-headerfooter-base}}
