@@ -19,6 +19,7 @@ public class LabelValue implements Comparable<LabelValue> {
 	private String label3;
 	private String label4;
 	private String value;
+	private String code;
 
 	public LabelValue() {
 		
@@ -35,12 +36,26 @@ public class LabelValue implements Comparable<LabelValue> {
 		this.value = value;
 	}
 
+	public LabelValue(String label, String code, String value) {
+		super();
+		this.label = label;
+		this.code = code;
+		this.value = value;
+	}
+
 	// TODO use varargs later
-    public LabelValue(String label, String label2, String value) {
+    public LabelValue(String label, String code, String label2, String label3, String label4, String value) {
         this.label = label;
+		this.code = code;
         this.label2 = label2;
+        this.label3 = label3;
+        this.label4 = label4;
         this.value = value;
     }
+
+	public String getCode() { return code; }
+
+	public void setCode(String code) { this.code = code; }
 
     public String getLabel() {
 		return label;
