@@ -2,6 +2,7 @@ package com.acceval.core.security;
 
 import javax.validation.constraints.NotNull;
 
+import com.acceval.core.model.Timezone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,6 +71,22 @@ public class PrincipalUtil {
 
 	public static String getToken() {
 		return getProvider().getToken();
+	}
+
+	public static void setSystemUser(Long companyID, String companyCode, Timezone timezone, String servicePackage) {
+
+		CurrentUser sysUser = getCurrentUser();
+		if (sysUser == null)
+			sysUser = new CurrentUser();
+		sysUser.setCompanyId(companyID);
+		sysUser.setCompanyCode(companyCode);
+		sysUser.setSchemaName(companyCode);
+		sysUser.setTimeZone(timezone.getUtcId());
+		sysUser.setTimeZoneName(timezone.getText());
+		if (servicePackage != null) {
+			sysUser.setServicePackage(ServicePackage.valueOf(servicePackage));
+		}
+		PrincipalUtil.systemUser.set(sysUser);
 	}
 
 	public static void setSystemUser(Long companyID, String companyCode, String timezone, String servicePackage) {
