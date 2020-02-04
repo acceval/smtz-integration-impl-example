@@ -10,6 +10,7 @@ public class ColumnDef {
 
 	private String label;
 	private List<LabelValue> datasource;
+	private boolean mandate = false;
 
 	public ColumnDef() {
 		super();
@@ -36,7 +37,7 @@ public class ColumnDef {
 				}
 			}
 		}
-		return text;
+		return null;
 	}
 
 	public String getLabel() {
@@ -53,6 +54,14 @@ public class ColumnDef {
 
 	public void setDatasource(List<LabelValue> datasource) {
 		this.datasource = datasource;
+	}
+
+	public boolean isMandate() {
+		return mandate;
+	}
+
+	public void setMandate(boolean mandate) {
+		this.mandate = mandate;
 	}
 
 }

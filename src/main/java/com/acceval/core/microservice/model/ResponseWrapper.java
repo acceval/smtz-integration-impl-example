@@ -38,9 +38,12 @@ public class ResponseWrapper<T> {
 			this.addMessage(MessageType.ERROR, ex.getMessage());
 			return ResponseEntity.status(ApplicationHttpStatus.STATUS_OBJECT_NOT_FOUND.getStatus()).body(this);
 		} else {
-			
+			String errorMsg = ex.getMessage();
+			if (errorMsg == null && ex.getStackTrace().length > 0) {
+				errorMsg = ex.toString() + ". " + ex.getStackTrace()[0].toString();
+			}
 			this.setObject(obj);
-			this.addMessage(MessageType.ERROR, ex.getMessage());
+			this.addMessage(MessageType.ERROR, errorMsg);
 			return ResponseEntity.status(ApplicationHttpStatus.STATUS_APPLICATION_ERROR.getStatus()).body(this);
 		}
 	}
