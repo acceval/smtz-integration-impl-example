@@ -12,7 +12,6 @@ public class NumberUtil {
 	}
 
 	public static Double zeroIfNulll(Object number) {
-		// TODO test git flow feature
 		if (number == null) return new Double(0);
 		if (number instanceof BigDecimal) return zeroIfNulll((BigDecimal) number).doubleValue();
 		if (number instanceof String) return stringToDouble((String) number);
