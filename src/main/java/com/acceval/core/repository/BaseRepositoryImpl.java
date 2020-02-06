@@ -633,7 +633,10 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 	 */
 	@Override
 	public QueryResult<T> queryByMapParam(MultiValueMap<String, String> mapParam, Class<?> targetClass) {
-		return queryByCriteria(getCriteriaByMapParam(mapParam, targetClass), targetClass);
+		QueryResult<T> queryResult = queryByCriteria(getCriteriaByMapParam(mapParam, targetClass), targetClass);
+		ClassUtil.slimDownQueryResult(queryResult, mapParam);
+
+		return queryResult;
 	}
 
 	/**
@@ -677,7 +680,7 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 		List<Criterion> lstCrriterion = new ArrayList<>();
 		for (String key : mapParam.keySet()) {
 
-			if (_PAGE.equals(key) || _PAGESIZE.equals(key) || _SORT.equals(key) || _FETCHALL.equals(key)
+			if (_PAGE.equals(key) || _PAGESIZE.equals(key) || _SORT.equals(key) || _FETCHALL.equals(key) || "displayFields".equals(key)
 					|| (mapParam.getFirst(key) != null && StringUtils.trim(mapParam.getFirst(key)).length() == 0)) {
 				continue;
 			}
