@@ -45,7 +45,6 @@ node {
             def pom = readMavenPom file: 'pom.xml'
             pom.version = env.version
             print pom.version
-            writeMavenPom model: pom
 
             sh 'mvn clean install'
         }
