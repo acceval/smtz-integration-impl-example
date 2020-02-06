@@ -1,15 +1,19 @@
 package com.acceval.core.filehandler.common;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
@@ -20,10 +24,8 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.acceval.core.filehandler.FileHandlerException;
-import com.acceval.core.filehandler.common.ColumnDef;
 import com.acceval.core.microservice.model.LabelValue;
 
-// TODO move to ms-util later
 public class CommonHandler {
 
 	public static final String KEY_COLUMN_DEF = "KEY_COLUMN_DEF";
@@ -40,6 +42,11 @@ public class CommonHandler {
 	public CommonHandler(Path filePath, Map<String, Object> mapDef) {
 		super();
 		this.filePath = filePath;
+		this.mapDef = mapDef;
+	}
+
+	public CommonHandler(Map<String, Object> mapDef) {
+		super();
 		this.mapDef = mapDef;
 	}
 
@@ -87,11 +94,25 @@ public class CommonHandler {
 
 						ColumnDef columnDef = lstColumnDef.get(sourceColIndex);
 						String labelAsKey = columnDef.getLabel();
-						String text = formatter.formatCellValue(cell);
-						if (columnDef.getDatasource() != null) {
-							text = columnDef.findValueFromDatasource(text);
+
+						if (StringUtils.isNotBlank(columnDef.getDateFormat())) {
+							Date obj = cell.getDateCellValue();
+
+							if (obj != null) {
+								SimpleDateFormat sdf = new SimpleDateFormat(columnDef.getDateFormat());
+								mapRow.put(labelAsKey, sdf.format(obj));
+							} else {
+								mapRow.put(labelAsKey, null);
+							}
+
+						} else {
+
+							String text = formatter.formatCellValue(cell);
+							if (columnDef.getDatasource() != null) {
+								text = columnDef.findValueFromDatasource(text);
+							}
+							mapRow.put(labelAsKey, text);
 						}
-						mapRow.put(labelAsKey, text);
 					}
 					lstMapRawValue.add(mapRow);
 				}
@@ -108,7 +129,7 @@ public class CommonHandler {
 		return lstMapRawValue;
 	}
 
-	public void writeExcelFileToStorage(String sheetName) throws Exception {
+	private Workbook getWorkbook(String sheetName) throws Exception {
 		if (mapDef == null) {
 			throw new Exception("No Column Definition is defined");
 		}
@@ -117,7 +138,7 @@ public class CommonHandler {
 		List<ColumnDef> lstDatasource = (List<ColumnDef>) mapDef.get(KEY_DATASOURCE);
 
 		Workbook workbook = null;
-		try {
+
 			workbook = new XSSFWorkbook();
 
 			/** master sheet */
@@ -162,7 +183,39 @@ public class CommonHandler {
 					columnIndex++;
 				}
 			}
+		return workbook;
+	}
 
+	public byte[] writeExcelFile(String sheetName) throws Exception {
+		Workbook workbook = null;
+		byte result[] = null;
+		try {
+			workbook = this.getWorkbook(sheetName);
+
+			ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
+			workbook.write(byteArray);
+			result = byteArray.toByteArray();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new FileHandlerException(this.getClass(), e.getLocalizedMessage());
+		} finally {
+			if (workbook != null) {
+				try {
+					workbook.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return result;
+	}
+
+	public void writeExcelFileToStorage(String sheetName) throws Exception {
+
+		Workbook workbook = null;
+		try {
+			workbook = this.getWorkbook(sheetName);
 			FileOutputStream fileOutputStream = new FileOutputStream(new File(filePath.toString()));
 			workbook.write(fileOutputStream);
 			fileOutputStream.flush();

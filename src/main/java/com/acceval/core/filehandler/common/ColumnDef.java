@@ -11,6 +11,7 @@ public class ColumnDef {
 	private String label;
 	private List<LabelValue> datasource;
 	private boolean mandate = false;
+	private String dateFormat;
 
 	public ColumnDef() {
 		super();
@@ -25,6 +26,13 @@ public class ColumnDef {
 		super();
 		this.label = label;
 		this.datasource = datasource;
+	}
+
+	public ColumnDef(String label, boolean mandate, String dateFormat) {
+		super();
+		this.label = label;
+		this.mandate = mandate;
+		this.dateFormat = dateFormat;
 	}
 
 	public String findValueFromDatasource(String text) {
@@ -62,6 +70,14 @@ public class ColumnDef {
 
 	public void setMandate(boolean mandate) {
 		this.mandate = mandate;
+	}
+
+	public String getDateFormat() {
+		return dateFormat;
+	}
+
+	public void setDateFormat(String dateFormat) {
+		this.dateFormat = dateFormat;
 	}
 
 }
