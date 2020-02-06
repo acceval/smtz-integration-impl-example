@@ -1,8 +1,6 @@
 package com.acceval.core.repository;
 
-import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -11,16 +9,12 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.Id;
-
-import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -37,7 +31,6 @@ import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
 import org.springframework.util.MultiValueMap;
 
-import com.acceval.core.MicroServiceUtilException;
 import com.acceval.core.model.BaseEntity;
 import com.acceval.core.model.BaseEntity.STATUS;
 import com.acceval.core.model.VariableContext;
@@ -54,6 +47,7 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 	public static String _PAGESIZE = "_pageSize";
 	public static String _SORT = "_sort";
 	public static String _FETCHALL = "_fetchAll";
+	public static String _DISPLAYFIELD = "displayFields";
 
 	public static String _ASC = "asc";
 	public static String _DESC = "desc";
@@ -115,7 +109,7 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 		for (String key : mapParam.keySet()) {
 
 			if (_PAGE.equals(key) || _PAGESIZE.equals(key) || _SORT.equals(key) || _FETCHALL.equals(key)
-					|| "displayFields".equals(key)
+					|| _DISPLAYFIELD.equals(key)
 					|| (mapParam.getFirst(key) != null && StringUtils.trim(mapParam.getFirst(key)).length() == 0)) {
 				continue;
 			}
