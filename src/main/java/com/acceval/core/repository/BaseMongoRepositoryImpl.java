@@ -1,6 +1,8 @@
 package com.acceval.core.repository;
 
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -9,12 +11,16 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.Id;
+
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -31,12 +37,14 @@ import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
 import org.springframework.util.MultiValueMap;
 
+import com.acceval.core.MicroServiceUtilException;
 import com.acceval.core.model.BaseEntity;
 import com.acceval.core.model.BaseEntity.STATUS;
 import com.acceval.core.model.VariableContext;
 import com.acceval.core.model.company.BaseCompanyModel;
 import com.acceval.core.repository.Criterion.RestrictionType;
 import com.acceval.core.security.PrincipalUtil;
+import com.acceval.core.util.ClassUtil;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
@@ -72,7 +80,10 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 	public QueryResult<T> queryByMapParam(MultiValueMap<String, String> mapParam, Class<?> targetClass) {
 
 		Criteria criteria = this.getCriteriaByMapParam(mapParam, targetClass);
-		return this.queryByCriteria(criteria, targetClass);
+		QueryResult<T> queryResult = this.queryByCriteria(criteria, targetClass);
+		ClassUtil.slimDownQueryResult(queryResult, mapParam);
+
+		return queryResult;
 	}
 
 	/**
@@ -104,12 +115,14 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 		for (String key : mapParam.keySet()) {
 
 			if (_PAGE.equals(key) || _PAGESIZE.equals(key) || _SORT.equals(key) || _FETCHALL.equals(key)
+					|| "displayFields".equals(key)
 					|| (mapParam.getFirst(key) != null && StringUtils.trim(mapParam.getFirst(key)).length() == 0)) {
 				continue;
 			}
 
 			try {
-				String resolveKey = this.getMapPropertyResolver().containsKey(key) ? getMapPropertyResolver().get(key) : key;
+				String resolveKey = this.getMapPropertyResolver().containsKey(key) ? getMapPropertyResolver().get(key)
+						: key;
 				Class<?> attrClass = this.getField(this.getTargetClass(), resolveKey).getType();
 
 				if (mapParam.getFirst(key) == null) {

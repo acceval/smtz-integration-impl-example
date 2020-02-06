@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.Id;
+
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.apache.commons.beanutils.NestedNullException;
 import org.apache.commons.beanutils.PropertyUtils;
@@ -32,9 +34,11 @@ import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.MultiValueMap;
 
 import com.acceval.core.MicroServiceUtilException;
 import com.acceval.core.model.BaseModel;
+import com.acceval.core.repository.QueryResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Defaults;
 
@@ -614,5 +618,78 @@ public class ClassUtil {
 		}
 
 		return allClasses;
+	}
+
+	public static Object cloneNewObjectWithFields(Object target, List<String> displayFields) {
+
+		Object newObj = null;
+		try {
+			newObj = ClassUtil.getClassObject(target.getClass().getName());
+		} catch (MicroServiceUtilException e1) {
+			Logger.error(e1.getMessage(), e1);
+		}
+
+		for (String t : displayFields) {
+			try {
+				Object nvalue = ClassUtil.getProperty(target, t);
+				if (t.indexOf(".") > -1) {
+					try {
+						PropertyDescriptor pd = PropertyUtils.getPropertyDescriptor(newObj,
+								t.replace(t.substring(t.indexOf(".")), ""));
+						if (pd == null)
+							continue; // don't know why null
+						Class<?> propertyClass = pd.getPropertyType();
+						Object newInstanceValue = ClassUtil.getClassObject(propertyClass.getName());
+						ClassUtil.setProperty(newObj, t.replace(t.substring(t.indexOf(".")), ""), newInstanceValue);
+						ClassUtil.setProperty(newInstanceValue, t.substring(t.indexOf(".") + 1), nvalue);
+					} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+						Logger.error(e.getMessage(), e);
+					}
+				} else {
+					ClassUtil.setProperty(newObj, t, nvalue);
+				}
+			} catch (MicroServiceUtilException e) {
+				Logger.error(e.getMessage(), e);
+			}
+		}
+		Field[] existingFields = target.getClass().getDeclaredFields();
+
+		for (Field field : existingFields) {
+			if (field.isAnnotationPresent(Id.class)) {
+				try {
+					field.setAccessible(true);
+					Object value = field.get(target);
+					Field idField = newObj.getClass().getDeclaredField(field.getName());
+					idField.setAccessible(true);
+					idField.set(newObj, value);
+					break;
+				} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException
+						| SecurityException e) {
+					Logger.error(e.getMessage(), e);
+				}
+			}
+		}
+		return newObj;
+	}
+
+	public static void slimDownQueryResult(QueryResult queryResult, MultiValueMap<String, String> mapParam) {
+		// Filter result
+		List<String> displayFields = new ArrayList<>();
+		if (mapParam.containsKey("displayFields")) {
+			displayFields = Arrays.asList(mapParam.getFirst("displayFields").split(","));
+			mapParam.remove("displayFields");
+		}
+		if (displayFields != null && displayFields.size() > 0) {
+			List<Object> newResult = new ArrayList<>();
+			for (Object obj : queryResult.getResults()) {
+				Object newObj = (Object) ClassUtil.cloneNewObjectWithFields(obj, displayFields);
+				if (newObj == null) {
+					newResult.add(obj);
+				} else {
+					newResult.add(newObj);
+				}
+			}
+			queryResult.setResults(newResult);
+		}
 	}
 }
