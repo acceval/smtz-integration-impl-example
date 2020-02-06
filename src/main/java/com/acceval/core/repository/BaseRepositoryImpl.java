@@ -56,6 +56,7 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 	public static String _PAGESIZE = "_pageSize";
 	public static String _SORT = "_sort";
 	public static String _FETCHALL = "_fetchAll";
+	public static String _DISPLAYFIELD = "displayFields";
 
 	public static String _ASC = "asc";
 	public static String _DESC = "desc";
@@ -633,7 +634,10 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 	 */
 	@Override
 	public QueryResult<T> queryByMapParam(MultiValueMap<String, String> mapParam, Class<?> targetClass) {
-		return queryByCriteria(getCriteriaByMapParam(mapParam, targetClass), targetClass);
+		QueryResult<T> queryResult = queryByCriteria(getCriteriaByMapParam(mapParam, targetClass), targetClass);
+		ClassUtil.slimDownQueryResult(queryResult, mapParam);
+
+		return queryResult;
 	}
 
 	/**
@@ -678,6 +682,7 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 		for (String key : mapParam.keySet()) {
 
 			if (_PAGE.equals(key) || _PAGESIZE.equals(key) || _SORT.equals(key) || _FETCHALL.equals(key)
+					|| _DISPLAYFIELD.equals(key)
 					|| (mapParam.getFirst(key) != null && StringUtils.trim(mapParam.getFirst(key)).length() == 0)) {
 				continue;
 			}

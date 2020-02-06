@@ -37,6 +37,7 @@ import com.acceval.core.model.VariableContext;
 import com.acceval.core.model.company.BaseCompanyModel;
 import com.acceval.core.repository.Criterion.RestrictionType;
 import com.acceval.core.security.PrincipalUtil;
+import com.acceval.core.util.ClassUtil;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
@@ -46,6 +47,7 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 	public static String _PAGESIZE = "_pageSize";
 	public static String _SORT = "_sort";
 	public static String _FETCHALL = "_fetchAll";
+	public static String _DISPLAYFIELD = "displayFields";
 
 	public static String _ASC = "asc";
 	public static String _DESC = "desc";
@@ -72,7 +74,10 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 	public QueryResult<T> queryByMapParam(MultiValueMap<String, String> mapParam, Class<?> targetClass) {
 
 		Criteria criteria = this.getCriteriaByMapParam(mapParam, targetClass);
-		return this.queryByCriteria(criteria, targetClass);
+		QueryResult<T> queryResult = this.queryByCriteria(criteria, targetClass);
+		ClassUtil.slimDownQueryResult(queryResult, mapParam);
+
+		return queryResult;
 	}
 
 	/**
@@ -104,12 +109,14 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 		for (String key : mapParam.keySet()) {
 
 			if (_PAGE.equals(key) || _PAGESIZE.equals(key) || _SORT.equals(key) || _FETCHALL.equals(key)
+					|| _DISPLAYFIELD.equals(key)
 					|| (mapParam.getFirst(key) != null && StringUtils.trim(mapParam.getFirst(key)).length() == 0)) {
 				continue;
 			}
 
 			try {
-				String resolveKey = this.getMapPropertyResolver().containsKey(key) ? getMapPropertyResolver().get(key) : key;
+				String resolveKey = this.getMapPropertyResolver().containsKey(key) ? getMapPropertyResolver().get(key)
+						: key;
 				Class<?> attrClass = this.getField(this.getTargetClass(), resolveKey).getType();
 
 				if (mapParam.getFirst(key) == null) {
