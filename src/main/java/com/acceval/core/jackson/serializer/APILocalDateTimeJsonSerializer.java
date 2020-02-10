@@ -6,11 +6,13 @@ import java.time.ZoneId;
 
 import com.acceval.core.jackson.Fields;
 import com.acceval.core.security.PrincipalUtil;
+import com.acceval.core.service.TimezoneService;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.github.jknack.handlebars.internal.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class APILocalDateTimeJsonSerializer extends JsonSerializer<LocalDateTime> {
 	public static final APILocalDateTimeJsonSerializer INSTANCE = new APILocalDateTimeJsonSerializer();
@@ -18,6 +20,9 @@ public class APILocalDateTimeJsonSerializer extends JsonSerializer<LocalDateTime
 	private APILocalDateTimeJsonSerializer() {
 		super();
 	}
+
+	@Autowired
+	TimezoneService timezoneService;
 
 	@Override
 	public void serialize(LocalDateTime value, JsonGenerator gen, SerializerProvider serializerProvider)
@@ -28,8 +33,10 @@ public class APILocalDateTimeJsonSerializer extends JsonSerializer<LocalDateTime
 		}
 
 		String timeZone = PrincipalUtil.getTimeZone();
-		if (StringUtils.isNotBlank(timeZone)) {
-			value = value.atZone(ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of(timeZone)).toLocalDateTime();
+		String customTimeZone = timezoneService.convertToUTCTimeZoneId(timeZone);
+
+		if (StringUtils.isNotBlank(customTimeZone)) {
+			value = value.atZone(ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of(customTimeZone)).toLocalDateTime();
 		}
 
 		gen.writeStartObject();

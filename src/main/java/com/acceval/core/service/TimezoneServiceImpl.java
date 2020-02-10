@@ -1,34 +1,17 @@
 package com.acceval.core.service;
 
-import com.acceval.core.filehandler.StorageException;
-import com.acceval.core.filehandler.StorageFileNotFoundException;
-import com.acceval.core.filehandler.StorageProperties;
 import com.acceval.core.microservice.model.LabelValue;
 import com.acceval.core.model.Timezone;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
-import org.springframework.util.FileSystemUtils;
-import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.*;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.TimeZone;
 
 @Service
 public class TimezoneServiceImpl implements TimezoneService {
@@ -113,6 +96,9 @@ public class TimezoneServiceImpl implements TimezoneService {
 
         Timezone timezone = getTimezone(timezoneid);
         if (timezone != null) stzutcid = timezone.getUtcId();
+
+        //backward compatibilty
+        if (stzutcid == null) stzutcid = timezoneid;
 
         return stzutcid;
     }
