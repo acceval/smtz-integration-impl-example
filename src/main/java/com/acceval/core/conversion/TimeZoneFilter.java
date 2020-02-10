@@ -66,8 +66,8 @@ public class TimeZoneFilter implements Filter {
 
 		}
 
-		String customTimeZone = timezoneService.convertToUTCTimeZoneId(timeZone);
 		if (StringUtils.isNotBlank(timeZone)) {
+			String customTimeZone = timezoneService.convertToUTCTimeZoneId(timeZone);
 			Map<String, String[]> reqParam = request.getParameterMap();
 			Map<String, String[]> convertedDateTime = new HashMap<String, String[]>();
 			DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
