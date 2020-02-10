@@ -67,7 +67,7 @@ public class TimeZoneFilter implements Filter {
 		}
 
 		if (StringUtils.isNotBlank(timeZone)) {
-			String customTimeZone = timezoneService.convertToUTCTimeZoneId(timeZone);
+			//String customTimeZone = timezoneService.convertToUTCTimeZoneId(timeZone);
 			Map<String, String[]> reqParam = request.getParameterMap();
 			Map<String, String[]> convertedDateTime = new HashMap<String, String[]>();
 			DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
@@ -79,12 +79,12 @@ public class TimeZoneFilter implements Filter {
 				for (String value : values) {
 					if (isValidDate(value)) {
 						LocalDate localDate = LocalDate.parse(value, dateFormatter);
-						LocalDateTime localDateTime = localDate.atStartOfDay().atZone(ZoneId.of(customTimeZone))
+						LocalDateTime localDateTime = localDate.atStartOfDay().atZone(ZoneId.of(timeZone))
 								.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
 						convertedDateTime.put(key, new String[] { localDateTime.format(dateTimeFormatter) });
 					} else if (isValidDateTime(value)) {
 						LocalDateTime localDateTime = LocalDateTime.parse(value, dateTimeFormatter);
-						localDateTime = localDateTime.atZone(ZoneId.of(customTimeZone))
+						localDateTime = localDateTime.atZone(ZoneId.of(timeZone))
 								.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
 						convertedDateTime.put(key, new String[] { localDateTime.format(dateTimeFormatter) });
 					}
