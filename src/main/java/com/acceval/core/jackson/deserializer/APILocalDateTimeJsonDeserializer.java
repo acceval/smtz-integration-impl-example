@@ -79,8 +79,8 @@ public class APILocalDateTimeJsonDeserializer extends JsonDeserializer<LocalDate
 
 		String timeZone = PrincipalUtil.getTimeZone();
 		if (StringUtils.isNotBlank(timeZone)) {
-			String customTimeZone = timezoneService.convertToUTCTimeZoneId(timeZone);
-			localDateTime = localDateTime.atZone(ZoneId.of(customTimeZone)).withZoneSameInstant(ZoneId.systemDefault())
+			//String customTimeZone = timezoneService.convertToUTCTimeZoneId(timeZone);
+			localDateTime = localDateTime.atZone(ZoneId.of(timeZone)).withZoneSameInstant(ZoneId.systemDefault())
 					.toLocalDateTime();
 		}
 

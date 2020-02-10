@@ -34,8 +34,8 @@ public class APILocalDateTimeJsonSerializer extends JsonSerializer<LocalDateTime
 
 		String timeZone = PrincipalUtil.getTimeZone();
 		if (StringUtils.isNotBlank(timeZone)) {
-			String customTimeZone = timezoneService.convertToUTCTimeZoneId(timeZone);
-			value = value.atZone(ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of(customTimeZone)).toLocalDateTime();
+			//String customTimeZone = timezoneService.convertToUTCTimeZoneId(timeZone);
+			value = value.atZone(ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of(timeZone)).toLocalDateTime();
 		}
 
 		gen.writeStartObject();
