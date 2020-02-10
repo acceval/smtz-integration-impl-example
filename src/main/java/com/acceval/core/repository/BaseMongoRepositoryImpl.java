@@ -174,6 +174,12 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 		return acceCriteria;
 	}
 
+	@Override
+	public QueryResult<T> queryByCriteria(Criteria acceCriteria) {
+		return queryByCriteria(acceCriteria, this.getTargetClass());
+	}
+
+	@Override
 	public QueryResult<T> queryByCriteria(Criteria acceCriteria, Class<?> targetClass) {
 
 		/** start query */

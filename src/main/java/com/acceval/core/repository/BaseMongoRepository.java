@@ -14,4 +14,8 @@ public interface BaseMongoRepository<T> {
 	
 	QueryResult<T> queryByMapParam(MultiValueMap<String, String> andParam, MultiValueMap<String, String> orParam,
 		List<DateRange> dateRanges);
+
+	QueryResult<T> queryByCriteria(Criteria acceCriteria);
+
+	QueryResult<T> queryByCriteria(Criteria acceCriteria, Class<?> targetClass);
 }
