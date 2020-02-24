@@ -1,19 +1,20 @@
 package com.acceval.core.service;
 
-import com.acceval.core.microservice.model.LabelValue;
-import com.acceval.core.model.Timezone;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.TimeZone;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import com.acceval.core.microservice.model.LabelValue;
+import com.acceval.core.model.Timezone;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
 
 /**
  * <h1>Simplified TimeZones List!</h1>
@@ -72,7 +73,7 @@ public class TimezoneServiceImpl implements TimezoneService {
                 Timezone timezone = itr.next();
                 String id = timezone.getAbbr();
                 String label = timezone.getText();
-                items.add(new LabelValue(label, id, label));
+				items.add(new LabelValue(label, id));
             }
         } catch (Exception e) {
             e.printStackTrace();
