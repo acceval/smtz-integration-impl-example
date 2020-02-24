@@ -52,7 +52,8 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 	public static String _ASC = "asc";
 	public static String _DESC = "desc";
 
-	public static String[] STD_DATEFORMAT = new String[] { "yyyy-MM-dd", "dd-MM-yyyy", "dd/MM/yyyy", "yyyy/MM/dd" };
+	public static String[] STD_DATEFORMAT = new String[] { "yyyy-MM-dd", "dd-MM-yyyy", "dd/MM/yyyy", "yyyy/MM/dd", "yyyy-MM-dd HH:mm:ss",
+			"dd-MM-yyyy HH:mm:ss", "dd/MM/yyyy HH:mm:ss", "yyyy/MM/dd HH:mm:ss" };
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BaseMongoRepositoryImpl.class);
 
@@ -78,6 +79,14 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 		ClassUtil.slimDownQueryResult(queryResult, mapParam);
 
 		return queryResult;
+	}
+
+	/**
+	 * convert map to criteria
+	 */
+	@Override
+	public Criteria getCriteriaByMapParam(MultiValueMap<String, String> mapParam) {
+		return getCriteriaByMapParam(mapParam, getTargetClass());
 	}
 
 	/**
