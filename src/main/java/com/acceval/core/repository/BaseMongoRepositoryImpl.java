@@ -84,6 +84,14 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 	/**
 	 * convert map to criteria
 	 */
+	@Override
+	public Criteria getCriteriaByMapParam(MultiValueMap<String, String> mapParam) {
+		return getCriteriaByMapParam(mapParam, getTargetClass());
+	}
+
+	/**
+	 * convert map to criteria
+	 */
 	public Criteria getCriteriaByMapParam(MultiValueMap<String, String> mapParam, Class<?> targetClass) {
 
 		int page = mapParam.get(_PAGE) != null ? Integer.parseInt(mapParam.getFirst(_PAGE)) : 0;
