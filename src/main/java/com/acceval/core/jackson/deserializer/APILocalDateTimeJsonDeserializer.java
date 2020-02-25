@@ -2,14 +2,13 @@ package com.acceval.core.jackson.deserializer;
 
 import com.acceval.core.jackson.Fields;
 import com.acceval.core.security.PrincipalUtil;
-import com.acceval.core.service.TimezoneService;
+import com.acceval.core.service.TimezoneServiceImpl;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.github.jknack.handlebars.internal.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -23,9 +22,6 @@ public class APILocalDateTimeJsonDeserializer extends JsonDeserializer<LocalDate
 	private APILocalDateTimeJsonDeserializer() {
 		super();
 	}
-
-	@Autowired
-	TimezoneService timezoneService;
 
 	@Override
 	public LocalDateTime deserialize(JsonParser p, DeserializationContext ctx)
@@ -79,7 +75,7 @@ public class APILocalDateTimeJsonDeserializer extends JsonDeserializer<LocalDate
 
 		String timeZone = PrincipalUtil.getTimeZone();
 		if (StringUtils.isNotBlank(timeZone)) {
-			//String customTimeZone = timezoneService.convertToUTCTimeZoneId(timeZone);
+			timeZone = new TimezoneServiceImpl().convertToUTCTimeZoneId(timeZone);
 			localDateTime = localDateTime.atZone(ZoneId.of(timeZone)).withZoneSameInstant(ZoneId.systemDefault())
 					.toLocalDateTime();
 		}

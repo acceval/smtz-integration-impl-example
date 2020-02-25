@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.TimeZone;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.acceval.core.microservice.model.LabelValue;
@@ -14,20 +16,39 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 
+/**
+ * <h1>Simplified TimeZones List!</h1>
+ * The TimezoneServiceImpl program implements to load simplified
+ * list of timezones from timezones.json files instead of using
+ * JDK's built timezone list. It also has functions to convert
+ * custom timezone to JDK timezone
+ * <p>
+ * <b>eg.</b> (UTC+08:00) Kuala Lumpur, Singapore  => Asia/Kuala_Lumpur
+ *
+ * @author  Raja
+ * @version 1.0
+ * @since   2020-02-12
+ */
 @Service
 public class TimezoneServiceImpl implements TimezoneService {
+    private static Logger logger = LoggerFactory.getLogger(TimezoneServiceImpl.class);
 
     private final ObjectMapper mapper = new ObjectMapper();
+    private static List<Timezone> timezonesds = new ArrayList<>();
 
     private List<Timezone> getTimezoneDataSourceFromJSON()  throws Exception{
 
-        List<Timezone> timezones = new ArrayList<>();
+        //one time loading of timezones.json file
+        if (timezonesds == null || timezonesds.size() == 0) {
+            timezonesds = new ArrayList<>();
 
-        InputStream fileInStream = getResource("/masterdata/timezones.json");
-        ObjectReader stringListReader = mapper.readerFor(new TypeReference<List<Timezone>>() {});
-        timezones = stringListReader.readValue(fileInStream);
+            logger.debug("loading timezone data from timezones.json...");
+            InputStream fileInStream = getResource("/masterdata/timezones.json");
+            ObjectReader stringListReader = mapper.readerFor(new TypeReference<List<Timezone>>() {});
+            timezonesds = stringListReader.readValue(fileInStream);
+        }
 
-        return timezones;
+        return timezonesds;
     }
 
     @Override
@@ -62,13 +83,13 @@ public class TimezoneServiceImpl implements TimezoneService {
     }
 
     @Override
-    public Timezone getTimezone(String timezoneid) {
+    public Timezone getTimezone(String utcTimeZoneId) {
         Timezone timezone = null;
 
         List<Timezone> timezones = getTimezones();
         if (timezones != null) {
-            timezone = timezones.stream().filter(x -> x.getAbbr().equalsIgnoreCase(timezoneid)
-                    || x.getText().equalsIgnoreCase(timezoneid)).findFirst().orElse(null);
+            timezone = timezones.stream().filter(x -> x.getAbbr().equalsIgnoreCase(utcTimeZoneId)
+                    || x.getText().equalsIgnoreCase(utcTimeZoneId)).findFirst().orElse(null);
 
             if (timezone != null) {
                 TimeZone timeZone = null;
@@ -84,7 +105,7 @@ public class TimezoneServiceImpl implements TimezoneService {
                 }
 
                 //backward compatibility with jdk8 utc timezoneid
-                if (timeZone == null) timezone.setUtcId(timezoneid);
+                if (timeZone == null) timezone.setUtcId(utcTimeZoneId);
             }
         }
 
@@ -92,21 +113,21 @@ public class TimezoneServiceImpl implements TimezoneService {
     }
 
     @Override
-    public String convertToUTCTimeZoneId(String timezoneid) {
+    public String convertToUTCTimeZoneId(String customTimezone) {
         String stzutcid = null;
 
-        Timezone timezone = getTimezone(timezoneid);
+        Timezone timezone = getTimezone(customTimezone);
         if (timezone != null) stzutcid = timezone.getUtcId();
 
         //backward compatibilty
-        if (stzutcid == null) stzutcid = timezoneid;
+        if (stzutcid == null) stzutcid = customTimezone;
 
         return stzutcid;
     }
 
     @Override
-    public TimeZone convertToUTCTimeZone(String timezoneid) {
-        return TimeZone.getTimeZone(convertToUTCTimeZoneId(timezoneid));
+    public TimeZone convertToUTCTimeZone(String customTimezone) {
+        return TimeZone.getTimeZone(convertToUTCTimeZoneId(customTimezone));
     }
 
     private InputStream getResource(String resourcePath) {
