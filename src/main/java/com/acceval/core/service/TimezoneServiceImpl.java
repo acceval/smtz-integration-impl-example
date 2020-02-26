@@ -15,6 +15,7 @@ import com.acceval.core.model.Timezone;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
+import com.github.jknack.handlebars.internal.lang3.StringUtils;
 
 /**
  * <h1>Simplified TimeZones List!</h1>
@@ -73,7 +74,7 @@ public class TimezoneServiceImpl implements TimezoneService {
                 Timezone timezone = itr.next();
                 String id = timezone.getAbbr();
                 String label = timezone.getText();
-				items.add(new LabelValue(label, id));
+				items.add(new LabelValue(label, label));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -88,8 +89,8 @@ public class TimezoneServiceImpl implements TimezoneService {
 
         List<Timezone> timezones = getTimezones();
         if (timezones != null) {
-            timezone = timezones.stream().filter(x -> x.getAbbr().equalsIgnoreCase(utcTimeZoneId)
-                    || x.getText().equalsIgnoreCase(utcTimeZoneId)).findFirst().orElse(null);
+			timezone = timezones.stream().filter(x -> x.getText().equalsIgnoreCase(utcTimeZoneId)).findFirst()
+					.orElse(null);
 
             if (timezone != null) {
                 TimeZone timeZone = null;
@@ -105,7 +106,8 @@ public class TimezoneServiceImpl implements TimezoneService {
                 }
 
                 //backward compatibility with jdk8 utc timezoneid
-                if (timeZone == null) timezone.setUtcId(utcTimeZoneId);
+				if (timeZone == null || StringUtils.isBlank(timezone.getUtcId()))
+					timezone.setUtcId(utcTimeZoneId);
             }
         }
 
