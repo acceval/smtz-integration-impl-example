@@ -296,10 +296,29 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 
 		/** criteria */
 		for (Criterion criterion : acceCriteria.getCriterion()) {
-			Predicate[] arrPre = buildPredicate(criterion, root, builder);
-			if (arrPre != null && arrPre.length > 0) {
-				for (Predicate predic : arrPre) {
-					lstPredicate.add(predic);
+			// Or
+			if (criterion instanceof OrCriterion && !((OrCriterion) criterion).getCriterias().isEmpty()) {
+				List<Predicate> lstOrPredicate = new ArrayList<>();
+				for (Criteria orCriteria : ((OrCriterion) criterion).getCriterias()) {
+					List<Predicate> lstAndPredicate = new ArrayList<>();
+					for (Criterion andCriterion : orCriteria.getCriterion()) {
+						Predicate[] arrPre = buildPredicate(andCriterion, root, builder);
+						if (arrPre != null && arrPre.length > 0) {
+							for (Predicate predic : arrPre) {
+								lstAndPredicate.add(predic);
+							}
+						}
+					}
+					Predicate andPredict = builder.and(lstAndPredicate.stream().toArray(Predicate[]::new));
+					lstOrPredicate.add(andPredict);
+				}
+				lstPredicate.add(builder.or(lstOrPredicate.stream().toArray(Predicate[]::new)));
+			} else {
+				Predicate[] arrPre = buildPredicate(criterion, root, builder);
+				if (arrPre != null && arrPre.length > 0) {
+					for (Predicate predic : arrPre) {
+						lstPredicate.add(predic);
+					}
 				}
 			}
 		}
