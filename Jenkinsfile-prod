@@ -1,15 +1,52 @@
 node {
     withMaven(maven:'maven') {
+        def st_buildmode = "${EV_MARKETPLACE_BUILD}"
+        def st_gitrelease = ''
+        def st_gittag = ''
+        def st_buildversion = ''
+        def st_commitid = ''
+
+        stage('Versioning') {
+
+            if (st_buildmode.equalsIgnoreCase('test')) {
+                st_gitrelease="${EV_MARKETPLACE_RELEASE}"
+
+                echo "selected git release: ${st_gitrelease}"
+                st_buildversion = st_gitrelease.replaceAll("release/", "")
+            } else {
+                st_commitid=sh(returnStdout: true, script: 'git show-ref --tags | sed "/-rc/p" | tail -n1 | cut -d" " -f1')
+                st_gittag=sh(returnStdout: true, script: 'git show-ref --tags | sed "/-rc/p" | tail -n1 | cut -d/ -f3')
+
+                st_gitrelease="${st_gittag}"
+                echo "selected git tag: ${st_gittag}"
+                echo "selected commit id: ${st_commitid}"
+                st_buildversion = st_gittag.replaceAll("v", "")
+            }
+
+            env.version = st_buildversion
+        }
 
         stage('Checkout') {
-       
-          git url: 'https://github.com/acceval/ms-util.git', 
-            credentialsId: 'c24eaaf9-1d02-4ab9-922c-e1a4e6973a44', 
-            branch: 'master'
+
+           checkout([$class: 'GitSCM',
+            branches: [[name: "${st_gitrelease}"]],
+            doGenerateSubmoduleConfigurations: false,
+            extensions: [],
+            gitTool: 'Default',
+            submoduleCfg: [],
+            userRemoteConfigs: [[
+                credentialsId: 'c24eaaf9-1d02-4ab9-922c-e1a4e6973a44',
+                url: 'https://github.com/acceval/ms-util.git'
+                ]]
+            ])
         }
         
         stage('Build') {
-            
+
+            def pom = readMavenPom file: 'pom.xml'
+            pom.version = env.version
+            print pom.version
+
             sh 'mvn clean install'
         }
     }

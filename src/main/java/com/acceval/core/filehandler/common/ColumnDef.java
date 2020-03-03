@@ -28,7 +28,6 @@ public class ColumnDef {
 		this.datasource = datasource;
 	}
 
-
 	public ColumnDef(String label, boolean mandate, String dateFormat) {
 		super();
 		this.label = label;
