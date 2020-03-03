@@ -18,4 +18,8 @@ public interface BaseMongoRepository<T> {
 	QueryResult<T> queryByCriteria(Criteria acceCriteria);
 
 	QueryResult<T> queryByCriteria(Criteria acceCriteria, Class<?> targetClass);
+
+	Criteria getCriteriaByMapParam(MultiValueMap<String, String> mapParam);
+
+	Criteria getCriteriaByMapParam(MultiValueMap<String, String> mapParam, Class<?> targetClass);
 }

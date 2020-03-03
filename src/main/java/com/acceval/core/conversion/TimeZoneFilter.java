@@ -18,7 +18,9 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import com.acceval.core.service.TimezoneService;
 import org.apache.commons.lang3.time.DateUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -32,6 +34,9 @@ public class TimeZoneFilter implements Filter {
 	private static String[] STD_DATEFORMAT = new String[] { "yyyy-MM-dd", "dd-MM-yyyy", "dd/MM/yyyy", "yyyy/MM/dd" };
 	private static String[] STD_DATETIMEFORMAT = new String[] { "yyyy-MM-dd HH:mm:ss", "dd-MM-yyyy HH:mm:ss",
 			"dd/MM/yyyy HH:mm:ss", "yyyy/MM/dd HH:mm:ss" };
+
+	@Autowired
+	TimezoneService timezoneService;
 
 	@Override
 	public void init(FilterConfig config) throws ServletException {
@@ -62,6 +67,7 @@ public class TimeZoneFilter implements Filter {
 		}
 
 		if (StringUtils.isNotBlank(timeZone)) {
+			timeZone = timezoneService.convertToUTCTimeZoneId(timeZone);
 			Map<String, String[]> reqParam = request.getParameterMap();
 			Map<String, String[]> convertedDateTime = new HashMap<String, String[]>();
 			DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");

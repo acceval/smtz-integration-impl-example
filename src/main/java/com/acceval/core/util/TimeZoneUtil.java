@@ -18,6 +18,7 @@ public class TimeZoneUtil {
 			timeZone = PrincipalUtil.getSystemUser() != null ? PrincipalUtil.getSystemUser().getTimeZone() : "";
 		}
 
+		timeZone = new TimezoneServiceImpl().convertToUTCTimeZoneId(timeZone);
 		if (StringUtils.isNotBlank(timeZone)) {
 			DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 			DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
@@ -39,6 +40,7 @@ public class TimeZoneUtil {
 			timeZone = PrincipalUtil.getSystemUser() != null ? PrincipalUtil.getSystemUser().getTimeZone() : "";
 		}
 
+		timeZone = new TimezoneServiceImpl().convertToUTCTimeZoneId(timeZone);
 		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 		if (StringUtils.isNotBlank(timeZone)) {
