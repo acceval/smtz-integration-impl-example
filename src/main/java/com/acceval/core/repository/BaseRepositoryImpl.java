@@ -713,7 +713,15 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 				if (mapParam.getFirst(key) == null || mapParam.getFirst(key).equalsIgnoreCase("isNull")) {
 					lstCrriterion.add(new Criterion(resolveKey, RestrictionType.IS_NULL, mapParam.getFirst(key)));
 				} else if (ClassUtils.isAssignable(attrClass, Long.class, true)) {
-					lstCrriterion.add(new Criterion(resolveKey, Long.valueOf(mapParam.getFirst(key))));
+					List<String> searchValue = mapParam.get(key);
+
+					if (searchValue.size() > 1) {
+						Object[] searchValues = searchValue.toArray();
+						Long[] longArray = Arrays.stream(searchValues).map(Object::toString).map(Long::valueOf).toArray(Long[]::new);
+						lstCrriterion.add(new Criterion(resolveKey, longArray));
+					} else {
+						lstCrriterion.add(new Criterion(resolveKey, Long.valueOf(mapParam.getFirst(key))));
+					}
 				} else if (attrClass.isAssignableFrom(String.class)) {
 					List<String> searchValue = mapParam.get(key);
 
