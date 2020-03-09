@@ -296,10 +296,29 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 
 		/** criteria */
 		for (Criterion criterion : acceCriteria.getCriterion()) {
-			Predicate[] arrPre = buildPredicate(criterion, root, builder);
-			if (arrPre != null && arrPre.length > 0) {
-				for (Predicate predic : arrPre) {
-					lstPredicate.add(predic);
+			// Or
+			if (criterion instanceof OrCriterion && !((OrCriterion) criterion).getCriterias().isEmpty()) {
+				List<Predicate> lstOrPredicate = new ArrayList<>();
+				for (Criteria orCriteria : ((OrCriterion) criterion).getCriterias()) {
+					List<Predicate> lstAndPredicate = new ArrayList<>();
+					for (Criterion andCriterion : orCriteria.getCriterion()) {
+						Predicate[] arrPre = buildPredicate(andCriterion, root, builder);
+						if (arrPre != null && arrPre.length > 0) {
+							for (Predicate predic : arrPre) {
+								lstAndPredicate.add(predic);
+							}
+						}
+					}
+					Predicate andPredict = builder.and(lstAndPredicate.stream().toArray(Predicate[]::new));
+					lstOrPredicate.add(andPredict);
+				}
+				lstPredicate.add(builder.or(lstOrPredicate.stream().toArray(Predicate[]::new)));
+			} else {
+				Predicate[] arrPre = buildPredicate(criterion, root, builder);
+				if (arrPre != null && arrPre.length > 0) {
+					for (Predicate predic : arrPre) {
+						lstPredicate.add(predic);
+					}
 				}
 			}
 		}
@@ -694,7 +713,15 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 				if (mapParam.getFirst(key) == null || mapParam.getFirst(key).equalsIgnoreCase("isNull")) {
 					lstCrriterion.add(new Criterion(resolveKey, RestrictionType.IS_NULL, mapParam.getFirst(key)));
 				} else if (ClassUtils.isAssignable(attrClass, Long.class, true)) {
-					lstCrriterion.add(new Criterion(resolveKey, Long.valueOf(mapParam.getFirst(key))));
+					List<String> searchValue = mapParam.get(key);
+
+					if (searchValue.size() > 1) {
+						Object[] searchValues = searchValue.toArray();
+						Long[] longArray = Arrays.stream(searchValues).map(Object::toString).map(Long::valueOf).toArray(Long[]::new);
+						lstCrriterion.add(new Criterion(resolveKey, longArray));
+					} else {
+						lstCrriterion.add(new Criterion(resolveKey, Long.valueOf(mapParam.getFirst(key))));
+					}
 				} else if (attrClass.isAssignableFrom(String.class)) {
 					List<String> searchValue = mapParam.get(key);
 

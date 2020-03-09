@@ -34,6 +34,8 @@ public class TimeZoneUtil {
 	}
 
 	public static LocalDateTime returnTimeZone(String localDateString) {
+		if (StringUtils.isBlank(localDateString)) return null;
+
 		String timeZone = PrincipalUtil.getTimeZone();
 
 		if (StringUtils.isBlank(timeZone)) {

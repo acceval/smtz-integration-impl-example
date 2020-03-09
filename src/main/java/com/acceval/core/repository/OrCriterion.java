@@ -7,6 +7,7 @@ public class OrCriterion extends Criterion {
 	private static final long serialVersionUID = 1L;
 
 	private List<Criterion> criterions = new ArrayList<Criterion>();
+	private List<Criteria> criterias = new ArrayList<>();
 
 	public OrCriterion() {
 		super();
@@ -35,6 +36,11 @@ public class OrCriterion extends Criterion {
 		return this;
 	}
 
+	public OrCriterion appendCriteria(Criteria criteria) {
+		criterias.add(criteria);
+		return this;
+	}
+
 	public void or(Criterion c) {
 		criterions.add(c);
 	}
@@ -45,6 +51,14 @@ public class OrCriterion extends Criterion {
 
 	public void setCriterions(List<Criterion> criterions) {
 		this.criterions = criterions;
+	}
+
+	public List<Criteria> getCriterias() {
+		return criterias;
+	}
+
+	public void setCriterias(List<Criteria> criterias) {
+		this.criterias = criterias;
 	}
 
 	@Override
