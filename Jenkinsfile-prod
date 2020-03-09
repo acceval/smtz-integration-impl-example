@@ -16,11 +16,12 @@ node {
             } else {
                 st_commitid=sh(returnStdout: true, script: 'git show-ref --tags | sed "/-rc/p" | tail -n1 | cut -d" " -f1')
                 st_gittag=sh(returnStdout: true, script: 'git show-ref --tags | sed "/-rc/p" | tail -n1 | cut -d/ -f3')
+                echo "last git tag: ${st_gittag}"
+                echo "last commit id: ${st_commitid}"
 
-                st_gitrelease="${st_gittag}"
-                echo "selected git tag: ${st_gittag}"
-                echo "selected commit id: ${st_commitid}"
-                st_buildversion = st_gittag.replaceAll("v", "")
+                st_gitrelease="${EV_MARKETPLACE_RELEASE}"
+                echo "selected git release: ${st_gitrelease}"
+                st_buildversion = st_gitrelease.replaceAll("release/", "").replaceAll("v", "")
             }
 
             env.version = st_buildversion
