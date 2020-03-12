@@ -1,0 +1,17 @@
+<!DOCTYPE html> 
+<html> 
+	<body style="border: 0; margin: 0;">
+		<table style="border-bottom: 1px solid black; width: 100%"> 		
+			<tr>
+				<td th:text="${businessUnit}">Business Unit</td>
+				<td style="text-align: right">
+					<img th:src="${sellerCompanyLogo}" border="0px" alt="Image" 
+						style="max-width: 80px; max-height: 80px; padding: 1rem;"/>
+				</td> 		
+			</tr> 		
+			<tr>
+				<td th:text="${reportPart}">Report Part</td> 		
+			</tr> 	
+		</table> 
+	</body>
+</html>
