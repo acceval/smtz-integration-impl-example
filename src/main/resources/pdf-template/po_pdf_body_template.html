@@ -68,7 +68,7 @@
 		</style>		 
 	</head>	
 	<body>  
-		<table style="margin-top: 1rem;"> 	
+		<table style="margin-top: 2rem;"> 	
 				<tr> 		
 					<td class="labelBold" width="30%">CONTRACT NO.</td>
 					<td width="70%" th:text="${contractNo}">Contract Number</td> 	
@@ -135,16 +135,18 @@
 			<tr>
 				<th class="labelBold">PRODUCT</th> 		
 				<th class="labelBold">VOLUME (MT)</th>
-				<th class="labelBold">PACKING</th> 		
+				<th class="labelBold">PACKAGING</th> 		
 				<th class="labelBold">UNIT PRICE</th>
 				<th class="labelBold">TOTAL PRICE</th> 	
 			</tr>
 			<tr th:each="orderItem, iter: ${orderItems}">
 				<td th:text="${orderItem.product.name}">Product</td>
-				<td th:text="${orderItem.quantity}">Quantity</td>
-				<td th:text="${orderItem.skuLabel}">Packing</td>
-				<td th:text="${orderItem.invoicePrice}">Invoice Price</td>
-				<td th:text="${orderItem.amount}">Amount</td>
+				
+				<td th:text="${#numbers.formatDecimal(orderItem.quantity, 0, 'COMMA', 0, 'POINT')}">Quantity</td>
+				<td th:text="${orderItem.skuLabel}">Packing</td>				
+				<td th:text="${#numbers.formatDecimal(orderItem.invoicePrice, 0, 'COMMA', 0, 'POINT')}">Invoice Price</td>
+				
+				<td><span th:text="${#numbers.formatDecimal(orderItem.amount, 0, 'COMMA', 0, 'POINT')}"> </span><span style="margin-left: 0.5rem;" th:text="${currencyCode}"></span></td>
 			</tr> 
 		</table> 
 		<table style="margin-top: 1rem;"> 	
@@ -154,7 +156,7 @@
 					<table class="noBorder">
 						<tr th:each="price, iter : ${prices}">
 							<td width="1%" th:text="${iter.count} + ')' ">Count</td>
-							<td width="99%" th:text="${price}">Price</td>
+							<td width="99%"><span th:text="${#numbers.formatDecimal(price, 0, 'COMMA', 0, 'POINT')}"> </span><span style="margin-left: 0.5rem;" th:text="${currencyCode}"></td>
 						</tr>
 					</table> 		
 				</td> 	
@@ -169,7 +171,7 @@
 			</tr> 	
 			<tr>
 				<td width="30%">TOTAL PRICE</td>
-				<td width="70%" th:text="${totalPrice}">Total Price</td> 	
+				<td width="70%"><span th:text="${#numbers.formatDecimal(totalPrice, 0, 'COMMA', 0, 'POINT')}"> </span><span style="margin-left: 0.5rem;" th:text="${currencyCode}"></td>				 
 			</tr> 	
 			<tr>
 				<td width="30%">PAYMENT</td> 		
@@ -180,8 +182,8 @@
 				<td width="70%" th:text="${deliveryDateRange}">Delivery Date Range</td> 	
 			</tr>
 			<tr> 		
-				<td width="30%">LOAD PORT</td>
-				<td width="70%" th:text="${loadPort}">Load Port</td> 	
+				<td width="30%">LOADING PORT</td>
+				<td width="70%" th:text="${loadPort}">Loading Port</td> 	
 			</tr>
 			<tr>
 				<td width="30%">DISCHARGE PORT / PLACE</td>
