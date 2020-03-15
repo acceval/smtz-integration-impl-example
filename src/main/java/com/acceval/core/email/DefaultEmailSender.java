@@ -14,6 +14,7 @@ import java.util.HashMap;
  * @author Julian
  */
 class DefaultEmailSender implements EmailSender {
+	
 	private final TemplateRenderer renderer;
 	private final EmailQueueSender sender;
 

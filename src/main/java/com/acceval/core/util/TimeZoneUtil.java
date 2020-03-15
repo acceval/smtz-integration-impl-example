@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -11,6 +12,10 @@ import com.acceval.core.security.PrincipalUtil;
 import com.acceval.core.service.TimezoneServiceImpl;
 
 public class TimeZoneUtil {
+	private static final int MINUTES_PER_HOUR = 60;
+	private static final int SECONDS_PER_MINUTE = 60;
+	private static final int SECONDS_PER_HOUR = SECONDS_PER_MINUTE * MINUTES_PER_HOUR;
+
 	public static String convertTimeZone(String localDateString) {
 		String timeZone = PrincipalUtil.getTimeZone();
 
@@ -60,5 +65,47 @@ public class TimeZoneUtil {
 				return LocalDateTime.parse(localDateString, dateTimeFormatter);
 			}
 		}
+	}
+
+	public static String getTimeDifference(LocalDateTime dateTime) {
+		String difference = "";
+
+		if (dateTime != null) {
+		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime tempDateTime = LocalDateTime.from(dateTime);
+
+		long years = tempDateTime.until(now, ChronoUnit.YEARS);
+		tempDateTime = tempDateTime.plusYears(years);
+
+		long months = tempDateTime.until(now, ChronoUnit.MONTHS);
+		tempDateTime = tempDateTime.plusMonths(months);
+
+		long days = tempDateTime.until(now, ChronoUnit.DAYS);
+		tempDateTime = tempDateTime.plusDays(days);
+
+		long hours = tempDateTime.until(now, ChronoUnit.HOURS);
+		tempDateTime = tempDateTime.plusHours(hours);
+
+		long minutes = tempDateTime.until(now, ChronoUnit.MINUTES);
+		tempDateTime = tempDateTime.plusMinutes(minutes);
+
+		long seconds = tempDateTime.until(now, ChronoUnit.SECONDS);
+		
+		if (years > 0) {
+			difference = difference.concat(years + " year(s) ");
+		}
+
+		if (months > 0) {
+			difference = difference.concat(months + " month(s) ");
+		}
+
+		if (days > 0) {
+			difference = difference.concat(days + " day(s) " + hours + " hour(s)");
+		} else {
+			difference = difference.concat(hours + " hour(s) " + minutes + " minute(s)");
+			}
+		}
+
+		return difference;
 	}
 }
