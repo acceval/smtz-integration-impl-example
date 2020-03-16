@@ -21,6 +21,8 @@ node {
                 echo "selected git tag: ${st_gittag}"
                 echo "selected commit id: ${st_commitid}"
                 st_buildversion = st_gittag.replaceAll("v", "")
+
+                st_gitrelease="${EV_MARKETPLACE_RELEASE}"
             }
 
             env.version = st_buildversion
