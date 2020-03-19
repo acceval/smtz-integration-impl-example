@@ -65,11 +65,7 @@
 				<td witdh="70%" th:text="${contractNo}">Reference</td> 	
 			</tr> 
 		</table> 
-		<table style="margin: 1rem 0 3rem 0;"> 	
-			<tr>
-				<td class="labelBold" width="30%">Sales Agreement No.</td>
-				<td width="70%" th:utext="${#strings.replace(#strings.escapeXml(salesAgreementNo),'&#10;','&lt;br /&gt;')}">Seller Details</td>
-			</tr> 	
+		<table style="margin: 1rem 0 3rem 0;">			
 			<tr> 		
 				<td class="labelBold" width="30%">SELLER</td>
 				<td width="70%"> 			
@@ -80,9 +76,8 @@
 						<tr> 					
 							<td style="padding: 0.3rem 0;" colspan="2" th:utext="${sellerAddress}">Seller Address</td>
 						</tr> 				
-						<tr> 					
-							<td style="padding: 0.3rem 0;" width="30%">Attention :</td>
-							<td width="70%" th:text="${sellerAttention}">Seller Attention</td>
+						<tr>
+							<td style="padding: 0.3rem 0;" colspan="2"><span class="labelBold" style="padding-left: 0;">Attention: </span><span th:text="${sellerAttention}">Seller Attention</span></td>
 						</tr>
 					</table> 		
 				</td> 	
@@ -98,11 +93,11 @@
 							<td style="padding: 0.3rem 0;" colspan="2" th:utext="${buyerAddress}">Buyer Address</td>
 						</tr> 				
 						<tr> 					
-							<td style="padding: 0.3rem 0;" width="50%">Telephone: <span th:text="${buyerTelephoneNo}">Buyer Telephone Number</span></td>							
-							<td width="50%">Facsimile: <span th:text="${buyerFacsimile}">Buyer Facsimile Number</span></td>							
+							<td style="padding: 0.3rem 0;" width="50%"><span class="labelBold" style="padding-left: 0;">Telephone: </span><span th:text="${buyerTelephoneNo}">Buyer Telephone Number</span></td>							
+							<td width="50%"><span class="labelBold">Facsimile: </span><span th:text="${buyerFacsimile}">Buyer Facsimile Number</span></td>							
 						</tr> 				
 						<tr> 					
-							<td style="padding: 0.3rem 0;" colspan="2">Attention: <span th:text="${buyerAttention}">Buyer Attention</span></td>
+							<td style="padding: 0.3rem 0;" colspan="2"><span class="labelBold" style="padding-left: 0;">Attention: </span><span th:text="${buyerAttention}">Buyer Attention</span></td>
 						</tr>
 					</table> 		
 				</td> 	
@@ -132,7 +127,7 @@
 					<table class="noBorder">
 						<tr th:each="price, iter : ${prices}">
 							<td style="padding-left: 0;">
-								<span th:text="'Line item ' + ${iter.count} + ') '"></span>
+								<!-- <span th:text="'Line item ' + ${iter.count} + ') '"></span> -->
 								<span th:text="${#numbers.formatDecimal(price, 0, 'COMMA', 0, 'POINT')}"></span><span style="margin-left: 0.5rem;" th:text="${currencyCode}"></span>
 							</td>
 						</tr>
