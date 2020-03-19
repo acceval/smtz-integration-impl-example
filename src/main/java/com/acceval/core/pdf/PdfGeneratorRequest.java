@@ -12,7 +12,7 @@ public class PdfGeneratorRequest {
 	private String htmlBody;
 	private String htmlHeader;
 	private String htmlFooter;
-	private String stylesheet;
+//	private String stylesheet;
 	private List<String> imagePaths;
 	private Map<String, Object> variableContext;
 	private Long companyId;
@@ -65,12 +65,12 @@ public class PdfGeneratorRequest {
 	public void setVariableContext(Map<String, Object> variableContext) {
 		this.variableContext = variableContext;
 	}	
-	public String getStylesheet() {
-		return stylesheet;
-	}
-	public void setStylesheet(String stylesheet) {
-		this.stylesheet = stylesheet;
-	}
+//	public String getStylesheet() {
+//		return stylesheet;
+//	}
+//	public void setStylesheet(String stylesheet) {
+//		this.stylesheet = stylesheet;
+//	}
 	public List<String> getImagePaths() {
 		return imagePaths;
 	}

@@ -54,7 +54,7 @@
 		<table style="margin-top: 2rem;"> 	
 			<tr> 		
 				<td class="labelBold" width="30%">CONTRACT NO.</td>
-				<td width="70%" th:text="${contractNo}">Contract Number</td> 	
+				<td width="70%" th:text="${reference}">Contract Number</td> 	
 			</tr> 	
 			<tr>
 				<td class="labelBold" width="30%">CONTRACT DATE</td>
@@ -62,13 +62,30 @@
 			</tr> 	
 			<tr>
 				<td class="labelBold" width="30%">REFERENCE</td>
-				<td witdh="70%" th:text="${reference}">Reference</td> 	
+				<td witdh="70%" th:text="${contractNo}">Reference</td> 	
 			</tr> 
 		</table> 
 		<table style="margin: 1rem 0 3rem 0;"> 	
 			<tr>
 				<td class="labelBold" width="30%">Sales Agreement No.</td>
 				<td width="70%" th:utext="${#strings.replace(#strings.escapeXml(salesAgreementNo),'&#10;','&lt;br /&gt;')}">Seller Details</td>
+			</tr> 	
+			<tr> 		
+				<td class="labelBold" width="30%">SELLER</td>
+				<td width="70%"> 			
+					<table class="noBorder"> 				
+						<tr>
+							<td style="padding: 0.3rem 0;" colspan="2" th:utext="${sellerName}">Seller Name</td> 				
+						</tr>
+						<tr> 					
+							<td style="padding: 0.3rem 0;" colspan="2" th:utext="${sellerAddress}">Seller Address</td>
+						</tr> 				
+						<tr> 					
+							<td style="padding: 0.3rem 0;" width="30%">Attention :</td>
+							<td width="70%" th:text="${sellerAttention}">Seller Attention</td>
+						</tr>
+					</table> 		
+				</td> 	
 			</tr> 	
 			<tr>
 				<td class="labelBold" width="30%">BUYER</td> 		
@@ -90,24 +107,6 @@
 					</table> 		
 				</td> 	
 			</tr> 
-			<tr> 		
-				<td class="labelBold" width="30%">SELLER</td>
-				<td width="70%"> 			
-					<table class="noBorder"> 				
-						<tr>
-							<td style="padding: 0.3rem 0;" colspan="2" th:utext="${sellerName}">Seller Name</td> 				
-						</tr>
-						<tr> 					
-							<td style="padding: 0.3rem 0;" colspan="2" th:utext="${sellerAddress}">Seller Address</td>
-						</tr> 				
-						<tr> 					
-							<td style="padding: 0.3rem 0;" width="30%">Attention :</td>
-							<td width="70%" th:text="${sellerAttention}">Seller Attention</td>
-						</tr>
-					</table> 		
-				</td> 	
-			</tr> 	
-			
 		</table>	  
 		<span style="margin-left: 1rem;">NOW THEREFORE, it is hereby agreed as follows:</span>
 		<table style="margin-top: 1rem;"> 	

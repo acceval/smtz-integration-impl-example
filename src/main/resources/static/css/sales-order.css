@@ -1,45 +1,33 @@
 table {
 	width: 100%;
-	margin-top: 0px;
-	margin-bottom: 0px;
-	padding: 0px;
-	font-size: 11px;
+	border: 1px solid #AFAFAF;
 	border-collapse: collapse;
-	border-width: 1px;
-	border-color: #888888;
 }
 
-table table.noBorder{
+table table.noBorder {
 	width: 100%;
-	margin-top: 0px;
-	margin-bottom: 0px;
-	padding: 0px;
-	font-size: 11px;
-	border-width: 0px;
-	border: 0px;
+	border: 0;
 }
 
-table table.noBorder tr{
-	border: 0px;
+table table.noBorder tr {
+	border: 0;
 }
 
-table table.noBorder td{
-	border: 0px;
+table table.noBorder td {
+	border: 0;
 }
 
 table, th, td {
-	border: 1px solid black;
+	border: 1px solid #AFAFAF;
 }
 
 td {
-	padding-left: 8px;
-	padding-right: 8px;
-	padding-top: 3px;
-	padding-bottom: 3px;
+	padding: 0.5rem
 }
 
 .labelBold {
 	text-align: left;
+	padding: 0.3rem 0.5rem;
 	font-weight: bold;
 }
 
@@ -52,10 +40,5 @@ td {
 
 .inlineTable {
 	width: 40%;
-	display: inline-block;
-	bottom:0px;
-}
-
-* {
-	font-size: large;
+	border: 2px solid black;
 }
