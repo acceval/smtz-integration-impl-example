@@ -81,7 +81,7 @@
 							<td width="50%"><span class="labelBold">Facsimile: </span><span th:text="${buyerFacsimile}">Buyer Facsimile Number</span></td>							
 						</tr> 				
 						<tr> 					
-							<td style="padding: 0.3rem 0;" colspan="2"><span class="labelBold" style="padding-left: 0;">Attention: <span th:text="${buyerAttention}">Buyer Attention</span></td>
+							<td style="padding: 0.3rem 0;" colspan="2"><span class="labelBold" style="padding-left: 0;">Attention: </span><span th:text="${buyerAttention}">Buyer Attention</span></td>
 						</tr>
 					</table> 		
 				</td> 	
@@ -95,7 +95,11 @@
 						</tr>
 						<tr> 					
 							<td style="padding: 0.3rem 0;" colspan="2" th:utext="${sellerAddress}">Seller Address</td>
-						</tr> 				
+						</tr>
+						<tr> 					
+							<td style="padding: 0.3rem 0;" width="50%"><span class="labelBold" style="padding-left: 0;">Telephone: </span><span th:text="${sellerTelephoneNo}">Seller Telephone Number</span></td>							
+							<td width="50%"><span class="labelBold">Facsimile: </span><span th:text="${sellerFacsimile}">Seller Facsimile Number</span></td>							
+						</tr> 
 						<tr>
 							<td style="padding: 0.3rem 0;" colspan="2"><span class="labelBold" style="padding-left: 0;">Attention: </span><span th:text="${sellerAttention}">Seller Attention</span></td>							
 						</tr>
