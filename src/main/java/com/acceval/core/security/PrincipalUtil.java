@@ -2,11 +2,11 @@ package com.acceval.core.security;
 
 import javax.validation.constraints.NotNull;
 
-import com.acceval.core.model.Timezone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acceval.core.model.ServicePackage;
+import com.acceval.core.model.Timezone;
 
 public class PrincipalUtil {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -20,6 +20,8 @@ public class PrincipalUtil {
 	public static final String HDRKEY_SERVICEPACKAGE = "SERVICEPACKAGE";
 	public static final String HDRKEY_SCHEMANAME = "SCHEMANAME";
 	public static final String HDRKEY_TIMEZONEID = "TIMEZONEID";
+
+	public static final String USERNAME_GUEST = "GUEST";
 
 	public static void setProvider(PrincipalProvider provider) {
 
@@ -159,4 +161,7 @@ public class PrincipalUtil {
 		return sp;
 	}
 
+	public static boolean isGuest() {
+		return USERNAME_GUEST.equalsIgnoreCase(getUsername());
+	}
 }
