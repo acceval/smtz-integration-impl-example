@@ -133,8 +133,22 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 				} else if (ClassUtils.isAssignable(attrClass, Long.class, true)) {
 					List<String> searchValue = mapParam.get(key);
 					if (searchValue.size() > 1) {
-						Object searchValues = searchValue.toArray();
-						lstCrriterion.add(new Criterion(resolveKey, searchValues));
+						Object[] searchValues = searchValue.toArray();
+						List<Long> lstLong = new ArrayList<>();
+						for (Object objValue : searchValues) {
+							if (objValue != null) {
+								String strValue = objValue.toString();
+								if (StringUtils.isNotBlank(strValue)) {
+									try {
+										lstLong.add(Long.valueOf(strValue));
+									} catch (Throwable t) {
+									}
+								}
+							}
+						}
+						if (!lstLong.isEmpty()) {
+							lstCrriterion.add(new Criterion(resolveKey, lstLong.toArray(new Long[lstLong.size()])));
+						}
 					} else {
 						lstCrriterion.add(new Criterion(resolveKey, Long.valueOf(mapParam.getFirst(key))));
 					}
