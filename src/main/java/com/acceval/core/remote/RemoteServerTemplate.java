@@ -35,7 +35,7 @@ public class RemoteServerTemplate {
 		this.remoteConfig = config;
 	}
 
-	public <T> T getForObject(String url, Class<T> responseType, Map<String, ?> uriVariables, String companyUUID) {
+	public <T> T getForObject(String url, Class<T> responseType, Map<String, ?> uriVariables, String companyUUID) throws Exception {
 
 		RestTemplate restTemplate = new RestTemplate();
 		String token = this.getRemoteServerToken();
@@ -46,11 +46,12 @@ public class RemoteServerTemplate {
 		this.setHttpCompanyHeader(bearerHeaders, company);
 		HttpEntity<String> bearerEntity = new HttpEntity<String>(bearerHeaders);
 
-		UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(completeUrl);
-
+		UriComponentsBuilder uriBuilder = buildUriComp(completeUrl, false);
+		UriComponentsBuilder uriBuilderSSL = buildUriComp(completeUrl, true);
 		for (String key : uriVariables.keySet()) {
 			Object values = uriVariables.get(key);
 			uriBuilder.queryParam(key, values);
+			uriBuilderSSL.queryParam(key, values);
 		}
 
 		for (HttpMessageConverter converter : restTemplate.getMessageConverters()) {
@@ -62,14 +63,22 @@ public class RemoteServerTemplate {
 			}
 		}
 
-		ResponseEntity<T> response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, bearerEntity, responseType);
+		ResponseEntity<T> response = null;
+
+		try {
+			response = restTemplate.exchange(uriBuilderSSL.toUriString(), HttpMethod.GET, bearerEntity, responseType);
+		} catch (Exception ex) {
+			if (ex instanceof javax.net.ssl.SSLException) {
+				response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, bearerEntity, responseType);
+			}
+		}
 
 		return response.getBody();
 
 	}
 
 	public <T> T exchange(String url, HttpMethod httpMethod, ParameterizedTypeReference<T> typeReference, Map<String, ?> uriVariables,
-			String companyUUID) {
+			String companyUUID) throws Exception {
 
 		RestTemplate restTemplate = new RestTemplate();
 		String token = this.getRemoteServerToken();
@@ -91,14 +100,23 @@ public class RemoteServerTemplate {
 
 		HttpEntity<String> bearerEntity = new HttpEntity<String>(bearerHeaders);
 
-		UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(completeUrl);
+		UriComponentsBuilder uriBuilder = buildUriComp(completeUrl, false);
+		UriComponentsBuilder uriBuilderSSL = buildUriComp(completeUrl, true);
 
 		for (String key : uriVariables.keySet()) {
 			Object values = uriVariables.get(key);
 			uriBuilder.queryParam(key, values);
+			uriBuilderSSL.queryParam(key, values);
 		}
 
-		ResponseEntity<T> response = restTemplate.exchange(uriBuilder.toUriString(), httpMethod, bearerEntity, typeReference);
+		ResponseEntity<T> response = null;
+		try {
+			response = restTemplate.exchange(uriBuilderSSL.toUriString(), httpMethod, bearerEntity, typeReference);
+		} catch (Exception ex) {
+			if (ex instanceof javax.net.ssl.SSLException) {
+				response = restTemplate.exchange(uriBuilder.toUriString(), httpMethod, bearerEntity, typeReference);
+			}
+		}
 
 		return response.getBody();
 
@@ -114,7 +132,7 @@ public class RemoteServerTemplate {
 		}
 	}
 
-	public <T> T postForObject(String url, Object requestBody, Class<T> responseType, String companyUUID) {
+	public <T> T postForObject(String url, Object requestBody, Class<T> responseType, String companyUUID) throws Exception {
 
 		RestTemplate restTemplate = new RestTemplate();
 		String token = this.getRemoteServerToken();
@@ -146,7 +164,7 @@ public class RemoteServerTemplate {
 		return response.getBody();
 	}
 
-	public <T> T putForObject(String url, Object requestBody, Class<T> responseType, String companyUUID) {
+	public <T> T putForObject(String url, Object requestBody, Class<T> responseType, String companyUUID) throws Exception {
 
 		RestTemplate restTemplate = new RestTemplate();
 		String token = this.getRemoteServerToken();
@@ -167,7 +185,17 @@ public class RemoteServerTemplate {
 			}
 		}
 
-		ResponseEntity<T> response = restTemplate.exchange(completeUrl, HttpMethod.PUT, bearerEntity, responseType);
+		UriComponentsBuilder uriBuilder = buildUriComp(completeUrl, false).queryParam("grant_type", "client_credentials");
+		UriComponentsBuilder uriBuilderSSL = buildUriComp(completeUrl, true).queryParam("grant_type", "client_credentials");
+
+		ResponseEntity<T> response = null;
+		try {
+			response = restTemplate.exchange(uriBuilderSSL.toUriString(), HttpMethod.PUT, bearerEntity, responseType);
+		} catch (Exception ex) {
+			if (ex instanceof javax.net.ssl.SSLException) {
+				response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.PUT, bearerEntity, responseType);
+			}
+		}
 
 		return response.getBody();
 	}
@@ -182,17 +210,24 @@ public class RemoteServerTemplate {
 		RestTemplate authRestTemplate = new RestTemplate();
 		HttpEntity<String> basicEntity = new HttpEntity<String>(basicHeaders);
 
-		UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(authUrl).queryParam("grant_type", "client_credentials");
+		ResponseEntity<AuthToken> authResponse = null;
+		try {
+			UriComponentsBuilder uriBuilder = buildUriComp(authUrl, true).queryParam("grant_type", "client_credentials");
+			authResponse = authRestTemplate.exchange(uriBuilder.toUriString(), HttpMethod.POST, basicEntity, AuthToken.class);
+		} catch (Exception ex) {
+			if (ex instanceof javax.net.ssl.SSLException) {
+				UriComponentsBuilder uriBuilder = buildUriComp(authUrl, false).queryParam("grant_type", "client_credentials");
+				authResponse = authRestTemplate.exchange(uriBuilder.toUriString(), HttpMethod.POST, basicEntity, AuthToken.class);
+			}
+		}
 
-		ResponseEntity<AuthToken> authResponse =
-				authRestTemplate.exchange(uriBuilder.toUriString(), HttpMethod.POST, basicEntity, AuthToken.class);
 		AuthToken authToken = authResponse.getBody();
 
 		return authToken.getAccess_token();
 
 	}
 
-	public Company getRemoteSystemCompany(String token, Map<String, ?> uriVariables, String companyUUID) {
+	public Company getRemoteSystemCompany(String token, Map<String, ?> uriVariables, String companyUUID) throws Exception {
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders bearerHeaders = this.createBearerHeaders(token);
 		HttpEntity<String> bearerEntity = new HttpEntity<String>(bearerHeaders);
@@ -200,14 +235,25 @@ public class RemoteServerTemplate {
 		String url = this.remoteConfig.getRemoteIp() + ":" + this.remoteConfig.getRemotePort() + "/identity-service/company/getObjByUuid/"
 				+ companyUUID;
 
-		UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(url);
+		UriComponentsBuilder uriBuilder = buildUriComp(url, false);
+		UriComponentsBuilder uriBuilderSSL = buildUriComp(url, true);
 
 		for (String key : uriVariables.keySet()) {
 			Object values = uriVariables.get(key);
 			uriBuilder.queryParam(key, values);
+			uriBuilderSSL.queryParam(key, values);
 		}
 
-		ResponseEntity<Company> response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, bearerEntity, Company.class);
+		ResponseEntity<Company> response = null;
+		try {
+			response = restTemplate.exchange(uriBuilderSSL.toUriString(), HttpMethod.GET, bearerEntity, Company.class);
+		} catch (Exception ex) {
+			if (ex instanceof javax.net.ssl.SSLException) {
+				response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, bearerEntity, Company.class);
+			}
+		}
+		if (response == null || response.getBody() == null)
+			throw new Exception("Unable to get Company in Enterprise for [" + companyUUID + "]");
 		Company company = (Company) response.getBody();
 
 		return company;
@@ -239,4 +285,20 @@ public class RemoteServerTemplate {
 		this.remoteConfig = remoteConfig;
 	}
 
+	private UriComponentsBuilder buildUriComp(String url, boolean isHttps) {
+		UriComponentsBuilder uriBuilder = null;
+		try {
+			uriBuilder = UriComponentsBuilder.fromHttpUrl(url);
+		} catch (IllegalArgumentException ex) {
+			// error try append http
+			String httpUrl = isHttps ? "https://" + url : "http://" + url;
+			//			System.out.println("=>buildUri: " + httpUrl);
+			try {
+				uriBuilder = UriComponentsBuilder.fromHttpUrl(httpUrl);
+			} catch (IllegalArgumentException ex2) {
+				throw ex2;
+			}
+		}
+		return uriBuilder;
+	}
 }

@@ -83,8 +83,10 @@ public class PrincipalUtil {
 		sysUser.setCompanyId(companyID);
 		sysUser.setCompanyCode(companyCode);
 		sysUser.setSchemaName(companyCode);
+		if (timezone != null) {
 		sysUser.setTimeZone(timezone.getUtcId());
 		sysUser.setTimeZoneName(timezone.getText());
+		}
 		if (servicePackage != null) {
 			sysUser.setServicePackage(ServicePackage.valueOf(servicePackage));
 		}
