@@ -67,6 +67,22 @@ public class TimeZoneUtil {
 		}
 	}
 
+	public static LocalDateTime returnTimeZone(LocalDateTime localDateTime) {
+		if (localDateTime == null) return null;
+
+		String timeZone = PrincipalUtil.getTimeZone();
+		if (StringUtils.isBlank(timeZone)) {
+			timeZone = PrincipalUtil.getSystemUser() != null ? PrincipalUtil.getSystemUser().getTimeZone() : "";
+		}
+
+		timeZone = new TimezoneServiceImpl().convertToUTCTimeZoneId(timeZone);
+		if (StringUtils.isNotBlank(timeZone)) {
+			return localDateTime.atZone(ZoneId.of(timeZone)).withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
+		} else {
+			return localDateTime;
+		}
+	}
+
 	public static String getTimeDifference(LocalDateTime dateTime) {
 		String difference = "";
 

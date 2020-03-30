@@ -26,15 +26,6 @@ import com.acceval.core.model.Company;
 public class RemoteServerTemplate {
 
 	private RemoteConfig remoteConfig;
-	private String sellerUuid;
-
-	public String getSellerUuid() {
-		return sellerUuid;
-	}
-
-	public void setSellerUuid(String sellerUuid) {
-		this.sellerUuid = sellerUuid;
-	}
 
 	public RemoteServerTemplate() {
 	}
@@ -44,14 +35,14 @@ public class RemoteServerTemplate {
 		this.remoteConfig = config;
 	}
 
-	public <T> T getForObject(String url, Class<T> responseType, Map<String, ?> uriVariables) {
+	public <T> T getForObject(String url, Class<T> responseType, Map<String, ?> uriVariables, String companyUUID) {
 
 		RestTemplate restTemplate = new RestTemplate();
 		String token = this.getRemoteServerToken();
 		String completeUrl = this.remoteConfig.getRemoteIp() + ":" + this.remoteConfig.getRemotePort() + url;
 
 		HttpHeaders bearerHeaders = this.createBearerHeaders(token);
-		Company company = this.getRemoteSystemCompany(token, new HashMap<String, String>());
+		Company company = this.getRemoteSystemCompany(token, new HashMap<String, String>(), companyUUID);
 		this.setHttpCompanyHeader(bearerHeaders, company);
 		HttpEntity<String> bearerEntity = new HttpEntity<String>(bearerHeaders);
 
@@ -71,15 +62,14 @@ public class RemoteServerTemplate {
 			}
 		}
 
-		ResponseEntity<T> response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, bearerEntity,
-				responseType);
+		ResponseEntity<T> response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, bearerEntity, responseType);
 
 		return response.getBody();
 
 	}
 
-	public <T> T exchange(String url, HttpMethod httpMethod, ParameterizedTypeReference<T> typeReference,
-			Map<String, ?> uriVariables) {
+	public <T> T exchange(String url, HttpMethod httpMethod, ParameterizedTypeReference<T> typeReference, Map<String, ?> uriVariables,
+			String companyUUID) {
 
 		RestTemplate restTemplate = new RestTemplate();
 		String token = this.getRemoteServerToken();
@@ -96,7 +86,7 @@ public class RemoteServerTemplate {
 			}
 		}
 
-		Company company = this.getRemoteSystemCompany(token, new HashMap<String, String>());
+		Company company = this.getRemoteSystemCompany(token, new HashMap<String, String>(), companyUUID);
 		this.setHttpCompanyHeader(bearerHeaders, company);
 
 		HttpEntity<String> bearerEntity = new HttpEntity<String>(bearerHeaders);
@@ -108,8 +98,7 @@ public class RemoteServerTemplate {
 			uriBuilder.queryParam(key, values);
 		}
 
-		ResponseEntity<T> response = restTemplate.exchange(uriBuilder.toUriString(), httpMethod, bearerEntity,
-				typeReference);
+		ResponseEntity<T> response = restTemplate.exchange(uriBuilder.toUriString(), httpMethod, bearerEntity, typeReference);
 
 		return response.getBody();
 
@@ -125,7 +114,7 @@ public class RemoteServerTemplate {
 		}
 	}
 
-	public <T> T postForObject(String url, Object requestBody, Class<T> responseType) {
+	public <T> T postForObject(String url, Object requestBody, Class<T> responseType, String companyUUID) {
 
 		RestTemplate restTemplate = new RestTemplate();
 		String token = this.getRemoteServerToken();
@@ -148,7 +137,7 @@ public class RemoteServerTemplate {
 
 		restTemplate.setMessageConverters(messageConverters);
 
-		Company company = this.getRemoteSystemCompany(token, new HashMap<String, String>());
+		Company company = this.getRemoteSystemCompany(token, new HashMap<String, String>(), companyUUID);
 		this.setHttpCompanyHeader(bearerHeaders, company);
 		HttpEntity<?> bearerEntity = new HttpEntity<>(requestBody, bearerHeaders);
 
@@ -157,14 +146,14 @@ public class RemoteServerTemplate {
 		return response.getBody();
 	}
 
-	public <T> T putForObject(String url, Object requestBody, Class<T> responseType) {
+	public <T> T putForObject(String url, Object requestBody, Class<T> responseType, String companyUUID) {
 
 		RestTemplate restTemplate = new RestTemplate();
 		String token = this.getRemoteServerToken();
 		String completeUrl = this.remoteConfig.getRemoteIp() + ":" + this.remoteConfig.getRemotePort() + url;
 
 		HttpHeaders bearerHeaders = this.createBearerHeaders(token);
-		Company company = this.getRemoteSystemCompany(token, new HashMap<String, String>());
+		Company company = this.getRemoteSystemCompany(token, new HashMap<String, String>(), companyUUID);
 		this.setHttpCompanyHeader(bearerHeaders, company);
 		HttpEntity<?> bearerEntity = new HttpEntity<>(requestBody, bearerHeaders);
 
@@ -185,34 +174,31 @@ public class RemoteServerTemplate {
 
 	public String getRemoteServerToken() {
 
-		String authUrl = this.remoteConfig.getRemoteIp() + ":" + this.remoteConfig.getRemotePort()
-				+ "/auth-service/uaa/oauth/token";
+		String authUrl = this.remoteConfig.getRemoteIp() + ":" + this.remoteConfig.getRemotePort() + "/auth-service/uaa/oauth/token";
 
-		HttpHeaders basicHeaders = this.createBasicHeaders(this.remoteConfig.getCredentialUser(),
-				this.remoteConfig.getCredentialPassword());
+		HttpHeaders basicHeaders =
+				this.createBasicHeaders(this.remoteConfig.getCredentialUser(), this.remoteConfig.getCredentialPassword());
 
 		RestTemplate authRestTemplate = new RestTemplate();
 		HttpEntity<String> basicEntity = new HttpEntity<String>(basicHeaders);
 
-		UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(authUrl).queryParam("grant_type",
-				"client_credentials");
+		UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(authUrl).queryParam("grant_type", "client_credentials");
 
-		ResponseEntity<AuthToken> authResponse = authRestTemplate.exchange(uriBuilder.toUriString(), HttpMethod.POST,
-				basicEntity, AuthToken.class);
+		ResponseEntity<AuthToken> authResponse =
+				authRestTemplate.exchange(uriBuilder.toUriString(), HttpMethod.POST, basicEntity, AuthToken.class);
 		AuthToken authToken = authResponse.getBody();
 
 		return authToken.getAccess_token();
 
 	}
 
-	public Company getRemoteSystemCompany(String token, Map<String, ?> uriVariables) {
-
+	public Company getRemoteSystemCompany(String token, Map<String, ?> uriVariables, String companyUUID) {
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders bearerHeaders = this.createBearerHeaders(token);
 		HttpEntity<String> bearerEntity = new HttpEntity<String>(bearerHeaders);
 
-		String url = this.remoteConfig.getRemoteIp() + ":" + this.remoteConfig.getRemotePort()
-				+ "/identity-service/company/getObjByUuid/" + getSellerUuid();
+		String url = this.remoteConfig.getRemoteIp() + ":" + this.remoteConfig.getRemotePort() + "/identity-service/company/getObjByUuid/"
+				+ companyUUID;
 
 		UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(url);
 
@@ -221,13 +207,10 @@ public class RemoteServerTemplate {
 			uriBuilder.queryParam(key, values);
 		}
 
-		ResponseEntity<Company> response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, bearerEntity,
-				Company.class);
+		ResponseEntity<Company> response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, bearerEntity, Company.class);
 		Company company = (Company) response.getBody();
-		System.out.println("remote server company: " + company.getCode());
 
 		return company;
-
 	}
 
 	public HttpHeaders createBasicHeaders(String user, String password) {
