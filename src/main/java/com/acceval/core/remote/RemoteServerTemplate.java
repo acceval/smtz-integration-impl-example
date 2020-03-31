@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -68,7 +69,7 @@ public class RemoteServerTemplate {
 		try {
 			response = restTemplate.exchange(uriBuilderSSL.toUriString(), HttpMethod.GET, bearerEntity, responseType);
 		} catch (Exception ex) {
-			if (ex instanceof javax.net.ssl.SSLException) {
+			if (ex instanceof javax.net.ssl.SSLException || ex instanceof ResourceAccessException) {
 				response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, bearerEntity, responseType);
 			}
 		}
@@ -113,7 +114,7 @@ public class RemoteServerTemplate {
 		try {
 			response = restTemplate.exchange(uriBuilderSSL.toUriString(), httpMethod, bearerEntity, typeReference);
 		} catch (Exception ex) {
-			if (ex instanceof javax.net.ssl.SSLException) {
+			if (ex instanceof javax.net.ssl.SSLException || ex instanceof ResourceAccessException) {
 				response = restTemplate.exchange(uriBuilder.toUriString(), httpMethod, bearerEntity, typeReference);
 			}
 		}
@@ -192,7 +193,7 @@ public class RemoteServerTemplate {
 		try {
 			response = restTemplate.exchange(uriBuilderSSL.toUriString(), HttpMethod.PUT, bearerEntity, responseType);
 		} catch (Exception ex) {
-			if (ex instanceof javax.net.ssl.SSLException) {
+			if (ex instanceof javax.net.ssl.SSLException || ex instanceof ResourceAccessException) {
 				response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.PUT, bearerEntity, responseType);
 			}
 		}
@@ -215,7 +216,7 @@ public class RemoteServerTemplate {
 			UriComponentsBuilder uriBuilder = buildUriComp(authUrl, true).queryParam("grant_type", "client_credentials");
 			authResponse = authRestTemplate.exchange(uriBuilder.toUriString(), HttpMethod.POST, basicEntity, AuthToken.class);
 		} catch (Exception ex) {
-			if (ex instanceof javax.net.ssl.SSLException) {
+			if (ex instanceof javax.net.ssl.SSLException || ex instanceof ResourceAccessException) {
 				UriComponentsBuilder uriBuilder = buildUriComp(authUrl, false).queryParam("grant_type", "client_credentials");
 				authResponse = authRestTemplate.exchange(uriBuilder.toUriString(), HttpMethod.POST, basicEntity, AuthToken.class);
 			}
@@ -248,7 +249,7 @@ public class RemoteServerTemplate {
 		try {
 			response = restTemplate.exchange(uriBuilderSSL.toUriString(), HttpMethod.GET, bearerEntity, Company.class);
 		} catch (Exception ex) {
-			if (ex instanceof javax.net.ssl.SSLException) {
+			if (ex instanceof javax.net.ssl.SSLException || ex instanceof ResourceAccessException) {
 				response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, bearerEntity, Company.class);
 			}
 		}
