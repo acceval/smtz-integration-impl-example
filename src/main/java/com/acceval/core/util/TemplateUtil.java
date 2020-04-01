@@ -35,6 +35,18 @@ public class TemplateUtil {
 		
 	}
 	
+	public static String underscoreClassName(String className) {
+		
+		StringBuilder builder = new StringBuilder(className);
+		
+		for (int i = 1; i < builder.length() - 1; i++) {
+			if (isUnderscoreRequired(builder.charAt(i - 1), builder.charAt(i), builder.charAt(i + 1))) {
+				builder.insert(i++, '_');
+			}
+		}
+		return builder.toString().toLowerCase();
+	}
+	
 	private static boolean isUnderscoreRequired(char before, char current, char after) {
 		
 		return (Character.isLowerCase(before) && Character.isUpperCase(current)
