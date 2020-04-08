@@ -2,6 +2,8 @@ package com.acceval.core.repository;
 
 import java.util.List;
 
+import javax.persistence.Tuple;
+
 import org.springframework.util.MultiValueMap;
 
 import com.acceval.core.model.BaseEntity.STATUS;
@@ -35,5 +37,9 @@ public interface BaseRepository<T> {
 	void softDelete(T entity);
 
 	void softDelete(List<T> entities);
+
+	QueryResult<Tuple> projectionByCriteria(Criteria acceCriteria);
+
+	QueryResult<Tuple> projectionByCriteria(Criteria acceCriteria, Class<?> targetClass);
 
 }

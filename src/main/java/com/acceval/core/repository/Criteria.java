@@ -17,8 +17,8 @@ public class Criteria implements Serializable {
 	private int pageSize = 20;
 	private int requestedPage = 0;
 	private List<Criterion> criterion = new ArrayList<>();
+	private List<Projection> projections = new ArrayList<>();
 	private List<Order> order = new ArrayList<>();
-	//	private Projection[] projection = {}; TODO
 	private boolean fetchAll = true;
 	private boolean initialise = true;
 	private String filterDescription;
@@ -133,6 +133,9 @@ public class Criteria implements Serializable {
 		return this.pageSize;
 	}
 
+	/**
+	 * start at 0
+	 */
 	public void setRequestedPage(int requestedPage) {
 		this.requestedPage = requestedPage;
 	}
@@ -181,6 +184,14 @@ public class Criteria implements Serializable {
 		this.criterion = criterion;
 	}
 
+	public List<Projection> getProjections() {
+		return projections;
+	}
+
+	public void setProjections(List<Projection> projections) {
+		this.projections = projections;
+	}
+
 	public List<Order> getOrder() {
 		return order;
 	}
@@ -191,6 +202,11 @@ public class Criteria implements Serializable {
 
 	public Criteria appendCriterion(Criterion criterion) {
 		this.criterion.add(criterion);
+		return this;
+	}
+
+	public Criteria appendProjection(Projection projection) {
+		this.projections.add(projection);
 		return this;
 	}
 
