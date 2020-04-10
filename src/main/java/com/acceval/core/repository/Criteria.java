@@ -22,9 +22,14 @@ public class Criteria implements Serializable {
 	private boolean fetchAll = true;
 	private boolean initialise = true;
 	private String filterDescription;
+	private boolean autoAppendCompany = true;
 
 	public Criteria() {
 
+	}
+
+	public Criteria(boolean autoAppendCompany) {
+		this.autoAppendCompany = autoAppendCompany;
 	}
 
 	public void removeEmptyCriterion() {
@@ -49,9 +54,9 @@ public class Criteria implements Serializable {
 			}
 			criList.add(cri);
 		}
-		for(String key : mapCri.keySet()) {
+		for (String key : mapCri.keySet()) {
 			List<Criterion> criList = mapCri.get(key);
-			if(criList.size() > 1) {
+			if (criList.size() > 1) {
 				OrCriterion orCriterion = new OrCriterion();
 				List<Criterion> orCriList = new ArrayList<>();
 				for (Criterion orException : criList) {
@@ -270,6 +275,14 @@ public class Criteria implements Serializable {
 
 	public void setFilterDescription(String filterDescription) {
 		this.filterDescription = filterDescription;
+	}
+
+	public boolean isAutoAppendCompany() {
+		return autoAppendCompany;
+	}
+
+	public void setAutoAppendCompany(boolean autoAppendCompany) {
+		this.autoAppendCompany = autoAppendCompany;
 	}
 
 }

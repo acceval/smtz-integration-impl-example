@@ -22,4 +22,6 @@ public interface BaseMongoRepository<T> {
 	Criteria getCriteriaByMapParam(MultiValueMap<String, String> mapParam);
 
 	Criteria getCriteriaByMapParam(MultiValueMap<String, String> mapParam, Class<?> targetClass);
+
+	Object[] getMongoCriterias(Criteria acceCriteria);
 }

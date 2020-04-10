@@ -256,10 +256,12 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 	 * [0] mongo criteria, use for find()
 	 * [1] mongo match, use for aggregate()
 	 */
-	protected Object[] getMongoCriterias(Criteria acceCriteria) {
+	@Override
+	public Object[] getMongoCriterias(Criteria acceCriteria) {
 
 		/** append company criteria for BaseModel */
-		if (BaseCompanyModel.class.isAssignableFrom(getTargetClass()) && acceCriteria.getCriterion() != null) {
+		if (acceCriteria.isAutoAppendCompany() && BaseCompanyModel.class.isAssignableFrom(getTargetClass())
+				&& acceCriteria.getCriterion() != null) {
 			boolean companyKeyFound =
 					acceCriteria.getCriterion().stream().filter(c -> "companyId".equals(c.getPropertyName())).findFirst().isPresent();
 			if (!companyKeyFound) {
