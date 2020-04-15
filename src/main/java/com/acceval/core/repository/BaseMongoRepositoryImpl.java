@@ -29,6 +29,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.util.MultiValueMap;
 
 import com.acceval.core.model.BaseEntity;
@@ -117,15 +118,13 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 		List<Criterion> lstCrriterion = new ArrayList<>();
 		for (String key : mapParam.keySet()) {
 
-			if (_PAGE.equals(key) || _PAGESIZE.equals(key) || _SORT.equals(key) || _FETCHALL.equals(key)
-					|| _DISPLAYFIELD.equals(key)
+			if (_PAGE.equals(key) || _PAGESIZE.equals(key) || _SORT.equals(key) || _FETCHALL.equals(key) || _DISPLAYFIELD.equals(key)
 					|| (mapParam.getFirst(key) != null && StringUtils.trim(mapParam.getFirst(key)).length() == 0)) {
 				continue;
 			}
 
 			try {
-				String resolveKey = this.getMapPropertyResolver().containsKey(key) ? getMapPropertyResolver().get(key)
-						: key;
+				String resolveKey = this.getMapPropertyResolver().containsKey(key) ? getMapPropertyResolver().get(key) : key;
 				Class<?> attrClass = this.getField(this.getTargetClass(), resolveKey).getType();
 
 				if (mapParam.getFirst(key) == null) {
@@ -250,6 +249,26 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 		}
 
 		return queryResult;
+	}
+
+	@Override
+	public List<T> aggregateByCriteria(Criteria acceCriteria) {
+		List<AggregationOperation> lstOperation = (List<AggregationOperation>) this.getMongoCriterias(acceCriteria)[1];
+		BasicDBObject dbProjection = null;
+		for (Projection proj : acceCriteria.getProjections()) {
+			if (StringUtils.isBlank(proj.getProperty())) continue;
+			if (dbProjection == null) {
+				dbProjection = new BasicDBObject(proj.getProperty(), 1);
+			} else {
+				dbProjection.append(proj.getProperty(), 1);
+			}
+		}
+		if (dbProjection != null) {
+			lstOperation.add(new BasicAggregationOperation(new BasicDBObject("$project", dbProjection)));
+		}
+		AggregationResults<T> results = (AggregationResults<T>) this.mongoTemplate.aggregate(Aggregation.newAggregation(lstOperation),
+				this.getTargetClass(), this.getTargetClass());
+		return results.getMappedResults();
 	}
 
 	/**
@@ -475,11 +494,9 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 
 		if (strDate == null) return null;
 
-		return new BasicDBObject("$expr",
-				new BasicDBObject(operator,
-						new Object[] { "$" + property, new BasicDBObject("$dateFromString", new BasicDBObject("dateString", strDate)
-										.append("format", Criterion.DEFAULT_MONGO_DATE_FORMAT)
-										.append("timezone", ZoneId.systemDefault().toString())) }));
+		return new BasicDBObject("$expr", new BasicDBObject(operator,
+				new Object[] { "$" + property, new BasicDBObject("$dateFromString", new BasicDBObject("dateString", strDate)
+						.append("format", Criterion.DEFAULT_MONGO_DATE_FORMAT).append("timezone", ZoneId.systemDefault().toString())) }));
 	}
 
 	protected Field getField(Class<?> javaClass, String property) throws NoSuchFieldException, SecurityException {
