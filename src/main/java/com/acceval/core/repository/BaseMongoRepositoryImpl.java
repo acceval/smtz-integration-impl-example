@@ -125,7 +125,7 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 
 			try {
 				String resolveKey = this.getMapPropertyResolver().containsKey(key) ? getMapPropertyResolver().get(key) : key;
-				Class<?> attrClass = this.getField(this.getTargetClass(), resolveKey).getType();
+				Class<?> attrClass = this.getField(targetClass, resolveKey).getType();
 
 				if (mapParam.getFirst(key) == null) {
 					lstCrriterion.add(new Criterion(resolveKey, RestrictionType.IS_NULL, mapParam.getFirst(key)));
