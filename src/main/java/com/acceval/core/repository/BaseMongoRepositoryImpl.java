@@ -10,6 +10,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -125,7 +126,8 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 
 			try {
 				String resolveKey = this.getMapPropertyResolver().containsKey(key) ? getMapPropertyResolver().get(key) : key;
-				Class<?> attrClass = this.getField(targetClass, resolveKey).getType();
+				Field field = this.getField(targetClass, resolveKey);
+				Class<?> attrClass = field.getType();
 
 				if (mapParam.getFirst(key) == null) {
 					lstCrriterion.add(new Criterion(resolveKey, RestrictionType.IS_NULL, mapParam.getFirst(key)));
@@ -176,6 +178,16 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 				} else if (ClassUtils.isAssignable(attrClass, Enum.class)) {
 					lstCrriterion
 							.add(new Criterion(resolveKey, Enum.valueOf(attrClass.asSubclass(Enum.class), mapParam.getFirst(key)), true));
+				} else if (ClassUtils.isAssignable(attrClass, Collection.class)) {
+					// seem Collection work in mongo
+					if (field.toGenericString().contains("<java.lang.Long>")) {
+						try {
+							lstCrriterion.add(new Criterion(resolveKey, Long.valueOf(mapParam.getFirst(key))));
+						} catch (Exception e) {
+						}
+					} else {
+						lstCrriterion.add(new Criterion(resolveKey, mapParam.getFirst(key)));
+					}
 				} else {
 					LOGGER.error("[" + attrClass.getName() + "] is not support in Acceval Base Criteria Search yet!");
 				}
