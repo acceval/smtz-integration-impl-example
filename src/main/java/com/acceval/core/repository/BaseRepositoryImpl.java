@@ -389,7 +389,8 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 	private void buildCriterion(Criteria acceCriteria, List<Predicate> lstPredicate, Root<?> root, CriteriaBuilder builder,
 			CriteriaQuery<?> criteria) {
 		/** append company criteria for BaseModel */
-		if (BaseCompanyModel.class.isAssignableFrom(getTargetClass()) && acceCriteria.getCriterion() != null) {
+		if (acceCriteria.isAutoAppendCompany() && BaseCompanyModel.class.isAssignableFrom(getTargetClass())
+				&& acceCriteria.getCriterion() != null) {
 			boolean companyKeyFound =
 					acceCriteria.getCriterion().stream().filter(c -> "companyId".equals(c.getPropertyName())).findFirst().isPresent();
 			if (!companyKeyFound) {
