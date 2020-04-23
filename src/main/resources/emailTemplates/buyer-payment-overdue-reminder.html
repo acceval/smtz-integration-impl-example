@@ -1,7 +1,7 @@
 {{#partial "content"}}
 <p style="margin: 0 0 10px 0;">Dear <span>{{this.receiverName}}</span>,</p>
 
-<p style="margin: 0 0 20px 0;">Payment to {{this.context.SELLER_COMPANY}} is due on {{this.context.EXPIRY_DATE}} for purchase order {{this.context.DOCUMENT_NO}}. 
+<p style="margin: 0 0 20px 0;">Payment to {{this.context.SELLER_COMPANY}} is overdue for {{this.context.OVERDUE_DAYS}} days. The due day is on {{this.context.EXPIRY_DATE}} for purchase order {{this.context.DOCUMENT_NO}}. 
 Please arrange the payment with the seller.</p>
 
 <p style="margin: 0 0 20px 0;">The payment term for this purchase order is {{this.context.PAYMENT_TERM_NAME}}. The payment supposed to be made by {{this.context.EXPIRY_DATE}},  
