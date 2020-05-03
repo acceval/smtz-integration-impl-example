@@ -17,14 +17,19 @@ public class Criteria implements Serializable {
 	private int pageSize = 20;
 	private int requestedPage = 0;
 	private List<Criterion> criterion = new ArrayList<>();
+	private List<Projection> projections = new ArrayList<>();
 	private List<Order> order = new ArrayList<>();
-	//	private Projection[] projection = {}; TODO
 	private boolean fetchAll = true;
 	private boolean initialise = true;
 	private String filterDescription;
+	private boolean autoAppendCompany = true;
 
 	public Criteria() {
 
+	}
+
+	public Criteria(boolean autoAppendCompany) {
+		this.autoAppendCompany = autoAppendCompany;
 	}
 
 	public void removeEmptyCriterion() {
@@ -49,9 +54,9 @@ public class Criteria implements Serializable {
 			}
 			criList.add(cri);
 		}
-		for(String key : mapCri.keySet()) {
+		for (String key : mapCri.keySet()) {
 			List<Criterion> criList = mapCri.get(key);
-			if(criList.size() > 1) {
+			if (criList.size() > 1) {
 				OrCriterion orCriterion = new OrCriterion();
 				List<Criterion> orCriList = new ArrayList<>();
 				for (Criterion orException : criList) {
@@ -133,6 +138,9 @@ public class Criteria implements Serializable {
 		return this.pageSize;
 	}
 
+	/**
+	 * start at 0
+	 */
 	public void setRequestedPage(int requestedPage) {
 		this.requestedPage = requestedPage;
 	}
@@ -181,6 +189,14 @@ public class Criteria implements Serializable {
 		this.criterion = criterion;
 	}
 
+	public List<Projection> getProjections() {
+		return projections;
+	}
+
+	public void setProjections(List<Projection> projections) {
+		this.projections = projections;
+	}
+
 	public List<Order> getOrder() {
 		return order;
 	}
@@ -191,6 +207,11 @@ public class Criteria implements Serializable {
 
 	public Criteria appendCriterion(Criterion criterion) {
 		this.criterion.add(criterion);
+		return this;
+	}
+
+	public Criteria appendProjection(Projection projection) {
+		this.projections.add(projection);
 		return this;
 	}
 
@@ -254,6 +275,14 @@ public class Criteria implements Serializable {
 
 	public void setFilterDescription(String filterDescription) {
 		this.filterDescription = filterDescription;
+	}
+
+	public boolean isAutoAppendCompany() {
+		return autoAppendCompany;
+	}
+
+	public void setAutoAppendCompany(boolean autoAppendCompany) {
+		this.autoAppendCompany = autoAppendCompany;
 	}
 
 }

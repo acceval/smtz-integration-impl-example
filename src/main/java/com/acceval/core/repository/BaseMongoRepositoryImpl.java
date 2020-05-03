@@ -10,6 +10,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +30,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.util.MultiValueMap;
 
 import com.acceval.core.model.BaseEntity;
@@ -117,16 +119,15 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 		List<Criterion> lstCrriterion = new ArrayList<>();
 		for (String key : mapParam.keySet()) {
 
-			if (_PAGE.equals(key) || _PAGESIZE.equals(key) || _SORT.equals(key) || _FETCHALL.equals(key)
-					|| _DISPLAYFIELD.equals(key)
+			if (_PAGE.equals(key) || _PAGESIZE.equals(key) || _SORT.equals(key) || _FETCHALL.equals(key) || _DISPLAYFIELD.equals(key)
 					|| (mapParam.getFirst(key) != null && StringUtils.trim(mapParam.getFirst(key)).length() == 0)) {
 				continue;
 			}
 
 			try {
-				String resolveKey = this.getMapPropertyResolver().containsKey(key) ? getMapPropertyResolver().get(key)
-						: key;
-				Class<?> attrClass = this.getField(this.getTargetClass(), resolveKey).getType();
+				String resolveKey = this.getMapPropertyResolver().containsKey(key) ? getMapPropertyResolver().get(key) : key;
+				Field field = this.getField(targetClass, resolveKey);
+				Class<?> attrClass = field.getType();
 
 				if (mapParam.getFirst(key) == null) {
 					lstCrriterion.add(new Criterion(resolveKey, RestrictionType.IS_NULL, mapParam.getFirst(key)));
@@ -177,6 +178,16 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 				} else if (ClassUtils.isAssignable(attrClass, Enum.class)) {
 					lstCrriterion
 							.add(new Criterion(resolveKey, Enum.valueOf(attrClass.asSubclass(Enum.class), mapParam.getFirst(key)), true));
+				} else if (ClassUtils.isAssignable(attrClass, Collection.class)) {
+					// seem Collection work in mongo
+					if (field.toGenericString().contains("<java.lang.Long>")) {
+						try {
+							lstCrriterion.add(new Criterion(resolveKey, Long.valueOf(mapParam.getFirst(key))));
+						} catch (Exception e) {
+						}
+					} else {
+						lstCrriterion.add(new Criterion(resolveKey, mapParam.getFirst(key)));
+					}
 				} else {
 					LOGGER.error("[" + attrClass.getName() + "] is not support in Acceval Base Criteria Search yet!");
 				}
@@ -252,14 +263,36 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 		return queryResult;
 	}
 
+	@Override
+	public List<T> aggregateByCriteria(Criteria acceCriteria) {
+		List<AggregationOperation> lstOperation = (List<AggregationOperation>) this.getMongoCriterias(acceCriteria)[1];
+		BasicDBObject dbProjection = null;
+		for (Projection proj : acceCriteria.getProjections()) {
+			if (StringUtils.isBlank(proj.getProperty())) continue;
+			if (dbProjection == null) {
+				dbProjection = new BasicDBObject(proj.getProperty(), 1);
+			} else {
+				dbProjection.append(proj.getProperty(), 1);
+			}
+		}
+		if (dbProjection != null) {
+			lstOperation.add(new BasicAggregationOperation(new BasicDBObject("$project", dbProjection)));
+		}
+		AggregationResults<T> results = (AggregationResults<T>) this.mongoTemplate.aggregate(Aggregation.newAggregation(lstOperation),
+				this.getTargetClass(), this.getTargetClass());
+		return results.getMappedResults();
+	}
+
 	/**
 	 * [0] mongo criteria, use for find()
 	 * [1] mongo match, use for aggregate()
 	 */
-	protected Object[] getMongoCriterias(Criteria acceCriteria) {
+	@Override
+	public Object[] getMongoCriterias(Criteria acceCriteria) {
 
 		/** append company criteria for BaseModel */
-		if (BaseCompanyModel.class.isAssignableFrom(getTargetClass()) && acceCriteria.getCriterion() != null) {
+		if (acceCriteria.isAutoAppendCompany() && BaseCompanyModel.class.isAssignableFrom(getTargetClass())
+				&& acceCriteria.getCriterion() != null) {
 			boolean companyKeyFound =
 					acceCriteria.getCriterion().stream().filter(c -> "companyId".equals(c.getPropertyName())).findFirst().isPresent();
 			if (!companyKeyFound) {
@@ -473,11 +506,9 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 
 		if (strDate == null) return null;
 
-		return new BasicDBObject("$expr",
-				new BasicDBObject(operator,
-						new Object[] { "$" + property, new BasicDBObject("$dateFromString", new BasicDBObject("dateString", strDate)
-										.append("format", Criterion.DEFAULT_MONGO_DATE_FORMAT)
-										.append("timezone", ZoneId.systemDefault().toString())) }));
+		return new BasicDBObject("$expr", new BasicDBObject(operator,
+				new Object[] { "$" + property, new BasicDBObject("$dateFromString", new BasicDBObject("dateString", strDate)
+						.append("format", Criterion.DEFAULT_MONGO_DATE_FORMAT).append("timezone", ZoneId.systemDefault().toString())) }));
 	}
 
 	protected Field getField(Class<?> javaClass, String property) throws NoSuchFieldException, SecurityException {

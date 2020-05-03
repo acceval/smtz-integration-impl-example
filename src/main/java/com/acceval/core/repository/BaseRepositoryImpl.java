@@ -23,6 +23,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Id;
 import javax.persistence.Query;
+import javax.persistence.Tuple;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
@@ -61,8 +62,8 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 	public static String _ASC = "asc";
 	public static String _DESC = "desc";
 
-	public static String[] STD_DATEFORMAT = new String[] { "yyyy-MM-dd", "dd-MM-yyyy", "dd/MM/yyyy", "yyyy/MM/dd",
-			"yyyy-MM-dd HH:mm:ss", "dd-MM-yyyy HH:mm:ss", "dd/MM/yyyy HH:mm:ss", "yyyy/MM/dd HH:mm:ss" };
+	public static String[] STD_DATEFORMAT = new String[] { "yyyy-MM-dd", "dd-MM-yyyy", "dd/MM/yyyy", "yyyy/MM/dd", "yyyy-MM-dd HH:mm:ss",
+			"dd-MM-yyyy HH:mm:ss", "dd/MM/yyyy HH:mm:ss", "yyyy/MM/dd HH:mm:ss" };
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BaseRepositoryImpl.class);
 
@@ -239,16 +240,15 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 		Criteria criteria = this.getCriteriaByMapParam(mapParam, getTargetClass());
 		for (DateRange dateRange : dateRanges) {
 
-			LocalDateTime startDate = LocalDateTime.of(dateRange.getStartDate().getYear(),
-					dateRange.getStartDate().getMonthValue(), dateRange.getStartDate().getDayOfMonth(), 0, 0, 0);
+			LocalDateTime startDate = LocalDateTime.of(dateRange.getStartDate().getYear(), dateRange.getStartDate().getMonthValue(),
+					dateRange.getStartDate().getDayOfMonth(), 0, 0, 0);
 
 			if (dateRange.getEndDate() != null) {
-				LocalDateTime endDate = LocalDateTime.of(dateRange.getEndDate().getYear(),
-						dateRange.getEndDate().getMonthValue(), dateRange.getEndDate().getDayOfMonth(), 0, 0);
+				LocalDateTime endDate = LocalDateTime.of(dateRange.getEndDate().getYear(), dateRange.getEndDate().getMonthValue(),
+						dateRange.getEndDate().getDayOfMonth(), 0, 0);
 				endDate = endDate.plusDays(1);
 
-				Criterion startCriterion = new Criterion(dateRange.getPropertyPath(), RestrictionType.GREATER_OR_EQUAL,
-						startDate);
+				Criterion startCriterion = new Criterion(dateRange.getPropertyPath(), RestrictionType.GREATER_OR_EQUAL, startDate);
 				startCriterion.setSearchValueDataType(Criterion.DATE);
 				criteria.appendCriterion(startCriterion);
 
@@ -257,8 +257,7 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 				criteria.appendCriterion(endCriterion);
 
 			} else {
-				Criterion startCriterion = new Criterion(dateRange.getPropertyPath(), RestrictionType.GREATER_OR_EQUAL,
-						startDate);
+				Criterion startCriterion = new Criterion(dateRange.getPropertyPath(), RestrictionType.GREATER_OR_EQUAL, startDate);
 				startCriterion.setSearchValueDataType(Criterion.DATE);
 				criteria.appendCriterion(startCriterion);
 
@@ -285,64 +284,11 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 		List<Predicate> lstPredicate = new ArrayList<>();
 		Map<String, Join<?, ?>> mapDefinedPath = new HashMap<>();
 
-		/** append company criteria for BaseModel */
-		if (BaseCompanyModel.class.isAssignableFrom(getTargetClass()) && acceCriteria.getCriterion() != null) {
-			boolean companyKeyFound = acceCriteria.getCriterion().stream()
-					.filter(c -> "companyId".equals(c.getPropertyName())).findFirst().isPresent();
-			if (!companyKeyFound) {
-				acceCriteria.appendCriterion(new Criterion("companyId", PrincipalUtil.getCompanyID()));
-			}
-		}
-
 		/** criteria */
-		for (Criterion criterion : acceCriteria.getCriterion()) {
-			// Or
-			if (criterion instanceof OrCriterion && !((OrCriterion) criterion).getCriterias().isEmpty()) {
-				List<Predicate> lstOrPredicate = new ArrayList<>();
-				for (Criteria orCriteria : ((OrCriterion) criterion).getCriterias()) {
-					List<Predicate> lstAndPredicate = new ArrayList<>();
-					for (Criterion andCriterion : orCriteria.getCriterion()) {
-						Predicate[] arrPre = buildPredicate(andCriterion, root, builder);
-						if (arrPre != null && arrPre.length > 0) {
-							for (Predicate predic : arrPre) {
-								lstAndPredicate.add(predic);
-							}
-						}
-					}
-					Predicate andPredict = builder.and(lstAndPredicate.stream().toArray(Predicate[]::new));
-					lstOrPredicate.add(andPredict);
-				}
-				lstPredicate.add(builder.or(lstOrPredicate.stream().toArray(Predicate[]::new)));
-			} else {
-				Predicate[] arrPre = buildPredicate(criterion, root, builder);
-				if (arrPre != null && arrPre.length > 0) {
-					for (Predicate predic : arrPre) {
-						lstPredicate.add(predic);
-					}
-				}
-			}
-		}
-		if (!lstPredicate.isEmpty()) {
-			criteria.where(lstPredicate.stream().toArray(Predicate[]::new));
-		}
-
-		/** TODO projection? */
+		buildCriterion(acceCriteria, lstPredicate, root, builder, criteria);
 
 		/** order */
-		if (acceCriteria.getOrder() != null) {
-			List<javax.persistence.criteria.Order> lstOrder = new ArrayList<>();
-			for (Order order : acceCriteria.getOrder()) {
-				Path orderPath = getPath(root, order.getProperty(), mapDefinedPath);
-				if (order.getIsAscending()) {
-					lstOrder.add(builder.asc(orderPath));
-				} else {
-					lstOrder.add(builder.desc(orderPath));
-				}
-			}
-			if (CollectionUtils.isNotEmpty(lstOrder)) {
-				criteria.orderBy(lstOrder);
-			}
-		}
+		buildOrder(acceCriteria, mapDefinedPath, root, builder, criteria);
 
 		/** start query */
 		QueryResult queryResult = null;
@@ -381,6 +327,127 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 		}
 
 		return queryResult;
+	}
+
+	@Override
+	public QueryResult<Tuple> projectionByCriteria(Criteria acceCriteria) {
+		return projectionByCriteria(acceCriteria, getTargetClass());
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
+	public QueryResult<Tuple> projectionByCriteria(Criteria acceCriteria, Class<?> targetClass) {
+
+		Map<String, Join<?, ?>> mapDefinedPath = new HashMap<>();
+		List<Predicate> lstPredicate2 = new ArrayList<>();
+
+		CriteriaBuilder builderT = getEntityManagerFactory().getCriteriaBuilder();
+		CriteriaQuery<?> criteriaT = builderT.createQuery(Tuple.class);
+		Root<?> rootT = criteriaT.from(targetClass);
+
+		/** criteria */
+		buildCriterion(acceCriteria, lstPredicate2, rootT, builderT, criteriaT);
+
+		/** Projection */
+		List projectionPaths = new ArrayList<>();
+		for (Projection projection : acceCriteria.getProjections()) {
+			projectionPaths.add(getPath(rootT, projection.getProperty()));
+		}
+		if (!projectionPaths.isEmpty()) {
+			criteriaT.groupBy(projectionPaths);
+		}
+
+		/** order */
+		buildOrder(acceCriteria, mapDefinedPath, rootT, builderT, criteriaT);
+
+		/** start query */
+		QueryResult<Tuple> queryResult = new QueryResult<>();
+		EntityManager entityManager = this.getEntityManagerFactory().createEntityManager();
+
+		try {
+			criteriaT.multiselect(projectionPaths);
+			Query queryT = entityManager.createQuery(criteriaT);
+			//TODO pagination not support yet
+			//			int total = 0;
+			//			if (!acceCriteria.isFetchAll()) {
+			//				int page = acceCriteria.getRequestedPage();
+			//				int pageSize = acceCriteria.getPageSize();
+			//				queryT.setFirstResult(page * pageSize);
+			//				queryT.setMaxResults(pageSize);
+			//			}
+			List<Tuple> tuples = (List<Tuple>) queryT.getResultList();
+			queryResult = new QueryResult(tuples.size(), tuples);
+		} finally {
+			if (entityManager != null) {
+				entityManager.close();
+			}
+		}
+
+		return queryResult;
+	}
+
+	private void buildCriterion(Criteria acceCriteria, List<Predicate> lstPredicate, Root<?> root, CriteriaBuilder builder,
+			CriteriaQuery<?> criteria) {
+		/** append company criteria for BaseModel */
+		if (acceCriteria.isAutoAppendCompany() && BaseCompanyModel.class.isAssignableFrom(getTargetClass())
+				&& acceCriteria.getCriterion() != null) {
+			boolean companyKeyFound =
+					acceCriteria.getCriterion().stream().filter(c -> "companyId".equals(c.getPropertyName())).findFirst().isPresent();
+			if (!companyKeyFound) {
+				acceCriteria.appendCriterion(new Criterion("companyId", PrincipalUtil.getCompanyID()));
+			}
+		}
+
+		/** criteria */
+		for (Criterion criterion : acceCriteria.getCriterion()) {
+			// Or
+			if (criterion instanceof OrCriterion && !((OrCriterion) criterion).getCriterias().isEmpty()) {
+				List<Predicate> lstOrPredicate = new ArrayList<>();
+				for (Criteria orCriteria : ((OrCriterion) criterion).getCriterias()) {
+					List<Predicate> lstAndPredicate = new ArrayList<>();
+					for (Criterion andCriterion : orCriteria.getCriterion()) {
+						Predicate[] arrPre = buildPredicate(andCriterion, root, builder);
+						if (arrPre != null && arrPre.length > 0) {
+							for (Predicate predic : arrPre) {
+								lstAndPredicate.add(predic);
+							}
+						}
+					}
+					Predicate andPredict = builder.and(lstAndPredicate.stream().toArray(Predicate[]::new));
+					lstOrPredicate.add(andPredict);
+				}
+				lstPredicate.add(builder.or(lstOrPredicate.stream().toArray(Predicate[]::new)));
+			} else {
+				Predicate[] arrPre = buildPredicate(criterion, root, builder);
+				if (arrPre != null && arrPre.length > 0) {
+					for (Predicate predic : arrPre) {
+						lstPredicate.add(predic);
+					}
+				}
+			}
+		}
+		if (!lstPredicate.isEmpty()) {
+			criteria.where(lstPredicate.stream().toArray(Predicate[]::new));
+		}
+	}
+
+	private void buildOrder(Criteria acceCriteria, Map<String, Join<?, ?>> mapDefinedPath, Root<?> root, CriteriaBuilder builder,
+			CriteriaQuery<?> criteria) {
+		/** order */
+		if (acceCriteria.getOrder() != null) {
+			List<javax.persistence.criteria.Order> lstOrder = new ArrayList<>();
+			for (Order order : acceCriteria.getOrder()) {
+				Path orderPath = getPath(root, order.getProperty(), mapDefinedPath);
+				if (order.getIsAscending()) {
+					lstOrder.add(builder.asc(orderPath));
+				} else {
+					lstOrder.add(builder.desc(orderPath));
+				}
+			}
+			if (CollectionUtils.isNotEmpty(lstOrder)) {
+				criteria.orderBy(lstOrder);
+			}
+		}
 	}
 
 	protected Predicate[] buildPredicate(Criterion criterion, Root<?> root, CriteriaBuilder builder) {
@@ -674,8 +741,7 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 	public Criteria getCriteriaByMapParam(MultiValueMap<String, String> mapParam, Class<?> targetClass) {
 		int page = mapParam.get(_PAGE) != null ? Integer.parseInt(mapParam.getFirst(_PAGE)) : 0;
 		int pageSize = mapParam.get(_PAGESIZE) != null ? Integer.parseInt(mapParam.getFirst(_PAGESIZE)) : 0;
-		boolean isFetchAll = mapParam.get(_FETCHALL) != null ? Boolean.parseBoolean(mapParam.getFirst(_FETCHALL))
-				: (pageSize <= 0);
+		boolean isFetchAll = mapParam.get(_FETCHALL) != null ? Boolean.parseBoolean(mapParam.getFirst(_FETCHALL)) : (pageSize <= 0);
 		List<String> lstSort = mapParam.get(_SORT);
 
 		Criteria acceCriteria = new Criteria();
@@ -700,8 +766,7 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 		List<Criterion> lstCrriterion = new ArrayList<>();
 		for (String key : mapParam.keySet()) {
 
-			if (_PAGE.equals(key) || _PAGESIZE.equals(key) || _SORT.equals(key) || _FETCHALL.equals(key)
-					|| _DISPLAYFIELD.equals(key)
+			if (_PAGE.equals(key) || _PAGESIZE.equals(key) || _SORT.equals(key) || _FETCHALL.equals(key) || _DISPLAYFIELD.equals(key)
 					|| (mapParam.getFirst(key) != null && StringUtils.trim(mapParam.getFirst(key)).length() == 0)) {
 				continue;
 			}
@@ -729,8 +794,7 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 						Object searchValues = searchValue.toArray();
 						lstCrriterion.add(new Criterion(resolveKey, searchValues));
 					} else {
-						lstCrriterion.add(
-								new Criterion(resolveKey, "%" + mapParam.getFirst(key).toLowerCase() + "%", false));
+						lstCrriterion.add(new Criterion(resolveKey, "%" + mapParam.getFirst(key).toLowerCase() + "%", false));
 					}
 				} else if (ClassUtils.isAssignable(attrClass, Double.class, true)) {
 					lstCrriterion.add(new Criterion(resolveKey, Double.parseDouble(mapParam.getFirst(key))));
@@ -738,12 +802,10 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 					lstCrriterion.add(new Criterion(resolveKey, Float.parseFloat(mapParam.getFirst(key))));
 				} else if (ClassUtils.isAssignable(attrClass, Integer.class, true)) {
 					lstCrriterion.add(new Criterion(resolveKey, Integer.parseInt(mapParam.getFirst(key))));
-				} else if (ClassUtils.isAssignable(attrClass, Date.class)
-						|| ClassUtils.isAssignable(attrClass, LocalDate.class)
+				} else if (ClassUtils.isAssignable(attrClass, Date.class) || ClassUtils.isAssignable(attrClass, LocalDate.class)
 						|| ClassUtils.isAssignable(attrClass, LocalDateTime.class)) {
 					try {
-						lstCrriterion.add(new Criterion(resolveKey,
-								DateUtils.parseDateStrictly(mapParam.getFirst(key), STD_DATEFORMAT)));
+						lstCrriterion.add(new Criterion(resolveKey, DateUtils.parseDateStrictly(mapParam.getFirst(key), STD_DATEFORMAT)));
 					} catch (ParseException e) {
 						LOGGER.error("Date Parsing Error.", e);
 					}
@@ -763,9 +825,9 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 									Enum.valueOf(attrClass.asSubclass(Enum.class), mapParam.getFirst(key)), true));
 						}
 					}
-				} else if (ClassUtils.isAssignable(attrClass, Boolean.class, true)){
+				} else if (ClassUtils.isAssignable(attrClass, Boolean.class, true)) {
 					lstCrriterion.add(new Criterion(resolveKey, Boolean.parseBoolean(mapParam.getFirst(key))));
-					
+
 				} else {
 					LOGGER.error("[" + attrClass.getName() + "] is not support in Acceval Base Criteria Search yet!");
 				}
@@ -944,10 +1006,9 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 
 			EntityTransaction tx = entityManager.getTransaction();
 			tx.begin();
-			String updateSql = "UPDATE "
-					+ (parentEntity != null ? parentEntity.getSimpleName() : entity.getClass().getSimpleName())
-					+ " e SET e.recordStatus = 'ARCHIVE', e.dateArchived ='" + LocalDateTime.now().format(formatter)
-					+ "' WHERE e." + idField + " = " + id;
+			String updateSql = "UPDATE " + (parentEntity != null ? parentEntity.getSimpleName() : entity.getClass().getSimpleName())
+					+ " e SET e.recordStatus = 'ARCHIVE', e.dateArchived ='" + LocalDateTime.now().format(formatter) + "' WHERE e."
+					+ idField + " = " + id;
 			Query query = entityManager.createQuery(updateSql);
 			query.executeUpdate();
 

@@ -20,20 +20,20 @@ public abstract class QueueListenerApplication extends CommonApplication {
     		
     @Bean
     Queue queue() {
-    		if (this.getQueueName() != null || !this.getQueueName().isEmpty()) {
-    			return new Queue(this.getQueueName(), false);
-    		} else {
-    			return null;
-    		}
+		if (this.getQueueName() != null || !this.getQueueName().isEmpty()) {
+			return new Queue(this.getQueueName(), false);
+		} else {
+			return null;
+		}
     }
 
     @Bean
     TopicExchange exchange() {
-    		if (this.getExchangeName() != null || !this.getExchangeName().isEmpty()) {
-    			return new TopicExchange(this.getExchangeName());
-    		} else {
-    			return null;
-    		}
+		if (this.getExchangeName() != null || !this.getExchangeName().isEmpty()) {
+			return new TopicExchange(this.getExchangeName());
+		} else {
+			return null;
+		}
     }
 
 //    @Bean
@@ -51,11 +51,11 @@ public abstract class QueueListenerApplication extends CommonApplication {
     
     @Bean
     Binding binding(Queue queue, TopicExchange exchange) {
-    		if (this.getQueueName() != null || !this.getQueueName().isEmpty()) {
-    			return BindingBuilder.bind(queue).to(exchange).with(this.getQueueName());
-    		} else {
-    			return null;
-    		}
+		if (this.getQueueName() != null || !this.getQueueName().isEmpty()) {
+			return BindingBuilder.bind(queue).to(exchange).with(this.getQueueName());
+		} else {
+			return null;
+		}
     }
     
 }
