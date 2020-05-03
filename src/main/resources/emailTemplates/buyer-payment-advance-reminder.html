@@ -1,13 +1,13 @@
 {{#partial "content"}}
 <p style="margin: 0 0 10px 0;">Dear <span>{{this.receiverName}}</span>,</p>
 
-<p style="margin: 0 0 20px 0;">Payment to {{this.context.SELLER_COMPANY}} is due on {{this.context.EXPIRY_DATE}} for purchase order {{this.context.DOCUMENT_NO}}. 
+<p style="margin: 0 0 20px 0;">Payment to {{this.context.SELLER_COMPANY}} is going to due on {{this.context.EXPIRY_DATE}} for purchase order {{this.context.DOCUMENT_NO}}. 
 Please arrange the payment with the seller.</p>
 
 <p style="margin: 0 0 20px 0;">The payment term for this purchase order is {{this.context.PAYMENT_TERM_NAME}}. The payment supposed to be made by {{this.context.EXPIRY_DATE}},  
 {{this.context.USANCE}} days {{this.context.DUE_REFERENCE}} which is {{this.context.REFERENCE_DATE}}.</p>
 
-<p style="margin: 0 0 20px 0;">If you have made the payment after {{this.context.CURRENT_DATE}}, please ignore this email.</p>
+<p style="margin: 0 0 20px 0;">This email is sent {{this.context.REMINDER_DAYS}} days before the due date. If you have made the payment after {{this.context.CURRENT_DATE}}, please ignore this email.</p>
 
 <table align="center" role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin: auto;">	
 	<tr>

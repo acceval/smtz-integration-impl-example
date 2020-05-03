@@ -34,6 +34,7 @@ import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Persistable;
 import org.springframework.util.MultiValueMap;
 
 import com.acceval.core.MicroServiceUtilException;
@@ -88,7 +89,11 @@ public class ClassUtil {
 					}
 				} else {
 					Object convertedValue = objectMapper.convertValue(value, propertyClass);
-					PropertyUtils.setProperty(target, key, convertedValue);
+					try {
+						PropertyUtils.setProperty(target, key, convertedValue);
+					} catch (NoSuchMethodException nsEx) {
+						// do nothing... some special getter (non-property in Class) cause it
+					}
 				}
 			} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | MicroServiceUtilException
 					| NoSuchFieldException | SecurityException | InstantiationException e1) {
@@ -655,7 +660,7 @@ public class ClassUtil {
 		Field[] existingFields = target.getClass().getDeclaredFields();
 
 		for (Field field : existingFields) {
-			if (field.isAnnotationPresent(Id.class)) {
+			if (field.isAnnotationPresent(Id.class) || field.isAnnotationPresent(org.springframework.data.annotation.Id.class)) {
 				try {
 					field.setAccessible(true);
 					Object value = field.get(target);
