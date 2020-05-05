@@ -12,6 +12,7 @@ public class ColumnDef {
 	private List<LabelValue> datasource;
 	private boolean mandate = false;
 	private String dateFormat;
+	private boolean errorDatasourceUnmatch;
 
 	public ColumnDef() {
 		super();
@@ -28,6 +29,13 @@ public class ColumnDef {
 		this.datasource = datasource;
 	}
 
+	public ColumnDef(String label, List<LabelValue> datasource, boolean errorDatasourceUnmatch) {
+		super();
+		this.label = label;
+		this.datasource = datasource;
+		this.errorDatasourceUnmatch = errorDatasourceUnmatch;
+	}
+
 	public ColumnDef(String label, boolean mandate, String dateFormat) {
 		super();
 		this.label = label;
@@ -35,7 +43,7 @@ public class ColumnDef {
 		this.dateFormat = dateFormat;
 	}
 
-	public String findValueFromDatasource(String text) {
+	public String findValueFromDatasource(String text) throws Exception {
 		if (this.datasource != null && StringUtils.isNotBlank(text)) {
 			for (LabelValue lv : this.datasource) {
 				if (text.trim().toLowerCase().equals(lv.getLabel().toLowerCase())) {
@@ -44,6 +52,9 @@ public class ColumnDef {
 					return lv.getValue();
 				}
 			}
+		}
+		if (this.isErrorDatasourceUnmatch() && StringUtils.isNotBlank(text)) {
+			throw new Exception("[" + text + "] not found for [" + label + "]!");
 		}
 		return null;
 	}
@@ -78,6 +89,14 @@ public class ColumnDef {
 
 	public void setDateFormat(String dateFormat) {
 		this.dateFormat = dateFormat;
+	}
+
+	public boolean isErrorDatasourceUnmatch() {
+		return errorDatasourceUnmatch;
+	}
+
+	public void setErrorDatasourceUnmatch(boolean errorDatasourceUnmatch) {
+		this.errorDatasourceUnmatch = errorDatasourceUnmatch;
 	}
 
 }

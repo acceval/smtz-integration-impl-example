@@ -159,7 +159,7 @@ public class CommonHandler {
 				lstRow.add(rowLabel);
 				int columnIndex = 0;
 				for (ColumnDef columnDef : lstDatasource) {
-					if (CollectionUtils.isEmpty(columnDef.getDatasource())) continue;
+				//					if (CollectionUtils.isEmpty(columnDef.getDatasource())) continue;
 
 					// first row, label
 					Cell cell = rowLabel.createCell(columnIndex, CellType.STRING);
