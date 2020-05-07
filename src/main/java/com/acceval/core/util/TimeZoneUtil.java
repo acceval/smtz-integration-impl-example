@@ -83,6 +83,15 @@ public class TimeZoneUtil {
 		}
 	}
 
+	public static LocalDateTime reverseTimeZone(LocalDateTime localDateTime) {
+		String timeZone = PrincipalUtil.getTimeZone();
+		if (StringUtils.isNotBlank(timeZone)) {
+			timeZone = new TimezoneServiceImpl().convertToUTCTimeZoneId(timeZone);
+			localDateTime = localDateTime.atZone(ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of(timeZone)).toLocalDateTime();
+		}
+		return localDateTime;
+	}
+
 	public static String getTimeDifference(LocalDateTime dateTime) {
 		String difference = "";
 
