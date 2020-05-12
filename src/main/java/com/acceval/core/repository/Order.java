@@ -10,6 +10,10 @@ public class Order implements Serializable {
 	private boolean order = IS_ASCENDING;
 	private String property;
 
+	public Order() {
+		super();
+	}
+
 	public Order(String prop, boolean ord) {
 		property = prop;
 		order = ord;
