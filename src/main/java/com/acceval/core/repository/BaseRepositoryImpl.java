@@ -700,9 +700,9 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 			} else if (ClassUtils.isAssignable(attrClass, LocalDateTime.class)) {
 				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 				if (strDate.length() == 19) {
-					return LocalDate.parse(strDate, formatter);
+					return LocalDateTime.parse(strDate, formatter);
 				} else if (strDate.length() == 10) {
-					return LocalDate.parse(strDate + " 00:00:00", formatter);
+					return LocalDateTime.parse(strDate + " 00:00:00", formatter);
 				}
 			}
 		}
