@@ -34,7 +34,6 @@ import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Persistable;
 import org.springframework.util.MultiValueMap;
 
 import com.acceval.core.MicroServiceUtilException;
@@ -47,9 +46,21 @@ public class ClassUtil {
 	private static Logger Logger = LoggerFactory.getLogger(ClassUtil.class);
 
 	public static void populateJsonMapToObj(ObjectMapper objectMapper, Object target, Map<String, Object> mapValues) {
+		populateJsonMapToObj(objectMapper, target, mapValues, null);
+	}
+
+	public static void populateJsonMapToObj(ObjectMapper objectMapper, Object target, Map<String, Object> mapValues,
+			String... ignoreFields) {
 		if (target == null || mapValues == null) return;
 
+		List<String> ignoreField = new ArrayList<>();
+		if (ignoreFields != null && ignoreFields.length > 0) {
+			ignoreField.addAll(Arrays.asList(ignoreFields));
+		}
+
 		for (String key : mapValues.keySet()) {
+			if (ignoreField.contains(key)) continue;
+
 			Object value = mapValues.get(key);
 			try {
 				PropertyDescriptor pd = PropertyUtils.getPropertyDescriptor(target, key);

@@ -25,6 +25,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.acceval.core.jackson.module.APIJavaTimeModule;
 import com.acceval.core.model.Company;
+import com.acceval.core.security.PrincipalUtil;
 
 @Component
 public class RemoteServerTemplate {
@@ -145,6 +146,7 @@ public class RemoteServerTemplate {
 			bearerHeaders.add("COMPANYCODE", company.getCode());
 			bearerHeaders.add("SERVICEPACKAGE", company.getServicePackage());
 			bearerHeaders.add("SCHEMANAME", company.getCode());
+			bearerHeaders.add(PrincipalUtil.HDRKEY_TIMEZONEID, company.getTimeZone());
 		}
 	}
 
@@ -175,7 +177,27 @@ public class RemoteServerTemplate {
 		this.setHttpCompanyHeader(bearerHeaders, company);
 		HttpEntity<?> bearerEntity = new HttpEntity<>(requestBody, bearerHeaders);
 
-		ResponseEntity<T> response = restTemplate.postForEntity(completeUrl, bearerEntity, responseType);
+		ResponseEntity<T> response = null;
+
+		UriComponentsBuilder uriBuilder = buildUriComp(completeUrl, false).queryParam("grant_type", "client_credentials");
+		UriComponentsBuilder uriBuilderSSL = buildUriComp(completeUrl, true).queryParam("grant_type", "client_credentials");
+		try {
+			response = restTemplate.exchange(uriBuilderSSL.toUriString(), HttpMethod.POST, bearerEntity, responseType);
+		} catch (Exception ex) {
+			if (ex instanceof javax.net.ssl.SSLException || ex instanceof ResourceAccessException) {
+				try {
+					response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.POST, bearerEntity, responseType);
+				} catch (HttpServerErrorException serverEx) {
+					throw new Exception("HttpServerErrorException: [" + url + "]");
+				} catch (Exception ex2) {
+					ex2.printStackTrace();
+					errorMsgHandler(ex2);
+				}
+			} else {
+				ex.printStackTrace();
+				errorMsgHandler(ex);
+			}
+		}
 
 		return response.getBody();
 	}
