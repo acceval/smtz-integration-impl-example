@@ -16,7 +16,8 @@ public class PdfGeneratorRequest {
 	private List<String> imagePaths;
 	private Map<String, Object> variableContext;
 	private Long companyId;
-	
+	private byte[] pdfData;
+
 	public String getPdfName() {
 		return pdfName;
 	}
@@ -82,6 +83,11 @@ public class PdfGeneratorRequest {
 	}
 	public void setCompanyId(Long companyId) {
 		this.companyId = companyId;
-	}		
-	
+	}
+	public byte[] getPdfData() {
+		return pdfData;
+	}
+	public void setPdfData(byte[] pdfData) {
+		this.pdfData = pdfData;
+	}
 }
