@@ -15,10 +15,13 @@ public class PdfUtil {
 			PdfWriter.getInstance(document, byteStream);
 
 			document.open();
-			Font font = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.BLACK);
-			Chunk chunk = new Chunk(data, font);
-
-			document.add(chunk);
+			Font font = FontFactory.getFont(FontFactory.COURIER, 8, BaseColor.BLACK);
+			String[] lines = data.split("\n");
+			for (String line:lines) {
+				Paragraph para = new Paragraph(line + "\n", font);
+				para.setAlignment(Element.ALIGN_JUSTIFIED);
+				document.add(para);
+			}
 			document.close();
 
 		} catch (Exception e) {
