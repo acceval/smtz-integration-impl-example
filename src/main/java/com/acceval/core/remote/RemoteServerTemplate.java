@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -16,15 +17,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.acceval.core.jackson.module.APIJavaTimeModule;
 import com.acceval.core.model.Company;
+import com.acceval.core.security.PrincipalUtil;
 
 @Component
 public class RemoteServerTemplate {
+
+	public static final String HDRKEY_ERRORMSG = "errorMsg";
 
 	private RemoteConfig remoteConfig;
 
@@ -70,7 +76,17 @@ public class RemoteServerTemplate {
 			response = restTemplate.exchange(uriBuilderSSL.toUriString(), HttpMethod.GET, bearerEntity, responseType);
 		} catch (Exception ex) {
 			if (ex instanceof javax.net.ssl.SSLException || ex instanceof ResourceAccessException) {
-				response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, bearerEntity, responseType);
+				try {
+					response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, bearerEntity, responseType);
+				} catch (HttpServerErrorException serverEx) {
+					throw new Exception("HttpServerErrorException: [" + url + "]");
+				} catch (Exception ex2) {
+					ex2.printStackTrace();
+					errorMsgHandler(ex2);
+				}
+			} else {
+				ex.printStackTrace();
+				errorMsgHandler(ex);
 			}
 		}
 
@@ -130,6 +146,7 @@ public class RemoteServerTemplate {
 			bearerHeaders.add("COMPANYCODE", company.getCode());
 			bearerHeaders.add("SERVICEPACKAGE", company.getServicePackage());
 			bearerHeaders.add("SCHEMANAME", company.getCode());
+			bearerHeaders.add(PrincipalUtil.HDRKEY_TIMEZONEID, company.getTimeZone());
 		}
 	}
 
@@ -160,7 +177,27 @@ public class RemoteServerTemplate {
 		this.setHttpCompanyHeader(bearerHeaders, company);
 		HttpEntity<?> bearerEntity = new HttpEntity<>(requestBody, bearerHeaders);
 
-		ResponseEntity<T> response = restTemplate.postForEntity(completeUrl, bearerEntity, responseType);
+		ResponseEntity<T> response = null;
+
+		UriComponentsBuilder uriBuilder = buildUriComp(completeUrl, false).queryParam("grant_type", "client_credentials");
+		UriComponentsBuilder uriBuilderSSL = buildUriComp(completeUrl, true).queryParam("grant_type", "client_credentials");
+		try {
+			response = restTemplate.exchange(uriBuilderSSL.toUriString(), HttpMethod.POST, bearerEntity, responseType);
+		} catch (Exception ex) {
+			if (ex instanceof javax.net.ssl.SSLException || ex instanceof ResourceAccessException) {
+				try {
+					response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.POST, bearerEntity, responseType);
+				} catch (HttpServerErrorException serverEx) {
+					throw new Exception("HttpServerErrorException: [" + url + "]");
+				} catch (Exception ex2) {
+					ex2.printStackTrace();
+					errorMsgHandler(ex2);
+				}
+			} else {
+				ex.printStackTrace();
+				errorMsgHandler(ex);
+			}
+		}
 
 		return response.getBody();
 	}
@@ -194,11 +231,21 @@ public class RemoteServerTemplate {
 			response = restTemplate.exchange(uriBuilderSSL.toUriString(), HttpMethod.PUT, bearerEntity, responseType);
 		} catch (Exception ex) {
 			if (ex instanceof javax.net.ssl.SSLException || ex instanceof ResourceAccessException) {
-				response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.PUT, bearerEntity, responseType);
+				try {
+					response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.PUT, bearerEntity, responseType);
+				} catch (HttpServerErrorException serverEx) {
+					throw new Exception("HttpServerErrorException: [" + url + "]");
+				} catch (Exception ex2) {
+					ex2.printStackTrace();
+					errorMsgHandler(ex2);
+				}
+			} else {
+				ex.printStackTrace();
+				errorMsgHandler(ex);
 			}
 		}
 
-		return response.getBody();
+		return response != null ? response.getBody() : null;
 	}
 
 	public String getRemoteServerToken() {
@@ -301,5 +348,15 @@ public class RemoteServerTemplate {
 			}
 		}
 		return uriBuilder;
+	}
+
+	private void errorMsgHandler(Exception ex) throws Exception {
+		if (ex instanceof HttpClientErrorException) {
+			HttpHeaders headers = ((HttpClientErrorException) ex).getResponseHeaders();
+			if (CollectionUtils.isNotEmpty(headers.get(HDRKEY_ERRORMSG))) {
+				throw new Exception("Error occurred in Smarttradzt Enterprise. Error message: " + headers.get(HDRKEY_ERRORMSG).get(0));
+			}
+		}
+		throw ex;
 	}
 }

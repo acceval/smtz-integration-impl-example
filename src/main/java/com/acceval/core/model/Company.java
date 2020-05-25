@@ -5,6 +5,7 @@ public class Company {
 	private Long id;
 	private String code;
 	private String servicePackage;
+	private String timeZone;
 	public Long getId() {
 		return id;
 	}
@@ -23,7 +24,13 @@ public class Company {
 	public void setServicePackage(String servicePackage) {
 		this.servicePackage = servicePackage;
 	}
-	
-	
+
+	public String getTimeZone() {
+		return timeZone;
+	}
+
+	public void setTimeZone(String timeZone) {
+		this.timeZone = timeZone;
+	}
 
 }

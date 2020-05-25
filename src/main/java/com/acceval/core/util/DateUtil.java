@@ -1,7 +1,9 @@
 package com.acceval.core.util;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,5 +40,43 @@ public class DateUtil {
 		}
 
 		return dateTime;
+	}
+
+	public static LocalDate mapToLocalDate(Map<String, Object> mapData) {
+		if (mapData != null) {
+			Object objYear = mapData.get("year") != null ? mapData.get("year") : null;
+			Object objMonth = mapData.get("month") != null ? mapData.get("month") : null;
+			Object objDay = mapData.get("day") != null ? mapData.get("day") : null;
+			if (objYear != null && objMonth != null && objDay != null) {
+				Integer year = objYear instanceof String ? Integer.parseInt((String) objYear) : (Integer) objYear;
+				Integer month = objMonth instanceof String ? Integer.parseInt((String) objMonth) : (Integer) objMonth;
+				Integer day = objDay instanceof String ? Integer.parseInt((String) objDay) : (Integer) objDay;
+				LocalDate localDate = LocalDate.of(year, month, day);
+				return localDate;
+			}
+		}
+		return null;
+	}
+
+	public static LocalDateTime mapToLocalDateTime(Map<String, Object> mapData) {
+		if (mapData != null) {
+			Object objYear = mapData.get("year") != null ? mapData.get("year") : null;
+			Object objMonth = mapData.get("month") != null ? mapData.get("month") : null;
+			Object objDay = mapData.get("day") != null ? mapData.get("day") : null;
+			Object objHour = mapData.get("hour") != null ? mapData.get("hour") : null;
+			Object objMinute = mapData.get("minute") != null ? mapData.get("minute") : null;
+			Object objSecond = mapData.get("second") != null ? mapData.get("second") : null;
+			if (objYear != null && objMonth != null && objDay != null && objHour != null && objMinute != null && objSecond != null) {
+				Integer year = objYear instanceof String ? Integer.parseInt((String) objYear) : (Integer) objYear;
+				Integer month = objMonth instanceof String ? Integer.parseInt((String) objMonth) : (Integer) objMonth;
+				Integer day = objDay instanceof String ? Integer.parseInt((String) objDay) : (Integer) objDay;
+				Integer hour = objHour instanceof String ? Integer.parseInt((String) objHour) : (Integer) objHour;
+				Integer minute = objMinute instanceof String ? Integer.parseInt((String) objMinute) : (Integer) objMinute;
+				Integer second = objSecond instanceof String ? Integer.parseInt((String) objSecond) : (Integer) objSecond;
+				LocalDateTime localDateTime = LocalDateTime.of(year, month, day, hour, minute, second);
+				return localDateTime;
+			}
+		}
+		return null;
 	}
 }
