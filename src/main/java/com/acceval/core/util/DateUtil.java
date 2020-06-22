@@ -5,10 +5,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.github.jknack.handlebars.internal.lang3.StringUtils;
 
 public class DateUtil {
 
@@ -78,5 +77,16 @@ public class DateUtil {
 			}
 		}
 		return null;
+	}
+
+	public static boolean LocalDateEquals(LocalDate ld1, LocalDate ld2) {
+		if (ld1 == null && ld2 == null) {
+			return true;
+		} else if (ld1 == null && ld2 != null) {
+			return false;
+		} else if (ld1 != null && ld2 == null) {
+			return false;
+		}
+		return ld1.compareTo(ld2) == 0;
 	}
 }
