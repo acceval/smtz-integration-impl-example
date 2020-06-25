@@ -49,6 +49,7 @@ import com.acceval.core.model.company.BaseCompanyModel;
 import com.acceval.core.repository.Criterion.RestrictionType;
 import com.acceval.core.security.PrincipalUtil;
 import com.acceval.core.util.ClassUtil;
+import com.acceval.core.util.DateUtil;
 import com.acceval.core.util.TemplateUtil;
 
 public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
@@ -547,6 +548,15 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 					hour = vLocalDate.getHour();
 					minute = vLocalDate.getMinute();
 					second = vLocalDate.getSecond();
+				} else if (value instanceof Date) {
+					Calendar calendar = Calendar.getInstance();
+					calendar.setTime((Date) value);
+					year = calendar.get(Calendar.YEAR);
+					month = calendar.get(Calendar.MONTH) + 1;
+					day = calendar.get(Calendar.DAY_OF_MONTH);
+					hour = calendar.get(Calendar.HOUR_OF_DAY);
+					minute = calendar.get(Calendar.MINUTE);
+					second = calendar.get(Calendar.SECOND);
 				}
 
 				return new Predicate[] { builder.equal(builder.function("year", Integer.class, path), year),
@@ -619,6 +629,15 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 					hour = vLocalDate.getHour();
 					minute = vLocalDate.getMinute();
 					second = vLocalDate.getSecond();
+				} else if (value instanceof Date) {
+					Calendar calendar = Calendar.getInstance();
+					calendar.setTime((Date) value);
+					year = calendar.get(Calendar.YEAR);
+					month = calendar.get(Calendar.MONTH) + 1;
+					day = calendar.get(Calendar.DAY_OF_MONTH);
+					hour = calendar.get(Calendar.HOUR_OF_DAY);
+					minute = calendar.get(Calendar.MINUTE);
+					second = calendar.get(Calendar.SECOND);
 				}
 
 				return new Predicate[] { builder.equal(builder.function("year", Integer.class, path), year),
@@ -805,7 +824,24 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 				} else if (ClassUtils.isAssignable(attrClass, Date.class) || ClassUtils.isAssignable(attrClass, LocalDate.class)
 						|| ClassUtils.isAssignable(attrClass, LocalDateTime.class)) {
 					try {
-						lstCrriterion.add(new Criterion(resolveKey, DateUtils.parseDateStrictly(mapParam.getFirst(key), STD_DATEFORMAT)));
+						String strDate = mapParam.getFirst(key);
+						RestrictionType resType = RestrictionType.EQUAL;
+						boolean isSpecial = false;
+						if (strDate.contains(Criterion.SIGN_DELIMITER)) {
+							String[] splited = strDate.split(Criterion.SIGN_DELIMITER);
+							if (splited.length > 1) {
+								strDate = splited[1].trim();
+								String oper = splited[0].trim();
+								resType = Criterion.RestrictionType.getRestrictionTypeBySign(oper, resType);
+								if (ClassUtils.isAssignable(attrClass, LocalDateTime.class)) {
+									lstCrriterion.add(new Criterion(resolveKey, resType, DateUtil.parseToLocalDateTime(strDate)));
+									isSpecial = true;
+								}
+							}
+						}
+						if (!isSpecial) {
+							lstCrriterion.add(new Criterion(resolveKey, resType, DateUtils.parseDateStrictly(strDate, STD_DATEFORMAT)));
+						}
 					} catch (ParseException e) {
 						LOGGER.error("Date Parsing Error.", e);
 					}

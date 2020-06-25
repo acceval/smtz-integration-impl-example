@@ -15,17 +15,29 @@ public class Criterion implements Serializable {
 
 	public static final String DEFAULT_MONGO_DATE_FORMAT = "%d-%m-%Y";
 
+	public static final String SIGN_LESS_OR_EQUAL = "<=";
+	public static final String SIGN_GREATER_OR_EQUAL = ">=";
+	public static final String SIGN_DELIMITER = ";";
+
 	public enum RestrictionType {
-		EQUAL("="), LESS_OR_EQUAL("<="), GREATER_OR_EQUAL(">="), GREATER(">"), LESS("<"), NOT_EQUAL("<>"), IN("in"), NOT_IN("not in"),
-		IS_NULL("is null"), IS_NOT_NULL("is not null");
+		EQUAL("="), LESS_OR_EQUAL(SIGN_LESS_OR_EQUAL), GREATER_OR_EQUAL(SIGN_GREATER_OR_EQUAL), GREATER(">"), LESS("<"), NOT_EQUAL("<>"),
+		IN("in"), NOT_IN("not in"), IS_NULL("is null"), IS_NOT_NULL("is not null");
 
 		private String sign;
+
 		RestrictionType(String sign) {
 			this.sign = sign;
 		}
 
 		public String getSign() {
 			return sign;
+		}
+
+		public static RestrictionType getRestrictionTypeBySign(String sign, RestrictionType defaultRestType) {
+			for (RestrictionType resType : RestrictionType.values()) {
+				if (resType.getSign().equals(sign)) return resType;
+			}
+			return defaultRestType;
 		}
 	}
 
