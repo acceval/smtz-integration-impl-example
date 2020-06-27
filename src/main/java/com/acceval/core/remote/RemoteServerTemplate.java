@@ -146,9 +146,9 @@ public class RemoteServerTemplate {
 
 		if (company != null) {
 			bearerHeaders.add("COMPANYID", String.valueOf(company.getId()));
-			bearerHeaders.add("COMPANYCODE", company.getCode());
+			bearerHeaders.add("COMPANYCODE", company.getCode().toLowerCase());
 			bearerHeaders.add("SERVICEPACKAGE", company.getServicePackage());
-			bearerHeaders.add("SCHEMANAME", company.getCode());
+			bearerHeaders.add("SCHEMANAME", company.getCode().toLowerCase());
 			bearerHeaders.add(PrincipalUtil.HDRKEY_TIMEZONEID, company.getTimeZone());
 		}
 	}
