@@ -1,8 +1,13 @@
 package com.acceval.core.repository;
 
 import java.io.Serializable;
+import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.MultiValueMap;
+
 
 public class Criterion implements Serializable {
 
@@ -160,7 +165,6 @@ public class Criterion implements Serializable {
 		return this.getExactSearch();
 	}
 
-
 	public void setSearchValue(Object value) {
 		this.searchValue = value;
 	}
@@ -220,6 +224,38 @@ public class Criterion implements Serializable {
 	public boolean isSearchValueDataTypeDate() {
 		return DATE.equalsIgnoreCase(this.getSearchValueDataType());
 
+	}
+
+	public static void buildDefaultSorting(MultiValueMap<String, String> mapParam, String... properties) {
+		List<String> lstSort = mapParam.get(BaseRepositoryImpl._SORT);
+		for (String property : properties) {
+			boolean isPropertyFound = false;
+			if (CollectionUtils.isNotEmpty(lstSort)) {
+				for (String sort : lstSort) {
+					isPropertyFound = isPropertyFound || sort.contains(property + ",");
+				}
+			}
+			if (!isPropertyFound) {
+				mapParam.add(BaseRepositoryImpl._SORT, property + ",desc");
+			}
+		}
+	}
+
+	public static void buildGreaterEqualDateRestriction(MultiValueMap<String, String> mapParam, String property) {
+		buildDateRestriction(mapParam, property, Criterion.SIGN_GREATER_OR_EQUAL);
+	}
+
+	public static void buildLessEqualDateRestriction(MultiValueMap<String, String> mapParam, String property) {
+		buildDateRestriction(mapParam, property, Criterion.SIGN_LESS_OR_EQUAL);
+	}
+
+	public static void buildDateRestriction(MultiValueMap<String, String> mapParam, String property, String sign) {
+		if (mapParam.getFirst(property) != null) {
+			String strDate = mapParam.getFirst(property);
+			if (StringUtils.isNotBlank(strDate)) {
+				mapParam.set(property, sign + Criterion.SIGN_DELIMITER + strDate);
+			}
+		}
 	}
 
 	@Override
