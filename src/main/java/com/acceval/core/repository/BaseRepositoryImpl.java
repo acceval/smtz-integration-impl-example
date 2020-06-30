@@ -824,23 +824,25 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 				} else if (ClassUtils.isAssignable(attrClass, Date.class) || ClassUtils.isAssignable(attrClass, LocalDate.class)
 						|| ClassUtils.isAssignable(attrClass, LocalDateTime.class)) {
 					try {
-						String strDate = mapParam.getFirst(key);
-						RestrictionType resType = RestrictionType.EQUAL;
-						boolean isSpecial = false;
-						if (strDate.contains(Criterion.SIGN_DELIMITER)) {
-							String[] splited = strDate.split(Criterion.SIGN_DELIMITER);
-							if (splited.length > 1) {
-								strDate = splited[1].trim();
-								String oper = splited[0].trim();
-								resType = Criterion.RestrictionType.getRestrictionTypeBySign(oper, resType);
-								if (ClassUtils.isAssignable(attrClass, LocalDateTime.class)) {
-									lstCrriterion.add(new Criterion(resolveKey, resType, DateUtil.parseToLocalDateTime(strDate)));
-									isSpecial = true;
+						List<String> strDates = mapParam.get(key);
+						for (String strDate : strDates) {
+							RestrictionType resType = RestrictionType.EQUAL;
+							boolean isSpecial = false;
+							if (strDate.contains(Criterion.SIGN_DELIMITER)) {
+								String[] splited = strDate.split(Criterion.SIGN_DELIMITER);
+								if (splited.length > 1) {
+									strDate = splited[1].trim();
+									String oper = splited[0].trim();
+									resType = Criterion.RestrictionType.getRestrictionTypeBySign(oper, resType);
+									if (ClassUtils.isAssignable(attrClass, LocalDateTime.class)) {
+										lstCrriterion.add(new Criterion(resolveKey, resType, DateUtil.parseToLocalDateTime(strDate)));
+										isSpecial = true;
+									}
 								}
 							}
-						}
-						if (!isSpecial) {
-							lstCrriterion.add(new Criterion(resolveKey, resType, DateUtils.parseDateStrictly(strDate, STD_DATEFORMAT)));
+							if (!isSpecial) {
+								lstCrriterion.add(new Criterion(resolveKey, resType, DateUtils.parseDateStrictly(strDate, STD_DATEFORMAT)));
+							}
 						}
 					} catch (ParseException e) {
 						LOGGER.error("Date Parsing Error.", e);

@@ -8,7 +8,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.MultiValueMap;
 
-
 public class Criterion implements Serializable {
 
 	private static final long serialVersionUID = -467004656081639233L;
@@ -239,6 +238,29 @@ public class Criterion implements Serializable {
 				mapParam.add(BaseRepositoryImpl._SORT, property + ",desc");
 			}
 		}
+	}
+
+	public static void buildGreaterEqualDateRestriction(MultiValueMap<String, String> mapParam, String key, String property) {
+		buildDateRestriction(mapParam, key, property, Criterion.SIGN_GREATER_OR_EQUAL);
+	}
+
+	public static void buildLessEqualDateRestriction(MultiValueMap<String, String> mapParam, String key, String property) {
+		buildDateRestriction(mapParam, key, property, Criterion.SIGN_LESS_OR_EQUAL);
+	}
+
+	public static void buildDateRestriction(MultiValueMap<String, String> mapParam, String key, String property, String sign) {
+		if (StringUtils.isBlank(key)) {
+			key = property;
+		}
+		List<String> lstPropValue = mapParam.get(key);
+		if (CollectionUtils.isNotEmpty(lstPropValue)) {
+			for (String strDate : lstPropValue) {
+				if (StringUtils.isNotBlank(strDate)) {
+					mapParam.add(property, sign + Criterion.SIGN_DELIMITER + strDate);
+				}
+			}
+		}
+		mapParam.remove(key);
 	}
 
 	public static void buildGreaterEqualDateRestriction(MultiValueMap<String, String> mapParam, String property) {
