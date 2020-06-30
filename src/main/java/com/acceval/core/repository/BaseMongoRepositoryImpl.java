@@ -193,7 +193,8 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
-				if (e.getMessage().indexOf("Unable to locate Attribute  with the the given name") == -1) {
+				if (e.getMessage() != null 
+						&& e.getMessage().indexOf("Unable to locate Attribute  with the the given name") == -1) {
 					LOGGER.error(e.getMessage(), e);
 				}
 			}
