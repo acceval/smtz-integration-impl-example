@@ -1,6 +1,7 @@
 package com.acceval.core.repository;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -225,7 +226,15 @@ public class Criterion implements Serializable {
 
 	}
 
-	public static void buildDefaultSorting(MultiValueMap<String, String> mapParam, String... properties) {
+	public static void buildDefaultSortingDesc(MultiValueMap<String, String> mapParam, String... properties) {
+		buildDefaultSorting(mapParam, BaseRepositoryImpl._DESC, properties);
+	}
+
+	public static void buildDefaultSortingAsc(MultiValueMap<String, String> mapParam, String... properties) {
+		buildDefaultSorting(mapParam, BaseRepositoryImpl._ASC, properties);
+	}
+
+	private static void buildDefaultSorting(MultiValueMap<String, String> mapParam, String order, String... properties) {
 		List<String> lstSort = mapParam.get(BaseRepositoryImpl._SORT);
 		for (String property : properties) {
 			boolean isPropertyFound = false;
@@ -235,7 +244,7 @@ public class Criterion implements Serializable {
 				}
 			}
 			if (!isPropertyFound) {
-				mapParam.add(BaseRepositoryImpl._SORT, property + ",desc");
+				mapParam.add(BaseRepositoryImpl._SORT, property + "," + order);
 			}
 		}
 	}
@@ -248,7 +257,7 @@ public class Criterion implements Serializable {
 		buildDateRestriction(mapParam, key, property, Criterion.SIGN_LESS_OR_EQUAL);
 	}
 
-	public static void buildDateRestriction(MultiValueMap<String, String> mapParam, String key, String property, String sign) {
+	private static void buildDateRestriction(MultiValueMap<String, String> mapParam, String key, String property, String sign) {
 		if (StringUtils.isBlank(key)) {
 			key = property;
 		}
@@ -271,12 +280,30 @@ public class Criterion implements Serializable {
 		buildDateRestriction(mapParam, property, Criterion.SIGN_LESS_OR_EQUAL);
 	}
 
-	public static void buildDateRestriction(MultiValueMap<String, String> mapParam, String property, String sign) {
+	private static void buildDateRestriction(MultiValueMap<String, String> mapParam, String property, String sign) {
 		if (mapParam.getFirst(property) != null) {
 			String strDate = mapParam.getFirst(property);
 			if (StringUtils.isNotBlank(strDate)) {
 				mapParam.set(property, sign + Criterion.SIGN_DELIMITER + strDate);
 			}
+		}
+	}
+
+	public static void buildTransientSorting(MultiValueMap<String, String> mapParam, String key, String... sortProperties) {
+		List<String> sort = mapParam.get(BaseRepositoryImpl._SORT);
+		if (CollectionUtils.isNotEmpty(sort)) {
+			List<String> newSort = new ArrayList<>();
+			for (String s : sort) {
+				if (s.indexOf(key + ",") > -1) {
+					String sortOption = StringUtils.substring(s, s.indexOf(","));
+					for (String sortProp : sortProperties) {
+						newSort.add(sortProp + sortOption);
+					}
+				} else {
+					newSort.add(s);
+				}
+			}
+			mapParam.replace(BaseRepositoryImpl._SORT, newSort);
 		}
 	}
 
