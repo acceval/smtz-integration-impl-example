@@ -41,8 +41,9 @@ public class RemoteServerTemplate {
 
 		this.remoteConfig = config;
 	}
-
-	public <T> T getForObject(String url, Class<T> responseType, Map<String, ?> uriVariables, String companyUUID) throws Exception {
+	
+	public <T> T getForObject(String url, Class<T> responseType, Map<String, ?> uriVariables, 
+			String companyUUID) throws Exception {
 
 		RestTemplate restTemplate = new RestTemplate();
 		String token = this.getRemoteServerToken();
@@ -53,12 +54,12 @@ public class RemoteServerTemplate {
 		this.setHttpCompanyHeader(bearerHeaders, company);
 		HttpEntity<String> bearerEntity = new HttpEntity<String>(bearerHeaders);
 
-		UriComponentsBuilder uriBuilder = buildUriComp(completeUrl, false);
-		UriComponentsBuilder uriBuilderSSL = buildUriComp(completeUrl, true);
+		UriComponentsBuilder uriBuilder = buildUriComp(completeUrl);
+		
 		for (String key : uriVariables.keySet()) {
 			Object values = uriVariables.get(key);
 			uriBuilder.queryParam(key, values);
-			uriBuilderSSL.queryParam(key, values);
+//			uriBuilder.queryParam(key, values);
 		}
 
 		for (HttpMessageConverter converter : restTemplate.getMessageConverters()) {
@@ -71,23 +72,23 @@ public class RemoteServerTemplate {
 		}
 
 		ResponseEntity<T> response = null;
-
+		
 		try {
-			response = restTemplate.exchange(uriBuilderSSL.toUriString(), HttpMethod.GET, bearerEntity, responseType);
+			response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, bearerEntity, responseType);
 		} catch (Exception ex) {
-			if (ex instanceof javax.net.ssl.SSLException || ex instanceof ResourceAccessException) {
-				try {
-					response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, bearerEntity, responseType);
-				} catch (HttpServerErrorException serverEx) {
-					throw new Exception("HttpServerErrorException: [" + url + "]");
-				} catch (Exception ex2) {
-					ex2.printStackTrace();
-					errorMsgHandler(ex2);
-				}
-			} else {
+//			if (ex instanceof javax.net.ssl.SSLException || ex instanceof ResourceAccessException) {
+//				try {
+//					response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, bearerEntity, responseType);
+//				} catch (HttpServerErrorException serverEx) {
+//					throw new Exception("HttpServerErrorException: [" + url + "]");
+//				} catch (Exception ex2) {
+//					ex2.printStackTrace();
+//					errorMsgHandler(ex2);
+//				}
+//			} else {
 				ex.printStackTrace();
 				errorMsgHandler(ex);
-			}
+//			}
 		}
 
 		return response.getBody();
@@ -117,22 +118,24 @@ public class RemoteServerTemplate {
 
 		HttpEntity<String> bearerEntity = new HttpEntity<String>(bearerHeaders);
 
-		UriComponentsBuilder uriBuilder = buildUriComp(completeUrl, false);
-		UriComponentsBuilder uriBuilderSSL = buildUriComp(completeUrl, true);
+		UriComponentsBuilder uriBuilder = buildUriComp(completeUrl);
+//		UriComponentsBuilder uriBuilderSSL = buildUriComp(completeUrl, true);
 
 		for (String key : uriVariables.keySet()) {
 			Object values = uriVariables.get(key);
 			uriBuilder.queryParam(key, values);
-			uriBuilderSSL.queryParam(key, values);
+//			uriBuilderSSL.queryParam(key, values);
 		}
 
 		ResponseEntity<T> response = null;
 		try {
-			response = restTemplate.exchange(uriBuilderSSL.toUriString(), httpMethod, bearerEntity, typeReference);
+			response = restTemplate.exchange(uriBuilder.toUriString(), httpMethod, bearerEntity, typeReference);
 		} catch (Exception ex) {
-			if (ex instanceof javax.net.ssl.SSLException || ex instanceof ResourceAccessException) {
-				response = restTemplate.exchange(uriBuilder.toUriString(), httpMethod, bearerEntity, typeReference);
-			}
+			ex.printStackTrace();
+			errorMsgHandler(ex);
+//			if (ex instanceof javax.net.ssl.SSLException || ex instanceof ResourceAccessException) {
+//				response = restTemplate.exchange(uriBuilder.toUriString(), httpMethod, bearerEntity, typeReference);
+//			}
 		}
 
 		return response.getBody();
@@ -143,9 +146,9 @@ public class RemoteServerTemplate {
 
 		if (company != null) {
 			bearerHeaders.add("COMPANYID", String.valueOf(company.getId()));
-			bearerHeaders.add("COMPANYCODE", company.getCode());
+			bearerHeaders.add("COMPANYCODE", company.getCode().toLowerCase());
 			bearerHeaders.add("SERVICEPACKAGE", company.getServicePackage());
-			bearerHeaders.add("SCHEMANAME", company.getCode());
+			bearerHeaders.add("SCHEMANAME", company.getCode().toLowerCase());
 			bearerHeaders.add(PrincipalUtil.HDRKEY_TIMEZONEID, company.getTimeZone());
 		}
 	}
@@ -179,24 +182,24 @@ public class RemoteServerTemplate {
 
 		ResponseEntity<T> response = null;
 
-		UriComponentsBuilder uriBuilder = buildUriComp(completeUrl, false).queryParam("grant_type", "client_credentials");
-		UriComponentsBuilder uriBuilderSSL = buildUriComp(completeUrl, true).queryParam("grant_type", "client_credentials");
+		UriComponentsBuilder uriBuilder = buildUriComp(completeUrl).queryParam("grant_type", "client_credentials");
+//		UriComponentsBuilder uriBuilderSSL = buildUriComp(completeUrl, true).queryParam("grant_type", "client_credentials");
 		try {
-			response = restTemplate.exchange(uriBuilderSSL.toUriString(), HttpMethod.POST, bearerEntity, responseType);
+			response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.POST, bearerEntity, responseType);
 		} catch (Exception ex) {
-			if (ex instanceof javax.net.ssl.SSLException || ex instanceof ResourceAccessException) {
-				try {
-					response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.POST, bearerEntity, responseType);
-				} catch (HttpServerErrorException serverEx) {
-					throw new Exception("HttpServerErrorException: [" + url + "]");
-				} catch (Exception ex2) {
-					ex2.printStackTrace();
-					errorMsgHandler(ex2);
-				}
-			} else {
+//			if (ex instanceof javax.net.ssl.SSLException || ex instanceof ResourceAccessException) {
+//				try {
+//					response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.POST, bearerEntity, responseType);
+//				} catch (HttpServerErrorException serverEx) {
+//					throw new Exception("HttpServerErrorException: [" + url + "]");
+//				} catch (Exception ex2) {
+//					ex2.printStackTrace();
+//					errorMsgHandler(ex2);
+//				}
+//			} else {
 				ex.printStackTrace();
 				errorMsgHandler(ex);
-			}
+//			}
 		}
 
 		return response.getBody();
@@ -223,32 +226,32 @@ public class RemoteServerTemplate {
 			}
 		}
 
-		UriComponentsBuilder uriBuilder = buildUriComp(completeUrl, false).queryParam("grant_type", "client_credentials");
-		UriComponentsBuilder uriBuilderSSL = buildUriComp(completeUrl, true).queryParam("grant_type", "client_credentials");
+		UriComponentsBuilder uriBuilder = buildUriComp(completeUrl).queryParam("grant_type", "client_credentials");
+//		UriComponentsBuilder uriBuilderSSL = buildUriComp(completeUrl, true).queryParam("grant_type", "client_credentials");
 
 		ResponseEntity<T> response = null;
 		try {
-			response = restTemplate.exchange(uriBuilderSSL.toUriString(), HttpMethod.PUT, bearerEntity, responseType);
+			response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.PUT, bearerEntity, responseType);
 		} catch (Exception ex) {
-			if (ex instanceof javax.net.ssl.SSLException || ex instanceof ResourceAccessException) {
-				try {
-					response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.PUT, bearerEntity, responseType);
-				} catch (HttpServerErrorException serverEx) {
-					throw new Exception("HttpServerErrorException: [" + url + "]");
-				} catch (Exception ex2) {
-					ex2.printStackTrace();
-					errorMsgHandler(ex2);
-				}
-			} else {
+//			if (ex instanceof javax.net.ssl.SSLException || ex instanceof ResourceAccessException) {
+//				try {
+//					response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.PUT, bearerEntity, responseType);
+//				} catch (HttpServerErrorException serverEx) {
+//					throw new Exception("HttpServerErrorException: [" + url + "]");
+//				} catch (Exception ex2) {
+//					ex2.printStackTrace();
+//					errorMsgHandler(ex2);
+//				}
+//			} else {
 				ex.printStackTrace();
 				errorMsgHandler(ex);
-			}
+//			}
 		}
 
 		return response != null ? response.getBody() : null;
 	}
 
-	public String getRemoteServerToken() {
+	public String getRemoteServerToken() throws Exception {
 
 		String authUrl = this.remoteConfig.getRemoteIp() + ":" + this.remoteConfig.getRemotePort() + "/auth-service/uaa/oauth/token";
 
@@ -260,13 +263,15 @@ public class RemoteServerTemplate {
 
 		ResponseEntity<AuthToken> authResponse = null;
 		try {
-			UriComponentsBuilder uriBuilder = buildUriComp(authUrl, true).queryParam("grant_type", "client_credentials");
+			UriComponentsBuilder uriBuilder = buildUriComp(authUrl).queryParam("grant_type", "client_credentials");
 			authResponse = authRestTemplate.exchange(uriBuilder.toUriString(), HttpMethod.POST, basicEntity, AuthToken.class);
 		} catch (Exception ex) {
-			if (ex instanceof javax.net.ssl.SSLException || ex instanceof ResourceAccessException) {
-				UriComponentsBuilder uriBuilder = buildUriComp(authUrl, false).queryParam("grant_type", "client_credentials");
-				authResponse = authRestTemplate.exchange(uriBuilder.toUriString(), HttpMethod.POST, basicEntity, AuthToken.class);
-			}
+			ex.printStackTrace();
+			errorMsgHandler(ex);
+//			if (ex instanceof javax.net.ssl.SSLException || ex instanceof ResourceAccessException) {
+//				UriComponentsBuilder uriBuilder = buildUriComp(authUrl, false).queryParam("grant_type", "client_credentials");
+//				authResponse = authRestTemplate.exchange(uriBuilder.toUriString(), HttpMethod.POST, basicEntity, AuthToken.class);
+//			}
 		}
 
 		AuthToken authToken = authResponse.getBody();
@@ -283,22 +288,24 @@ public class RemoteServerTemplate {
 		String url = this.remoteConfig.getRemoteIp() + ":" + this.remoteConfig.getRemotePort() + "/identity-service/company/getObjByUuid/"
 				+ companyUUID;
 
-		UriComponentsBuilder uriBuilder = buildUriComp(url, false);
-		UriComponentsBuilder uriBuilderSSL = buildUriComp(url, true);
+		UriComponentsBuilder uriBuilder = buildUriComp(url);
+//		UriComponentsBuilder uriBuilderSSL = buildUriComp(url, true);
 
 		for (String key : uriVariables.keySet()) {
 			Object values = uriVariables.get(key);
 			uriBuilder.queryParam(key, values);
-			uriBuilderSSL.queryParam(key, values);
+//			uriBuilderSSL.queryParam(key, values);
 		}
 
 		ResponseEntity<Company> response = null;
 		try {
-			response = restTemplate.exchange(uriBuilderSSL.toUriString(), HttpMethod.GET, bearerEntity, Company.class);
+			response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, bearerEntity, Company.class);
 		} catch (Exception ex) {
-			if (ex instanceof javax.net.ssl.SSLException || ex instanceof ResourceAccessException) {
-				response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, bearerEntity, Company.class);
-			}
+			ex.printStackTrace();
+			errorMsgHandler(ex);
+//			if (ex instanceof javax.net.ssl.SSLException || ex instanceof ResourceAccessException) {
+//				response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, bearerEntity, Company.class);
+//			}
 		}
 		if (response == null || response.getBody() == null)
 			throw new Exception("Unable to get Company in Enterprise for [" + companyUUID + "]");
@@ -333,19 +340,20 @@ public class RemoteServerTemplate {
 		this.remoteConfig = remoteConfig;
 	}
 
-	private UriComponentsBuilder buildUriComp(String url, boolean isHttps) {
+	private UriComponentsBuilder buildUriComp(String url) {
 		UriComponentsBuilder uriBuilder = null;
 		try {
 			uriBuilder = UriComponentsBuilder.fromHttpUrl(url);
 		} catch (IllegalArgumentException ex) {
 			// error try append http
-			String httpUrl = isHttps ? "https://" + url : "http://" + url;
+//			String httpUrl = isHttps ? "https://" + url : "http://" + url;
 			//			System.out.println("=>buildUri: " + httpUrl);
-			try {
-				uriBuilder = UriComponentsBuilder.fromHttpUrl(httpUrl);
-			} catch (IllegalArgumentException ex2) {
-				throw ex2;
-			}
+//			try {
+//				uriBuilder = UriComponentsBuilder.fromHttpUrl(httpUrl);
+//			} catch (IllegalArgumentException ex2) {
+//				throw ex2;
+//			}
+			throw ex;
 		}
 		return uriBuilder;
 	}

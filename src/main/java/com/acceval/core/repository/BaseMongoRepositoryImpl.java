@@ -193,7 +193,8 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
-				if (e.getMessage().indexOf("Unable to locate Attribute  with the the given name") == -1) {
+				if (e.getMessage() != null 
+						&& e.getMessage().indexOf("Unable to locate Attribute  with the the given name") == -1) {
 					LOGGER.error(e.getMessage(), e);
 				}
 			}
@@ -589,6 +590,78 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 						org.springframework.data.mongodb.core.query.Criteria.where(dateRange.getPropertyPath()).gte(startDate).lt(endDate));
 			} else {
 				query.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where(dateRange.getPropertyPath()).gte(startDate));
+			}
+		}
+
+		if (criteria.getOrder() != null) {
+
+			for (Order order : criteria.getOrder()) {
+				if (order.getIsAscending()) {
+					query.with(new Sort(Sort.Direction.ASC, order.getProperty()));
+				} else {
+					query.with(new Sort(Sort.Direction.DESC, order.getProperty()));
+				}
+			}
+		}
+
+		long total = 0;
+		if (!criteria.isFetchAll()) {
+
+			int page = criteria.getRequestedPage();
+			int pageSize = criteria.getPageSize();
+			total = mongoTemplate.count(query, this.getTargetClass());
+
+			final Pageable pageableRequest = new PageRequest(page, pageSize);
+			query.with(pageableRequest);
+		}
+
+		List<T> result = (List<T>) mongoTemplate.find(query, this.getTargetClass());
+		queryResult = new QueryResult<T>(Math.toIntExact(total), result);
+
+		return queryResult;
+	}
+	
+	/**
+	 * @Deprecated use queryByCriteria(Criteria, Class<?>)
+	 */
+	@Deprecated
+	@Override
+	public QueryResult<T> queryByMapParamDateTime(MultiValueMap<String, String> mapParam, List<DateTimeRange> dateTimeRanges) {
+
+		Criteria criteria = this.getCriteriaByMapParam(mapParam, this.getTargetClass());
+
+		/** start query */
+		QueryResult<T> queryResult = null;
+
+		org.springframework.data.mongodb.core.query.Query query = new org.springframework.data.mongodb.core.query.Query();
+
+		DateTimeRange firstDateTime = dateTimeRanges.get(0);
+		criteria.appendCriterion(new Criterion(firstDateTime.getPropertyPath(), RestrictionType.GREATER_OR_EQUAL, firstDateTime.getStartDateTime()));
+		criteria.appendCriterion(new Criterion(firstDateTime.getPropertyPath(), RestrictionType.LESS_OR_EQUAL, firstDateTime.getEndDateTime()));
+
+		List<org.springframework.data.mongodb.core.query.Criteria> andCriterias =
+				(List<org.springframework.data.mongodb.core.query.Criteria>) this.getMongoCriterias(criteria)[0];
+
+		for (org.springframework.data.mongodb.core.query.Criteria andCriteria : andCriterias) {
+			query.addCriteria(andCriteria);
+		}
+
+		for (DateTimeRange dateTimeRange : dateTimeRanges) {
+			if (true) break;
+			LocalDateTime startDateTime = LocalDateTime.of(dateTimeRange.getStartDateTime().getYear(), dateTimeRange.getStartDateTime().getMonthValue(),
+					dateTimeRange.getStartDateTime().getDayOfMonth(), dateTimeRange.getStartDateTime().getHour(), dateTimeRange.getStartDateTime().getMinute(),
+					dateTimeRange.getStartDateTime().getSecond());
+
+			if (dateTimeRange.getEndDateTime() != null) {
+				LocalDateTime endDateTime = LocalDateTime.of(dateTimeRange.getEndDateTime().getYear(), dateTimeRange.getEndDateTime().getMonthValue(),
+						dateTimeRange.getEndDateTime().getDayOfMonth(), dateTimeRange.getEndDateTime().getHour(), dateTimeRange.getEndDateTime().getMinute(),
+						dateTimeRange.getEndDateTime().getSecond());
+				//				endDate = endDate.plusDays(1);
+
+				query.addCriteria(
+						org.springframework.data.mongodb.core.query.Criteria.where(dateTimeRange.getPropertyPath()).gte(startDateTime).lt(endDateTime));
+			} else {
+				query.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where(dateTimeRange.getPropertyPath()).gte(startDateTime));
 			}
 		}
 
