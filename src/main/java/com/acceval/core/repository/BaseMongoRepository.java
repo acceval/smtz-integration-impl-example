@@ -13,9 +13,12 @@ public interface BaseMongoRepository<T> {
 	QueryResult<T> queryByMapParamDateTime(MultiValueMap<String, String> mapParam, List<DateTimeRange> dateTimeRanges);
 	
 	QueryResult<T> queryByMapParam(MultiValueMap<String, String> andParam, MultiValueMap<String, String> orParam);
-	
+			
 	QueryResult<T> queryByMapParam(MultiValueMap<String, String> andParam, MultiValueMap<String, String> orParam,
 		List<DateRange> dateRanges);
+	
+	QueryResult<T> queryByMapParamDateTime(MultiValueMap<String, String> andParam, MultiValueMap<String, String> orParam, 
+		List<DateTimeRange> dateTimeRanges);
 
 	QueryResult<T> queryByCriteria(Criteria acceCriteria);
 

@@ -798,6 +798,101 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 
 		return queryResult;
 	}
+	
+	/**
+	 * @Deprecated use queryByCriteria(Criteria, Class<?>)
+	 */
+	@Deprecated
+	@Override
+	public QueryResult<T> queryByMapParamDateTime(MultiValueMap<String, String> andParam, MultiValueMap<String, String> orParam, 
+			List<DateTimeRange> dateTimeRanges) {
+
+		Criteria andCriteria = this.getCriteriaByMapParam(andParam, this.getTargetClass());
+		Criteria orCriteria = this.getCriteriaByMapParam(orParam, this.getTargetClass());
+
+		Criterion companyCriterion = null;
+		for (Criterion criterion : orCriteria.getCriterion()) {
+			if (criterion.getPropertyName().equalsIgnoreCase("companyId")) {
+				companyCriterion = criterion;
+				break;
+			}
+		}
+		if (companyCriterion != null) {
+			orCriteria.getCriterion().remove(companyCriterion);
+		}
+
+		/** start query */
+		QueryResult<T> queryResult = null;
+
+		org.springframework.data.mongodb.core.query.Query query = new org.springframework.data.mongodb.core.query.Query();
+
+		List<org.springframework.data.mongodb.core.query.Criteria> andCriterias =
+				(List<org.springframework.data.mongodb.core.query.Criteria>) this.getMongoCriterias(andCriteria)[0];
+
+		for (org.springframework.data.mongodb.core.query.Criteria criteria : andCriterias) {
+			query.addCriteria(criteria);
+		}
+
+		List<org.springframework.data.mongodb.core.query.Criteria> orCriterias =
+				(List<org.springframework.data.mongodb.core.query.Criteria>) this.getMongoCriterias(orCriteria)[0];
+		org.springframework.data.mongodb.core.query.Criteria[] orCriteriaArray =
+				orCriterias.toArray(new org.springframework.data.mongodb.core.query.Criteria[orCriterias.size()]);
+		org.springframework.data.mongodb.core.query.Criteria criteria = new org.springframework.data.mongodb.core.query.Criteria();
+		criteria.orOperator(orCriteriaArray);
+
+		query.addCriteria(criteria);
+
+		for (DateTimeRange dateTimeRange : dateTimeRanges) {
+			if (true) break;
+			LocalDateTime startDateTime = LocalDateTime.of(dateTimeRange.getStartDateTime().getYear(), dateTimeRange.getStartDateTime().getMonthValue(),
+					dateTimeRange.getStartDateTime().getDayOfMonth(), dateTimeRange.getStartDateTime().getHour(), dateTimeRange.getStartDateTime().getMinute(),
+					dateTimeRange.getStartDateTime().getSecond());
+
+			if (dateTimeRange.getEndDateTime() != null) {
+				LocalDateTime endDateTime = LocalDateTime.of(dateTimeRange.getEndDateTime().getYear(), dateTimeRange.getEndDateTime().getMonthValue(),
+						dateTimeRange.getEndDateTime().getDayOfMonth(), dateTimeRange.getEndDateTime().getHour(), dateTimeRange.getEndDateTime().getMinute(),
+						dateTimeRange.getEndDateTime().getSecond());
+				//				endDate = endDate.plusDays(1);
+
+				query.addCriteria(
+						org.springframework.data.mongodb.core.query.Criteria.where(dateTimeRange.getPropertyPath()).gte(startDateTime).lt(endDateTime));
+			} else {
+				query.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where(dateTimeRange.getPropertyPath()).gte(startDateTime));
+			}
+		}
+
+		if (andCriteria.getOrder() != null) {
+
+			for (Order order : andCriteria.getOrder()) {
+				if (order.getIsAscending()) {
+					query.with(new Sort(Sort.Direction.ASC, order.getProperty()));
+				} else {
+					query.with(new Sort(Sort.Direction.DESC, order.getProperty()));
+				}
+			}
+		}
+
+		long total = 0;
+		if (!andCriteria.isFetchAll()) {
+
+			int page = andCriteria.getRequestedPage();
+			int pageSize = andCriteria.getPageSize();
+			total = mongoTemplate.count(query, this.getTargetClass());
+
+			final Pageable pageableRequest = new PageRequest(page, pageSize);
+			query.with(pageableRequest);
+		}
+
+		List<T> result = (List<T>) mongoTemplate.find(query, this.getTargetClass());
+
+		if (!andCriteria.isFetchAll()) {
+			queryResult = new QueryResult<T>(Math.toIntExact(total), result);
+		} else {
+			queryResult = new QueryResult<T>(result.size(), result);
+		}
+
+		return queryResult;
+	}
 
 	/**
 	 * @Deprecated use queryByCriteria(Criteria, Class<?>)
