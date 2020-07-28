@@ -39,6 +39,7 @@ import org.springframework.util.MultiValueMap;
 import com.acceval.core.MicroServiceUtilException;
 import com.acceval.core.model.BaseModel;
 import com.acceval.core.repository.QueryResult;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Defaults;
 
@@ -58,13 +59,29 @@ public class ClassUtil {
 			ignoreField.addAll(Arrays.asList(ignoreFields));
 		}
 
+		List<Field> lstCustomField = null;
+
 		for (String key : mapValues.keySet()) {
 			if (ignoreField.contains(key)) continue;
 
 			Object value = mapValues.get(key);
 			try {
 				PropertyDescriptor pd = PropertyUtils.getPropertyDescriptor(target, key);
-				if (pd == null) continue; // don't know why null
+				if (pd == null) {
+					/** customised field mapping for annotation JsonProperty */
+					if (lstCustomField == null) {
+						lstCustomField = getDeclaredFields(target.getClass());
+					}
+					for (Field f : lstCustomField) {
+						JsonProperty annoJsonProp = f.getAnnotation(JsonProperty.class);
+						if (annoJsonProp != null && key.equals(annoJsonProp.value())) {
+							key = f.getName();
+							pd = PropertyUtils.getPropertyDescriptor(target, key);
+						}
+					}
+
+					if (pd == null) continue; // don't know why null
+				}
 				Class<?> propertyClass = pd.getPropertyType();
 				if (Collection.class.isAssignableFrom(propertyClass)) {
 					// collection Json to Object
@@ -650,10 +667,8 @@ public class ClassUtil {
 				Object nvalue = ClassUtil.getProperty(target, t);
 				if (t.indexOf(".") > -1) {
 					try {
-						PropertyDescriptor pd = PropertyUtils.getPropertyDescriptor(newObj,
-								t.replace(t.substring(t.indexOf(".")), ""));
-						if (pd == null)
-							continue; // don't know why null
+						PropertyDescriptor pd = PropertyUtils.getPropertyDescriptor(newObj, t.replace(t.substring(t.indexOf(".")), ""));
+						if (pd == null) continue; // don't know why null
 						Class<?> propertyClass = pd.getPropertyType();
 						Object newInstanceValue = ClassUtil.getClassObject(propertyClass.getName());
 						ClassUtil.setProperty(newObj, t.replace(t.substring(t.indexOf(".")), ""), newInstanceValue);
@@ -679,8 +694,7 @@ public class ClassUtil {
 					idField.setAccessible(true);
 					idField.set(newObj, value);
 					break;
-				} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException
-						| SecurityException e) {
+				} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
 					Logger.error(e.getMessage(), e);
 				}
 			}
