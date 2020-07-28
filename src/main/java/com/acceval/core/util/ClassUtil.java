@@ -77,6 +77,7 @@ public class ClassUtil {
 						if (annoJsonProp != null && key.equals(annoJsonProp.value())) {
 							key = f.getName();
 							pd = PropertyUtils.getPropertyDescriptor(target, key);
+							break;
 						}
 					}
 
