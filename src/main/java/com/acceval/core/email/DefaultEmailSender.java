@@ -1,12 +1,13 @@
 package com.acceval.core.email;
 
-import com.acceval.core.amqp.MessageBody;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
-
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.HashMap;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
+
+import com.acceval.core.amqp.MessageBody;
 
 /**
  * Default implementation of email sender
@@ -43,9 +44,7 @@ class DefaultEmailSender implements EmailSender {
 
 		MessageBody<SendEmailRequest> messageBody = new MessageBody<>(myRequest);
 
-		// TODO: fix multithreaded sending of email
-		sender.setMessageBody(messageBody);
-		sender.sendMessage();
+		sender.sendMessage(messageBody);
 	}
 
 	private void defaultData(EmailContentData data) {

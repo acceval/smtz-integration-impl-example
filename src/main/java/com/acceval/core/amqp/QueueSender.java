@@ -32,12 +32,29 @@ public abstract class QueueSender {
 
 	//  @Scheduled(cron = "0 0 21 * * *")
 	//  @Scheduled(fixedDelay = 3000L)        
+	@Deprecated
 	public void sendMessage() {
 
 		logger.info("Sending message...");
 		try {
 			if (rabbitTemplate.getMessageConverter().getClass().getSimpleName().equals("Jackson2JsonMessageConverter")) {
 				rabbitTemplate.convertAndSend(this.getTopicExchageName(), this.getSenderQueueName(), this.messageBody.getBody());
+			} else {
+				logger.warn("Queue message not send due to wrong rabbit mq message converter. Must be json format.");
+			}
+		} catch (AmqpConnectException ex) {
+			ex.printStackTrace();
+		}
+	}
+
+	public void sendMessage(MessageBody<?> messageBody) {
+
+		logger.info("Sending message...");
+		try {
+			if (rabbitTemplate.getMessageConverter().getClass().getSimpleName()
+					.equals("Jackson2JsonMessageConverter")) {
+				rabbitTemplate.convertAndSend(this.getTopicExchageName(), this.getSenderQueueName(),
+						messageBody.getBody());
 			} else {
 				logger.warn("Queue message not send due to wrong rabbit mq message converter. Must be json format.");
 			}
