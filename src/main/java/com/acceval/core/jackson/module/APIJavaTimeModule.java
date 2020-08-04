@@ -2,11 +2,14 @@ package com.acceval.core.jackson.module;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import com.acceval.core.jackson.deserializer.APILocalDateJsonDeserializer;
 import com.acceval.core.jackson.deserializer.APILocalDateTimeJsonDeserializer;
+import com.acceval.core.jackson.deserializer.APILocalTimeJsonDeserializer;
 import com.acceval.core.jackson.serializer.APILocalDateJsonSerializer;
 import com.acceval.core.jackson.serializer.APILocalDateTimeJsonSerializer;
+import com.acceval.core.jackson.serializer.APILocalTimeJsonSerializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
 public class APIJavaTimeModule extends SimpleModule {
@@ -18,5 +21,8 @@ public class APIJavaTimeModule extends SimpleModule {
 
 		addSerializer(LocalDateTime.class, APILocalDateTimeJsonSerializer.INSTANCE);
 		addDeserializer(LocalDateTime.class, APILocalDateTimeJsonDeserializer.INSTANCE);
+
+		addSerializer(LocalTime.class, APILocalTimeJsonSerializer.INSTANCE);
+		addDeserializer(LocalTime.class, APILocalTimeJsonDeserializer.INSTANCE);
 	}
 }
