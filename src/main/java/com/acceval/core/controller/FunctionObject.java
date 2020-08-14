@@ -1,6 +1,11 @@
 package com.acceval.core.controller;
 
 public class FunctionObject {
+	public static final String CRUD_CREATE_DESC = "Create";
+	public static final String CRUD_READ_DESC = "Read";
+	public static final String CRUD_UPDATE_DESC = "Update";
+	public static final String CRUD_DELETE_DESC = "Delete";
+
 	public static final String CRUD_CREATE = "CREATE";
 	public static final String CRUD_READ = "READ";
 	public static final String CRUD_UPDATE = "UPDATE";

@@ -71,21 +71,22 @@ public class ControllerUtil {
 					if (splitPattern.length == 3 && splitPattern[2].contains("{")) {
 						if (RequestMethod.DELETE.toString().equals(httpMethod)) {
 							lstAC.add(new FunctionObject(microService, module, "delete", newUrlSB.toString(),
-									"CRUD." + FunctionObject.CRUD_DELETE, httpMethod));
+									FunctionObject.CRUD_DELETE_DESC, httpMethod));
 						} else if (RequestMethod.PUT.toString().equals(httpMethod)) {
 							lstAC.add(new FunctionObject(microService, module, "update", newUrlSB.toString(),
-									"CRUD." + FunctionObject.CRUD_UPDATE, httpMethod));
+									FunctionObject.CRUD_UPDATE_DESC, httpMethod));
 						} else if (RequestMethod.GET.toString().equals(httpMethod)) {
 							lstAC.add(new FunctionObject(microService, module, "view", newUrlSB.toString(),
-									"CRUD." + FunctionObject.CRUD_READ, httpMethod));
+									FunctionObject.CRUD_READ_DESC, httpMethod));
 						}
 					} else if (RequestMethod.GET.toString().equals(httpMethod) && splitPattern.length == 3
 							&& "search".equals(splitPattern[2])) {
-						lstAC.add(new FunctionObject(microService, module, "view", newUrlSB.toString(), "CRUD." + FunctionObject.CRUD_READ,
+						lstAC.add(new FunctionObject(microService, module, "view", newUrlSB.toString(),
+								FunctionObject.CRUD_READ_DESC,
 								httpMethod));
 					} else if (splitPattern.length == 2 && RequestMethod.POST.toString().equals(httpMethod)) {
 						lstAC.add(new FunctionObject(microService, module, "create", newUrlSB.toString(),
-								"CRUD." + FunctionObject.CRUD_CREATE, httpMethod));
+								FunctionObject.CRUD_CREATE_DESC, httpMethod));
 					} else {
 						// mark as system, use for bypass function access
 						lstAC.add(new FunctionObject(microService, module, FunctionObject.SYSTEM, newUrlSB.toString(),
