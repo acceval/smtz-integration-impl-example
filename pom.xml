@@ -23,8 +23,7 @@
 		<junit.vintage.version>${junit.version}.0</junit.vintage.version>
 		<junit.jupiter.version>5.0.0</junit.jupiter.version>
 		<junit.platform.version>1.0.0</junit.platform.version>
-		<powermock.version>2.0.0</powermock.version>
-		<kotlin.version>1.2.30</kotlin.version>
+		<powermock.version>2.0.0</powermock.version>		
 	</properties>
 
 	<dependencies>
@@ -195,20 +194,7 @@
 			<version>${powermock.version}</version>
 			<scope>test</scope>
 		</dependency>
-
-		<dependency>
-			<groupId>org.jetbrains.kotlin</groupId>
-			<artifactId>kotlin-stdlib-jdk8</artifactId>
-			<version>${kotlin.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jetbrains.kotlin</groupId>
-			<artifactId>kotlin-test</artifactId>
-			<version>${kotlin.version}</version>
-			<scope>test</scope>
-		</dependency>
-
+		
 		<dependency>
 			<groupId>org.reflections</groupId>
 			<artifactId>reflections</artifactId>
@@ -255,31 +241,7 @@
 						<version>${junit.platform.version}</version>
 					</dependency>
 				</dependencies>
-			</plugin>
-			<!-- <plugin>
-				<groupId>org.jetbrains.kotlin</groupId>
-				<artifactId>kotlin-maven-plugin</artifactId>
-				<version>${kotlin.version}</version>
-				<executions>
-					<execution>
-						<id>compile</id>
-						<phase>compile</phase>
-						<goals>
-							<goal>compile</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>test-compile</id>
-						<phase>test-compile</phase>
-						<goals>
-							<goal>test-compile</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<jvmTarget>1.8</jvmTarget>
-				</configuration>
-			</plugin> -->
+			</plugin>			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
