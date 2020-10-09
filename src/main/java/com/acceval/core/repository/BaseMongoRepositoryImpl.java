@@ -124,6 +124,11 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 				continue;
 			}
 
+			if ("_class".equals(key)) {
+				lstCrriterion.add(new Criterion(key, mapParam.getFirst(key)));
+				continue;
+			}
+
 			try {
 				String resolveKey = this.getMapPropertyResolver().containsKey(key) ? getMapPropertyResolver().get(key) : key;
 				Field field = this.getField(targetClass, resolveKey);
@@ -176,8 +181,14 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 						LOGGER.error("Date Parsing Error.", e);
 					}
 				} else if (ClassUtils.isAssignable(attrClass, Enum.class)) {
-					lstCrriterion
-							.add(new Criterion(resolveKey, Enum.valueOf(attrClass.asSubclass(Enum.class), mapParam.getFirst(key)), true));
+					List<String> searchValue = mapParam.get(key);
+					if (searchValue.size() > 1) {
+						Object searchValues = searchValue.toArray();
+						lstCrriterion.add(new Criterion(resolveKey, searchValues));
+					} else {
+						lstCrriterion.add(
+								new Criterion(resolveKey, Enum.valueOf(attrClass.asSubclass(Enum.class), mapParam.getFirst(key)), true));
+					}
 				} else if (ClassUtils.isAssignable(attrClass, Collection.class)) {
 					// seem Collection work in mongo
 					if (field.toGenericString().contains("<java.lang.Long>")) {
@@ -342,6 +353,13 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 				continue;
 			}
 
+			if ("_class".equals(property)) {
+				String className = (String) criterion.getSearchValue();
+				mongoCriterias.add(org.springframework.data.mongodb.core.query.Criteria.where(property).is(className));
+				lstOperation.add(Aggregation.match(org.springframework.data.mongodb.core.query.Criteria.where("_class")
+						.is(className)));
+				continue;
+			}
 			Object[] convertions = criterionToMongoCriteria(criterion);
 			if (convertions == null) continue;
 
