@@ -684,22 +684,33 @@ public class ClassUtil {
 				Logger.error(e.getMessage(), e);
 			}
 		}
-		Field[] existingFields = target.getClass().getDeclaredFields();
-
-		for (Field field : existingFields) {
-			if (field.isAnnotationPresent(Id.class) || field.isAnnotationPresent(org.springframework.data.annotation.Id.class)) {
-				try {
-					field.setAccessible(true);
-					Object value = field.get(target);
-					Field idField = newObj.getClass().getDeclaredField(field.getName());
-					idField.setAccessible(true);
-					idField.set(newObj, value);
-					break;
-				} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
-					Logger.error(e.getMessage(), e);
+		List<Field> existingFields = new ArrayList<>(Arrays.asList(target.getClass().getDeclaredFields()));
+		boolean idFound = false;
+		Class currentClass = target.getClass();
+		do {
+			for (Field field : existingFields) {
+				if (field.isAnnotationPresent(Id.class)
+						|| field.isAnnotationPresent(org.springframework.data.annotation.Id.class)) {
+					idFound = true;
+					try {
+						field.setAccessible(true);
+						Object value = field.get(target);
+						Field idField = currentClass.getDeclaredField(field.getName());
+						idField.setAccessible(true);
+						idField.set(newObj, value);
+						break;
+					} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException
+							| SecurityException e) {
+						Logger.error(e.getMessage(), e);
+					}
 				}
 			}
-		}
+			if (!idFound) {
+				currentClass = currentClass.getSuperclass();
+				existingFields.addAll(Arrays.asList(currentClass.getDeclaredFields()));
+			}
+		} while (!idFound && currentClass.getSuperclass() != null);
+
 		return newObj;
 	}
 
