@@ -109,7 +109,12 @@ public class ClassUtil {
 								populateJsonMapToObj(objectMapper, collObj, (Map) o);
 								col.add(collObj);
 							} else {
-								col.add(o);
+								if(collClass.isAssignableFrom(Long.class) && o.getClass().isAssignableFrom(Integer.class)) {
+									col.add(Long.valueOf((Integer)o));
+								}else {
+									col.add(o);
+								}
+								
 							}
 						}
 						PropertyUtils.setProperty(target, key, col);
