@@ -326,9 +326,10 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 			// or Criteria
 			if (criterion instanceof OrCriterion && ((OrCriterion) criterion).getCriterions() != null) {
 				List<org.springframework.data.mongodb.core.query.Criteria> lstOrCri = new ArrayList<>();//[0]
-				Object[] orObj = new Object[((OrCriterion) criterion).getCriterions().size()];
+				//				Object[] orObj = new Object[((OrCriterion) criterion).getCriterions().size()];
+				List<Object> lstOrObj = new ArrayList<>();
 				int i = 0;
-				BasicDBObject orDbo = new BasicDBObject("$or", orObj);//[1]
+				BasicDBObject orDbo = new BasicDBObject("$or", lstOrObj);//[1]
 				for (Criterion orC : ((OrCriterion) criterion).getCriterions()) {
 					Object[] convertions = criterionToMongoCriteria(orC);
 
@@ -339,9 +340,11 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 
 					/** for [1] */
 					if (convertions.length == 2 && convertions[1] != null) {
-						orObj[i++] = convertions[1];
+						//						orObj[i++] = convertions[1];
+						lstOrObj.add(convertions[1]);
 					} else {
-						orObj[i++] = criteria.getCriteriaObject();
+						//						orObj[i++] = criteria.getCriteriaObject();
+						lstOrObj.add(criteria.getCriteriaObject());
 					}
 				}
 				org.springframework.data.mongodb.core.query.Criteria mongoOrCriteria =
