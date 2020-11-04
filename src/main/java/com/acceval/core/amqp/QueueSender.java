@@ -70,7 +70,7 @@ public abstract class QueueSender {
 			} else {
 				logger.warn("Queue message not send due to wrong rabbit mq message converter. Must be json format.");
 			}
-		} catch (AmqpConnectException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}

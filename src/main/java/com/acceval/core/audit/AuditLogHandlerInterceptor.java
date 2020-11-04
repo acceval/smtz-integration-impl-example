@@ -117,13 +117,12 @@ public class AuditLogHandlerInterceptor implements HandlerInterceptor {
 			/** other info */
 			CurrentUser currentUser = PrincipalUtil.getCurrentUser();
 			if (currentUser != null && currentUser.getId() != null) {
-				
 				logRequest.setUserID(currentUser.getId());
 				logRequest.setEmail(currentUser.getEmail());
 				logRequest.setCompanyID(currentUser.getCompanyId());
 				logRequest.setCompanyCode(currentUser.getCompanyCode());
 				logRequest.setSchemaName(currentUser.getSchemaName());
-				logRequest.setTimeZone(currentUser.getTimeZone());				
+				logRequest.setTimeZone(currentUser.getTimeZone());
 			}
 			logRequest.setHttpMethod(request.getMethod());
 			logRequest.setLogTime(new Date());
@@ -138,7 +137,9 @@ public class AuditLogHandlerInterceptor implements HandlerInterceptor {
 				logRequest.setRequestType(RequestType.CONTROLLER);
 				logRequest.setAuditAction(auditAction);
 				logRequest.setUrl(url);
-				auditLogQueueSender.sendMessage(logRequest);
+				new Thread(() -> {
+					auditLogQueueSender.sendMessage(logRequest);
+				}).start();
 			}
 		}
 
@@ -201,24 +202,25 @@ public class AuditLogHandlerInterceptor implements HandlerInterceptor {
 					}
 				}
 			}
-			
+
 			/** other info */
 			CurrentUser currentUser = PrincipalUtil.getCurrentUser();
 			if (currentUser != null && currentUser.getId() != null) {
-				
 				logRequest.setUserID(currentUser.getId());
 				logRequest.setEmail(currentUser.getEmail());
 				logRequest.setCompanyID(currentUser.getCompanyId());
 				logRequest.setCompanyCode(currentUser.getCompanyCode());
 				logRequest.setSchemaName(currentUser.getSchemaName());
-				logRequest.setTimeZone(currentUser.getTimeZone());				
+				logRequest.setTimeZone(currentUser.getTimeZone());
 			}
 
 			/** sending log request to MQ */
 			if (isLog && StringUtils.isNotBlank(auditLogUUID)) {
 				logRequest.setUuid(auditLogUUID);
 				logRequest.setRequestType(RequestType.CONTROLLER);
-				auditLogQueueSender.sendMessage(logRequest);
+				new Thread(() -> {
+					auditLogQueueSender.sendMessage(logRequest);
+				}).start();
 			}
 		}
 
