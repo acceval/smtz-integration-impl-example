@@ -137,9 +137,9 @@ public class AuditLogHandlerInterceptor implements HandlerInterceptor {
 				logRequest.setRequestType(RequestType.CONTROLLER);
 				logRequest.setAuditAction(auditAction);
 				logRequest.setUrl(url);
-				new Thread(() -> {
+				//				new Thread(() -> {
 					auditLogQueueSender.sendMessage(logRequest);
-				}).start();
+				//				}).start();
 			}
 		}
 
@@ -218,9 +218,9 @@ public class AuditLogHandlerInterceptor implements HandlerInterceptor {
 			if (isLog && StringUtils.isNotBlank(auditLogUUID)) {
 				logRequest.setUuid(auditLogUUID);
 				logRequest.setRequestType(RequestType.CONTROLLER);
-				new Thread(() -> {
+				//				new Thread(() -> {
 					auditLogQueueSender.sendMessage(logRequest);
-				}).start();
+				//				}).start();
 			}
 		}
 
