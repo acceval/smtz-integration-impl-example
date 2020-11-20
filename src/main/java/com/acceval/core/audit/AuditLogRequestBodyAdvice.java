@@ -46,7 +46,9 @@ public class AuditLogRequestBodyAdvice implements RequestBodyAdvice {
 			logRequest.setUuid(logEventID);
 			ObjectMapper objectMapper = new ObjectMapper();
 			logRequest.setJson1(objectMapper.valueToTree(body).toString());
-			auditLogQueueSender.sendMessage(logRequest);
+			//			new Thread(() -> {
+				auditLogQueueSender.sendMessage(logRequest);
+			//			}).start();
 		}
 
 		return body;
