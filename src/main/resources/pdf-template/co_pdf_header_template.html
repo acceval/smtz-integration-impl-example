@@ -1,0 +1,41 @@
+<!DOCTYPE html> 
+<html> 
+	<body style="font-family: arial; max-width: 60rem;">
+		<table style="width: 100%;"> 		
+			<tr>
+				<td style="padding-left: 1rem; border-bottom: 1px solid black;">
+					<img th:src="${sellerCompanyLogo}" border="0px" alt="Image" 
+						style="max-height: 90px; padding: 0.5rem;"/>
+				</td>
+				<td style="text-align: right; padding-right: 1rem; border-bottom: 1px solid black;">
+					<table class="noBorder" width="100%">
+						<tr>
+							<td colspan="3" style="padding: 0.3rem 0;" th:utext="${sellerName}">Seller Name</td> 				
+						</tr>
+						<tr> 			
+							<td></td>		
+							<td colspan="2" style="padding: 0.3rem 0;" th:utext="${sellerAddress}">Seller Address</td>
+						</tr>
+						<tr> 		
+							<td style="width: 40%;"></td>
+							<td style="padding: 0.3rem 0;">
+								<span class="labelBold" style="padding-left: 0;">Telephone: </span>
+								<span th:text="${sellerTelephoneNo}">Seller Telephone Number</span>
+							</td>							
+							<td>
+								<span class="labelBold">Facsimile: </span>
+								<span th:text="${sellerFacsimile}">Seller Facsimile Number</span>
+							</td>							
+						</tr> 						
+					</table> 		
+				</td>								
+			</tr>
+			<tr>
+				<td colspan="2" style="text-align: center; padding-top: 1rem;">
+					<span style="font-size: 1.6rem; font-weight: bold;">Certificate of Origin</span>	
+				</td>
+			</tr>
+		</table> 
+	</body>
+</html>
+<br>
