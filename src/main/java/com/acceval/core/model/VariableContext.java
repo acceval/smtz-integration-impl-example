@@ -1,8 +1,5 @@
 package com.acceval.core.model;
 
-import com.acceval.core.repository.Criterion;
-import org.apache.commons.lang3.StringUtils;
-
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -11,6 +8,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.acceval.core.repository.Criterion;
 
 public class VariableContext implements Serializable, Cloneable {
 
@@ -27,6 +28,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String CURRENCY_EXCHANGE_RATE_TYPE = "CURRENCY_EXCHANGE_RATE_TYPE";
 	public static final String COMPANY_ID = "COMPANY_ID";
 	public static final String COMPANY_CODE = "COMPANY_CODE";
+	public static final String DEFAULT_DECIMAL = "DEFAULT_DECIMAL";
 
 	public static final String DEFAULT_DATE_FORMAT = Criterion.DEFAULT_DATE_FORMAT;
 	public static final String DEFAULT_DATE_TIME_FORMAT = Criterion.DEFAULT_DATE_TIME_FORMAT;
