@@ -294,6 +294,49 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 
 		return queryResult;
 	}
+	
+//	Remove pagination
+	@Override
+	public QueryResult<T> queryByCriteriaWithoutPagination(Criteria acceCriteria, Class<?> targetClass) {
+
+		/** start query */
+		QueryResult<T> queryResult = null;
+		org.springframework.data.mongodb.core.query.Query query = new org.springframework.data.mongodb.core.query.Query();
+		List<org.springframework.data.mongodb.core.query.Criteria> criterias =
+				(List<org.springframework.data.mongodb.core.query.Criteria>) this.getMongoCriterias(acceCriteria)[0];
+		for (org.springframework.data.mongodb.core.query.Criteria criteria : criterias) {
+			query.addCriteria(criteria);
+		}
+
+		if (acceCriteria.getOrder() != null) {
+			for (Order order : acceCriteria.getOrder()) {
+				if (order.getIsAscending()) {
+					query.with(new Sort(Sort.Direction.ASC, order.getProperty()));
+				} else {
+					query.with(new Sort(Sort.Direction.DESC, order.getProperty()));
+				}
+			}
+		}
+
+		long total = 0;
+		if (!acceCriteria.isFetchAll()) {
+
+			int page = acceCriteria.getRequestedPage();
+			int pageSize = acceCriteria.getPageSize();
+			total = mongoTemplate.count(query, this.getTargetClass());
+
+		}
+
+		List<T> result = (List<T>) mongoTemplate.find(query, this.getTargetClass());
+
+		if (!acceCriteria.isFetchAll()) {
+			queryResult = new QueryResult<T>(Math.toIntExact(total), result);
+		} else {
+			queryResult = new QueryResult<T>(result.size(), result);
+		}
+
+		return queryResult;
+	}
 
 	@Override
 	public List<T> aggregateByCriteria(Criteria acceCriteria) {
