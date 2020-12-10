@@ -30,6 +30,7 @@ public class CommonHandler {
 
 	public static final String KEY_COLUMN_DEF = "KEY_COLUMN_DEF";
 	public static final String KEY_DATASOURCE = "KEY_DATASOURCE";
+	public static final String DATASOURCE_ERROR = "DATASOURCE_ERROR";
 
 	private Workbook workbook;
 	private Path filePath;
@@ -109,7 +110,16 @@ public class CommonHandler {
 
 							String text = formatter.formatCellValue(cell);
 							if (columnDef.getDatasource() != null) {
+								String errorMsg = "[" + text + "] not found for [" + columnDef.getLabel() + "]!";
 								text = columnDef.findValueFromDatasource(text);
+								if (StringUtils.isBlank(text)) {
+									String existingError = mapRow.get(DATASOURCE_ERROR);
+									if (existingError == null) {
+										mapRow.put(DATASOURCE_ERROR, errorMsg);
+									} else {
+										mapRow.put(DATASOURCE_ERROR, existingError + ", " + errorMsg);
+									}
+								}
 							}
 							mapRow.put(labelAsKey, text);
 						}
