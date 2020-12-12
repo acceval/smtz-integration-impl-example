@@ -12,7 +12,6 @@ public class ColumnDef {
 	private List<LabelValue> datasource;
 	private boolean mandate = false;
 	private String dateFormat;
-	private boolean errorDatasourceUnmatch;
 
 	public ColumnDef() {
 		super();
@@ -23,17 +22,23 @@ public class ColumnDef {
 		this.label = label;
 	}
 
+	public ColumnDef(String label, boolean mandate) {
+		super();
+		this.label = label;
+		this.mandate = mandate;
+	}
+
 	public ColumnDef(String label, List<LabelValue> datasource) {
 		super();
 		this.label = label;
 		this.datasource = datasource;
 	}
 
-	public ColumnDef(String label, List<LabelValue> datasource, boolean errorDatasourceUnmatch) {
+	public ColumnDef(String label, List<LabelValue> datasource, boolean mandate) {
 		super();
 		this.label = label;
 		this.datasource = datasource;
-		this.errorDatasourceUnmatch = errorDatasourceUnmatch;
+		this.mandate = mandate;
 	}
 
 	public ColumnDef(String label, boolean mandate, String dateFormat) {
@@ -53,9 +58,9 @@ public class ColumnDef {
 				}
 			}
 		}
-		if (this.isErrorDatasourceUnmatch() && StringUtils.isNotBlank(text)) {
-			throw new Exception("[" + text + "] not found for [" + label + "]!");
-		}
+		//		if (this.isErrorDatasourceUnmatch() && StringUtils.isNotBlank(text)) {
+		//			throw new Exception("[" + text + "] not found for [" + label + "]!");
+		//		}
 		return null;
 	}
 
@@ -89,14 +94,6 @@ public class ColumnDef {
 
 	public void setDateFormat(String dateFormat) {
 		this.dateFormat = dateFormat;
-	}
-
-	public boolean isErrorDatasourceUnmatch() {
-		return errorDatasourceUnmatch;
-	}
-
-	public void setErrorDatasourceUnmatch(boolean errorDatasourceUnmatch) {
-		this.errorDatasourceUnmatch = errorDatasourceUnmatch;
 	}
 
 }
