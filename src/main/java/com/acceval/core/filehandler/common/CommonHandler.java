@@ -122,11 +122,12 @@ public class CommonHandler {
 							}
 
 							if (columnDef.getDatasource() != null) {
-								String errorMsg = "[" + text + "] not found for [" + columnDef.getLabel() + "]!";
-								text = columnDef.findValueFromDatasource(text);
-								if (StringUtils.isBlank(text)) {
+								String convertedText = columnDef.findValueFromDatasource(text);
+								if (StringUtils.isNotBlank(text) && convertedText == null) {
+									String errorMsg = "[" + text + "] not found for [" + columnDef.getLabel() + "]!";
 									buildErrorMsg(mapRow, DATASOURCE_ERROR, errorMsg);
 								}
+								text = convertedText;
 							}
 							mapRow.put(labelAsKey, text);
 						}

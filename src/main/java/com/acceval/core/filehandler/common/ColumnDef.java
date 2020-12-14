@@ -55,6 +55,10 @@ public class ColumnDef {
 					return lv.getValue();
 				} else if (text.trim().equals(lv.getValue())) {
 					return lv.getValue();
+				} else if (text.toLowerCase().equals(lv.getLabel().toLowerCase())) {
+					return lv.getValue();
+				} else if (text.equals(lv.getValue())) {
+					return lv.getValue();
 				}
 			}
 		}
