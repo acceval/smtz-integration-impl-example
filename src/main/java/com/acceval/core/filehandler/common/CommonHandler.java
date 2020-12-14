@@ -30,6 +30,8 @@ public class CommonHandler {
 
 	public static final String KEY_COLUMN_DEF = "KEY_COLUMN_DEF";
 	public static final String KEY_DATASOURCE = "KEY_DATASOURCE";
+	public static final String DATASOURCE_ERROR = "DATASOURCE_ERROR";
+	public static final String REQUIRED_ERROR = "REQUIRED_ERROR";
 
 	private Workbook workbook;
 	private Path filePath;
@@ -103,13 +105,29 @@ public class CommonHandler {
 								mapRow.put(labelAsKey, sdf.format(obj));
 							} else {
 								mapRow.put(labelAsKey, null);
+								// check mandate
+								if (columnDef.isMandate()) {
+									String errorMsg = "[" + columnDef.getLabel() + "] is required!";
+									buildErrorMsg(mapRow, REQUIRED_ERROR, errorMsg);
+								}
 							}
 
 						} else {
-
 							String text = formatter.formatCellValue(cell);
+
+							// check mandate
+							if (StringUtils.isBlank(text) && columnDef.isMandate()) {
+								String errorMsg = "[" + columnDef.getLabel() + "] is required!";
+								buildErrorMsg(mapRow, REQUIRED_ERROR, errorMsg);
+							}
+
 							if (columnDef.getDatasource() != null) {
-								text = columnDef.findValueFromDatasource(text);
+								String convertedText = columnDef.findValueFromDatasource(text);
+								if (StringUtils.isNotBlank(text) && convertedText == null) {
+									String errorMsg = "[" + text + "] not found for [" + columnDef.getLabel() + "]!";
+									buildErrorMsg(mapRow, DATASOURCE_ERROR, errorMsg);
+								}
+								text = convertedText;
 							}
 							mapRow.put(labelAsKey, text);
 						}
@@ -127,6 +145,15 @@ public class CommonHandler {
 		}
 
 		return lstMapRawValue;
+	}
+
+	private void buildErrorMsg(Map<String, String> mapRow, String errorType, String errorMsg) {
+		String existingError = mapRow.get(errorType);
+		if (existingError == null) {
+			mapRow.put(errorType, errorMsg);
+		} else {
+			mapRow.put(errorType, existingError + ", " + errorMsg);
+		}
 	}
 
 	private Workbook getWorkbook(String sheetName) throws Exception {
