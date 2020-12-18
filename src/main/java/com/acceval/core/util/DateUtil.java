@@ -89,4 +89,12 @@ public class DateUtil {
 		}
 		return ld1.compareTo(ld2) == 0;
 	}
+
+	public static LocalDate getFirstDateOfMonth(LocalDate localDate) {
+		return LocalDate.of(localDate.getYear(), localDate.getMonth(), 1);
+	}
+
+	public static LocalDate getLastDateOfMonth(LocalDate localDate) {
+		return getFirstDateOfMonth(localDate).minusDays(1);
+	}
 }
