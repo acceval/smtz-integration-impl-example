@@ -170,6 +170,8 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 					}
 				} else if (ClassUtils.isAssignable(attrClass, Double.class, true)) {
 					lstCrriterion.add(new Criterion(resolveKey, Double.parseDouble(mapParam.getFirst(key))));
+				} else if (ClassUtils.isAssignable(attrClass, Boolean.class, true)) {
+					lstCrriterion.add(new Criterion(resolveKey, Boolean.parseBoolean(mapParam.getFirst(key))));
 				} else if (ClassUtils.isAssignable(attrClass, Float.class, true)) {
 					lstCrriterion.add(new Criterion(resolveKey, Float.parseFloat(mapParam.getFirst(key))));
 				} else if (ClassUtils.isAssignable(attrClass, Integer.class, true)) {
