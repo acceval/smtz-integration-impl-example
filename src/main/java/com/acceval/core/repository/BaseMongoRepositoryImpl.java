@@ -500,6 +500,8 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 			} else {
 				return new Object[] { org.springframework.data.mongodb.core.query.Criteria.where(property).is(value) };
 			}
+		} else if (Criterion.RestrictionType.NOT_EQUAL.equals(restrictionType)) {
+			return new Object[] { org.springframework.data.mongodb.core.query.Criteria.where(property).ne(value) };
 		} else if (Criterion.RestrictionType.IN.equals(restrictionType)) {
 			return new Object[] { org.springframework.data.mongodb.core.query.Criteria.where(property).in(values) };
 		} else if (Criterion.RestrictionType.NOT_IN.equals(restrictionType)) {
