@@ -478,6 +478,18 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 		Path path = getPath(root, property);
 		Class<?> attrClass = path.getJavaType();
 
+		// Enum handling
+		if (attrClass != null && ClassUtils.isAssignable(attrClass, Enum.class)) {
+			if (values != null && values.length > 0 && values[0] instanceof String) {
+				for (int i = 0; i < values.length; i++) {
+					String enumString = (String) values[i];
+					values[i] = Enum.valueOf(attrClass.asSubclass(Enum.class), enumString);
+				}
+			} else if (value instanceof String && StringUtils.isNotBlank((String) value)) {
+				value = Enum.valueOf(attrClass.asSubclass(Enum.class), (String) value);
+			}
+		}
+
 		// Null
 		if (Criterion.RestrictionType.IS_NULL.equals(restrictionType)) {
 			return new Predicate[] { builder.isNull(path) };
