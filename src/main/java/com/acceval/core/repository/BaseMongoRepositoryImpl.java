@@ -96,6 +96,13 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 	 * convert map to criteria
 	 */
 	public Criteria getCriteriaByMapParam(MultiValueMap<String, String> mapParam, Class<?> targetClass) {
+		return getCriteriaByMapParam(mapParam, targetClass, false);
+	}
+
+	/**
+	 * convert map to criteria
+	 */
+	public Criteria getCriteriaByMapParam(MultiValueMap<String, String> mapParam, Class<?> targetClass, boolean isOrCriteria) {
 
 		int page = mapParam.get(_PAGE) != null ? Integer.parseInt(mapParam.getFirst(_PAGE)) : 0;
 		int pageSize = mapParam.get(_PAGESIZE) != null ? Integer.parseInt(mapParam.getFirst(_PAGESIZE)) : 0;
@@ -235,10 +242,10 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 		acceCriteria.setCriterion(lstCrriterion);
 
 		// base entity
-		if (BaseEntity.class.isAssignableFrom(targetClass)) {
+		if (!isOrCriteria && BaseEntity.class.isAssignableFrom(targetClass)) {
 			acceCriteria.appendCriterion(new Criterion("recordStatus", STATUS.ACTIVE, true));
 		}
-		if (BaseCompanyModel.class.isAssignableFrom(targetClass)) {
+		if (!isOrCriteria && BaseCompanyModel.class.isAssignableFrom(targetClass)) {
 			Long companyId = PrincipalUtil.getCompanyID();
 			if (companyId != null) {
 				acceCriteria.appendCriterion(new Criterion("companyId", companyId));
