@@ -98,7 +98,7 @@ public class CommonHandler {
 						String labelAsKey = columnDef.getLabel();
 
 						if (StringUtils.isNotBlank(columnDef.getDateFormat())) {
-							Date obj = cell.getDateCellValue();
+							Date obj = cell != null ? cell.getDateCellValue() : null;
 
 							if (obj != null) {
 								SimpleDateFormat sdf = new SimpleDateFormat(columnDef.getDateFormat());
