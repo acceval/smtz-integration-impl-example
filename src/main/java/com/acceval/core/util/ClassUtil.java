@@ -241,6 +241,8 @@ public class ClassUtil {
 				}
 
 				PropertyUtils.setProperty(dest, propKey, value);
+			} catch (NoSuchMethodException e) {
+				continue;
 			} catch (Throwable e) {
 				throw new RuntimeException(e);
 			}
