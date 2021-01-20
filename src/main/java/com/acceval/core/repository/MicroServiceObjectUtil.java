@@ -38,7 +38,7 @@ public class MicroServiceObjectUtil {
 	/**
 	 * initialise all fields with MicroServiceField annotation
 	 */
-	public static void refreshObjectDependency(Object target, RestTemplate restTemplate,
+	private static void refreshObjectDependency(Object target, RestTemplate restTemplate,
 			DiscoveryClient discoveryClient) throws MicroServiceUtilException, Exception {
 		refreshObjectDependency(target, true, restTemplate, discoveryClient);
 	}
@@ -56,7 +56,7 @@ public class MicroServiceObjectUtil {
 		refreshObjectDependency(target, isForceRefresh, restTemplate, discoveryClient);
 	}
 
-	public static boolean refreshField(Object target, String fieldName, boolean isForceRefresh,
+	private static boolean refreshField(Object target, String fieldName, boolean isForceRefresh,
 			RestTemplate restTemplate, DiscoveryClient discoveryClient) throws MicroServiceUtilException, Exception {
 		String token = PrincipalUtil.getToken();
 
@@ -69,7 +69,7 @@ public class MicroServiceObjectUtil {
 	 * @param isForceRefresh force refresh? Or do nothing if PK are same
 	 * @throws Exception
 	 */
-	public static void refreshObjectDependency(Object target, boolean isForceRefresh, RestTemplate restTemplate,
+	private static void refreshObjectDependency(Object target, boolean isForceRefresh, RestTemplate restTemplate,
 			DiscoveryClient discoveryClient) throws MicroServiceUtilException, Exception {
 
 		if (target == null)
@@ -161,7 +161,7 @@ public class MicroServiceObjectUtil {
 	 * @param isForceRefresh force refresh? Or do nothing if PK are same
 	 * @return object refreshed
 	 */
-	public static boolean refreshField(DiscoveryClient discoveryClient, RestTemplate restTemplate, String token,
+	private static boolean refreshField(DiscoveryClient discoveryClient, RestTemplate restTemplate, String token,
 			Object target, String fieldName, boolean isForceRefresh) throws MicroServiceUtilException, Exception {
 		Class<?> classToFind = target.getClass();
 
