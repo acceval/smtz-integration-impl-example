@@ -496,7 +496,7 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 		}
 		// LIKE
 		else if (!criterion.isExactSearch() && value instanceof String) {
-			return new Object[] { org.springframework.data.mongodb.core.query.Criteria.where(property).regex(value.toString(), "i") };
+			return new Object[] { org.springframework.data.mongodb.core.query.Criteria.where(property).regex(this.escapeMetaCharacters(value.toString()), "i") };
 		}
 		// EQUAL
 		else if (Criterion.RestrictionType.EQUAL.equals(restrictionType)) {
@@ -543,6 +543,17 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 		}
 
 		return null;
+	}
+	
+	public String escapeMetaCharacters(String inputString){
+	    final String[] metaCharacters = {"(",")"};
+
+	    for (int i = 0 ; i < metaCharacters.length ; i++){
+	        if(inputString.contains(metaCharacters[i])){
+	            inputString = inputString.replace(metaCharacters[i],"\\"+metaCharacters[i]);
+	        }
+	    }
+	    return inputString;
 	}
 
 	private LocalDateTime mongoDateHandling(Class<?> attrClass, Object value, RestrictionType restrictionType) {
