@@ -37,7 +37,7 @@ public class PathAuthenticationLogger {
     public void auditEventHappened(AuditApplicationEvent auditApplicationEvent) {
          
 		AuditEvent auditEvent = auditApplicationEvent.getAuditEvent();
-		logger.info("Principal " + auditEvent.getPrincipal() + " - " + auditEvent.getType());
+		//		logger.info("Principal " + auditEvent.getPrincipal() + " - " + auditEvent.getType());
 
         Map<String, Object> data = (Map<String, Object>) auditEvent.getData();
         
@@ -52,7 +52,7 @@ public class PathAuthenticationLogger {
     		//Error for invalid token & access denied (without token)
     		if (entry.getValue() instanceof String) {
     			
-    			 logger.info(entry.getKey() + " : " + entry.getValue());
+				//    			 logger.info(entry.getKey() + " : " + entry.getValue());
     			 if (entry.getKey().equals("type")) {
     				 pathRequest.setType((String) entry.getValue());
     			 } else if (entry.getKey().equals("message")) {
@@ -78,9 +78,9 @@ public class PathAuthenticationLogger {
     			pathRequest.setRequestUrl(this.getRequestUrl());
     			        			
     			OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) entry.getValue();
-    			logger.info("remote address :" + details.getRemoteAddress());
-    			logger.info("token type :" + details.getTokenType());
-    			logger.info("token value : " + details.getTokenValue());
+				//    			logger.info("remote address :" + details.getRemoteAddress());
+				//    			logger.info("token type :" + details.getTokenType());
+				//    			logger.info("token value : " + details.getTokenValue());
     			pathRequest.setRemoteAddress(details.getRemoteAddress());
     			pathRequest.setTokenType(details.getTokenType());
     			pathRequest.setTokenValue(details.getTokenValue());
