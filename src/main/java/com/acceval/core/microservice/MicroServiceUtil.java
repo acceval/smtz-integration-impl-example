@@ -49,16 +49,19 @@ public class MicroServiceUtil {
 		String host = instance.getHost();
 		String url = "http://" + msService.replaceFirst(Pattern.quote("/"), "") + "/" + msFunction + "/" + param;
 
+		String url2 = "http://" + instance.getHost() + ":" + instance.getPort() + "/" + msService.replaceFirst(Pattern.quote("/"), "") + "/"
+				+ msFunction + "/" + param;
+
 		if (mvmValue != null && !mvmValue.keySet().isEmpty()) {
-			UriComponentsBuilder uriCompBuilder = UriComponentsBuilder.fromHttpUrl(url);
+			UriComponentsBuilder uriCompBuilder = UriComponentsBuilder.fromHttpUrl(url2);
 			for (String key : mvmValue.keySet()) {
 				uriCompBuilder.queryParam(key, mvmValue.get(key).toArray());
 			}
-			url = uriCompBuilder.toUriString();
+			url2 = uriCompBuilder.toUriString();
 		}
 
 		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Firing URL: " + url);
+			LOGGER.debug("Firing URL: " + url2);
 		}
 		try {
 			Object object = null;
@@ -67,15 +70,15 @@ public class MicroServiceUtil {
 				// headers.setContentType(MediaType.APPLICATION_JSON);
 				headers.set("Authorization", token);
 				HttpEntity<String> entity = new HttpEntity<String>("", headers);
-				ResponseEntity respEntity = restTemplate.exchange(url, HttpMethod.GET, entity, type);
+				ResponseEntity respEntity = restTemplate.exchange(url2, HttpMethod.GET, entity, type);
 				object = respEntity.getBody();
 			} else {
-				object = restTemplate.getForObject(url, type);
+				object = restTemplate.getForObject(url2, type);
 			}
 
 			return object;
 		} catch (Throwable e) {
-			LOGGER.error("Error occur when fire [" + url + "] \r\n" + e.getMessage(), e);
+			LOGGER.error("Error occur when fire [" + url2 + "] \r\n" + e.getMessage(), e);
 		}
 
 		return null;
