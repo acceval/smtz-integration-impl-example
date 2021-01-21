@@ -37,9 +37,4 @@ public abstract class BaseEntity extends BaseModel {
 	public void setRecordStatus(STATUS recordStatus) {
 		this.recordStatus = recordStatus;
 	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
 }

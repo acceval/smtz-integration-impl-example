@@ -3,209 +3,186 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<!-- <link th:href="${cssPath}" rel="stylesheet"/> -->
-		<style>
-		table {
-			width: 100%;
-			border: 1px solid #AFAFAF;
-			border-collapse: collapse;
-		}
-		
-		table table.noBorder {
-			width: 100%;
-			border: 0;
-		}
-		
-		table table.noBorder tr {
-			border: 0;
-		}
-		
-		table table.noBorder td {
-			border: 0;
-		}
-		
-		table, th, td {
-			border: 1px solid #AFAFAF;
-		}
-		
-		td {
-			padding: 0.5rem
-		}
-		
-		.labelBold {
-			text-align: left;
-			padding: 0.3rem 0.5rem;
-			font-weight: bold;
-		}
-		
-		.page-break {
-			height: 0;
-			page-break-after: always;
-			margin: 0;
-			border-top: none;
-		}
-		
-		.inlineTable {
-			width: 40%;
-			border: 2px solid black;
-		}
+		<style>		
+					
+			.border {
+				border: 1px solid #AFAFAF;
+				padding: 0.8rem; 
+			}
+			
+      .body-border {
+			  border: 1px solid #AFAFAF;
+		  }
+
+			.border-bottom {
+				border-bottom: 1px solid #AFAFAF;
+				padding: 0.8rem 0; 
+			}
+			
+			.labelBold {
+				text-align: left;
+				padding: 0.3rem 0.5rem;
+				font-weight: bold;
+			}
+			
+			.page-break {
+				height: 0;
+				page-break-after: always;
+				margin: 0;
+				border-top: none;
+			}
+			
 		</style>		 
 	</head>	
 	<body style="font-family: arial; font-size: large;">  
-		<table style="margin-top: 2rem;"> 	
-			<tr> 		
-				<td class="labelBold" width="30%">CONTRACT NO.</td>
-				<td width="70%" th:text="${reference}">Contract Number</td> 	
-			</tr> 	
+		
+		<table>
+      <tr>
+				<td class="labelBold" width="30%">Date of Issuance:</td>
+        <td width="60%" th:text="${contractDate}">Contract Date</td> 			 
+      </tr>
+      <tr>
+        <td class="labelBold" width="30%">Reference Number:</td>
+        <td width="60%" th:text="${reference}">Reference Number</td> 			 
+      </tr>
+    </table>
+    
+		<br><br>
+		
+		<div style="text-align: center;">
+		<span style="font-size: 1.6rem; font-weight: bold; text-decoration:underline;">
+			HALAL CERTIFICATE
+		</span>
+    </div>
+    <div style="text-align: center;">
+      <span style="font-size: 1.2rem; font-weight: bold; text-decoration:underline;">
+        ISSUED IN MALAYSIA
+      </span>
+      </div>
+    
+      <br><br>
+      <div style="text-align: center;">
+				<table width="100%">
+					
+					<tr><td>JABATAN KEMAJUAN ISLAM MALAYSIA</td></tr>
+					<tr><td>Kompleks Islam Putrajaya (KIP)</td></tr>
+					<tr><td>Aras 6 & 7, Blok D</td></tr>					
+					<tr><td>No. 3 Jalan Tun Abdul Razak</td></tr>
+					<tr><td>Presint 3, 62100 Putrajaya</td></tr>
+        </table>
+      </div>
+      <br><br><br>
+    <div><span style="font-size: 1.1rem; font-weight: bold;">Declaration by the Exporter</span></div>
+    <br>
+		<span>The undersigned hereby declares that the below details and statements are correct,       
+    </span>
+		<table style="margin-top: 1rem;width: 100%; border: 1px solid #AFAFAF; border-collapse: collapse;"> 	
 			<tr>
-				<td class="labelBold" width="30%">CONTRACT DATE</td>
-				<td width="70%" th:text="${contractDate}">Contract Date</td> 	
-			</tr> 	
-			<tr>
-				<td class="labelBold" width="30%">REFERENCE</td>
-				<td witdh="70%" th:text="${contractNo}">Reference</td> 	
-			</tr> 
-		</table> 
-		<table style="margin: 1rem 0 3rem 0;">			
-			<tr> 		
-				<td class="labelBold" width="30%">SELLER</td>
-				<td width="70%"> 			
-					<table class="noBorder"> 				
-						<tr>
-							<td style="padding: 0.3rem 0;" colspan="2" th:utext="${sellerName}">Seller Name</td> 				
-						</tr>
-						<tr> 					
-							<td style="padding: 0.3rem 0;" colspan="2" th:utext="${sellerAddress}">Seller Address</td>
-						</tr>
-						<tr> 					
-							<td style="padding: 0.3rem 0;" width="50%"><span class="labelBold" style="padding-left: 0;">Telephone: </span><span th:text="${sellerTelephoneNo}">Seller Telephone Number</span></td>							
-							<td width="50%"><span class="labelBold">Facsimile: </span><span th:text="${sellerFacsimile}">Seller Facsimile Number</span></td>							
-						</tr> 
-						<tr>
-							<td style="padding: 0.3rem 0;" colspan="2"><span class="labelBold" style="padding-left: 0;">Attention: </span><span th:text="${sellerAttention}">Seller Attention</span></td>
-						</tr>
-					</table> 		
-				</td> 	
-			</tr> 	
-			<tr>
-				<td class="labelBold" width="30%">BUYER</td> 		
-				<td width="70%">
-					<table class="noBorder"> 				
-						<tr>
-							<td style="padding: 0.3rem 0;" colspan="2" th:utext="${buyerName}">Buyer Name</td> 				
-						</tr>
-						<tr> 					
-							<td style="padding: 0.3rem 0;" colspan="2" th:utext="${buyerAddress}">Buyer Address</td>
-						</tr> 				
-						<tr> 					
-							<td style="padding: 0.3rem 0;" width="50%"><span class="labelBold" style="padding-left: 0;">Telephone: </span><span th:text="${buyerTelephoneNo}">Buyer Telephone Number</span></td>							
-							<td width="50%"><span class="labelBold">Facsimile: </span><span th:text="${buyerFacsimile}">Buyer Facsimile Number</span></td>							
-						</tr> 				
-						<tr> 					
-							<td style="padding: 0.3rem 0;" colspan="2"><span class="labelBold" style="padding-left: 0;">Attention: </span><span th:text="${buyerAttention}">Buyer Attention</span></td>
-						</tr>
-					</table> 		
-				</td> 	
-			</tr> 
-		</table>	  
-		<span style="margin-left: 1rem;">NOW THEREFORE, it is hereby agreed as follows:</span>
-		<table style="margin-top: 1rem;"> 	
-			<tr>
-				<th class="labelBold">PRODUCT</th> 		
-				<th class="labelBold">QUANTITY</th>
-				<th class="labelBold">PACKAGING</th> 		
-				<th class="labelBold">UNIT PRICE</th>
-				<th class="labelBold">TOTAL PRICE</th> 	
+				<th class="labelBold border">Description of Goods</th> 		
+				<th class="labelBold border">Quantity/Weight</th>
+				<th class="labelBold border">Packaging</th> 		
+				 	
 			</tr>
 			<tr th:each="orderItem, iter: ${orderItems}">
-				<td th:text="${orderItem.product.name}">Product</td>				
-				<td><span th:text="${#numbers.formatDecimal(orderItem.quantity, 0, 'COMMA', 0, 'POINT')}"></span><span style="margin-left: 0.5rem;" th:text="${orderItem.uomCode}"></span></td>
-				<td style="padding: 0.5rem;" th:utext="${orderItem.skuLabel}">Packaging</td>
-				<td><span th:text="${#numbers.formatDecimal(orderItem.invoicePrice, 0, 'COMMA', 0, 'POINT')}"></span><span style="margin-left: 0.5rem;" th:text="${currencyCode}"></span>/<span th:text="${orderItem.uomCode}"></span></td>				
-				<td><span th:text="${#numbers.formatDecimal(orderItem.amount, 0, 'COMMA', 0, 'POINT')}"></span><span style="margin-left: 0.5rem;" th:text="${currencyCode}"></span></td>				
+				<td class="border" th:text="${orderItem.product.name}">Product</td>
+				<td class="border" ><span th:text="${#numbers.formatDecimal(orderItem.quantity, 0, 'COMMA', 0, 'POINT')}"></span><span style="margin-left: 0.5rem;" th:text="${orderItem.uomCode}"></span></td>
+				<td class="border" th:utext="${orderItem.skuLabel}">Packaging</td>
 			</tr> 
 		</table> 
-		<table style="margin-top: 1rem;"> 	
+		<br>
+		<span>is/are manufactured by us and comply with the relevant origin criterion, 
+		which we have sold to our customer <span th:utext="${buyerName}">Buyer Name</span>.</span>
+		<br><br>
+		<span>All the goods were produced or processed in </span>
+		<br><br>
+		<table width="100%">
+			<td class="labelBold" width="20%" style="vertical-align: top; padding: 10px 0;">Address: </td>
+			<td width="80%">
+				<table width="100%">
+					<tr><td colspan="4" class="border-bottom"><span th:text="${sellerAddress}">Seller Address</span></td></tr>
+					<tr><td colspan="4" class="border-bottom"><span th:text="${cargoOrigin}">Cargo Origin</span></td></tr>
+					<tr>
+						<td style="width: 20%;">
+							<span class="labelBold" style="padding-left: 0;">Telephone: </span>
+						</td>
+						<td class="border-bottom" style="width: 30%;">
+							<span th:text="${buyerTelephoneNo}">Telephone Number</span>
+						</td>
+						<td style="width: 20%;">
+							<span class="labelBold" >Facsimile: </span>
+						</td>
+						<td class="border-bottom" style="width: 30%;">
+							<span th:text="${sellerFacsimile}">Facsimile Number</span>
+						</td>
+					</tr>						
+				</table>
+			</td> 			 
+		</table> 
+		<br><br>
+		<table class="border" style="margin-top: 1rem; border-collapse: collapse;"> 	
+		
+			<tr >
+				<td class="labelBold border" width="30%">CARGO ORIGIN</td>
+				<td class="border"  width="70%" th:text="${cargoOrigin}">Cargo Origin</td>
+			</tr> 	
+			<tr>
+				<td class="labelBold border" width="30%">TERMS OF DELIVERY</td>
+				<td class="border"  width="70%" th:text="${termOfDelivery}">Terms of Delivery</td> 	
+			</tr> 	
+			
 			<tr> 		
-				<td class="labelBold" width="30%">PRICE</td>
-				<td width="70%"> 			
-					<table class="noBorder">
-						<tr th:each="price, iter : ${prices}">
-							<td style="padding-left: 0;">
-								<!-- <span th:text="'Line item ' + ${iter.count} + ') '"></span> -->
-								<span th:text="${#numbers.formatDecimal(price, 0, 'COMMA', 0, 'POINT')}"></span><span style="margin-left: 0.5rem;" th:text="${currencyCode}"></span>
-							</td>
-						</tr>
-					</table>
-				</td> 	
-			</tr> 	
-			<tr>
-				<td class="labelBold" width="30%">CARGO ORIGIN</td>
-				<td width="70%" th:text="${cargoOrigin}">Cargo Origin</td>
-			</tr> 	
-			<tr>
-				<td class="labelBold" width="30%">TERMS OF DELIVERY</td>
-				<td width="70%" th:text="${termOfDelivery}">Terms of Delivery</td> 	
-			</tr> 	
-			<tr>
-				<td class="labelBold" width="30%">TOTAL PRICE</td>
-				<td width="70%"><span th:text="${#numbers.formatDecimal(totalPrice, 0, 'COMMA', 0, 'POINT')}"> </span><span style="margin-left: 0.5rem;" th:text="${currencyCode}"></td>				 
-			</tr> 	
-			<tr>
-				<td class="labelBold" width="30%">PAYMENT</td> 		
-				<td width="70%" th:text="${payment}">Payment</td>
-			</tr> 	
-			<tr> 		
-				<td class="labelBold" width="30%">DELIVERY DATE RANGE</td>
-				<td width="70%" th:text="${deliveryDateRange}">Delivery Date Range</td> 	
+				<td class="labelBold border" width="30%">DELIVERY DATE RANGE</td>
+				<td width="70%" class="border"  th:text="${deliveryDateRange}">Delivery Date Range</td> 	
 			</tr>
 			<tr th:each="deliveryTerm, iter: ${deliveryTerms}">
-				<td class="labelBold" width="30%" th:text="${deliveryTerm.label}">Delivery Title</td>
-				<td width="70%" th:text="${deliveryTerm.value}">Delivery Value</td> 								
+				<td class="labelBold border" width="30%" th:text="${deliveryTerm.label}">Delivery Term</td>
+				<td width="70%" class="border"  th:text="${deliveryTerm.value}">Delivery Value</td> 								
 			</tr>
-			<tr> 		
-				<td class="labelBold" width="30%">TERMS & CONDITIONS</td>
-				<td width="70%" th:utext="${termsConditions}">Delivery Date Range</td> 	
-			</tr>
-		</table> 
-		<!-- <div class="page-break"></div> -->
-		<br><br><br><br><br>
-		<div style="margin-top: 2rem;"> 
-			<table align="left" class="inlineTable">
-				<tr>
-					<td class="labelBold" width="30%">SELLER</td>
-					<td width="70%" th:utext="${sellerName}">Tax and Duties</td>         
-				</tr>
-				<tr>
-					<td class="labelBold" width="30%" style="vertical-align: top;">Signature</td>
-					<td width="70%" style="height: 5rem;"></td>
-				</tr>         
-				<tr>
-					<td class="labelBold" width="30%">Name</td>
-					<td width="70%"></td>         
-				</tr>
-				<tr>
-					<td class="labelBold" width="30%">Designation</td>
-					<td width="70%"></td>
-				</tr>
-			</table>     
-			<table align="right" class="inlineTable">         
-				<tr>
-					<td class="labelBold" width="30%">BUYER</td>
-					<td width="70%" th:utext="${buyerName}">Buyer</td>
-				</tr>
-				<tr>
-					<td class="labelBold" width="30%" style="vertical-align: top;">Signature</td>             
-					<td width="70%" style="height: 5rem;"></td>
-				</tr>
-				<tr>
-					<td class="labelBold" width="30%">Name</td>
-					<td width="70%"></td>
-				</tr>
-				<tr>
-					<td class="labelBold" width="30%">Designation</td>             
-					<td width="70%"></td>
-				</tr>
-			</table>
-		</div> 
+			
+    </table> 
+    <br><br><br>
+    <div><span style="font-size: 1.1rem; font-weight: bold;">Certification</span></div>
+    <br>
+    <span>It is hereby certified, on the basis of control carried out, that the declaration by the exporter is correct.      
+    </span>
+
+    <br><br><br>
+
+		<table width="45%" align="left" class="inlineTable" style="border-collapse: collapse;">
+      <tr>
+        <td class="labelBold border" width="30%">Exporter</td>
+        <td width="70%" class="border" th:utext="${sellerName}">Seller Name</td>         
+      </tr>
+      <tr>
+        <td class="labelBold border" width="30%" style="vertical-align: top;">Signature</td>
+        <td width="70%" class="border" style="height: 5rem;"></td>
+      </tr>         
+      <tr>
+        <td class="labelBold border" width="30%">Name</td>
+        <td width="70%" class="border" ></td>         
+      </tr>
+      <tr>
+        <td class="labelBold border" width="30%">Designation</td>
+        <td width="70%" class="border" ></td>
+      </tr>
+    </table>     
+    <table width="45%" align="right" class="inlineTable" style="border-collapse: collapse;">         
+      <tr>
+        <td class="labelBold border" width="30%">Certifcation</td>
+        <td width="70%" class="border">Jabatan Kemajuan Islam Malaysia</td>
+      </tr>
+      <tr>
+        <td class="labelBold border" width="30%" style="vertical-align: top;">Signature</td>             
+        <td width="70%" class="border" style="height: 5rem;"></td>
+      </tr>
+      <tr>
+        <td class="labelBold border" width="30%">Name</td>
+        <td width="70%" class="border" ></td>
+      </tr>
+      <tr>
+        <td class="labelBold border" width="30%">Designation</td>             
+        <td width="70%" class="border" ></td>
+      </tr>
+    </table>
 	</body> 
 </html>
