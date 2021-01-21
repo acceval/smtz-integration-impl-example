@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.http.HttpEntity;
@@ -20,6 +21,9 @@ import com.acceval.core.MicroServiceUtilException;
 
 public class MicroServiceUtil {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MicroServiceUtil.class);
+
+	//@Value("${micoservice.http}")
+	//static private String http;
 
 	public static Object getForObject(MicroServiceRequest microServiceRequest, Class<?> type)
 			throws MicroServiceUtilException {
@@ -47,10 +51,10 @@ public class MicroServiceUtil {
 			throw new MicroServiceUtilException(MicroServiceUtil.class, zuulService + " Service is Not Available!");
 		ServiceInstance instance = instances.get(0);
 		String host = instance.getHost();
-		String url = "http://" + msService.replaceFirst(Pattern.quote("/"), "") + "/" + msFunction + "/" + param;
+		String url = "https://" + msService.replaceFirst(Pattern.quote("/"), "") + "/" + msFunction + "/" + param;
 
-		String url2 = "http://" + instance.getHost() + ":" + instance.getPort() + "/" + msService.replaceFirst(Pattern.quote("/"), "") + "/"
-				+ msFunction + "/" + param;
+		String url2 = "https://" + instance.getHost() + ":" + instance.getPort() + "/" + msService.replaceFirst(Pattern.quote("/"), "")
+				+ "/" + msFunction + "/" + param;
 
 		if (mvmValue != null && !mvmValue.keySet().isEmpty()) {
 			UriComponentsBuilder uriCompBuilder = UriComponentsBuilder.fromHttpUrl(url2);
