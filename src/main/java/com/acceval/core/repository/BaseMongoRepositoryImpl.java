@@ -375,9 +375,18 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 	 */
 	@Override
 	public Object[] getMongoCriterias(Criteria acceCriteria) {
+		return getMongoCriterias(acceCriteria, getTargetClass());
+	}
+
+	/**
+	 * [0] mongo criteria, use for find()
+	 * [1] mongo match, use for aggregate()
+	 */
+	@Override
+	public Object[] getMongoCriterias(Criteria acceCriteria, Class<?> targetClass) {
 
 		/** append company criteria for BaseModel */
-		if (acceCriteria.isAutoAppendCompany() && BaseCompanyModel.class.isAssignableFrom(getTargetClass())
+		if (acceCriteria.isAutoAppendCompany() && BaseCompanyModel.class.isAssignableFrom(targetClass)
 				&& acceCriteria.getCriterion() != null) {
 			boolean companyKeyFound =
 					acceCriteria.getCriterion().stream().filter(c -> "companyId".equals(c.getPropertyName())).findFirst().isPresent();
@@ -436,7 +445,7 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 				lstOperation.add(Aggregation.match(org.springframework.data.mongodb.core.query.Criteria.where("_class").is(className)));
 				continue;
 			}
-			Object[] convertions = criterionToMongoCriteria(criterion);
+			Object[] convertions = criterionToMongoCriteria(criterion, targetClass);
 			if (convertions == null) continue;
 
 			/** for [0] */
@@ -466,9 +475,18 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 	 * [1] DBObject for date special handling
 	 */
 	private Object[] criterionToMongoCriteria(Criterion criterion) {
+		return criterionToMongoCriteria(criterion, getTargetClass());
+	}
+
+	/**
+	 * [0] mongo criteria
+	 * [1] DBObject for date special handling
+	 */
+	private Object[] criterionToMongoCriteria(Criterion criterion, Class<?> targetClass) {
 		String property = getMapPropertyResolver().containsKey(criterion.getPropertyName())
 				? getMapPropertyResolver().get(criterion.getPropertyName())
 				: criterion.getPropertyName();
+		property = StringUtils.isNotBlank(criterion.getAlternatePropertyName()) ? criterion.getAlternatePropertyName() : property;
 
 		Object value = criterion.getSearchValue();
 		Object[] values = criterion.getSearchValues();
@@ -476,7 +494,7 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 
 		Class<?> attrClass = null;
 		try {
-			Field field = this.getField(this.getTargetClass(), property);
+			Field field = this.getField(targetClass, property);
 
 			if (field == null) {
 				return null;
@@ -496,7 +514,8 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 		}
 		// LIKE
 		else if (!criterion.isExactSearch() && value instanceof String) {
-			return new Object[] { org.springframework.data.mongodb.core.query.Criteria.where(property).regex(this.escapeMetaCharacters(value.toString()), "i") };
+			return new Object[] { org.springframework.data.mongodb.core.query.Criteria.where(property)
+					.regex(this.escapeMetaCharacters(value.toString()), "i") };
 		}
 		// EQUAL
 		else if (Criterion.RestrictionType.EQUAL.equals(restrictionType)) {
@@ -544,16 +563,16 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 
 		return null;
 	}
-	
-	public String escapeMetaCharacters(String inputString){
-	    final String[] metaCharacters = {"(",")"};
 
-	    for (int i = 0 ; i < metaCharacters.length ; i++){
-	        if(inputString.contains(metaCharacters[i])){
-	            inputString = inputString.replace(metaCharacters[i],"\\"+metaCharacters[i]);
-	        }
-	    }
-	    return inputString;
+	public String escapeMetaCharacters(String inputString) {
+		final String[] metaCharacters = { "(", ")" };
+
+		for (int i = 0; i < metaCharacters.length; i++) {
+			if (inputString.contains(metaCharacters[i])) {
+				inputString = inputString.replace(metaCharacters[i], "\\" + metaCharacters[i]);
+			}
+		}
+		return inputString;
 	}
 
 	private LocalDateTime mongoDateHandling(Class<?> attrClass, Object value, RestrictionType restrictionType) {
