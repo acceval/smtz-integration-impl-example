@@ -30,6 +30,8 @@ public interface BaseMongoRepository<T> {
 
 	Object[] getMongoCriterias(Criteria acceCriteria);
 
+	Object[] getMongoCriterias(Criteria acceCriteria, Class<?> targetClass);
+
 	List<T> aggregateByCriteria(Criteria acceCriteria);
 
 	QueryResult<T> queryByCriteriaWithoutPagination(Criteria acceCriteria, Class<?> targetClass);
