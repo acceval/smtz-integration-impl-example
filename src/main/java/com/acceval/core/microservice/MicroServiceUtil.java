@@ -5,7 +5,6 @@ import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -23,7 +22,7 @@ import com.acceval.core.util.BaseBeanUtil;
 public class MicroServiceUtil {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MicroServiceUtil.class);
 
-	@Value("${micoservice.url}")
+	//	@Value("${micoservice.url}")
 	private String url;
 
 	public Object getForObject(MicroServiceRequest microServiceRequest, Class<?> type)
