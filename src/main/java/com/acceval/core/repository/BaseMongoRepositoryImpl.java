@@ -243,7 +243,6 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 
 		// base entity
 		if (!isOrCriteria && (!mapParam.containsKey("recordStatus") || StringUtils.isBlank(mapParam.getFirst("recordStatus")))
-				&& (!mapParam.containsKey("status") || StringUtils.isBlank(mapParam.getFirst("status")))
 				&& (BaseEntity.class.isAssignableFrom(targetClass) || BaseCompanyEntity.class.isAssignableFrom(targetClass))) {
 			acceCriteria.appendCriterion(new Criterion("recordStatus", STATUS.ACTIVE, true));
 		}
