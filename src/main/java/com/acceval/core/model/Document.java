@@ -15,15 +15,6 @@ public class Document extends BaseCompanyModel {
 	private String contentType;
 	private List<LabelValue> scannedTexts;
 	
-	private String uploadedTime;
-	
-	public String getUploadedTime() {
-		return uploadedTime;
-	}
-	public void setUploadTime(String uploadedTime) {
-		this.uploadedTime = uploadedTime;
-	}
-	
 	public LocalDateTime getUploadTime() {
 		return this.getCreated();
 	}
