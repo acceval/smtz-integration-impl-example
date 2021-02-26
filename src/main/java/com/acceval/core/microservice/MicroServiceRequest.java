@@ -7,13 +7,15 @@ import com.acceval.core.MicroServiceUtilException;
 public class MicroServiceRequest {
 
 	private String token;
+	private String companyID;
 	private String msService;
 	private String msFunction;
 	private String param;
 
-	public MicroServiceRequest(String token, String msService, String msFunction, String param) {
+	public MicroServiceRequest(String token, String companyID, String msService, String msFunction, String param) {
 		super();
 		this.token = token;
+		this.companyID = companyID;
 		this.msService = msService;
 		this.msFunction = msFunction;
 		this.param = param;
@@ -67,5 +69,13 @@ public class MicroServiceRequest {
 
 	public void setParam(String param) {
 		this.param = param;
+	}
+
+	public String getCompanyID() {
+		return companyID;
+	}
+
+	public void setCompanyID(String companyID) {
+		this.companyID = companyID;
 	}
 }

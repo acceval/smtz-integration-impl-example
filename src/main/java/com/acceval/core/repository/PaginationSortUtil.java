@@ -63,7 +63,8 @@ public class PaginationSortUtil {
 						"MS Sort Service is not define in POJO for [" + field.getName() + "] field!");
 			}
 
-			msRequest = new MicroServiceRequest(PrincipalUtil.getToken(), msService, msFunction, orderParam + "/" + isAsc + "/" + params);
+			msRequest = new MicroServiceRequest(PrincipalUtil.getToken(), PrincipalUtil.getCompanyID().toString(), msService, msFunction,
+					orderParam + "/" + isAsc + "/" + params);
 		} else {
 			throw new MicroServiceUtilException(PaginationSortUtil.class,
 					"Field [" + orderTarget + "] in [" + targetClass.getName() + "] is not support for sorting service.");
