@@ -15,6 +15,7 @@ public class EmailContentData implements Serializable {
     private String domainPath;
     private String template = "default";
 	private Map<String, Object> context;
+	private String sender;
 
     /** attachment */
     Map<String, Byte[]> lstAttachment = new LinkedHashMap<>();
@@ -26,6 +27,9 @@ public class EmailContentData implements Serializable {
         req.setSendCcTo(this.sendCcTo);
         req.setSubject(this.subject);
         req.setLstAttachment(this.lstAttachment);
+		if (this.sender != null) {
+			req.setSender(this.sender);
+		}
 
         return req;
     }
@@ -108,6 +112,14 @@ public class EmailContentData implements Serializable {
 
 	public void setDomainPath(String domainPath) {
 		this.domainPath = domainPath;
+	}
+
+	public String getSender() {
+		return sender;
+	}
+
+	public void setSender(String sender) {
+		this.sender = sender;
 	}
     
 }
