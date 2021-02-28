@@ -86,9 +86,10 @@ public class MicroServiceObjectUtil {
 					} else {
 						// multi-thread
 						String token = PrincipalUtil.getToken();
+						String companyID = PrincipalUtil.getCompanyID().toString();
 						executor.submit(() -> {
 							try {
-								refreshField(discoveryClient, restTemplate, token, target, field.getName(), isForceRefresh);
+								refreshField(discoveryClient, restTemplate, token, companyID, target, field.getName(), isForceRefresh);
 							} catch (Exception e) {
 								LOGGER.error(e.getMessage(), e);
 							}
@@ -137,8 +138,9 @@ public class MicroServiceObjectUtil {
 		OAuth2RestTemplate restTemplate = BaseBeanUtil.getBean(OAuth2RestTemplate.class);
 		DiscoveryClient discoveryClient = (DiscoveryClient) BaseBeanUtil.getBean(DiscoveryClient.class);
 		String token = PrincipalUtil.getToken();
+		String companyID = PrincipalUtil.getCompanyID().toString();
 
-		return refreshField(discoveryClient, restTemplate, token, target, fieldName, isForceRefresh);
+		return refreshField(discoveryClient, restTemplate, token, companyID, target, fieldName, isForceRefresh);
 	}
 
 	/**
@@ -147,8 +149,8 @@ public class MicroServiceObjectUtil {
 	 * @param isForceRefresh force refresh? Or do nothing if PK are same
 	 * @return object refreshed
 	 */
-	private boolean refreshField(DiscoveryClient discoveryClient, RestTemplate restTemplate, String token, Object target, String fieldName,
-			boolean isForceRefresh) throws MicroServiceUtilException, Exception {
+	private boolean refreshField(DiscoveryClient discoveryClient, RestTemplate restTemplate, String token, String companyID, Object target,
+			String fieldName, boolean isForceRefresh) throws MicroServiceUtilException, Exception {
 		Class<?> classToFind = target.getClass();
 
 		Field field = ReflectionUtils.findField(classToFind, fieldName);
@@ -264,11 +266,11 @@ public class MicroServiceObjectUtil {
 					mvm.add(msObject.primaryKey(), id);
 					mvm.add(GenericCommonController.KEY_ENTITY_CLASS, msObject.originEntityClass());
 					mvm.add(GenericCommonController.KEY_IS_COLLECTION, "true");
-					resJson = (String) microServiceUtil.getForObject(new MicroServiceRequest(token, msService, msFunction, ""), mvm,
-							String.class);
+					resJson = (String) microServiceUtil.getForObject(new MicroServiceRequest(token, companyID, msService, msFunction, ""),
+							mvm, String.class);
 				} else {
-					resJson =
-							(String) microServiceUtil.getForObject(new MicroServiceRequest(token, msService, msFunction, id), String.class);
+					resJson = (String) microServiceUtil.getForObject(new MicroServiceRequest(token, companyID, msService, msFunction, id),
+							String.class);
 				}
 				ObjectMapper maple = new ObjectMapper();
 				Field mockfield = ReflectionUtils.findField(classToFind, mockTarget);
@@ -279,10 +281,10 @@ public class MicroServiceObjectUtil {
 					MultiValueMap<String, String> mvm = new LinkedMultiValueMap<>();
 					mvm.add(msObject.primaryKey(), id);
 					mvm.add(GenericCommonController.KEY_ENTITY_CLASS, msObject.originEntityClass());
-					childObj = microServiceUtil.getForObject(new MicroServiceRequest(token, msService, msFunction, ""), mvm,
+					childObj = microServiceUtil.getForObject(new MicroServiceRequest(token, companyID, msService, msFunction, ""), mvm,
 							pdMockTarget.getPropertyType());
 				} else {
-					childObj = microServiceUtil.getForObject(new MicroServiceRequest(token, msService, msFunction, id),
+					childObj = microServiceUtil.getForObject(new MicroServiceRequest(token, companyID, msService, msFunction, id),
 							pdMockTarget.getPropertyType());
 				}
 			}
@@ -308,6 +310,7 @@ public class MicroServiceObjectUtil {
 		// multi-thread
 		for (MappingRequest mapping : lstMappingRequest) {
 			String token = PrincipalUtil.getToken();
+			String companyID = PrincipalUtil.getCompanyID().toString();
 			executor.submit(() -> {
 				Class<?> mappingClass = mapping.getMappingClass();
 				if (mappingClass.isAnnotationPresent(MicroServiceObject.class)) {
@@ -325,8 +328,8 @@ public class MicroServiceObjectUtil {
 
 					try {
 						Object mappedObj = microServiceUtil.getForObject(
-								new MicroServiceRequest(token, getServiceID(msObject), MicroServiceObject.COMMON_QUERY, ""), mapParam,
-								mappingClass);
+								new MicroServiceRequest(token, companyID, getServiceID(msObject), MicroServiceObject.COMMON_QUERY, ""),
+								mapParam, mappingClass);
 						if (mappedObj != null) {
 							Object targetField = ClassUtil.getProperty(mappedObj, strMappingField);
 							if (targetField != null) {

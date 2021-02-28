@@ -47,7 +47,7 @@ public class PrincipalUtil {
 	}
 
 	@NotNull
-	private static PrincipalProvider getProvider() {
+	public static PrincipalProvider getProvider() {
 		PrincipalProvider provider = PrincipalUtil.provider.get();
 
 		if (provider == null) {
