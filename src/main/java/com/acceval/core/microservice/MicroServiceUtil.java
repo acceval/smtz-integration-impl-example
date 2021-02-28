@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -17,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.acceval.core.MicroServiceUtilException;
+import com.acceval.core.cache.MSUtilCache;
 import com.acceval.core.util.BaseBeanUtil;
 
 @Service
@@ -26,18 +28,16 @@ public class MicroServiceUtil {
 	@Value("${micoservice.url}")
 	private String url;
 
-	public Object getForObject(MicroServiceRequest microServiceRequest, Class<?> type)
-			throws MicroServiceUtilException {
+	public Object getForObject(MicroServiceRequest microServiceRequest, Class<?> type) throws MicroServiceUtilException {
 		return getForObject(microServiceRequest, null, type);
 	}
 
-	public Object getForObject(MicroServiceRequest microServiceRequest, MultiValueMap<String, String> mvmValue,
-			Class<?> type) throws MicroServiceUtilException {
+	public Object getForObject(MicroServiceRequest microServiceRequest, MultiValueMap<String, String> mvmValue, Class<?> type)
+			throws MicroServiceUtilException {
 
 		/** null checking */
 		microServiceRequest.assertNull();
-		Optional.ofNullable(type)
-				.orElseThrow(() -> new MicroServiceUtilException(MicroServiceUtil.class, "REST Type is null."));
+		Optional.ofNullable(type).orElseThrow(() -> new MicroServiceUtilException(MicroServiceUtil.class, "REST Type is null."));
 
 		//		DiscoveryClient discoveryClient = microServiceRequest.getDiscoveryClient();
 		RestTemplate restTemplate = BaseBeanUtil.getBean(OAuth2RestTemplate.class);
@@ -46,6 +46,7 @@ public class MicroServiceUtil {
 		String msFunction = microServiceRequest.getMsFunction();
 		String param = microServiceRequest.getParam() == null ? "" : microServiceRequest.getParam();
 		String token = microServiceRequest.getToken();
+		String companyID = microServiceRequest.getCompanyID();
 
 		//		List<ServiceInstance> instances = discoveryClient.getInstances(zuulService);
 		//		if (instances.isEmpty())
@@ -54,8 +55,7 @@ public class MicroServiceUtil {
 		//		String host = instance.getHost();
 		//		String url = "http://" + msService.replaceFirst(Pattern.quote("/"), "") + "/" + msFunction + "/" + param;
 
-		String url2 = url + "/" + msService.replaceFirst(Pattern.quote("/"), "")
-				+ "/" + msFunction + "/" + param;
+		String url2 = url + "/" + msService.replaceFirst(Pattern.quote("/"), "") + "/" + msFunction + "/" + param;
 
 		if (mvmValue != null && !mvmValue.keySet().isEmpty()) {
 			UriComponentsBuilder uriCompBuilder = UriComponentsBuilder.fromHttpUrl(url2);
@@ -65,20 +65,22 @@ public class MicroServiceUtil {
 			url2 = uriCompBuilder.toUriString();
 		}
 
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Firing URL: " + url2);
-		}
 		try {
 			Object object = null;
-			if (token != null) {
-				HttpHeaders headers = new HttpHeaders();
-				// headers.setContentType(MediaType.APPLICATION_JSON);
-				headers.set("Authorization", token);
-				HttpEntity<String> entity = new HttpEntity<String>("", headers);
-				ResponseEntity respEntity = restTemplate.exchange(url2, HttpMethod.GET, entity, type);
-				object = respEntity.getBody();
+
+			/** caching */
+			MSUtilCache hazelcastCache = null;
+			try {
+				hazelcastCache = (MSUtilCache) BaseBeanUtil.getBean(MSUtilCache.class);
+			} catch (NoSuchBeanDefinitionException e) {
+				// not implementing cache
+			}
+
+			if (hazelcastCache == null) {
+				LOGGER.debug("Firing URL: " + url2);
+				object = fireRequest(restTemplate, token, url2, type);
 			} else {
-				object = restTemplate.getForObject(url2, type);
+				object = hazelcastCache.restTemplateExchange(this, restTemplate, token, url, url2, companyID, type);
 			}
 
 			return object;
@@ -87,5 +89,20 @@ public class MicroServiceUtil {
 		}
 
 		return null;
+	}
+
+	public Object fireRequest(RestTemplate restTemplate, String token, String url, Class<?> type) throws Throwable {
+		Object object = null;
+		if (token != null) {
+			HttpHeaders headers = new HttpHeaders();
+			// headers.setContentType(MediaType.APPLICATION_JSON);
+			headers.set("Authorization", token);
+			HttpEntity<String> entity = new HttpEntity<String>("", headers);
+			ResponseEntity respEntity = restTemplate.exchange(url, HttpMethod.GET, entity, type);
+			object = respEntity.getBody();
+		} else {
+			object = restTemplate.getForObject(url, type);
+		}
+		return object;
 	}
 }

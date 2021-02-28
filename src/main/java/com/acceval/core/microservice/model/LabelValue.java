@@ -1,5 +1,6 @@
 package com.acceval.core.microservice.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -13,7 +14,9 @@ import com.acceval.core.util.ClassUtil;
 /**
  * standard LabelValue to map back to Angular
  */
-public class LabelValue implements Comparable<LabelValue> {
+public class LabelValue implements Comparable<LabelValue>, Serializable {
+	private static final long serialVersionUID = 1L;
+
 	private String label;
 	private String label2;
 	private String label3;

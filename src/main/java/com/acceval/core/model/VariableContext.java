@@ -29,6 +29,15 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String COMPANY_ID = "COMPANY_ID";
 	public static final String COMPANY_CODE = "COMPANY_CODE";
 	public static final String DEFAULT_DECIMAL = "DEFAULT_DECIMAL";
+	public static final String SALES_HEADER_TOTAL_VOLUME = "SALESHEADERTOTALVOLUME";
+	public final static String REGION = "REGION";
+	public final static String INCOTERM = "INCOTERM";
+	public final static String NEGOTIATION_COCKPIT_TYPE = "NEGOTIATIONCOCKPITTYPE";
+	public final static String FORMULA = "FORMULA";
+	public final static String FORMULA_DESCRIPTION = "FORMULADESCRIPTION";
+	public final static String PAYMENT_TERM = "PAYMENTTERM";
+	public static final String CONTEXTKEY_SHIPPINGCONDITION = "SHIPPINGCONDITION";
+	public final static String ORIGIN_PORT = "ORIGINPORT";
 
 	public static final String DEFAULT_DATE_FORMAT = Criterion.DEFAULT_DATE_FORMAT;
 	public static final String DEFAULT_DATE_TIME_FORMAT = Criterion.DEFAULT_DATE_TIME_FORMAT;
@@ -40,10 +49,26 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String FLOOR_PRICE_TECHNIQUE_DECIDER = "FLOOR_PRICE_TECHNIQUE_DECIDER";
 	public static final String NORMALISATION_TECHNIQUE_DECIDER = "NORMALISATION_TECHNIQUE_DECIDER";
 
+	// Condition Table Code
+	public static final String CT_PRODUCT_BASE_PRICE = "PRODUCT_BASE_PRICE";
+	public static final String CT_STD_VALUE_CONDITION = "STD_VALUE_CONDITION";
+	public static final String CT_PRODUCT_LIST_PRICE_BY_COUNTRY = "PRODUCTLISTPRICEBYCOUNTRY";
+	public static final String CT_APPLICATIONPREMIUM = "APPLICATIONPREMIUM";
+
+	// Condition Table Values / context key
+	public static final String CONDVALUECODE_PRODUCT_BASE_PRICE_INCO = "PRODUCTINCOTERM";
+	public static final String CONDVALUECODE_PRODUCT_BASE_PACKAGING = "PRODUCTPACKAGING";
+	public static final String CONDVALUECODE_PRODUCT_BASE_REGION = "PRODUCTREGION";
+	public static final String CONDVALUECODE_PRODUCT_BASE_PAYMENT_TERM = "PRODUCTPAYMENT";
+	public static final String CONDVALUECODE_REFERENCEAPPLICATION = "REFERENCEAPPLICATION";
+
 	// Deal Mgt Object
 	public static final String OBJ_SALES_DOC = "salesDoc";
 	public static final String OBJ_SALES_ITEM = "salesItem";
 	public static final String OBJ_SALES_SCENARIO = "salesScenario";
+
+	// Object unique keys
+	public static final String CFR_INCOTERM = "CFR";
 
 	private Map<String, Object> variableMap = Collections.synchronizedMap(new HashMap<>());
 	private Long companyId;

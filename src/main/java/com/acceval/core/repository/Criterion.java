@@ -9,7 +9,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.MultiValueMap;
 
-public class Criterion implements Serializable {
+public class Criterion implements Serializable, Cloneable {
 
 	private static final long serialVersionUID = -467004656081639233L;
 	public static final String STRING = "STRING";
@@ -50,6 +50,7 @@ public class Criterion implements Serializable {
 	private boolean exactSearch = true;
 	private boolean searchStartWith = false;
 	private String propertyName;
+	private String alternatePropertyName; // mainly for mongo aggregration, need new name
 	private Object searchValue;
 	private Object[] searchValues;
 	private String searchValueDataType = STRING;
@@ -223,7 +224,14 @@ public class Criterion implements Serializable {
 
 	public boolean isSearchValueDataTypeDate() {
 		return DATE.equalsIgnoreCase(this.getSearchValueDataType());
+	}
 
+	public String getAlternatePropertyName() {
+		return alternatePropertyName;
+	}
+
+	public void setAlternatePropertyName(String alternatePropertyName) {
+		this.alternatePropertyName = alternatePropertyName;
 	}
 
 	public static void buildDefaultSortingDesc(MultiValueMap<String, String> mapParam, String... properties) {
@@ -308,9 +316,9 @@ public class Criterion implements Serializable {
 	}
 
 	@Override
-	public Object clone() {
+	public Criterion clone() {
 		try {
-			return super.clone();
+			return (Criterion) super.clone();
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 		}
