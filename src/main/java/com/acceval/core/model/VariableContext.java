@@ -126,6 +126,9 @@ public class VariableContext implements Serializable, Cloneable {
 	}
 
 	public <T> T getVariable(String key) {
+		if (this.variableMap == null) {
+			this.variableMap = Collections.synchronizedMap(new HashMap<>());
+		}
 		return (T) variableMap.get(key);
 	}
 
@@ -268,6 +271,10 @@ public class VariableContext implements Serializable, Cloneable {
 
 	public Map<String, Object> getNonBaseModelMap() {
 		Map<String, Object> map = new HashMap<>();
+		
+		if (this.getVariableMap() == null) {
+			return map;
+		}
 		for (String key : getVariableMap().keySet()) {
 			if (!(getVariableMap().get(key) instanceof BaseModel)) {
 				map.put(key, getVariableMap().get(key));
