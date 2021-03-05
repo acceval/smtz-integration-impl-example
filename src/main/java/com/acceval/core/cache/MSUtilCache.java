@@ -33,15 +33,20 @@ public class MSUtilCache implements CacheIF {
 		this.cacheInstance.getInstance().getConfig().addMapConfig(mapConfig);
 	}
 
+	private IMap<String, Object> getIMap(String companyID) {
+		String key = applicationName + companyID;
+		return cacheInstance.getInstance().getMap(key);
+	}
+
 	public Object restTemplateExchange(MicroServiceUtil service, RestTemplate restTemplate, String token, String baseUrl, String url,
 			String companyID, Class<?> type) throws Throwable {
 		String cacheKey = url.replace(baseUrl, companyID);
 		Long start = System.currentTimeMillis();
-		Object object = this.get(cacheKey);
+		Object object = this.get(cacheKey, companyID);
 		if (object == null) {
 			start = System.currentTimeMillis();
 			object = service.fireRequest(restTemplate, token, url, type);
-			this.put(cacheKey, object);
+			this.put(cacheKey, object, companyID);
 			logger.debug("%%%%%%%%% [fire] restTemplateExchange: " + (System.currentTimeMillis() - start) + " msec key: " + cacheKey);
 		} else {
 			logger.debug("%%%%%%%%% [cache] restTemplateExchange: " + (System.currentTimeMillis() - start) + " msec key: " + cacheKey);
@@ -49,37 +54,16 @@ public class MSUtilCache implements CacheIF {
 		return object;
 	}
 
-	public Object put(String key, Object object) {
-		IMap<String, Object> map = cacheInstance.getInstance().getMap(applicationName);
+	public Object put(String key, Object object, String companyID) {
+		if (object == null) return object;
+
+		IMap<String, Object> map = getIMap(companyID);
 		return map.putIfAbsent(key, object);
 	}
 
-	public Object get(String key) {
-		IMap<String, Object> map = cacheInstance.getInstance().getMap(applicationName);
+	public Object get(String key, String companyID) {
+		IMap<String, Object> map = getIMap(companyID);
 		return map.get(key);
-	}
-
-	private IMap<String, Object> getMap() {
-		return cacheInstance.getInstance().getMap(applicationName);
-	}
-
-	@Override
-	public void clearAll() {
-		getMap().clear();
-	}
-
-	@Override
-	public CacheInfo getCacheInfo() {
-		CacheInfo cacheInfo = new CacheInfo();
-		cacheInfo.setCacheClass(MSUtilCache.class.getName());
-		cacheInfo.setName(applicationName + " - Object Dependancy");
-		cacheInfo.setActiveCache(getMap().keySet().size());
-		return cacheInfo;
-	}
-
-	// TODO testing method
-	public HazelcastInstance testGetInstance() {
-		return cacheInstance.getInstance();
 	}
 
 	public void testGetAllService() {
@@ -97,9 +81,23 @@ public class MSUtilCache implements CacheIF {
 		//		}
 	}
 
-	public void testGetOtherService() {
-		IMap imap = testGetInstance().getDistributedObject("hz:impl:mapService", "masterdata-service");
-		System.out.println(imap.get("key"));
+	@Override
+	public void clearAll(String companyID) {
+		getIMap(companyID).clear();
+	}
+
+	@Override
+	public CacheInfo getCacheInfo(String companyID) {
+		CacheInfo cacheInfo = new CacheInfo();
+		cacheInfo.setServiceName(applicationName);
+		cacheInfo.setCacheClass(MSUtilCache.class.getName());
+		cacheInfo.setName("Microservice Object Dependancy");
+		cacheInfo.setActiveCache(getIMap(companyID).keySet().size());
+		return cacheInfo;
+	}
+
+	public HazelcastInstance getInstance() {
+		return cacheInstance.getInstance();
 	}
 
 }

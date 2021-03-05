@@ -2,7 +2,7 @@ package com.acceval.core.cache;
 
 public interface CacheIF {
 
-	void clearAll();
+	void clearAll(String companyID);
 
-	CacheInfo getCacheInfo();
+	CacheInfo getCacheInfo(String companyID);
 }
