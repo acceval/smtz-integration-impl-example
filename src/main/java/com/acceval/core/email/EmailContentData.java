@@ -9,6 +9,7 @@ public class EmailContentData implements Serializable {
     private String receiverName;
     private String[] sendTo;
     private String[] sendCcTo;
+	private String[] sendBccTo;
     private String subject;
     private String title;
     private String text;
@@ -29,6 +30,9 @@ public class EmailContentData implements Serializable {
         req.setLstAttachment(this.lstAttachment);
 		if (this.sender != null) {
 			req.setSender(this.sender);
+		}
+		if (this.sendBccTo != null) {
+			req.setSendBccTo(this.sendBccTo);
 		}
 
         return req;
@@ -120,6 +124,14 @@ public class EmailContentData implements Serializable {
 
 	public void setSender(String sender) {
 		this.sender = sender;
+	}
+
+	public String[] getSendBccTo() {
+		return sendBccTo;
+	}
+
+	public void setSendBccTo(String[] sendBccTo) {
+		this.sendBccTo = sendBccTo;
 	}
     
 }

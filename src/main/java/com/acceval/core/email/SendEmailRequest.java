@@ -11,6 +11,7 @@ public final class SendEmailRequest extends QueueRequest {
 
 	private String[] sendTo;
 	private String[] sendCcTo;
+	private String[] sendBccTo;
 	private String text;
 	private String subject;
 	private String sender;
@@ -80,6 +81,14 @@ public final class SendEmailRequest extends QueueRequest {
 
 	public void setSender(String sender) {
 		this.sender = sender;
+	}
+
+	public String[] getSendBccTo() {
+		return sendBccTo;
+	}
+
+	public void setSendBccTo(String[] sendBccTo) {
+		this.sendBccTo = sendBccTo;
 	}
 
 }
