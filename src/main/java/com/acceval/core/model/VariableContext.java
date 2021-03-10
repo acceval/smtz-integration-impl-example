@@ -54,6 +54,8 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String CT_STD_VALUE_CONDITION = "STD_VALUE_CONDITION";
 	public static final String CT_PRODUCT_LIST_PRICE_BY_COUNTRY = "PRODUCTLISTPRICEBYCOUNTRY";
 	public static final String CT_APPLICATIONPREMIUM = "APPLICATIONPREMIUM";
+	public static final String CT_NORMALISED_PRICE = "NORMALISEDPRICE";
+	public static final String CT_RULECONTRIBUTIONMARGIN = "RULECONTRIBUTIONMARGIN";
 
 	// Condition Table Values / context key
 	public static final String CONDVALUECODE_PRODUCT_BASE_PRICE_INCO = "PRODUCTINCOTERM";
@@ -69,6 +71,11 @@ public class VariableContext implements Serializable, Cloneable {
 
 	// Object unique keys
 	public static final String CFR_INCOTERM = "CFR";
+
+	// Workflow Violation
+	public static final String WFL_VIO_NORFLOORPRICE = "WFLVIONORFLOORPRICE";
+	public static final String WFL_VIO_CM = "WFLVIOCM";
+	public static final String WFL_VIO_EXCHANGE_RATE = "WFLEXCHANGERATE";
 
 	private Map<String, Object> variableMap = Collections.synchronizedMap(new HashMap<>());
 	private Long companyId;
