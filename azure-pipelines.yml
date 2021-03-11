@@ -30,6 +30,6 @@ steps:
 
 - task: PublishPipelineArtifact@1
   inputs:
-    targetPath: '$(Pipeline.Workspace)/target/ms-util-0.0.1-SNAPSHOT.jar'
+    targetPath: '$(Pipeline.Workspace)/s/target/ms-util-0.0.1-SNAPSHOT.jar'
     artifact: 'ms-util-0.0.1-SNAPSHOT.jar'
     publishLocation: 'pipeline'
