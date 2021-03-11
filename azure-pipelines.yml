@@ -22,7 +22,14 @@ steps:
     goals: 'package'
 
 - task: PublishBuildArtifacts@1
+  enabled: false
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'ms-util*.jar'
     publishLocation: 'Container'
+
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: '$(Pipeline.Workspace)/target/ms-util-0.0.1-SNAPSHOT.jar'
+    artifact: 'ms-util-0.0.1-SNAPSHOT.jar'
+    publishLocation: 'pipeline'
