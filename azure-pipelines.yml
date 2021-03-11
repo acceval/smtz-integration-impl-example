@@ -23,6 +23,6 @@ steps:
 
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)/enterprise'
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'ms-util*.jar'
     publishLocation: 'Container'
