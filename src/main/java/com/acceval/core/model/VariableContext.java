@@ -77,6 +77,9 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String WFL_VIO_CM = "WFLVIOCM";
 	public static final String WFL_VIO_EXCHANGE_RATE = "WFLEXCHANGERATE";
 
+	// Workflow Context
+	public static final String FORMULAPRICINGADJ = "FORMULAPRICINGADJ";
+
 	private Map<String, Object> variableMap = Collections.synchronizedMap(new HashMap<>());
 	private Long companyId;
 	private String companyCode;
