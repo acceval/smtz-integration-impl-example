@@ -1,6 +1,8 @@
 package com.acceval.core.util;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -35,5 +37,22 @@ public class NumberUtil {
 
 	public static double round(double number, int decimalPoint, int roundingMode) {
 		return new BigDecimal(number).setScale(decimalPoint, roundingMode).doubleValue();
+	}
+
+	public static String formatNumber(double num, int decimalPoint) {
+		StringBuffer format = new StringBuffer("#,###,###,##0");
+		if (decimalPoint > 0) {
+			format.append(".");
+			for (int i = 0; i < decimalPoint; i++) {
+				format.append("0");
+			}
+		}
+		return formatNumber(num, format.toString());
+	}
+
+	public static String formatNumber(double num, String fmt) throws NumberFormatException {
+		DecimalFormat df = new DecimalFormat(fmt);
+		df.setRoundingMode(RoundingMode.HALF_UP);
+		return df.format(num);
 	}
 }
