@@ -181,6 +181,10 @@ public class VariableContext implements Serializable, Cloneable {
 	}
 
 	public void setVariable(String key, Object value) {
+		
+		if (variableMap == null) {
+			variableMap = Collections.synchronizedMap(new HashMap<>());
+		}
 		if (value instanceof LocalDate) {
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT);
 			variableMap.put(key, ((LocalDate) value).format(formatter));
