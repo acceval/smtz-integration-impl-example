@@ -25,7 +25,7 @@ import com.acceval.core.util.BaseBeanUtil;
 public class MicroServiceUtil {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MicroServiceUtil.class);
 
-	@Value("${micoservice.url}")
+	@Value("${microservice.url}")
 	private String url;
 
 	public Object getForObject(MicroServiceRequest microServiceRequest, Class<?> type) throws MicroServiceUtilException {

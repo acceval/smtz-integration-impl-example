@@ -4,9 +4,11 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -56,6 +58,8 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String CT_APPLICATIONPREMIUM = "APPLICATIONPREMIUM";
 	public static final String CT_NORMALISED_PRICE = "NORMALISEDPRICE";
 	public static final String CT_RULECONTRIBUTIONMARGIN = "RULECONTRIBUTIONMARGIN";
+	public static final String CT_NORMALISED_PRICE_FOB = "NORMALISEDPRICEFOB";
+	public static final String CT_NEGOTIATED_DISCOUNT_CONTROL = "NEGOTIATEDDISCOUNTCONTROL";
 
 	// Condition Table Values / context key
 	public static final String CONDVALUECODE_PRODUCT_BASE_PRICE_INCO = "PRODUCTINCOTERM";
@@ -63,6 +67,10 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String CONDVALUECODE_PRODUCT_BASE_REGION = "PRODUCTREGION";
 	public static final String CONDVALUECODE_PRODUCT_BASE_PAYMENT_TERM = "PRODUCTPAYMENT";
 	public static final String CONDVALUECODE_REFERENCEAPPLICATION = "REFERENCEAPPLICATION";
+	public static final String CONDVALUECODE_ACCOUNT = "ACCOUNT";
+	public static final String CONDVALUECODE_DESIGNATION = "DESIGNATION";
+	public static final String CONDVALUECODE_NORMALISED_PRICE = "NORMALISEDPRICE";
+	public static final String CONDVALUECODE_MARGIN = "MARGIN";
 
 	// Deal Mgt Object
 	public static final String OBJ_SALES_DOC = "salesDoc";
@@ -71,11 +79,76 @@ public class VariableContext implements Serializable, Cloneable {
 
 	// Object unique keys
 	public static final String CFR_INCOTERM = "CFR";
+	public final static String EXW_INCOTERM = "EXW";
+	public final static String FOB_INCOTERM = "FOB";
+	public final static String CIF_INCOTERM = "CIF";
+	public final static String CIP_INCOTERM = "CIP";
+	public final static String DAP_INCOTERM = "DAP";
+	public final static String DDP_INCOTERM = "DDP";
+	public final static String FCA_INCOTERM = "FCA";
+	public final static String DAT_INCOTERM = "DAT";
 
 	// Workflow Violation
 	public static final String WFL_VIO_NORFLOORPRICE = "WFLVIONORFLOORPRICE";
 	public static final String WFL_VIO_CM = "WFLVIOCM";
 	public static final String WFL_VIO_EXCHANGE_RATE = "WFLEXCHANGERATE";
+	public static final String WFL_VIO_REPRICING = "[Repricing]";
+
+	// Workflow Context
+	public static final String FORMULAPRICINGADJ = "FORMULAPRICINGADJ";
+
+	// Negotiation Cockpit Component Code
+	public static final String COMPONENT_CM_ATP = "CMATP";
+	public static final String COMPONENT_NEGOTIATION_DISCOUNT = "NEGOTIATIONDISCOUNT";
+
+	public static enum WFL_VIOLATE {
+		CHANGED_PAYMENT_TERM("Violated Payment Term Credit Day"), DEAL_AMOUNT("Below Targeted Amount [?]"),
+		NORMALISED_PRICE(
+				"Violated Normalised Price Rule. Product: [?], Country: [?], Normalised Price [?], Targeted Normalised Floor Price: [?]"),
+		CONTRIBUTION_MARGIN(
+				"Violated Contribution Margin (Legal Book) Rule. Product [?], Contribution Margin (Legal Book): [?], Targeted Contribution Margin: [?]"),
+		FORMULA_PRICING_ITEM("Formula Pricing's Item. "), REVISED_CASE("Revised Case"),
+		NEGOTIATED_DISCOUNT(
+				"Violated Negotiated Discount Control. Product: [?], Negotiated Discount: [?], Target Negotiated Discount Control: [?]"),
+		SPOT_LOA("Violated Spot LOA."), CONTRACT_LOA("Violated Contract LOA."),
+		OVERRIDE_EXCHANGE_RATE("Overwrite Exchange Rate");
+
+		private final String msg;
+
+		public static List<String> getDealLvlViolateCodes() {
+			List<String> lst = new ArrayList<String>();
+
+			lst.add(FORMULA_PRICING_ITEM.toString());
+			lst.add(NORMALISED_PRICE.toString());
+			lst.add(CONTRIBUTION_MARGIN.toString());
+
+			return lst;
+		}
+
+		WFL_VIOLATE(String msg) {
+			this.msg = msg;
+		}
+
+		public String getCode() {
+			return this.name().toString();
+		}
+
+		public String getMsg() {
+			return msg;
+		}
+
+		public String getMsg(String[] args) {
+			String returnMsg = new String(msg);
+			if (args != null && args.length > 0) {
+				for (String arg : args) {
+					if (returnMsg.indexOf("?") > -1) {
+						returnMsg = returnMsg.replaceFirst("[?]", arg);
+					}
+				}
+			}
+			return returnMsg;
+		}
+	};
 
 	private Map<String, Object> variableMap = Collections.synchronizedMap(new HashMap<>());
 	private Long companyId;
@@ -108,6 +181,10 @@ public class VariableContext implements Serializable, Cloneable {
 	}
 
 	public void setVariable(String key, Object value) {
+		
+		if (variableMap == null) {
+			variableMap = Collections.synchronizedMap(new HashMap<>());
+		}
 		if (value instanceof LocalDate) {
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT);
 			variableMap.put(key, ((LocalDate) value).format(formatter));

@@ -1,7 +1,9 @@
 package com.acceval.core.cache;
 
 import java.util.Set;
+import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +18,7 @@ import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
 
 @Component
-@ConditionalOnProperty(name = "micoservice.cache", havingValue = "true")
+@ConditionalOnProperty(name = "microservice.cache", havingValue = "true")
 public class MSUtilCache implements CacheIF {
 
 	private static final Logger logger = LoggerFactory.getLogger(MSUtilCache.class);
@@ -24,8 +26,15 @@ public class MSUtilCache implements CacheIF {
 	private String applicationName;
 	private CacheInstance cacheInstance;
 
-	private MSUtilCache(@Value("${spring.application.name}") String applicationName, @Autowired CacheInstance cacheInstance) {
-		this.applicationName = applicationName;
+	private MSUtilCache(@Value("${microservice.env}") String env, @Value("${spring.application.name}") String applicationName,
+			@Autowired CacheInstance cacheInstance) {
+		if (StringUtils.isNotBlank(env) && StringUtils.containsIgnoreCase(env, "local")) {
+			UUID uuid = UUID.randomUUID();
+			this.applicationName = uuid.toString() + ":" + applicationName;
+		} else {
+			this.applicationName = env + ":" + applicationName;
+		}
+
 		this.cacheInstance = cacheInstance;
 		MapConfig mapConfig = new MapConfig(applicationName);
 		mapConfig.setTimeToLiveSeconds(CacheInstance.TIME_TO_LIVE_SECONDS);

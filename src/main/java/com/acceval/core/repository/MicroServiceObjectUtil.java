@@ -12,6 +12,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import javax.management.IntrospectionException;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,10 +102,14 @@ public class MicroServiceObjectUtil {
 						&& field.getGenericType().getTypeName().indexOf("com.acceval.sales.model.so.") == -1)
 						|| (field.getType().getTypeName().indexOf("com.acceval.sales.model.") > -1
 								&& field.getType().getTypeName().indexOf("com.acceval.sales.model.so.") == -1)) {
-					PropertyDescriptor getter = new PropertyDescriptor(field.getName(), field.getDeclaringClass());
-					Object childObj = getter.getReadMethod().invoke(target);
-					if (childObj != null && !childObj.getClass().isEnum()) {
-						refreshObjectDependency(childObj, isForceRefresh, restTemplate, discoveryClient);
+					try {
+						PropertyDescriptor getter = new PropertyDescriptor(field.getName(), field.getDeclaringClass());
+						Object childObj = getter.getReadMethod().invoke(target);
+						if (childObj != null && !childObj.getClass().isEnum()) {
+							refreshObjectDependency(childObj, isForceRefresh, restTemplate, discoveryClient);
+						}
+					} catch (Throwable ex) {
+						ex.printStackTrace();
 					}
 				}
 			}

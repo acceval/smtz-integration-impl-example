@@ -11,7 +11,7 @@ import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 
 @Component
-@ConditionalOnProperty(name = "micoservice.cache", havingValue = "true")
+@ConditionalOnProperty(name = "microservice.cache", havingValue = "true")
 public class CacheInstance {
 
 	public static final int TIME_TO_LIVE_SECONDS = 24 * 60 * 60;
