@@ -33,16 +33,25 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String DEFAULT_DECIMAL = "DEFAULT_DECIMAL";
 	public static final String SALES_HEADER_TOTAL_VOLUME = "SALESHEADERTOTALVOLUME";
 	public final static String REGION = "REGION";
-	public final static String INCOTERM = "INCOTERM";
 	public final static String NEGOTIATION_COCKPIT_TYPE = "NEGOTIATIONCOCKPITTYPE";
-	public final static String FORMULA = "FORMULA";
-	public final static String FORMULA_DESCRIPTION = "FORMULADESCRIPTION";
-	public final static String PAYMENT_TERM = "PAYMENTTERM";
-	public static final String CONTEXTKEY_SHIPPINGCONDITION = "SHIPPINGCONDITION";
-	public final static String ORIGIN_PORT = "ORIGINPORT";
+
 
 	public static final String DEFAULT_DATE_FORMAT = Criterion.DEFAULT_DATE_FORMAT;
 	public static final String DEFAULT_DATE_TIME_FORMAT = Criterion.DEFAULT_DATE_TIME_FORMAT;
+
+	public static final String TRIGGER_FROM_CPL = "TRIGGER_FROM_CPL"; // indicate sys flow from CPL calculation
+
+	public static final String CONTEXTKEY_EXCHANGE_RATE_OVERRIDE = "EXCHANGERATEOVERRIDE";
+	public static final String CONTEXTKEY_EXCHANGE_RATE_FROM_OVERRIDE = "EXCHANGERATEFROMOVERRIDE";
+	public static final String CONTEXTKEY_EXCHANGE_RATE_TO_OVERRIDE = "EXCHANGERATETOOVERRIDE";
+	public static final String CONTEXTCONFIGCODE_PRICESTATUS = "PRICESTATUS";
+
+	// formula exchange rate
+	public static final String FORMULA_EXCHANGE_RATE = "formulaExchangeRate";
+	public static final String FORMULA_EXCHANGE_RATE_TO_MYR = "formulaExchangeRateToMYR";
+	public static final String FORMULA_EXCHANGE_RATE_TO_THB = "formulaExchangeRateToTHB";
+	public static final String FORMULA_EXCHANGE_RATE_FOR_FINALALPHA = "formulaExchangeRateForFinalAlpha";
+	public static final String FORMULA_EXCHANGE_RATE_FOR_ALL_CURRENCIES = "formulaExchangeRateForAllCurrencies";
 
 	// Pricing Technique Condition Table Code
 	//public static final String PRICETECH_DECIDER = "PRICING_TECHNIQUE_DECIDER";
@@ -60,6 +69,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String CT_RULECONTRIBUTIONMARGIN = "RULECONTRIBUTIONMARGIN";
 	public static final String CT_NORMALISED_PRICE_FOB = "NORMALISEDPRICEFOB";
 	public static final String CT_NEGOTIATED_DISCOUNT_CONTROL = "NEGOTIATEDDISCOUNTCONTROL";
+	public static final String CT_EXCHANGE_RATE_DECIDER = "EXCHGRATEDECIDER";
 
 	// Condition Table Values / context key
 	public static final String CONDVALUECODE_PRODUCT_BASE_PRICE_INCO = "PRODUCTINCOTERM";
@@ -71,6 +81,8 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String CONDVALUECODE_DESIGNATION = "DESIGNATION";
 	public static final String CONDVALUECODE_NORMALISED_PRICE = "NORMALISEDPRICE";
 	public static final String CONDVALUECODE_MARGIN = "MARGIN";
+	public static final String CONDVALUECODE_FROM_CURRENCY = "FROMCURRENCY";
+	public static final String CONDVALUECODE_TO_CURRENCY = "TOCURRENCY";
 
 	// Deal Mgt Object
 	public static final String OBJ_SALES_DOC = "salesDoc";
@@ -88,6 +100,10 @@ public class VariableContext implements Serializable, Cloneable {
 	public final static String FCA_INCOTERM = "FCA";
 	public final static String DAT_INCOTERM = "DAT";
 
+	public static final String THB_CURRENCY = "THB";
+	public static final String MYR_CURRENCY = "MYR";
+	public static final String USD_CURRENCY = "USD";
+
 	// Workflow Violation
 	public static final String WFL_VIO_NORFLOORPRICE = "WFLVIONORFLOORPRICE";
 	public static final String WFL_VIO_CM = "WFLVIOCM";
@@ -100,6 +116,12 @@ public class VariableContext implements Serializable, Cloneable {
 	// Negotiation Cockpit Component Code
 	public static final String COMPONENT_CM_ATP = "CMATP";
 	public static final String COMPONENT_NEGOTIATION_DISCOUNT = "NEGOTIATIONDISCOUNT";
+	public final static String COMPONENT_FORMULA = "FORMULA";
+	public final static String COMPONENT_FORMULA_DESCRIPTION = "FORMULADESCRIPTION";
+	public final static String COMPONENT_PAYMENT_TERM = "PAYMENTTERM";
+	public static final String COMPONENT_SHIPPINGCONDITION = "SHIPPINGCONDITION";
+	public final static String COMPONENT_ORIGIN_PORT = "ORIGINPORT";
+	public final static String COMPONENT_INCOTERM = "INCOTERM";
 
 	public static enum WFL_VIOLATE {
 		CHANGED_PAYMENT_TERM("Violated Payment Term Credit Day"), DEAL_AMOUNT("Below Targeted Amount [?]"),
