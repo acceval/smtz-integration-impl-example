@@ -1082,7 +1082,7 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 			return null;
 		}
 
-		if (clazz.getSuperclass().equals(BaseEntity.class) || clazz.getSuperclass().equals(BaseCompanyEntity.class)) {
+		if (BaseEntity.class.equals(clazz.getSuperclass()) || BaseCompanyEntity.class.equals(clazz.getSuperclass())) {
 			if (clazz.isAnnotationPresent(Entity.class)) {
 				return clazz;
 			} else {
