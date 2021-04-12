@@ -18,6 +18,10 @@ import com.acceval.core.repository.Criterion;
 public class VariableContext implements Serializable, Cloneable {
 
 	private static final long serialVersionUID = 3457134321135281269L;
+	
+	public static final String ESTIMATED_BILING_DATE = "ESTIMATED_BILING_DATE";
+	public static final String BILING_DATE = "BILING_DATE";
+	public static final String DELIVERY_DATE = "DELIVERY_DATE";
 
 	public static final String CURRENCY_CODE = "CURRENCY_CODE";
 	public static final String UOM_CODE = "UOM_CODE";
