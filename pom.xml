@@ -230,12 +230,6 @@
 		<repository>
 			<id>Thundercloud</id>
 			<url>https://petronasvsts.pkgs.visualstudio.com/Thundercloud/_packaging/Thundercloud/maven/v1</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
 		</repository>
 	</distributionManagement>
 
