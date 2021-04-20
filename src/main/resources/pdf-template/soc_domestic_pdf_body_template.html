@@ -64,11 +64,7 @@
 			<tr>
 				<td class="labelBold" width="35%">AGREEMENT COMMENCEMENT DATE :</td>
 				<td width="65%" th:text="${agreementCommencementDate}">Agreement Commencement Date</td> 	
-			</tr> 
-			<tr>
-				<td class="labelBold" width="35%">AGREEMENT EXPIRY DATE :</td>
-				<td width="65%" th:text="${agreementExpiryDate}">Agreement Expiry Date</td> 	
-			</tr> 
+			</tr>
 			<tr> 		
 				<td class="labelBold" width="35%">SELLER</td>
 				<td width="65%"> 			
@@ -78,10 +74,6 @@
 						</tr>
 						<tr> 					
 							<td style="padding: 0.3rem 0;" colspan="2" th:utext="${sellerAddress}">Seller Address</td>
-						</tr>
-						<tr colspan="2"><td></td></tr>
-						<tr>
-							<td style="padding: 0.3rem 0;" colspan="2"><span style="padding-left: 0;">Attention: </span><span th:text="${sellerAttention}">Seller Attention</span></td>
 						</tr>
 					</table> 		
 				</td> 	
@@ -95,15 +87,7 @@
 						</tr>
 						<tr> 					
 							<td style="padding: 0.3rem 0;" colspan="2" th:utext="${buyerAddress}">Buyer Address</td>
-						</tr> 				
-						<tr colspan="2"><td></td></tr>
-						<tr> 					
-							<td style="padding: 0.3rem 0;" width="50%"><span style="padding-left: 0;">Telephone: </span><span th:text="${buyerTelephoneNo}">Buyer Telephone Number</span></td>							
-							<td width="50%"><span>Facsimile: </span><span th:text="${buyerFacsimile}">Buyer Facsimile Number</span></td>							
-						</tr> 			
-						<tr> 					
-							<td style="padding: 0.3rem 0;" colspan="2"><span style="padding-left: 0;">Attention: </span><span th:text="${buyerName}">Buyer Attention</span></td>
-						</tr>
+						</tr> 	
 					</table> 		
 				</td> 	
 			</tr> 			
@@ -117,14 +101,14 @@
 			<tr>
 				<th class="labelBold" style="text-align: center;">PRODUCT</th> 		
 				<th class="labelBold" style="text-align: center;">QUANTITY / VOLUME</th>
-				<th class="labelBold" style="text-align: center;">PACKAGING</th>	
+				<th class="labelBold" style="text-align: center;">CONTAINER SIZE</th>	
 				<th class="labelBold" style="text-align: center;">UNIT PRICE</th>
 				<th class="labelBold" style="text-align: center;">DESTINATION PORT / CITY</th> 	
 			</tr>
 			<tr th:each="orderItem, iter: ${orderItems}" style="text-align: center;">
 				<td th:text="${orderItem.productName}">Product</td>		
 				<td><span th:text="${#numbers.formatDecimal(orderItem.quantity, 0, 'COMMA', 0, 'POINT')}"></span><span style="margin-left: 0.5rem;" th:text="${orderItem.uomCode}"></span></td>
-				<td style="padding: 0.5rem;" th:utext="${orderItem.packaging}">Packaging</td>
+				<td style="padding: 0.5rem;" th:utext="${orderItem.containerSize}">Container Size</td>
 				<td><span th:text="${#numbers.formatDecimal(orderItem.invoicePrice, 0, 'COMMA', 0, 'POINT')}"></span><span style="margin-left: 0.5rem;" th:text="${currencyCode}"></span>/<span th:text="${orderItem.uomCode}"></span></td>				
 				<td><span th:text="${orderItem.destinationCountry}"></span></td>				
 			</tr> 
@@ -153,6 +137,10 @@
 			<tr>
 				<td width="30%">CARGO ORIGIN</td>
 				<td width="70%" th:text="${cargoOrigin}">Cargo Origin</td>
+			</tr> 	
+			<tr>
+				<td  width="30%">PACKAGING</td>
+				<td width="70%" th:text="${packagingTexts}">Pakaging</td> 	
 			</tr> 	
 			<tr>
 				<td  width="30%">TERMS OF DELIVERY</td>
