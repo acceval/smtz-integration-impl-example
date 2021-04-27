@@ -23,7 +23,7 @@ steps:
   - task: MavenAuthenticate@0
     inputs:
       artifactsFeeds: 'Thundercloud'
-      mavenServiceConnections: 'thundercloud-feed-connection'
+      mavenServiceConnections: 'artifacts-feed-connection'
 
   - task: Maven@3
     inputs:
