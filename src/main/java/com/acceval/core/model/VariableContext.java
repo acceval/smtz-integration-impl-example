@@ -63,6 +63,7 @@ public class VariableContext implements Serializable, Cloneable {
 	// Various Decider
 	public static final String FLOOR_PRICE_TECHNIQUE_DECIDER = "FLOOR_PRICE_TECHNIQUE_DECIDER";
 	public static final String NORMALISATION_TECHNIQUE_DECIDER = "NORMALISATION_TECHNIQUE_DECIDER";
+	public static final String CEV_TECHNIQUE_DECIDER = "CEV_TECHNIQUE_DECIDER";
 
 	// Condition Table Code
 	public static final String CT_PRODUCT_BASE_PRICE = "PRODUCT_BASE_PRICE";
@@ -81,6 +82,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String CONDFIELDCODE_NORMALISE_FOR_FLOOR_PRICE = "NORMALISE_FOR_FLOOR_PRICE";
 	public static final String CONDFIELDCODE_INVOICEDOCUMENT = "INVOICEDOCUMENT";
 	public static final String CONDFIELDCODE_SWAPINVOICE = "SWAPINVOICE";
+	public static final String CONDFIELDCODE_CEV_FOR_FLOOR_PRICE = "CEV_FOR_FLOOR_PRICE";
 
 	// Condition Table Values / context key
 	public static final String CONDVALUECODE_PRODUCT_BASE_PRICE_INCO = "PRODUCTINCOTERM";
