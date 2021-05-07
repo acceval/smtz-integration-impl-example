@@ -77,12 +77,16 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String CT_EXCHANGE_RATE_DECIDER = "EXCHGRATEDECIDER";
 	public static final String CT_SWAPINVOICE = "SWAPINVOICE";
 	public static final String CT_COSTOFCREDITTERM = "COSTOFCREDITTERM";
+	public static final String CT_HIST_REBATE = "HISREBATECOIM";
 
 	// Condition Table Fields / context key
 	public static final String CONDFIELDCODE_NORMALISE_FOR_FLOOR_PRICE = "NORMALISE_FOR_FLOOR_PRICE";
 	public static final String CONDFIELDCODE_INVOICEDOCUMENT = "INVOICEDOCUMENT";
 	public static final String CONDFIELDCODE_SWAPINVOICE = "SWAPINVOICE";
 	public static final String CONDFIELDCODE_CEV_FOR_FLOOR_PRICE = "CEV_FOR_FLOOR_PRICE";
+	public final static String CONDFIELDCODE_DOCUMENT_ID = "DOCUMENTID";
+	public final static String CONDFIELDCODE_SOLD_TO_CUSTOMER = "SOLDTOCUSTOMER";
+	public final static String CONDFIELDCODE_GRADE = "GRADE";
 
 	// Condition Table Values / context key
 	public static final String CONDVALUECODE_PRODUCT_BASE_PRICE_INCO = "PRODUCTINCOTERM";
