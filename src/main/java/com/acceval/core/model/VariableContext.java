@@ -70,7 +70,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String CT_STD_VALUE_CONDITION = "STD_VALUE_CONDITION";
 	public static final String CT_PRODUCT_LIST_PRICE_BY_COUNTRY = "PRODUCTLISTPRICEBYCOUNTRY";
 	public static final String CT_APPLICATIONPREMIUM = "APPLICATIONPREMIUM";
-	public static final String CT_NORMALISED_PRICE = "NORMALISEDPRICE";
+	public static final String CT_NORMALISED_PRICE = "STANDARD_FLOOR_PRICE";
 	public static final String CT_RULECONTRIBUTIONMARGIN = "RULECONTRIBUTIONMARGIN";
 	public static final String CT_NORMALISED_PRICE_FOB = "NORMALISEDPRICEFOB";
 	public static final String CT_NEGOTIATED_DISCOUNT_CONTROL = "NEGOTIATEDDISCOUNTCONTROL";
