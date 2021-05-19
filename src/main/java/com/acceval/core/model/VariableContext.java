@@ -38,7 +38,8 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String SALES_HEADER_TOTAL_VOLUME = "SALESHEADERTOTALVOLUME";
 	public final static String REGION = "REGION";
 	public final static String NEGOTIATION_COCKPIT_TYPE = "NEGOTIATIONCOCKPITTYPE";
-
+	public final static String PLANT = "PLANT";
+	public final static String BOM = "BOM";
 
 	public static final String DEFAULT_DATE_FORMAT = Criterion.DEFAULT_DATE_FORMAT;
 	public static final String DEFAULT_DATE_TIME_FORMAT = Criterion.DEFAULT_DATE_TIME_FORMAT;
