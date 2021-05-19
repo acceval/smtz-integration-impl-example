@@ -18,7 +18,7 @@ import com.acceval.core.repository.Criterion;
 public class VariableContext implements Serializable, Cloneable {
 
 	private static final long serialVersionUID = 3457134321135281269L;
-	
+
 	public static final String ESTIMATED_BILING_DATE = "ESTIMATED_BILING_DATE";
 	public static final String BILING_DATE = "BILING_DATE";
 	public static final String DELIVERY_DATE = "DELIVERY_DATE";
@@ -40,6 +40,14 @@ public class VariableContext implements Serializable, Cloneable {
 	public final static String NEGOTIATION_COCKPIT_TYPE = "NEGOTIATIONCOCKPITTYPE";
 	public final static String PLANT = "PLANT";
 	public final static String BOM = "BOM";
+	public final static String FORMULA = "FORMULA";
+	public final static String DOCUMENT_CATEGORY = "DOCUMENTCATEGORY";
+	public final static String PACKAGING = "PACKAGING";
+	public final static String PAYMENT_TERM = "PAYMENTTERM";
+	public final static String INCOTERM = "INCOTERM";
+	public static final String CONTEXTKEY_PALLETIZE = "PALLETIZE";
+	public static final String CONTEXTKEY_NORMALASING = "NORMALASING";
+	public final static String BYPASS_INCOTERM_DEPENDENCY = "BYPASSINCOTERMDEPENDENCY";
 
 	public static final String DEFAULT_DATE_FORMAT = Criterion.DEFAULT_DATE_FORMAT;
 	public static final String DEFAULT_DATE_TIME_FORMAT = Criterion.DEFAULT_DATE_TIME_FORMAT;
@@ -49,6 +57,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String CONTEXTKEY_EXCHANGE_RATE_OVERRIDE = "EXCHANGERATEOVERRIDE";
 	public static final String CONTEXTKEY_EXCHANGE_RATE_FROM_OVERRIDE = "EXCHANGERATEFROMOVERRIDE";
 	public static final String CONTEXTKEY_EXCHANGE_RATE_TO_OVERRIDE = "EXCHANGERATETOOVERRIDE";
+	public final static String CONTEXTKEY_MARKET_STRUCTURE_REGION = "MARKET_STRUCTURE_REGION";
 	public static final String CONTEXTCONFIGCODE_PRICESTATUS = "PRICESTATUS";
 
 	// formula exchange rate
@@ -59,7 +68,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String FORMULA_EXCHANGE_RATE_FOR_ALL_CURRENCIES = "formulaExchangeRateForAllCurrencies";
 
 	// Pricing Technique Condition Table Code
-	//public static final String PRICETECH_DECIDER = "PRICING_TECHNIQUE_DECIDER";
+	// public static final String PRICETECH_DECIDER = "PRICING_TECHNIQUE_DECIDER";
 
 	// Various Decider
 	public static final String FLOOR_PRICE_TECHNIQUE_DECIDER = "FLOOR_PRICE_TECHNIQUE_DECIDER";
@@ -79,6 +88,8 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String CT_SWAPINVOICE = "SWAPINVOICE";
 	public static final String CT_COSTOFCREDITTERM = "COSTOFCREDITTERM";
 	public static final String CT_HIST_REBATE = "HISREBATECOIM";
+	public static final String CT_PACKAGINGCOST = "PACKAGINGCOST";
+	public static final String CT_COUNTRYSTANDARDDEEMEDFREIGHT = "COUNTRYSTANDARDDEEMEDFREIGHT";
 
 	// Condition Table Fields / context key
 	public static final String CONDFIELDCODE_NORMALISE_FOR_FLOOR_PRICE = "NORMALISE_FOR_FLOOR_PRICE";
@@ -88,6 +99,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public final static String CONDFIELDCODE_DOCUMENT_ID = "DOCUMENTID";
 	public final static String CONDFIELDCODE_SOLD_TO_CUSTOMER = "SOLDTOCUSTOMER";
 	public final static String CONDFIELDCODE_GRADE = "GRADE";
+	public static final String CONDFIELDCODE_DOMESTIC = "DOMESTIC";
 
 	// Condition Table Values / context key
 	public static final String CONDVALUECODE_PRODUCT_BASE_PRICE_INCO = "PRODUCTINCOTERM";
@@ -101,6 +113,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String CONDVALUECODE_MARGIN = "MARGIN";
 	public static final String CONDVALUECODE_FROM_CURRENCY = "FROMCURRENCY";
 	public static final String CONDVALUECODE_TO_CURRENCY = "TOCURRENCY";
+	public static final String CONDVALUECODE_DGCWC_DG = "DG";
 
 	// Deal Mgt Object
 	public static final String OBJ_SALES_DOC = "salesDoc";
@@ -122,6 +135,10 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String MYR_CURRENCY = "MYR";
 	public static final String USD_CURRENCY = "USD";
 
+	public static final String PACK_CODE_BULK = "PC01";
+	public static final String MARINE_ISO = "MI";
+	public static final String MARINE_PACK = "MP";
+
 	// Workflow Violation
 	public static final String WFL_VIO_NORFLOORPRICE = "WFLVIONORFLOORPRICE";
 	public static final String WFL_VIO_CM = "WFLVIOCM";
@@ -140,6 +157,18 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String COMPONENT_SHIPPINGCONDITION = "SHIPPINGCONDITION";
 	public final static String COMPONENT_ORIGIN_PORT = "ORIGINPORT";
 	public final static String COMPONENT_INCOTERM = "INCOTERM";
+	public static final String COMPONENT_COMPOSITEOCEANFREIGHT = "COMPOSITEOCEANFREIGHT";
+	public static final String COMPONENT_INLANDHAULAGECOST = "INLANDHAULAGECOST";
+	public static final String COMPONENT_EXWTOFOBADJUSTMENT = "EXWTOFOBADJUSTMENT";
+	public static final String MARGICOMP_OCEANFREIGHTCOST_ACTUAL = "OCEANFREIGHTCOST(ACTUAL)";
+	public static final String COMPONENT_MARINEINSURANCE = "MARINEINSURANCE";
+	public static final String COMPONENT_LANDINSURANCE = "LANDINSURANCE";
+	public static final String MARGICOMP_TRUCKINGCOST_ACTUAL = "TRUCKINGCOST(ACTUAL)";
+	public static final String COMPONENT_CUSTOMDUTIES = "CUSTOMDUTIES";
+	public static final String COMPONENT_OCEANFREIGHTCHARGE = "OCEANFREIGHTCHARGE";
+	public static final String COMPONENT_TRUCKINGCOSTW2C = "TRUCKINGCOSTW2C";
+
+	public final static double DEFAULT_NOT_FOUND_NOR_FLOOR_PRICE_VALUE = 1000000;
 
 	public static enum WFL_VIOLATE {
 		CHANGED_PAYMENT_TERM("Violated Payment Term Credit Day"), DEAL_AMOUNT("Below Targeted Amount [?]"),
@@ -221,7 +250,7 @@ public class VariableContext implements Serializable, Cloneable {
 	}
 
 	public void setVariable(String key, Object value) {
-		
+
 		if (variableMap == null) {
 			variableMap = Collections.synchronizedMap(new HashMap<>());
 		}
@@ -395,7 +424,7 @@ public class VariableContext implements Serializable, Cloneable {
 
 	public Map<String, Object> getNonBaseModelMap() {
 		Map<String, Object> map = new HashMap<>();
-		
+
 		if (this.getVariableMap() == null) {
 			return map;
 		}
