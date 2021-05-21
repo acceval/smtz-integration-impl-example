@@ -1,9 +1,10 @@
 package com.acceval.core.integration.model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
-public class InvoiceResponse {
+public class InvoiceResponse implements Serializable {
     
     private List<Item> items;
 
@@ -15,7 +16,7 @@ public class InvoiceResponse {
         this.items = items;
     }
 
-    public static class Item {
+    public static class Item implements Serializable {
         private String entryTime;
         private LocalDate entryDate;
         private String salesOrganization;
