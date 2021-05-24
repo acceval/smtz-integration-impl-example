@@ -575,7 +575,7 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 		return inputString;
 	}
 
-	private LocalDateTime mongoDateHandling(Class<?> attrClass, Object value, RestrictionType restrictionType) {
+	protected LocalDateTime mongoDateHandling(Class<?> attrClass, Object value, RestrictionType restrictionType) {
 		if (ClassUtils.isAssignable(attrClass, Date.class) || ClassUtils.isAssignable(attrClass, LocalDateTime.class)
 				|| ClassUtils.isAssignable(attrClass, LocalDate.class)) {
 			int year = 0;
@@ -617,7 +617,7 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 		return null;
 	}
 
-	private DBObject dateFromString(String property, String operator, Object value) {
+	protected DBObject dateFromString(String property, String operator, Object value) {
 		String strDate = null;
 		if (value instanceof String) {
 			strDate = (String) value;
