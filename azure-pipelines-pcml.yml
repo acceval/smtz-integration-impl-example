@@ -15,11 +15,7 @@ trigger:
     - docs
     exclude:
     - docs/README.md
-    - /azure-pipelines*.yml
-    - /azure-pipelines*.yaml
-pr:
-  autoCancel: false
-  drafts: false
+pr: none
 
 pool:
   vmImage: ubuntu-latest
