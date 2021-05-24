@@ -9,7 +9,7 @@ public class PackagingTypeResponse implements Serializable {
     private String objectType;
     private String product;
     private String classType;
-    private String characteristics;
+    private String classValue;
 
     private List<Item> items;
 
@@ -37,12 +37,12 @@ public class PackagingTypeResponse implements Serializable {
         this.classType = classType;
     }
 
-    public String getCharacteristics() {
-        return characteristics;
+    public String getClassValue() {
+        return classValue;
     }
 
-    public void setCharacteristics(String characteristics) {
-        this.characteristics = characteristics;
+    public void setClassValue(String classValue) {
+        this.classValue = classValue;
     }
 
     public List<Item> getItems() {
