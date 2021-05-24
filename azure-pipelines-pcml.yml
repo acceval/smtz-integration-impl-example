@@ -11,8 +11,6 @@ trigger:
       - master
       - release/*
   paths:
-    include:
-    - docs
     exclude:
     - docs/README.md
 pr: none
