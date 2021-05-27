@@ -168,6 +168,16 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String COMPONENT_OCEANFREIGHTCHARGE = "OCEANFREIGHTCHARGE";
 	public static final String COMPONENT_TRUCKINGCOSTW2C = "TRUCKINGCOSTW2C";
 
+	// Market Price Type
+	public static final String HISTORICAL = "HISTORICAL";
+	public static final String PROJECTION = "PROJECTION";
+
+	// Business Unit
+	public static final String METHANOL = "Methanol";
+	public static final String ANF = "AnF";
+	public static final String OGD = "OGD";
+	public static final String POLYMER = "Polymer";
+
 	public final static double DEFAULT_NOT_FOUND_NOR_FLOOR_PRICE_VALUE = 1000000;
 
 	public static enum WFL_VIOLATE {
