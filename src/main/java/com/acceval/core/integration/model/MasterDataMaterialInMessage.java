@@ -133,6 +133,9 @@ public class MasterDataMaterialInMessage implements Serializable {
 		private String deliveryPlant; // Done
 		private String salesUom; // Done
 		private String packaging;
+		private String materialGroup1;
+		private String materialGroup2;
+		private String materialGroup3;
 
 		public String getSalesOrganisation() {
 			return salesOrganisation;
@@ -183,7 +186,31 @@ public class MasterDataMaterialInMessage implements Serializable {
 		public void setPackaging(String packaging) {
 			this.packaging = packaging;
 		}
-	}
+
+        public String getMaterialGroup1() {
+            return materialGroup1;
+        }
+
+        public void setMaterialGroup1(String materialGroup1) {
+            this.materialGroup1 = materialGroup1;
+        }
+
+        public String getMaterialGroup2() {
+            return materialGroup2;
+        }
+
+        public void setMaterialGroup2(String materialGroup2) {
+            this.materialGroup2 = materialGroup2;
+        }
+
+        public String getMaterialGroup3() {
+            return materialGroup3;
+        }
+
+        public void setMaterialGroup3(String materialGroup3) {
+            this.materialGroup3 = materialGroup3;
+        }
+    }
 
 	public List<PlantItem> getPlantItems() {
 		return plantItems;
