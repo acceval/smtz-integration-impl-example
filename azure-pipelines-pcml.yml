@@ -11,12 +11,8 @@ trigger:
       - master
       - release/*
   paths:
-    include:
-    - docs
     exclude:
     - docs/README.md
-    - /azure-pipelines*.yml
-    - /azure-pipelines*.yaml
 pr: none
 
 pool:
