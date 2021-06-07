@@ -3,6 +3,8 @@ package com.acceval.core.microservice;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
+import com.acceval.core.security.CurrentUser;
+import com.acceval.core.security.PrincipalUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -93,16 +95,53 @@ public class MicroServiceUtil {
 
 	public Object fireRequest(RestTemplate restTemplate, String token, String url, Class<?> type) throws Throwable {
 		Object object = null;
-		if (token != null) {
-			HttpHeaders headers = new HttpHeaders();
-			// headers.setContentType(MediaType.APPLICATION_JSON);
-			headers.set("Authorization", token);
-			HttpEntity<String> entity = new HttpEntity<String>("", headers);
-			ResponseEntity respEntity = restTemplate.exchange(url, HttpMethod.GET, entity, type);
-			object = respEntity.getBody();
-		} else {
-			object = restTemplate.getForObject(url, type);
-		}
+
+        HttpHeaders headers = buildHeaders(token);
+        HttpEntity<String> entity = new HttpEntity<String>("", headers);
+        ResponseEntity respEntity = restTemplate.exchange(url, HttpMethod.GET, entity, type);
+        object = respEntity.getBody();
+
+//		object = restTemplate.getForObject(url, type);
+
 		return object;
 	}
+
+	private HttpHeaders buildHeaders(String token) {
+        HttpHeaders headers = new HttpHeaders();
+
+        if (token != null) {
+
+            headers.set("Authorization", token);
+
+            CurrentUser user = PrincipalUtil.getCurrentUser();
+
+            headers.set(PrincipalUtil.HDRKEY_COMPANYID, String.valueOf(user.getCompanyId()));
+            headers.set(PrincipalUtil.HDRKEY_COMPANYCODE, user.getCompanyCode());
+            headers.set(PrincipalUtil.HDRKEY_SCHEMANAME, user.getSchemaName());
+            headers.set(PrincipalUtil.HDRKEY_TIMEZONEID, user.getTimeZone());
+            if (user.getServicePackage() != null) {
+                headers.set(PrincipalUtil.HDRKEY_SERVICEPACKAGE, user.getServicePackage().toString());
+            }
+
+        } else {
+            CurrentUser user = PrincipalUtil.getSystemUser();
+
+            if (user != null) {
+                headers.set(PrincipalUtil.HDRKEY_COMPANYID, String.valueOf(user.getCompanyId()));
+                headers.set(PrincipalUtil.HDRKEY_COMPANYCODE, user.getCompanyCode());
+                headers.set(PrincipalUtil.HDRKEY_SCHEMANAME, user.getSchemaName());
+                headers.set(PrincipalUtil.HDRKEY_TIMEZONEID, user.getTimeZone());
+                if (user.getServicePackage() != null) {
+                    headers.set(PrincipalUtil.HDRKEY_SERVICEPACKAGE, user.getServicePackage().toString());
+                }
+            } else {
+                headers.set(PrincipalUtil.HDRKEY_COMPANYID, "");
+                headers.set(PrincipalUtil.HDRKEY_COMPANYCODE, "");
+                headers.set(PrincipalUtil.HDRKEY_SCHEMANAME, "");
+                headers.set(PrincipalUtil.HDRKEY_TIMEZONEID, "");
+            }
+        }
+
+        return headers;
+    }
 }
