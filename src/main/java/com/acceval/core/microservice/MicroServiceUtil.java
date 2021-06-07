@@ -115,12 +115,14 @@ public class MicroServiceUtil {
 
             CurrentUser user = PrincipalUtil.getCurrentUser();
 
-            headers.set(PrincipalUtil.HDRKEY_COMPANYID, String.valueOf(user.getCompanyId()));
-            headers.set(PrincipalUtil.HDRKEY_COMPANYCODE, user.getCompanyCode());
-            headers.set(PrincipalUtil.HDRKEY_SCHEMANAME, user.getSchemaName());
-            headers.set(PrincipalUtil.HDRKEY_TIMEZONEID, user.getTimeZone());
-            if (user.getServicePackage() != null) {
-                headers.set(PrincipalUtil.HDRKEY_SERVICEPACKAGE, user.getServicePackage().toString());
+            if (user != null) {
+                headers.set(PrincipalUtil.HDRKEY_COMPANYID, String.valueOf(user.getCompanyId()));
+                headers.set(PrincipalUtil.HDRKEY_COMPANYCODE, user.getCompanyCode());
+                headers.set(PrincipalUtil.HDRKEY_SCHEMANAME, user.getSchemaName());
+                headers.set(PrincipalUtil.HDRKEY_TIMEZONEID, user.getTimeZone());
+                if (user.getServicePackage() != null) {
+                    headers.set(PrincipalUtil.HDRKEY_SERVICEPACKAGE, user.getServicePackage().toString());
+                }
             }
 
         } else {
