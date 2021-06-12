@@ -35,10 +35,16 @@ public class NumberUtil {
 	}
 
 	public static double round(double number, int decimalPoint) {
+		if (Double.isNaN(number)) {
+			number = 0;
+		}
 		return new BigDecimal(number).setScale(decimalPoint, BigDecimal.ROUND_HALF_UP).doubleValue();
 	}
 
 	public static double round(double number, int decimalPoint, int roundingMode) {
+		if (Double.isNaN(number)) {
+			number = 0;
+		}
 		return new BigDecimal(number).setScale(decimalPoint, roundingMode).doubleValue();
 	}
 
