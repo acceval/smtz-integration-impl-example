@@ -137,7 +137,7 @@
 				<td th:text="${orderItem.product.name}">Product</td>				
 				<td><span th:text="${#numbers.formatDecimal(orderItem.quantity, 0, 'COMMA', 0, 'POINT')}"></span><span style="margin-left: 0.5rem;" th:text="${orderItem.uomCode}"></span></td>
 				<td style="padding: 0.5rem;" th:utext="${orderItem.skuLabel}">Packaging</td>
-				<td><span th:text="${#numbers.formatDecimal(orderItem.invoicePrice, 0, 'COMMA', 0, 'POINT')}"></span><span style="margin-left: 0.5rem;" th:text="${currencyCode}"></span>/<span th:text="${orderItem.uomCode}"></span></td>				
+				<td><span th:text="${#numbers.formatDecimal(orderItem.invoicePrice, 0, 'COMMA', 2, 'POINT')}"></span><span style="margin-left: 0.5rem;" th:text="${currencyCode}"></span>/<span th:text="${orderItem.uomCode}"></span></td>				
 				<td><span th:text="${#numbers.formatDecimal(orderItem.amount, 0, 'COMMA', 0, 'POINT')}"></span><span style="margin-left: 0.5rem;" th:text="${currencyCode}"></span></td>				
 			</tr> 
 		</table>
