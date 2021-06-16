@@ -2,7 +2,9 @@ package com.acceval.core.util;
 
 import java.util.Iterator;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
 public class JsonNodeUtil {
@@ -41,6 +43,17 @@ public class JsonNodeUtil {
 		JsonNode jNode = recursiveProperty(node, property);
 		if (jNode != null && jNode instanceof ArrayNode) {
 			return ((ArrayNode) jNode).elements();
+		}
+		return null;
+	}
+
+	public static Object getAsObject(JsonNode node, String property, Class<?> clz) {
+		ObjectMapper objectMapper = new ObjectMapper();
+		JsonNode nodeProp = get(node, property);
+		try {
+			return objectMapper.treeToValue(nodeProp, clz);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
 		}
 		return null;
 	}
