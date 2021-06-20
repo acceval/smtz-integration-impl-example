@@ -19,6 +19,7 @@ public class Criterion implements Serializable, Cloneable {
 	public static final String DEFAULT_DATE_TIME_FORMAT = "dd-MM-yyyy HH:mm:ss";
 
 	public static final String DEFAULT_MONGO_DATE_FORMAT = "%d-%m-%Y";
+	public static final String DEFAULT_MONGO_DATE_TIME_FORMAT = "%d-%m-%Y %H:%M:%S";
 
 	public static final String SIGN_LESS_OR_EQUAL = "<=";
 	public static final String SIGN_GREATER_OR_EQUAL = ">=";

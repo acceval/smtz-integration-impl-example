@@ -50,6 +50,7 @@ public class JsonNodeUtil {
 	public static Object getAsObject(JsonNode node, String property, Class<?> clz) {
 		ObjectMapper objectMapper = new ObjectMapper();
 		JsonNode nodeProp = get(node, property);
+		if (nodeProp == null) return null;
 		try {
 			return objectMapper.treeToValue(nodeProp, clz);
 		} catch (JsonProcessingException e) {
