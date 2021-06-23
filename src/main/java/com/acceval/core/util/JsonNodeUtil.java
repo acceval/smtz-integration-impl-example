@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 public class JsonNodeUtil {
 
@@ -49,6 +50,7 @@ public class JsonNodeUtil {
 
 	public static Object getAsObject(JsonNode node, String property, Class<?> clz) {
 		ObjectMapper objectMapper = new ObjectMapper();
+		objectMapper.registerModule(new JavaTimeModule());
 		JsonNode nodeProp = get(node, property);
 		if (nodeProp == null) return null;
 		try {
