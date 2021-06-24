@@ -47,6 +47,17 @@ public class JsonNodeUtil {
 		}
 		return null;
 	}
+	
+	public static Object convertJsonNode(JsonNode node, Class<?> clz) {
+		ObjectMapper objectMapper = new ObjectMapper();
+		objectMapper.registerModule(new JavaTimeModule());				
+		try {
+			return objectMapper.treeToValue(node, clz);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 	public static Object getAsObject(JsonNode node, String property, Class<?> clz) {
 		ObjectMapper objectMapper = new ObjectMapper();
