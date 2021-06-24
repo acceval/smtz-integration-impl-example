@@ -122,6 +122,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String OBJ_SALES_DOC = "salesDoc";
 	public static final String OBJ_SALES_ITEM = "salesItem";
 	public static final String OBJ_SALES_SCENARIO = "salesScenario";
+	public static final String REBATE_CONFIG = "REBATE_CONFIG";
 
 	// Object unique keys
 	public static final String CFR_INCOTERM = "CFR";
@@ -265,7 +266,7 @@ public class VariableContext implements Serializable, Cloneable {
 	}
 
 	public void setVariable(String key, Object value) {
-
+		
 		if (variableMap == null) {
 			variableMap = Collections.synchronizedMap(new HashMap<>());
 		}
