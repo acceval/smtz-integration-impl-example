@@ -188,7 +188,7 @@ public class VariableContext implements Serializable, Cloneable {
 		CHANGED_PAYMENT_TERM("Violated Payment Term Credit Day"), DEAL_AMOUNT("Below Targeted Amount [?]"),
 		NORMALISED_PRICE(
 				"Violated Normalised Price Rule. Product: [?], Country: [?], Normalised Price [?], Targeted Normalised Floor Price: [?]"),
-		NORMALISED_ALPHA(
+		NORMALISED_ALPHA_TEST(
 				"Violated Normalised Alpha Rule. Product: [?], Country: [?], Normalised Alpha [?], Targeted Normalised Alpha: [?]"),
 		CONTRIBUTION_MARGIN(
 				"Violated Contribution Margin (Legal Book) Rule. Product [?], Contribution Margin (Legal Book): [?], Targeted Contribution Margin: [?]"),
