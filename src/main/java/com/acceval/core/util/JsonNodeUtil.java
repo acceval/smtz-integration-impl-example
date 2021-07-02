@@ -82,6 +82,6 @@ public class JsonNodeUtil {
 			}
 		}
 
-		return node;
+		return node.isNull() ? null : node;
 	}
 }

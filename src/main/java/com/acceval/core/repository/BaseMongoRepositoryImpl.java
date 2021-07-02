@@ -3,10 +3,8 @@ package com.acceval.core.repository;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -35,7 +33,6 @@ import org.springframework.util.MultiValueMap;
 
 import com.acceval.core.model.BaseEntity;
 import com.acceval.core.model.BaseEntity.STATUS;
-import com.acceval.core.model.VariableContext;
 import com.acceval.core.model.company.BaseCompanyEntity;
 import com.acceval.core.model.company.BaseCompanyModel;
 import com.acceval.core.repository.Criterion.RestrictionType;
@@ -630,31 +627,22 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 	}
 
 	protected DBObject dateFromString(String property, String operator, Object value, Class<?> attrClass) {
-		String mongoDateFormat = (ClassUtils.isAssignable(attrClass, Date.class) || ClassUtils.isAssignable(attrClass, LocalDateTime.class))
-				? Criterion.DEFAULT_MONGO_DATE_TIME_FORMAT
-				: Criterion.DEFAULT_MONGO_DATE_FORMAT;
-		String dateFormat = Criterion.DEFAULT_MONGO_DATE_TIME_FORMAT.equals(mongoDateFormat) ? VariableContext.DEFAULT_DATE_TIME_FORMAT
-				: VariableContext.DEFAULT_DATE_FORMAT;
+		//		String mongoDateFormat = (ClassUtils.isAssignable(attrClass, Date.class) || ClassUtils.isAssignable(attrClass, LocalDateTime.class))
+		//				? Criterion.DEFAULT_MONGO_DATE_TIME_FORMAT
+		//				: Criterion.DEFAULT_MONGO_DATE_FORMAT;
+		//		String dateFormat = Criterion.DEFAULT_MONGO_DATE_TIME_FORMAT.equals(mongoDateFormat) ? VariableContext.DEFAULT_DATE_TIME_FORMAT
+		//				: VariableContext.DEFAULT_DATE_FORMAT;
 
-		String strDate = null;
 		if (value instanceof String) {
-			strDate = (String) value;
-		} else if (value instanceof Date) {
-			strDate = new SimpleDateFormat(dateFormat).format((Date) value);
-		} else if (value instanceof LocalDate) {
-			LocalDate vLocalDate = (LocalDate) value;
-			strDate = vLocalDate.format(DateTimeFormatter.ofPattern(dateFormat));
-		} else if (value instanceof LocalDateTime) {
-			LocalDateTime vLocalDate = (LocalDateTime) value;
-			strDate = vLocalDate.format(DateTimeFormatter.ofPattern(dateFormat));
+			value = TimeZoneUtil.returnTimeZone((String) value);
 		}
+		if (value == null) return null;
 
-		if (strDate == null) return null;
-
-		return new BasicDBObject("$expr",
-				new BasicDBObject(operator,
-						new Object[] { "$" + property, new BasicDBObject("$dateFromString", new BasicDBObject("dateString", strDate)
-								.append("format", mongoDateFormat).append("timezone", ZoneId.systemDefault().toString())) }));
+		//		return new BasicDBObject("$expr",
+		//				new BasicDBObject(operator,
+		//						new Object[] { "$" + property, new BasicDBObject("$dateFromString", new BasicDBObject("dateString", strDate)
+		//								.append("format", mongoDateFormat).append("timezone", ZoneId.systemDefault().toString())) }));
+		return new BasicDBObject(property, new BasicDBObject(operator, value));
 	}
 
 	protected Field getField(Class<?> javaClass, String property) throws NoSuchFieldException, SecurityException {
