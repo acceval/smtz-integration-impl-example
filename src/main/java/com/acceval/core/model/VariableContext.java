@@ -49,6 +49,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String CONTEXTKEY_PALLETIZE = "PALLETIZE";
 	public static final String CONTEXTKEY_NORMALASING = "NORMALASING";
 	public final static String BYPASS_INCOTERM_DEPENDENCY = "BYPASSINCOTERMDEPENDENCY";
+	public static final String SALES_DIVISION = "SALES_DIVISION";
 
 	public static final String DEFAULT_DATE_FORMAT = Criterion.DEFAULT_DATE_FORMAT;
 	public static final String DEFAULT_DATE_TIME_FORMAT = Criterion.DEFAULT_DATE_TIME_FORMAT;
@@ -80,7 +81,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String CT_PRODUCT_BASE_PRICE = "PRODUCT_BASE_PRICE";
 	public static final String CT_STD_VALUE_CONDITION = "STD_VALUE_CONDITION";
 	public static final String CT_PRODUCT_LIST_PRICE_BY_COUNTRY = "PRODUCTLISTPRICEBYCOUNTRY";
-	public static final String CT_APPLICATIONPREMIUM = "APPLICATIONPREMIUM";
+	public static final String CT_APPLICATION_ADJUSTMENT = "APPLICATION_ADJUSTMENT";
 	public static final String CT_NORMALISED_PRICE = "STANDARD_FLOOR_PRICE";
 	public static final String CT_NORMALISED_ALPHA = "ALPHA_FLOOR";
 	public static final String CT_RULECONTRIBUTIONMARGIN = "RULECONTRIBUTIONMARGIN";
