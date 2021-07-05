@@ -14,6 +14,14 @@ trigger:
     exclude:
       - docs/README.md
 
+schedules:
+  - cron: "30 1 * * *"
+    displayName: Daily morning build 10am SGT
+    branches:
+      include:
+        - release/develop
+    always: false
+
 pr: none
 
 pool:
