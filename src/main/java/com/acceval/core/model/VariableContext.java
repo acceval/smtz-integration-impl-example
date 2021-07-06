@@ -160,8 +160,18 @@ public class VariableContext implements Serializable, Cloneable {
 	public final static String COMPONENT_FORMULA_DESCRIPTION = "FORMULA_DESCRIPTION";
 	public final static String COMPONENT_PAYMENT_TERM = "PAYMENT_TERM";
 	public static final String COMPONENT_SHIPPINGCONDITION = "SHIPPING_CONDITION";
-	public final static String COMPONENT_ORIGIN_PORT = "ORIGIN_PORT";
+	public final static String COMPONENT_ORIGIN_PORT = "ORIGIN_PORT";	
 	public final static String COMPONENT_INCOTERM = "INCOTERM";
+	public static final String COMPONENT_COMPOSITEOCEANFREIGHT = "COMPOSITE_OCEAN_FREIGHT";
+	public static final String COMPONENT_CUSTOMDUTIES = "CUSTOM_DUTIES";
+	public static final String COMPONENT_EXWTOFOBADJUSTMENT = "EXW_TO_FOB_ADJUSTMENT";
+	public static final String COMPONENT_INLANDHAULAGECOST = "INLAND_HAULAGE_COST";
+	public static final String COMPONENT_LANDINSURANCE = "LAND_INSURANCE";
+	public static final String COMPONENT_MARINEINSURANCE = "MARINE_INSURANCE";
+	public static final String COMPONENT_OCEANFREIGHTCHARGE = "OCEAN_FREIGHT_CHARGE";
+	public static final String COMPONENT_TRUCKINGCOSTW2C = "TRUCKING_COST_W2C";
+	public static final String MARGICOMP_OCEANFREIGHTCOST_ACTUAL = "OCEAN_FREIGHT_COST_ACTUAL";
+	public static final String MARGICOMP_TRUCKINGCOST_ACTUAL = "TRUCKING_COST_ACTUAL";
 	
 	// Market Price Type
 	public static final String HISTORICAL = "HISTORICAL";
