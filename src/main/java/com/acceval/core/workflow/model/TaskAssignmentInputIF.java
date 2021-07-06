@@ -3,6 +3,7 @@ package com.acceval.core.workflow.model;
 public interface TaskAssignmentInputIF {
 
 	final static String ASSIGN_USER_ID = "assignUserID";
+	final static String ASSIGN_USER_NAME = "assignUserName";
 
 	enum TaskAssignment {
 		REPORT_TO("REPORT_TO", "Report To"),

@@ -18,7 +18,7 @@ import com.acceval.core.repository.Criterion;
 public class VariableContext implements Serializable, Cloneable {
 
 	private static final long serialVersionUID = 3457134321135281269L;
-	
+
 	public static final String ESTIMATED_BILING_DATE = "ESTIMATED_BILING_DATE";
 	public static final String BILING_DATE = "BILING_DATE";
 	public static final String DELIVERY_DATE = "DELIVERY_DATE";
@@ -32,13 +32,24 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String VALID_FROM = "VALID_FROM";
 	public static final String VALID_TO = "VALID_TO";
 	public static final String CURRENCY_EXCHANGE_RATE_TYPE = "CURRENCY_EXCHANGE_RATE_TYPE";
+	public static final String CURRENCY_EXCHANGE_RATE_TYPE_CTS = "CURRENCY_EXCHANGE_RATE_TYPE_CTS";
 	public static final String COMPANY_ID = "COMPANY_ID";
 	public static final String COMPANY_CODE = "COMPANY_CODE";
 	public static final String DEFAULT_DECIMAL = "DEFAULT_DECIMAL";
 	public static final String SALES_HEADER_TOTAL_VOLUME = "SALESHEADERTOTALVOLUME";
 	public final static String REGION = "REGION";
 	public final static String NEGOTIATION_COCKPIT_TYPE = "NEGOTIATIONCOCKPITTYPE";
-
+	public final static String PLANT = "PLANT";
+	public final static String BOM = "BOM";
+	public final static String FORMULA = "FORMULA";
+	public final static String DOCUMENT_CATEGORY = "DOCUMENTCATEGORY";
+	public final static String PACKAGING = "PACKAGING";
+	public final static String PAYMENT_TERM = "PAYMENTTERM";
+	public final static String INCOTERM = "INCOTERM";
+	public static final String CONTEXTKEY_PALLETIZE = "PALLETIZE";
+	public static final String CONTEXTKEY_NORMALASING = "NORMALASING";
+	public final static String BYPASS_INCOTERM_DEPENDENCY = "BYPASSINCOTERMDEPENDENCY";
+	public static final String SALES_DIVISION = "SALES_DIVISION";
 
 	public static final String DEFAULT_DATE_FORMAT = Criterion.DEFAULT_DATE_FORMAT;
 	public static final String DEFAULT_DATE_TIME_FORMAT = Criterion.DEFAULT_DATE_TIME_FORMAT;
@@ -48,6 +59,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String CONTEXTKEY_EXCHANGE_RATE_OVERRIDE = "EXCHANGERATEOVERRIDE";
 	public static final String CONTEXTKEY_EXCHANGE_RATE_FROM_OVERRIDE = "EXCHANGERATEFROMOVERRIDE";
 	public static final String CONTEXTKEY_EXCHANGE_RATE_TO_OVERRIDE = "EXCHANGERATETOOVERRIDE";
+	public final static String CONTEXTKEY_MARKET_STRUCTURE_REGION = "MARKET_STRUCTURE_REGION";
 	public static final String CONTEXTCONFIGCODE_PRICESTATUS = "PRICESTATUS";
 
 	// formula exchange rate
@@ -58,7 +70,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String FORMULA_EXCHANGE_RATE_FOR_ALL_CURRENCIES = "formulaExchangeRateForAllCurrencies";
 
 	// Pricing Technique Condition Table Code
-	//public static final String PRICETECH_DECIDER = "PRICING_TECHNIQUE_DECIDER";
+	// public static final String PRICETECH_DECIDER = "PRICING_TECHNIQUE_DECIDER";
 
 	// Various Decider
 	public static final String FLOOR_PRICE_TECHNIQUE_DECIDER = "FLOOR_PRICE_TECHNIQUE_DECIDER";
@@ -68,43 +80,50 @@ public class VariableContext implements Serializable, Cloneable {
 	// Condition Table Code
 	public static final String CT_PRODUCT_BASE_PRICE = "PRODUCT_BASE_PRICE";
 	public static final String CT_STD_VALUE_CONDITION = "STD_VALUE_CONDITION";
-	public static final String CT_PRODUCT_LIST_PRICE_BY_COUNTRY = "PRODUCTLISTPRICEBYCOUNTRY";
-	public static final String CT_APPLICATIONPREMIUM = "APPLICATIONPREMIUM";
+	public static final String CT_PRODUCT_LIST_PRICE_BY_COUNTRY = "GRADE_LIST_PRICE_BY_COUNTRY";
+	public static final String CT_APPLICATION_ADJUSTMENT = "APPLICATION_ADJUSTMENT";
 	public static final String CT_NORMALISED_PRICE = "STANDARD_FLOOR_PRICE";
-	public static final String CT_RULECONTRIBUTIONMARGIN = "RULECONTRIBUTIONMARGIN";
-	public static final String CT_NORMALISED_PRICE_FOB = "NORMALISEDPRICEFOB";
-	public static final String CT_NEGOTIATED_DISCOUNT_CONTROL = "NEGOTIATEDDISCOUNTCONTROL";
-	public static final String CT_EXCHANGE_RATE_DECIDER = "EXCHGRATEDECIDER";
-	public static final String CT_SWAPINVOICE = "SWAPINVOICE";
-	public static final String CT_COSTOFCREDITTERM = "COSTOFCREDITTERM";
-	public static final String CT_HIST_REBATE = "HISREBATECOIM";
+	public static final String CT_NORMALISED_ALPHA = "ALPHA_FLOOR";
+	public static final String CT_RULECONTRIBUTIONMARGIN = "RULE_CONTRIBUTION_MARGIN";
+	public static final String CT_NORMALISED_PRICE_FOB = "NORMALISED_PRICE_FOB";
+	public static final String CT_NEGOTIATED_DISCOUNT_CONTROL = "NEGOTIATED_DISCOUNT_CONTROL";
+	public static final String CT_EXCHANGE_RATE_DECIDER = "EXCHANGE_RATE_DECIDER";
+	public static final String CT_SWAPINVOICE = "SWAP_INVOICE";
+	public static final String CT_COSTOFCREDITTERM = "CREDIT_TERM_RATE";
+	public static final String CT_HIST_REBATE = "HIST_REBATE_COIM";
+	public static final String CT_PACKAGINGCOST = "PACKAGING_COST";
+	public static final String CT_COUNTRYSTANDARDDEEMEDFREIGHT = "STANDARD_DEEMED_FREIGHT";
 
 	// Condition Table Fields / context key
 	public static final String CONDFIELDCODE_NORMALISE_FOR_FLOOR_PRICE = "NORMALISE_FOR_FLOOR_PRICE";
-	public static final String CONDFIELDCODE_INVOICEDOCUMENT = "INVOICEDOCUMENT";
-	public static final String CONDFIELDCODE_SWAPINVOICE = "SWAPINVOICE";
+	public static final String CONDFIELDCODE_INVOICEDOCUMENT = "INVOICE_DOCUMENT";
+	public static final String CONDFIELDCODE_SWAPINVOICE = "SWAP_INVOICE";
 	public static final String CONDFIELDCODE_CEV_FOR_FLOOR_PRICE = "CEV_FOR_FLOOR_PRICE";
-	public final static String CONDFIELDCODE_DOCUMENT_ID = "DOCUMENTID";
-	public final static String CONDFIELDCODE_SOLD_TO_CUSTOMER = "SOLDTOCUSTOMER";
+	public final static String CONDFIELDCODE_DOCUMENT_ID = "DOCUMENT_ID";
+	public final static String CONDFIELDCODE_SOLD_TO_CUSTOMER = "SOLD_TO_CUSTOMER";
 	public final static String CONDFIELDCODE_GRADE = "GRADE";
+	public static final String CONDFIELDCODE_DOMESTIC = "DOMESTIC";
 
 	// Condition Table Values / context key
-	public static final String CONDVALUECODE_PRODUCT_BASE_PRICE_INCO = "PRODUCTINCOTERM";
-	public static final String CONDVALUECODE_PRODUCT_BASE_PACKAGING = "PRODUCTPACKAGING";
-	public static final String CONDVALUECODE_PRODUCT_BASE_REGION = "PRODUCTREGION";
-	public static final String CONDVALUECODE_PRODUCT_BASE_PAYMENT_TERM = "PRODUCTPAYMENT";
-	public static final String CONDVALUECODE_REFERENCEAPPLICATION = "REFERENCEAPPLICATION";
+	public static final String CONDVALUECODE_PRODUCT_BASE_PRICE_INCO = "INCOTERM";
+	public static final String CONDVALUECODE_PRODUCT_BASE_PACKAGING = "PACKAGING";
+	public static final String CONDVALUECODE_PRODUCT_BASE_REGION = "REGION";
+	public static final String CONDVALUECODE_PRODUCT_BASE_PAYMENT_TERM = "PAYMENT_TERM";
+	public static final String CONDVALUECODE_REFERENCEAPPLICATION = "REFERENCE_APPLICATION";
 	public static final String CONDVALUECODE_ACCOUNT = "ACCOUNT";
 	public static final String CONDVALUECODE_DESIGNATION = "DESIGNATION";
-	public static final String CONDVALUECODE_NORMALISED_PRICE = "NORMALISEDPRICE";
+	public static final String CONDVALUECODE_NORMALISED_PRICE = "FLOOR_PRICE";
+	public static final String CONDVALUECODE_NORMALISED_ALPHA = "ALPHA";
 	public static final String CONDVALUECODE_MARGIN = "MARGIN";
-	public static final String CONDVALUECODE_FROM_CURRENCY = "FROMCURRENCY";
-	public static final String CONDVALUECODE_TO_CURRENCY = "TOCURRENCY";
+	public static final String CONDVALUECODE_FROM_CURRENCY = "FROM_CURRENCY";
+	public static final String CONDVALUECODE_TO_CURRENCY = "TO_CURRENCY";
+	public static final String CONDVALUECODE_DGCWC_DG = "DG";
 
 	// Deal Mgt Object
 	public static final String OBJ_SALES_DOC = "salesDoc";
 	public static final String OBJ_SALES_ITEM = "salesItem";
 	public static final String OBJ_SALES_SCENARIO = "salesScenario";
+	public static final String REBATE_CONFIG = "REBATE_CONFIG";
 
 	// Object unique keys
 	public static final String CFR_INCOTERM = "CFR";
@@ -121,6 +140,10 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String MYR_CURRENCY = "MYR";
 	public static final String USD_CURRENCY = "USD";
 
+	public static final String PACK_CODE_BULK = "PC01";
+	public static final String MARINE_ISO = "MI";
+	public static final String MARINE_PACK = "MP";
+
 	// Workflow Violation
 	public static final String WFL_VIO_NORFLOORPRICE = "WFLVIONORFLOORPRICE";
 	public static final String WFL_VIO_CM = "WFLVIOCM";
@@ -131,19 +154,43 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String FORMULAPRICINGADJ = "FORMULAPRICINGADJ";
 
 	// Negotiation Cockpit Component Code
-	public static final String COMPONENT_CM_ATP = "CMATP";
-	public static final String COMPONENT_NEGOTIATION_DISCOUNT = "NEGOTIATIONDISCOUNT";
+	public static final String COMPONENT_CM_ATP = "CM_ATP";
+	public static final String COMPONENT_NEGOTIATION_DISCOUNT = "DISCOUNT";
 	public final static String COMPONENT_FORMULA = "FORMULA";
-	public final static String COMPONENT_FORMULA_DESCRIPTION = "FORMULADESCRIPTION";
-	public final static String COMPONENT_PAYMENT_TERM = "PAYMENTTERM";
-	public static final String COMPONENT_SHIPPINGCONDITION = "SHIPPINGCONDITION";
-	public final static String COMPONENT_ORIGIN_PORT = "ORIGINPORT";
+	public final static String COMPONENT_FORMULA_DESCRIPTION = "FORMULA_DESCRIPTION";
+	public final static String COMPONENT_PAYMENT_TERM = "PAYMENT_TERM";
+	public static final String COMPONENT_SHIPPINGCONDITION = "SHIPPING_CONDITION";
+	public final static String COMPONENT_ORIGIN_PORT = "ORIGIN_PORT";	
 	public final static String COMPONENT_INCOTERM = "INCOTERM";
+	public static final String COMPONENT_COMPOSITEOCEANFREIGHT = "COMPOSITE_OCEAN_FREIGHT";
+	public static final String COMPONENT_CUSTOMDUTIES = "CUSTOM_DUTIES";
+	public static final String COMPONENT_EXWTOFOBADJUSTMENT = "EXW_TO_FOB_ADJUSTMENT";
+	public static final String COMPONENT_INLANDHAULAGECOST = "INLAND_HAULAGE_COST";
+	public static final String COMPONENT_LANDINSURANCE = "LAND_INSURANCE";
+	public static final String COMPONENT_MARINEINSURANCE = "MARINE_INSURANCE";
+	public static final String COMPONENT_OCEANFREIGHTCHARGE = "OCEAN_FREIGHT_CHARGE";
+	public static final String COMPONENT_TRUCKINGCOSTW2C = "TRUCKING_COST_W2C";
+	public static final String MARGICOMP_OCEANFREIGHTCOST_ACTUAL = "OCEAN_FREIGHT_COST_ACTUAL";
+	public static final String MARGICOMP_TRUCKINGCOST_ACTUAL = "TRUCKING_COST_ACTUAL";
+	
+	// Market Price Type
+	public static final String HISTORICAL = "HISTORICAL";
+	public static final String PROJECTION = "PROJECTION";
+
+	// Business Unit
+	public static final String METHANOL = "Methanol";
+	public static final String ANF = "AnF";
+	public static final String OGD = "OGD";
+	public static final String POLYMER = "Polymer";
+
+	public final static double DEFAULT_NOT_FOUND_NOR_FLOOR_PRICE_VALUE = 1000000;
 
 	public static enum WFL_VIOLATE {
 		CHANGED_PAYMENT_TERM("Violated Payment Term Credit Day"), DEAL_AMOUNT("Below Targeted Amount [?]"),
 		NORMALISED_PRICE(
 				"Violated Normalised Price Rule. Product: [?], Country: [?], Normalised Price [?], Targeted Normalised Floor Price: [?]"),
+		NORMALISED_ALPHA_TEST(
+				"Violated Normalised Alpha Rule. Product: [?], Country: [?], Normalised Alpha [?], Targeted Normalised Alpha: [?]"),
 		CONTRIBUTION_MARGIN(
 				"Violated Contribution Margin (Legal Book) Rule. Product [?], Contribution Margin (Legal Book): [?], Targeted Contribution Margin: [?]"),
 		FORMULA_PRICING_ITEM("Formula Pricing's Item. "), REVISED_CASE("Revised Case"),
@@ -394,7 +441,7 @@ public class VariableContext implements Serializable, Cloneable {
 
 	public Map<String, Object> getNonBaseModelMap() {
 		Map<String, Object> map = new HashMap<>();
-		
+
 		if (this.getVariableMap() == null) {
 			return map;
 		}

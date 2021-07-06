@@ -186,6 +186,19 @@ public abstract class FileHandler<T> {
 		return this.iterator.hasNext();
 	}
 
+	public void nextWithoutMapping() throws FileMappingException {
+		try {
+			this.holderRecord = iterator.next();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			ErrorRecord errorRecord = new ErrorRecord(this.fileIndex, ex.getLocalizedMessage());
+			this.errorRecords.add(errorRecord);
+
+			throw new FileMappingException(this.getClass(), ex.getLocalizedMessage());
+		}
+		this.fileIndex++;
+	}
+
 	public <T> T next() throws FileMappingException {
 
 		try {

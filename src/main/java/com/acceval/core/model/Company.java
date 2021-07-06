@@ -6,6 +6,8 @@ public class Company {
 	private String code;
 	private String servicePackage;
 	private String timeZone;
+	private Long countryId;
+
 	public Long getId() {
 		return id;
 	}
@@ -31,6 +33,14 @@ public class Company {
 
 	public void setTimeZone(String timeZone) {
 		this.timeZone = timeZone;
+	}
+
+	public Long getCountryId() {
+		return countryId;
+	}
+
+	public void setCountryId(Long countryId) {
+		this.countryId = countryId;
 	}
 
 }

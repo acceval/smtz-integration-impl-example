@@ -1,0 +1,25 @@
+<html>
+<head>
+</head>
+<body>
+	<p style="margin: 0 0 30px 0;">To: 
+		{{this.context.SEND_TO_USER_NAME}},</p>
+	<p style="margin: 0 0 10px 0;">Please be inform that sales document case {{this.context.DOC_NUMBER}} is {{this.context.PROCESS_NAME}} {{this.context.DECISION}}.</p>
+
+	<p style="margin: 0 0 10px 0;">If you want to view the sales document, please
+		click on the following link,</p>
+	<a style = "text-transform:capitalize;" href="{{this.context.DOMAIN_PATH}}{{this.context.LINK}}" target="indexcontent">View Sales Document</a>
+	<!-- http://localhost:4200/d/deal-management/contract/header/202106220000073 -->
+
+	<p style="margin: 20px 0 0 0;">From:</p>
+	<p style="margin: 0 0 10px 0;">System Admin</p>
+	<br>
+	<p style="margin: 0 0 3px 0;">The information contained in this
+		message may be privileged and confidential.</p>
+	<p style="margin: 0 0 3px 0;">If you are NOT the intended
+		recipient, please notify the sender immediately.</p>
+	<!-- <p style="margin: 0 0 0 0;">This is an generated email. Please
+		do not reply to the sender.</p> -->
+
+</body>
+</html>

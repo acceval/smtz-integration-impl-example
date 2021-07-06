@@ -3,10 +3,13 @@ package com.acceval.core.util;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 
 import org.apache.commons.lang3.StringUtils;
 
 public class NumberUtil {
+
+    private static final String NUMBER_FORMAT = "#,###,###,##0.00";
 
 	public static double stringToDouble(String str) {
 		if (StringUtils.isEmpty(str)) return 0;
@@ -32,10 +35,16 @@ public class NumberUtil {
 	}
 
 	public static double round(double number, int decimalPoint) {
+		if (Double.isNaN(number)) {
+			number = 0;
+		}
 		return new BigDecimal(number).setScale(decimalPoint, BigDecimal.ROUND_HALF_UP).doubleValue();
 	}
 
 	public static double round(double number, int decimalPoint, int roundingMode) {
+		if (Double.isNaN(number)) {
+			number = 0;
+		}
 		return new BigDecimal(number).setScale(decimalPoint, roundingMode).doubleValue();
 	}
 
@@ -49,6 +58,16 @@ public class NumberUtil {
 		}
 		return formatNumber(num, format.toString());
 	}
+
+    public static double parse(String value) throws ParseException {
+        if (StringUtils.isBlank(value)) {
+            return 0;
+        }
+
+        DecimalFormat df = new DecimalFormat(NUMBER_FORMAT);
+        df.setRoundingMode(RoundingMode.HALF_UP);
+        return df.parse(value).doubleValue();
+    }
 
 	public static String formatNumber(double num, String fmt) throws NumberFormatException {
 		DecimalFormat df = new DecimalFormat(fmt);

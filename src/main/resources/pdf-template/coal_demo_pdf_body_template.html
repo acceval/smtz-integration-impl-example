@@ -124,101 +124,57 @@
 				<td class="labelBold" width="30%" th:text="${deliveryTerm.label}">Delivery Title</td>
 				<td width="70%" th:text="${deliveryTerm.value}">Delivery Value</td> 								
 			</tr>
-			<tr> 		
-				<td class="labelBold" width="30%">FORM</td>
-				<td width="70%">Fine</td> 	
-			</tr>
-			<tr> 		
-				<td class="labelBold" width="30%">SIZE</td>
-				<td width="70%">0-30MM 100% (0-20MM 97.50%, +20 - 30MM 2.5%)</td> 	
-			</tr>
-			<tr> 		
-				<td class="labelBold" width="30%">ORIGIN</td>
-				<td width="70%">India</td> 	
-			</tr>
 		</table>	  		
-		
 		<table style="margin-top: 1rem;"> 	
 			<tr>
-				<th class="labelBold">PRODUCT</th>
-				<th class="labelBold">QUANTITY</th> 		
-				<th class="labelBold">DRY QUANTITY</th>
+				<th class="labelBold">PRODUCT</th> 		
+				<th class="labelBold">QUANTITY</th>
 				<th class="labelBold">PACKAGING</th> 		
 				<th class="labelBold">UNIT PRICE</th>
-				<th class="labelBold">PROPORTION</th>
 				<th class="labelBold">TOTAL AMOUNT</th> 	
 			</tr>
 			<tr th:each="orderItem, iter: ${orderItems}">
-				<td th:text="${orderItem.product.name}">Product</td>
-				<td><span th:text="${#numbers.formatDecimal(orderItem.shortTermQuantity, 0, 'COMMA', 0, 'POINT')}"></span><span style="margin-left: 0.5rem;">MT</span></td>
+				<td th:text="${orderItem.product.name}">Product</td>				
 				<td><span th:text="${#numbers.formatDecimal(orderItem.quantity, 0, 'COMMA', 0, 'POINT')}"></span><span style="margin-left: 0.5rem;" th:text="${orderItem.uomCode}"></span></td>
 				<td style="padding: 0.5rem;" th:utext="${orderItem.skuLabel}">Packaging</td>
-				<td><span th:text="${#numbers.formatDecimal(orderItem.invoicePrice, 0, 'COMMA', 2, 'POINT')}"></span><span style="margin-left: 0.5rem;" th:text="${currencyCode}"></span>/<span th:text="${orderItem.uomCode}"></span></td>
-				<td><span th:text="${#numbers.formatDecimal(orderItem.chargeRate, 0, 'COMMA', 0, 'POINT')}"></span><span style="margin-left: 0.5rem;">%</span></td>
+				<td><span th:text="${#numbers.formatDecimal(orderItem.invoicePrice, 0, 'COMMA', 2, 'POINT')}"></span><span style="margin-left: 0.5rem;" th:text="${currencyCode}"></span>/<span th:text="${orderItem.uomCode}"></span></td>				
 				<td><span th:text="${#numbers.formatDecimal(orderItem.amount, 0, 'COMMA', 0, 'POINT')}"></span><span style="margin-left: 0.5rem;" th:text="${currencyCode}"></span></td>				
 			</tr> 
-		</table> 
-
+		</table>
 		<table style="margin-top: 2rem;"> 	
 			<tr>
 				<th class="labelBold" style="background-color: #343a40; color: white;">COMPOSITION</th>
 				<th class="labelBold" style="background-color: #343a40; color: white;">VALUE FROM</th> 		
 				<th class="labelBold" style="background-color: #343a40; color: white;">VALUE TO</th>
-				<th class="labelBold" style="background-color: #343a40; color: white;">PER %</th> 		
-				<th class="labelBold" style="background-color: #343a40; color: white;">PRICE ADJUSTMENT</th>
+				<th class="labelBold" style="background-color: #343a40; color: white;">PER KCAL/KG</th> 		
+				<th class="labelBold" style="background-color: #343a40; color: white;">ORIGINAL ADJUSTMENT</th>
 				<th class="labelBold" style="background-color: #343a40; color: white;">FINAL SELLER COUNTER OFFER</th>				 	
 			</tr>
 			<tr>
-				<td>Iron (Fe)</td>
-				<td>63.50%</td>
-				<td>100.00%</td>
-				<td>1.00%</td>
-				<td>1.50 USD/DMT</td>
-				<td>1.40 USD/DMT<USD>	
+				<td>Gross Caloric Value (ADB)</td>
+				<td>6300.0 kcal/kg</td>
+				<td></td>
+				<td>1 kcal/kg</td>
+				<td>0.01 USD/DMT</td>
+				<td>0.008 USD/DMT<USD>	
 			</tr> 
 			<tr>
-				<td>Iron (Fe)</td>
-				<td>61.00%</td>
-				<td>62.50%</td>
-				<td>1.00%</td>
-				<td>-1.50 USD/DMT</td>
-				<td>-1.50 USD/DMT<USD>	
+				<td>Gross Caloric Value (ADB)</td>
+				<td>6100.0 kcal/kg</td>
+				<td>6200.0 kcal/kg</td>
+				<td>1 kcal/kg</td>
+				<td>-0.01 USD/DMT</td>
+				<td>-0.01 USD/DMT<USD>	
 			</tr> 
 			<tr>
-				<td>Alumina (Al2O3)</td>
-				<td>3.50%</td>
-				<td>100.00%</td>
-				<td>1.00%</td>
-				<td>-0.10 USD/DMT</td>
-				<td>-0.10 USD/DMT<USD>	
-			</tr> 
-			<tr>
-				<td>Silica (SiO2)</td>
-				<td>5.00%</td>
-				<td>100.00%</td>
-				<td>1.00%</td>
-				<td>-0.10 USD/DMT</td>
-				<td>-0.12 USD/DMT<USD>	
-			</tr> 
-			<tr>
-				<td>Sulphur (S)</td>
-				<td>0.10%</td>
-				<td>100.00%</td>
-				<td>0.01%</td>
-				<td>-0.10 USD/DMT</td>
-				<td>-0.10 USD/DMT<USD>	
-			</tr> 
-			<tr>
-				<td>Phosphorus (P)</td>
-				<td>0.10%</td>
-				<td>100.00%</td>
-				<td>0.01%</td>
-				<td>-0.10 USD/DMT</td>
-				<td>-0.10 USD/DMT<USD>	
+				<td>Gross Caloric Value (ADB)</td>
+				<td></td>
+				<td>6100.0 kcal/kg</td>
+				<td>1 kcal/kg</td>
+				<td>-0.03 USD/DMT</td>
+				<td>-0.03 USD/DMT<USD>	
 			</tr> 
 		</table> 
-
-
 		<table style="margin-top: 2rem;"> 	
 			<tr> 		
 				<td class="labelBold" width="30%">PRICE</td>
