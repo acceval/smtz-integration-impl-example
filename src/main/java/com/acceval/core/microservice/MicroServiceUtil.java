@@ -43,14 +43,6 @@ public class MicroServiceUtil {
 	@Value("${microservice.url}")
 	private String url;
 
-	//	MasterDataServiceClient masterDataServiceClient;
-	//
-	//	@Autowired
-	//	public MicroServiceUtil(Decoder decoder, Encoder encoder) {
-	//		masterDataServiceClient =
-	//				Feign.builder().encoder(encoder).decoder(decoder).target(Target.EmptyTarget.create(MasterDataServiceClient.class));
-	//	}
-
 	public Object getForObject(MicroServiceRequest microServiceRequest, Class<?> type) throws MicroServiceUtilException {
 		return getForObject(microServiceRequest, null, type);
 	}
@@ -64,8 +56,9 @@ public class MicroServiceUtil {
 		//		DiscoveryClient discoveryClient = microServiceRequest.getDiscoveryClient();
 
 		RestTemplate restTemplate = BaseBeanUtil.getBean(OAuth2RestTemplate.class);
+
+		/** bypass cert checking??*/
 		try {
-			System.out.println("###### new code");
 			TrustStrategy acceptingTrustStrategy = new TrustStrategy() {
 				@Override
 				public boolean isTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
@@ -75,7 +68,6 @@ public class MicroServiceUtil {
 			SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom().loadTrustMaterial(null, acceptingTrustStrategy).build();
 			SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext, new NoopHostnameVerifier());
 			CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(csf).build();
-
 			HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
 			requestFactory.setHttpClient(httpClient);
 			restTemplate.setRequestFactory(requestFactory);
@@ -98,20 +90,6 @@ public class MicroServiceUtil {
 		//		String url = "http://" + msService.replaceFirst(Pattern.quote("/"), "") + "/" + msFunction + "/" + param;
 
 		String url2 = url + "/" + msService.replaceFirst(Pattern.quote("/"), "") + "/" + msFunction + "/" + param;
-		//		if (!url2.endsWith("//") && !url2.endsWith("/")) {
-		//			url2 += "/";
-		//		}
-		//		url2 += msService.replaceFirst(Pattern.quote("/"), "") + "/" + msFunction + "/" + param;
-
-		//		try {
-			//			Object obj = masterDataServiceClient.genericCall(new URI(url2));
-			//			String ss = "http://identity-service/entity-data-access/access-level/PRODUCT";
-		//			String ss = "http://localhost:8000/entity-data-access/access-level/PRODUCT";
-			//			Object obj = masterDataServiceClient.genericCall(new URI(ss));
-			//			System.out.println(obj);
-		//		} catch (Throwable e1) {
-		//			e1.printStackTrace();
-		//		}
 
 		if (mvmValue != null && !mvmValue.keySet().isEmpty()) {
 			UriComponentsBuilder uriCompBuilder = UriComponentsBuilder.fromHttpUrl(url2);
