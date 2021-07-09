@@ -65,6 +65,7 @@ public class MicroServiceUtil {
 
 		RestTemplate restTemplate = BaseBeanUtil.getBean(OAuth2RestTemplate.class);
 		try {
+			System.out.println("###### new code");
 			TrustStrategy acceptingTrustStrategy = new TrustStrategy() {
 				@Override
 				public boolean isTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
