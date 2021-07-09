@@ -1,10 +1,20 @@
 package com.acceval.core.microservice;
 
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-import com.acceval.core.security.CurrentUser;
-import com.acceval.core.security.PrincipalUtil;
+import javax.net.ssl.SSLContext;
+
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.TrustStrategy;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -13,6 +23,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
@@ -21,6 +32,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.acceval.core.MicroServiceUtilException;
 import com.acceval.core.cache.MSUtilCache;
+import com.acceval.core.security.CurrentUser;
+import com.acceval.core.security.PrincipalUtil;
 import com.acceval.core.util.BaseBeanUtil;
 
 @Service
@@ -29,6 +42,14 @@ public class MicroServiceUtil {
 
 	@Value("${microservice.url}")
 	private String url;
+
+	//	MasterDataServiceClient masterDataServiceClient;
+	//
+	//	@Autowired
+	//	public MicroServiceUtil(Decoder decoder, Encoder encoder) {
+	//		masterDataServiceClient =
+	//				Feign.builder().encoder(encoder).decoder(decoder).target(Target.EmptyTarget.create(MasterDataServiceClient.class));
+	//	}
 
 	public Object getForObject(MicroServiceRequest microServiceRequest, Class<?> type) throws MicroServiceUtilException {
 		return getForObject(microServiceRequest, null, type);
@@ -40,9 +61,27 @@ public class MicroServiceUtil {
 		/** null checking */
 		microServiceRequest.assertNull();
 		Optional.ofNullable(type).orElseThrow(() -> new MicroServiceUtilException(MicroServiceUtil.class, "REST Type is null."));
-
 		//		DiscoveryClient discoveryClient = microServiceRequest.getDiscoveryClient();
+
 		RestTemplate restTemplate = BaseBeanUtil.getBean(OAuth2RestTemplate.class);
+		try {
+			TrustStrategy acceptingTrustStrategy = new TrustStrategy() {
+				@Override
+				public boolean isTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
+					return true;
+				}
+			};
+			SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom().loadTrustMaterial(null, acceptingTrustStrategy).build();
+			SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext, new NoopHostnameVerifier());
+			CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(csf).build();
+
+			HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+			requestFactory.setHttpClient(httpClient);
+			restTemplate.setRequestFactory(requestFactory);
+		} catch (KeyManagementException | NoSuchAlgorithmException | KeyStoreException e2) {
+			e2.printStackTrace();
+		}
+
 		//		String zuulService = "ZUUL-SERVER";
 		String msService = microServiceRequest.getMsService();
 		String msFunction = microServiceRequest.getMsFunction();
@@ -58,6 +97,20 @@ public class MicroServiceUtil {
 		//		String url = "http://" + msService.replaceFirst(Pattern.quote("/"), "") + "/" + msFunction + "/" + param;
 
 		String url2 = url + "/" + msService.replaceFirst(Pattern.quote("/"), "") + "/" + msFunction + "/" + param;
+		//		if (!url2.endsWith("//") && !url2.endsWith("/")) {
+		//			url2 += "/";
+		//		}
+		//		url2 += msService.replaceFirst(Pattern.quote("/"), "") + "/" + msFunction + "/" + param;
+
+		//		try {
+			//			Object obj = masterDataServiceClient.genericCall(new URI(url2));
+			//			String ss = "http://identity-service/entity-data-access/access-level/PRODUCT";
+		//			String ss = "http://localhost:8000/entity-data-access/access-level/PRODUCT";
+			//			Object obj = masterDataServiceClient.genericCall(new URI(ss));
+			//			System.out.println(obj);
+		//		} catch (Throwable e1) {
+		//			e1.printStackTrace();
+		//		}
 
 		if (mvmValue != null && !mvmValue.keySet().isEmpty()) {
 			UriComponentsBuilder uriCompBuilder = UriComponentsBuilder.fromHttpUrl(url2);
