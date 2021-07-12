@@ -810,7 +810,7 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 				String resolveKey = getMapPropertyResolver().containsKey(key) ? getMapPropertyResolver().get(key) : key;
 				Class<?> attrClass = getPath(root, resolveKey).getJavaType();
 
-				if (mapParam.getFirst(key) == null || mapParam.getFirst(key).equalsIgnoreCase("isNull")) {
+				if (mapParam.getFirst(key) == null || mapParam.getFirst(key).equalsIgnoreCase("isNil")) {
 					lstCrriterion.add(new Criterion(resolveKey, RestrictionType.IS_NULL, mapParam.getFirst(key)));
 				} else if (ClassUtils.isAssignable(attrClass, Long.class, true)) {
 					List<String> searchValue = mapParam.get(key);
