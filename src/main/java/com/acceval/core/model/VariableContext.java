@@ -291,8 +291,16 @@ public class VariableContext implements Serializable, Cloneable {
 	}
 
 	public void removeVariable(String key) {
-		if (variableMap.containsKey(key))
+		if (variableMap.containsKey(key)) {
 			variableMap.remove(key);
+		}
+	}
+	
+	public boolean containsVariable(String key) {
+		if (this.variableMap != null && this.variableMap.containsKey(key)) {
+			return true;
+		}
+		return false;
 	}
 
 	public <T> T getVariable(String key) {
