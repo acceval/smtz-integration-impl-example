@@ -15,12 +15,12 @@ trigger:
       - docs/README.md
 
 schedules:
-  - cron: "30 1 * * *"
-    displayName: Daily morning build 10am SGT
+  - cron: "25 0 * * *"
+    displayName: Daily morning build 845am SGT
     branches:
       include:
         - release/develop
-    always: false
+    always: true
 
 pr: none
 
