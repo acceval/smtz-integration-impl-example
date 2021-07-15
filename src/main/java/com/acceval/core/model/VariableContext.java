@@ -14,6 +14,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 
 import com.acceval.core.repository.Criterion;
+import com.acceval.core.util.TimeZoneUtil;
 
 public class VariableContext implements Serializable, Cloneable {
 
@@ -61,6 +62,13 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String CONTEXTKEY_EXCHANGE_RATE_TO_OVERRIDE = "EXCHANGERATETOOVERRIDE";
 	public final static String CONTEXTKEY_MARKET_STRUCTURE_REGION = "MARKET_STRUCTURE_REGION";
 	public static final String CONTEXTCONFIGCODE_PRICESTATUS = "PRICESTATUS";
+
+	// normalisation
+	public static final String NORMALISED_PACKAGING = "NORMALISED_PACKAGING";
+	public static final String NORMALISED_PAYMENT_TERM = "NORMALISED_PAYMENT_TERM";
+	public static final String NORMALISED_INCOTERM = "NORMALISED_INCOTERM";
+	public static final String MARKET_STRUCTURE_REGION = "MARKET_STRUCTURE_REGION";
+	public static final String REFERENCE_MARKET_PRICE = "REFERENCE_MARKET_PRICE";
 
 	// formula exchange rate
 	public static final String FORMULA_EXCHANGE_RATE = "formulaExchangeRate";
@@ -351,7 +359,10 @@ public class VariableContext implements Serializable, Cloneable {
 
 		if (!(data instanceof LocalDateTime)) {
 			if (data instanceof String) {
-
+				String strDate = (String) data;
+				if (strDate.length() == 10) {
+					return TimeZoneUtil.returnTimeZone(strDate);
+				}
 				DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_FORMAT);
 				retVal = LocalDateTime.parse((String) data, formatter);
 			}
@@ -396,7 +407,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public Long getVariableAsLong(String key) {
 
 		Object value = getVariable(key);
-		if (value == null) {
+		if (value == null || "null".equals(value)) {
 			return null;
 		}
 		if (value instanceof Long) {
