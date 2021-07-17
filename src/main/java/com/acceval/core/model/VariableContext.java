@@ -55,6 +55,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String SALES_ITEM_NUMBER = "SALES_ITEM_NUMBER";
 	public static final String FINAL_ALPHA = "FINAL_ALPHA";
 	public static final String ALPHA_ADJUSTMENT = "ALPHA_ADJUSTMENT";
+	public static final String ALPHA_2 = "ALPHA_2";
 	
 
 	public static final String DEFAULT_DATE_FORMAT = Criterion.DEFAULT_DATE_FORMAT;
