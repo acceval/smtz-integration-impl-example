@@ -51,6 +51,12 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String CONTEXTKEY_NORMALASING = "NORMALASING";
 	public final static String BYPASS_INCOTERM_DEPENDENCY = "BYPASSINCOTERMDEPENDENCY";
 	public static final String SALES_DIVISION = "SALES_DIVISION";
+	public static final String REFERENCE_DOC_NUMBER = "REFERENCE_DOC_NUMBER";
+	public static final String SALES_ITEM_NUMBER = "SALES_ITEM_NUMBER";
+	public static final String FINAL_ALPHA = "FINAL_ALPHA";
+	public static final String ALPHA_ADJUSTMENT = "ALPHA_ADJUSTMENT";
+	public static final String ALPHA_2 = "ALPHA_2";
+	
 
 	public static final String DEFAULT_DATE_FORMAT = Criterion.DEFAULT_DATE_FORMAT;
 	public static final String DEFAULT_DATE_TIME_FORMAT = Criterion.DEFAULT_DATE_TIME_FORMAT;
