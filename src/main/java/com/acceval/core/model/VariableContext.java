@@ -205,7 +205,7 @@ public class VariableContext implements Serializable, Cloneable {
 				"Violated Normalised Price Rule. Product: [?], Country: [?], Normalised Price [?], Targeted Normalised Floor Price: [?]"),
 		NORMALISED_ALPHA_TEST(
 				"Violated Normalised Alpha Rule. Product: [?], Country: [?], Normalised Alpha [?], Targeted Normalised Alpha: [?]"),
-		CONTRIBUTION_MARGIN(
+		WFL_CONTRIBUTION_MARGIN(
 				"Violated Contribution Margin (Legal Book) Rule. Product [?], Contribution Margin (Legal Book): [?], Targeted Contribution Margin: [?]"),
 		FORMULA_PRICING_ITEM("Formula Pricing's Item. "), REVISED_CASE("Revised Case"),
 		NEGOTIATED_DISCOUNT(
@@ -220,7 +220,7 @@ public class VariableContext implements Serializable, Cloneable {
 
 			lst.add(FORMULA_PRICING_ITEM.toString());
 			lst.add(NORMALISED_PRICE.toString());
-			lst.add(CONTRIBUTION_MARGIN.toString());
+			lst.add(WFL_CONTRIBUTION_MARGIN.toString());
 
 			return lst;
 		}
