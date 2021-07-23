@@ -98,7 +98,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String CT_APPLICATION_ADJUSTMENT = "APPLICATION_ADJUSTMENT";
 	public static final String CT_NORMALISED_PRICE = "STANDARD_FLOOR_PRICE";
 	public static final String CT_NORMALISED_ALPHA = "ALPHA_FLOOR";
-	public static final String CT_RULECONTRIBUTIONMARGIN = "RULE_CONTRIBUTION_MARGIN";
+	public static final String CT_RULECONTRIBUTIONMARGIN = "CONTRIBUTION_MARGIN_RULES";
 	public static final String CT_NORMALISED_PRICE_FOB = "NORMALISED_PRICE_FOB";
 	public static final String CT_NEGOTIATED_DISCOUNT_CONTROL = "NEGOTIATED_DISCOUNT_CONTROL";
 	public static final String CT_EXCHANGE_RATE_DECIDER = "EXCHANGE_RATE_DECIDER";
@@ -163,6 +163,9 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String WFL_VIO_CM = "WFLVIOCM";
 	public static final String WFL_VIO_EXCHANGE_RATE = "WFLEXCHANGERATE";
 	public static final String WFL_VIO_REPRICING = "[Repricing]";
+	public static final String NO_WFL_VIO = "NOVIOLATION";
+	public static final String IS_QUOTATION = "IS_QUOTATION";
+	public static final String IS_PENDING_STATE = "IS_PENDING_STATE";
 
 	// Workflow Context
 	public static final String FORMULAPRICINGADJ = "FORMULAPRICINGADJ";
