@@ -35,7 +35,7 @@ public abstract class QueueSender {
 	@Deprecated
 	public void sendMessage() {
 
-		logger.info("Sending message...");
+//		logger.info("Sending message...");
 		try {
 			if (rabbitTemplate.getMessageConverter().getClass().getSimpleName().equals("Jackson2JsonMessageConverter")) {
 				rabbitTemplate.convertAndSend(this.getTopicExchageName(), this.getSenderQueueName(), this.messageBody.getBody());
@@ -49,7 +49,7 @@ public abstract class QueueSender {
 
 	public void sendMessage(MessageBody<?> messageBody) {
 
-		logger.info("Sending message...");
+//		logger.info("Sending message...");
 		try {
 			if (rabbitTemplate.getMessageConverter().getClass().getSimpleName()
 					.equals("Jackson2JsonMessageConverter")) {

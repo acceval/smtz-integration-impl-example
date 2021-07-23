@@ -140,6 +140,8 @@ public class MicroServiceUtil {
 
 	private HttpHeaders buildHeaders(String token) {
         HttpHeaders headers = new HttpHeaders();
+        
+        headers.set("Enterprise-Request-Mode", "Advanced");
 
         if (token != null) {
 
