@@ -104,7 +104,7 @@
 				<th class="labelBold" style="text-align: center;">CONTAINER SIZE</th>	
 				<th class="labelBold" style="text-align: center;">UNIT PRICE</th>
 				<th class="labelBold" style="text-align: center;">DESTINATION PORT / CITY</th> 	
-				<th class="labelBold" style="text-align: center;">EXCHANGE RATE</th> 	
+				<th th:if="${allExchangeRateZero.equals('false')}" class="labelBold" style="text-align: center;">EXCHANGE RATE</th> 	
 			</tr>
 			<tr th:each="orderItem, iter: ${orderItems}" style="text-align: center;">
 				<td th:text="${orderItem.productName}">Product</td>		
@@ -112,7 +112,10 @@
 				<td style="padding: 0.5rem;" th:utext="${orderItem.containerSize}">Container Size</td>
 				<td><span th:text="${#numbers.formatDecimal(orderItem.invoicePrice, 0, 'COMMA', 0, 'POINT')}"></span><span style="margin-left: 0.5rem;" th:text="${currencyCode}"></span>/<span th:text="${orderItem.uomCode}"></span></td>				
 				<td><span th:text="${orderItem.destinationCountry}"></span></td>	
-				<td><span th:text="${orderItem.exchangeRate}"></span></td>			
+				<td th:if="${allExchangeRateZero.equals('false')}">
+					<span th:if="${!orderItem.exchangeRate.equals('0.0')}" th:text="${orderItem.exchangeRate}"></span>
+					<span th:if="${orderItem.exchangeRate.equals('0.0')}">-</span>
+				</td>
 			</tr> 
 		</table> 
 		<table style="margin-top: 1rem;">	
