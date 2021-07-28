@@ -128,10 +128,11 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String CONDVALUECODE_DESIGNATION = "DESIGNATION";
 	public static final String CONDVALUECODE_NORMALISED_PRICE = "FLOOR_PRICE";
 	public static final String CONDVALUECODE_NORMALISED_ALPHA = "ALPHA";
-	public static final String CONDVALUECODE_MARGIN = "MARGIN";
+	public static final String CONDVALUECODE_LIMIT_AMOUNT = "LIMIT_AMOUNT";
 	public static final String CONDVALUECODE_FROM_CURRENCY = "FROM_CURRENCY";
 	public static final String CONDVALUECODE_TO_CURRENCY = "TO_CURRENCY";
 	public static final String CONDVALUECODE_DGCWC_DG = "DG";
+	public static final String CONDVALUECODE_MARGIN = "MARGIN";
 
 	// Deal Mgt Object
 	public static final String OBJ_SALES_DOC = "salesDoc";
@@ -171,8 +172,8 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String FORMULAPRICINGADJ = "FORMULAPRICINGADJ";
 
 	// Negotiation Cockpit Component Code
-	public static final String COMPONENT_CM_ATP = "CM_ATP";
-	public static final String COMPONENT_NEGOTIATION_DISCOUNT = "DISCOUNT";
+	public static final String COMPONENT_CM_MARKET = "CM_MARKET";
+	public static final String COMPONENT_NEGOTIATION_DISCOUNT = "NEGOTIATED_DISCOUNT";
 	public final static String COMPONENT_FORMULA = "FORMULA";
 	public final static String COMPONENT_FORMULA_DESCRIPTION = "FORMULA_DESCRIPTION";
 	public final static String COMPONENT_PAYMENT_TERM = "PAYMENT_TERM";
