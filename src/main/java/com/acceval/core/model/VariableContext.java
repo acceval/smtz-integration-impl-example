@@ -127,7 +127,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String CONDVALUECODE_ACCOUNT = "ACCOUNT";
 	public static final String CONDVALUECODE_DESIGNATION = "DESIGNATION";
 	public static final String CONDVALUECODE_NORMALISED_PRICE = "FLOOR_PRICE";
-	public static final String CONDVALUECODE_NORMALISED_ALPHA = "ALPHA";
+	public static final String CONDVALUECODE_NORMALISED_ALPHA = "FLOOR_ALPHA";
 	public static final String CONDVALUECODE_LIMIT_AMOUNT = "LIMIT_AMOUNT";
 	public static final String CONDVALUECODE_FROM_CURRENCY = "FROM_CURRENCY";
 	public static final String CONDVALUECODE_TO_CURRENCY = "TO_CURRENCY";
@@ -190,6 +190,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String COMPONENT_TRUCKINGCOSTW2C = "TRUCKING_COST_W2C";
 	public static final String MARGICOMP_OCEANFREIGHTCOST_ACTUAL = "OCEAN_FREIGHT_COST_ACTUAL";
 	public static final String MARGICOMP_TRUCKINGCOST_ACTUAL = "TRUCKING_COST_ACTUAL";
+	public static final String COMPONENT_PREFCHEM_STANDARD_FLOOR_PRICE = "PREFCHEM_STANDARD_FLOOR_PRICE";
 	
 	// Market Price Type
 	public static final String HISTORICAL = "HISTORICAL";
@@ -207,7 +208,7 @@ public class VariableContext implements Serializable, Cloneable {
 		CHANGED_PAYMENT_TERM("Violated Payment Term Credit Day"), DEAL_AMOUNT("Below Targeted Amount [?]"),
 		NORMALISED_PRICE(
 				"Violated Normalised Price Rule. Product: [?], Country: [?], Normalised Price [?], Targeted Normalised Floor Price: [?]"),
-		NORMALISED_ALPHA_TEST(
+		NORMALISED_ALPHA(
 				"Violated Normalised Alpha Rule. Product: [?], Country: [?], Normalised Alpha [?], Targeted Normalised Alpha: [?]"),
 		WFL_CONTRIBUTION_MARGIN(
 				"Violated Contribution Margin (Legal Book) Rule. Product [?], Contribution Margin (Legal Book): [?], Targeted Contribution Margin: [?]"),
