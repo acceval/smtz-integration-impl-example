@@ -91,13 +91,16 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String NORMALISATION_TECHNIQUE_DECIDER = "NORMALISATION_TECHNIQUE_DECIDER";
 	public static final String CEV_TECHNIQUE_DECIDER = "CEV_TECHNIQUE_DECIDER";
 
+	// Various Model
+	public static final String PREFCHEM_FLOOR_PRICE_SETTING_MODEL = "PREFCHEM_FLOOR_PRICE_SETTING_MODEL";
+
 	// Condition Table Code
 	public static final String CT_PRODUCT_BASE_PRICE = "PRODUCT_BASE_PRICE";
 	public static final String CT_STD_VALUE_CONDITION = "STD_VALUE_CONDITION";
 	public static final String CT_PRODUCT_LIST_PRICE_BY_COUNTRY = "GRADE_LIST_PRICE_BY_COUNTRY";
 	public static final String CT_APPLICATION_ADJUSTMENT = "APPLICATION_ADJUSTMENT";
 	public static final String CT_NORMALISED_PRICE = "STANDARD_FLOOR_PRICE";
-	public static final String CT_NORMALISED_ALPHA = "ALPHA_FLOOR";
+	public static final String CT_NORMALISED_ALPHA = "STANDARD_FLOOR_ALPHA";
 	public static final String CT_RULECONTRIBUTIONMARGIN = "CONTRIBUTION_MARGIN_RULES";
 	public static final String CT_NORMALISED_PRICE_FOB = "NORMALISED_PRICE_FOB";
 	public static final String CT_NEGOTIATED_DISCOUNT_CONTROL = "NEGOTIATED_DISCOUNT_CONTROL";
