@@ -107,7 +107,10 @@
 			</tr>
 			<tr th:each="orderItem, iter: ${orderItems}" style="text-align: center;">
 				<td th:text="${orderItem.productName}">Product</td>		
-				<td><span th:text="${#numbers.formatDecimal(orderItem.quantity, 0, 'COMMA', 0, 'POINT')}"></span><span style="margin-left: 0.5rem;" th:text="${orderItem.uomCode}"></span></td>
+				<td><span th:text="${#numbers.formatDecimal(orderItem.quantity, 0, 'COMMA', 0, 'POINT')}"></span>
+					<span style="margin-left: 0.25rem;" th:text="${orderItem.uomCode}"></span>
+					<span style="margin-left: 0.5rem;" th:text="${orderItem.tolerance}"></span>
+				</td>
 				<td style="padding: 0.5rem;" th:utext="${orderItem.containerSize}">Container Size</td>
 				<td><span th:text="${#numbers.formatDecimal(orderItem.invoicePrice, 0, 'COMMA', 0, 'POINT')}"></span><span style="margin-left: 0.5rem;" th:text="${currencyCode}"></span>/<span th:text="${orderItem.uomCode}"></span></td>				
 				<td><span th:text="${orderItem.destinationCountry}"></span></td>				

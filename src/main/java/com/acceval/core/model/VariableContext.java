@@ -170,6 +170,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String NO_WFL_VIO = "NOVIOLATION";
 	public static final String IS_QUOTATION = "IS_QUOTATION";
 	public static final String IS_PENDING_STATE = "IS_PENDING_STATE";
+	public static final String WFL_VIO_NOR_FLOOR_ALPHA = "WFLVIONORFLOORALPHA";
 
 	// Workflow Context
 	public static final String FORMULAPRICINGADJ = "FORMULAPRICINGADJ";
@@ -194,6 +195,8 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String MARGICOMP_OCEANFREIGHTCOST_ACTUAL = "OCEAN_FREIGHT_COST_ACTUAL";
 	public static final String MARGICOMP_TRUCKINGCOST_ACTUAL = "TRUCKING_COST_ACTUAL";
 	public static final String COMPONENT_PREFCHEM_STANDARD_FLOOR_PRICE = "PREFCHEM_STANDARD_FLOOR_PRICE";
+	public static final String COMPONENT_FINAL_EXECUTION_ALPHA = "FINAL_EXECUTION_ALPHA";
+	public static final String COMPONENT_ALPHA_AS_PER_TERM_CONTRACT_AGREEMENT = "ALPHA_AS_PER_TERM_CONTRACT_AGREEMENT";
 	
 	// Market Price Type
 	public static final String HISTORICAL = "HISTORICAL";
