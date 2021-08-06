@@ -14,13 +14,13 @@ trigger:
     exclude:
       - docs/README.md
 
-schedules:
-  - cron: "25 0 * * *"
-    displayName: Daily morning build 845am SGT
-    branches:
-      include:
-        - release/develop
-    always: true
+#schedules:
+#  - cron: "25 0 * * *"
+#    displayName: Daily morning build 845am SGT
+#    branches:
+#      include:
+#        - release/develop
+#    always: true
 
 pr: none
 
