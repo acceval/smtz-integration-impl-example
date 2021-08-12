@@ -13,8 +13,8 @@ public class DateUtil {
 
 	private static Logger Logger = LoggerFactory.getLogger(DateUtil.class);
 
-	public static String[] STD_DATEFORMAT = new String[] { "yyyy-MM-dd", "dd-MM-yyyy", "dd/MM/yyyy", "yyyy/MM/dd", "yyyy-MM-dd HH:mm:ss",
-			"dd-MM-yyyy HH:mm:ss", "dd/MM/yyyy HH:mm:ss", "yyyy/MM/dd HH:mm:ss" };
+	public static String[] STD_DATEFORMAT = new String[] { "dd-MM-yyyy HH:mm:ss", "yyyy-MM-dd", "dd-MM-yyyy", "dd/MM/yyyy", "yyyy/MM/dd",
+			"yyyy-MM-dd HH:mm:ss", "dd/MM/yyyy HH:mm:ss", "yyyy/MM/dd HH:mm:ss" };
 
 	public static LocalDateTime parseToLocalDateTime(String value) {
 		LocalDateTime dateTime = null;
