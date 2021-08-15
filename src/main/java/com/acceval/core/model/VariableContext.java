@@ -142,6 +142,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String OBJ_SALES_ITEM = "salesItem";
 	public static final String OBJ_SALES_SCENARIO = "salesScenario";
 	public static final String REBATE_CONFIG = "REBATE_CONFIG";
+	public static final String COMMITMENT = "COMMITMENT";
 
 	// Object unique keys
 	public static final String CFR_INCOTERM = "CFR";
