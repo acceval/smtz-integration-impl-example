@@ -78,6 +78,8 @@ public class ControllerUtil {
 						} else if (RequestMethod.GET.toString().equals(httpMethod)) {
 							lstAC.add(new FunctionObject(microService, module, "view", newUrlSB.toString(),
 									FunctionObject.CRUD_READ_DESC, httpMethod));
+							lstAC.add(new FunctionObject(microService, module, "api", newUrlSB.toString(),
+									FunctionObject.CRUD_API_READ_DESC, httpMethod));
 							
 						}
 					} else if (RequestMethod.GET.toString().equals(httpMethod) && splitPattern.length == 3
@@ -85,6 +87,8 @@ public class ControllerUtil {
 						lstAC.add(new FunctionObject(microService, module, "view", newUrlSB.toString(),
 								FunctionObject.CRUD_READ_DESC,
 								httpMethod));
+                        lstAC.add(new FunctionObject(microService, module, "api", newUrlSB.toString(),
+                                FunctionObject.CRUD_API_READ_DESC, httpMethod));
 					} else if (splitPattern.length == 2 && RequestMethod.POST.toString().equals(httpMethod)) {
 						lstAC.add(new FunctionObject(microService, module, "create", newUrlSB.toString(),
 								FunctionObject.CRUD_CREATE_DESC, httpMethod));

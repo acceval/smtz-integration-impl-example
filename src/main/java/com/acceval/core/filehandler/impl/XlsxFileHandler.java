@@ -27,12 +27,13 @@ public class XlsxFileHandler extends FileHandler {
 	public void initializeFileReader() throws FileHandlerException {
 		
 		String csvFile = filePath.toString().replace(".xlsx", ".csv");
-								
+						
+		PrintStream out = null;
 		try {
 			Workbook workbook  = new XSSFWorkbook(new File(filePath.toString()));
 			
 			DataFormatter formatter = new DataFormatter();
-			PrintStream out = new PrintStream(new FileOutputStream(csvFile), true, "UTF-8");
+			out = new PrintStream(new FileOutputStream(csvFile), true, "UTF-8");
 			
 			for (Sheet sheet : workbook) {
 			    for (Row row : sheet) {			        
@@ -71,6 +72,10 @@ public class XlsxFileHandler extends FileHandler {
 		} catch (IOException | InvalidFormatException | IllegalStateException | ClassNotFoundException e) {			
 			e.printStackTrace();
 			throw new FileHandlerException(this.getClass(), e.getLocalizedMessage());
+		} finally {
+			if (out != null) {
+				out.close();
+			}
 		}
 	}
 }

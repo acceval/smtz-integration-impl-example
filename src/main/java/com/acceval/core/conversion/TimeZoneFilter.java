@@ -54,18 +54,19 @@ public class TimeZoneFilter implements Filter {
 			if (principal != null && principal instanceof CurrentUser) {
 				CurrentUser currentUser = (CurrentUser) principal;
 				timeZone = currentUser.getTimeZone();
+				
 			}
 		}
 
 		// check for feign client session without login user
-		if (StringUtils.isBlank(timeZone)) {
-			Enumeration<String> headerNames = request.getHeaderNames();
-			if (headerNames != null) {
-				timeZone = request.getHeader(PrincipalUtil.HDRKEY_TIMEZONEID);
-			}
+//		if (StringUtils.isBlank(timeZone)) {
+//			Enumeration<String> headerNames = request.getHeaderNames();
+//			if (headerNames != null) {
+//				timeZone = request.getHeader(PrincipalUtil.HDRKEY_TIMEZONEID);
+//			}
+//		}
 
-		}
-
+		
 		if (StringUtils.isNotBlank(timeZone)) {
 			timeZone = timezoneService.convertToUTCTimeZoneId(timeZone);
 			Map<String, String[]> reqParam = request.getParameterMap();

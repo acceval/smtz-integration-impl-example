@@ -28,6 +28,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
+import org.springframework.data.mongodb.core.aggregation.AggregationOptions;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.util.MultiValueMap;
 
@@ -362,8 +363,9 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 		if (dbProjection != null) {
 			lstOperation.add(new BasicAggregationOperation(new BasicDBObject("$project", dbProjection)));
 		}
-		AggregationResults<T> results = (AggregationResults<T>) this.mongoTemplate.aggregate(Aggregation.newAggregation(lstOperation),
-				this.getTargetClass(), this.getTargetClass());
+		AggregationOptions options = AggregationOptions.builder().allowDiskUse(true).build();
+		AggregationResults<T> results = (AggregationResults<T>) this.mongoTemplate
+				.aggregate(Aggregation.newAggregation(lstOperation).withOptions(options), this.getTargetClass(), this.getTargetClass());
 		return results.getMappedResults();
 	}
 

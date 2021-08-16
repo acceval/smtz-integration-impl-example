@@ -1,5 +1,7 @@
 package com.acceval.core.integration.model;
 
+import java.time.LocalDate;
+
 public class CustomerCreditInfoResponse {
 
     private Double totalCreditExposure;
@@ -9,6 +11,8 @@ public class CustomerCreditInfoResponse {
     private Double balanceCreditLimitPercentage;
     private String creditBlock;
     private String currency;
+    private String securityDoc;
+    private LocalDate securityDocExpiryDate;
 
     public Double getTotalCreditExposure() {
         return totalCreditExposure;
@@ -64,5 +68,21 @@ public class CustomerCreditInfoResponse {
 
     public void setCurrency(String currency) {
         this.currency = currency;
+    }
+
+    public String getSecurityDoc() {
+        return securityDoc;
+    }
+
+    public void setSecurityDoc(String securityDoc) {
+        this.securityDoc = securityDoc;
+    }
+
+    public LocalDate getSecurityDocExpiryDate() {
+        return securityDocExpiryDate;
+    }
+
+    public void setSecurityDocExpiryDate(LocalDate securityDocExpiryDate) {
+        this.securityDocExpiryDate = securityDocExpiryDate;
     }
 }

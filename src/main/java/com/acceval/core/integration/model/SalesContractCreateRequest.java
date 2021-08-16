@@ -51,6 +51,7 @@ public class SalesContractCreateRequest {
         private String contractType;
         private double exchangeRate;
         private double exchangeRateFI;
+        private String tenderType;
 
         public String getSoldTo() {
             return soldTo;
@@ -243,6 +244,14 @@ public class SalesContractCreateRequest {
         public void setExchangeRateFI(double exchangeRateFI) {
             this.exchangeRateFI = exchangeRateFI;
         }
+
+        public String getTenderType() {
+            return tenderType;
+        }
+
+        public void setTenderType(String tenderType) {
+            this.tenderType = tenderType;
+        }
     }
     
     public static class ContractItem {
@@ -258,6 +267,7 @@ public class SalesContractCreateRequest {
         private String palletize;
         private double alphaPrice;
         private double floorPrice;
+        private String storageLocation;
 
         public String getItemNumber() {
             return itemNumber;
@@ -345,6 +355,14 @@ public class SalesContractCreateRequest {
 
         public void setFloorPrice(double floorPrice) {
             this.floorPrice = floorPrice;
+        }
+
+        public String getStorageLocation() {
+            return storageLocation;
+        }
+
+        public void setStorageLocation(String storageLocation) {
+            this.storageLocation = storageLocation;
         }
     }
 
