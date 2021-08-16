@@ -3,10 +3,8 @@ package com.acceval.core.repository;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -30,18 +28,19 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
+import org.springframework.data.mongodb.core.aggregation.AggregationOptions;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.util.MultiValueMap;
 
 import com.acceval.core.model.BaseEntity;
 import com.acceval.core.model.BaseEntity.STATUS;
-import com.acceval.core.model.VariableContext;
 import com.acceval.core.model.company.BaseCompanyEntity;
 import com.acceval.core.model.company.BaseCompanyModel;
 import com.acceval.core.repository.Criterion.RestrictionType;
 import com.acceval.core.security.PrincipalUtil;
 import com.acceval.core.util.ClassUtil;
 import com.acceval.core.util.DateUtil;
+import com.acceval.core.util.TimeZoneUtil;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
@@ -364,8 +363,9 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 		if (dbProjection != null) {
 			lstOperation.add(new BasicAggregationOperation(new BasicDBObject("$project", dbProjection)));
 		}
-		AggregationResults<T> results = (AggregationResults<T>) this.mongoTemplate.aggregate(Aggregation.newAggregation(lstOperation),
-				this.getTargetClass(), this.getTargetClass());
+		AggregationOptions options = AggregationOptions.builder().allowDiskUse(true).build();
+		AggregationResults<T> results = (AggregationResults<T>) this.mongoTemplate
+				.aggregate(Aggregation.newAggregation(lstOperation).withOptions(options), this.getTargetClass(), this.getTargetClass());
 		return results.getMappedResults();
 	}
 
@@ -523,7 +523,7 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 			LocalDateTime localDateTime = mongoDateHandling(attrClass, value, restrictionType);
 			if (localDateTime != null) {
 				return new Object[] { org.springframework.data.mongodb.core.query.Criteria.where(property).gte(localDateTime)
-						.lt(localDateTime.plusDays(1)) };
+						.lt(localDateTime.plusDays(1).plusSeconds(-1)) };
 			} else {
 				return new Object[] { org.springframework.data.mongodb.core.query.Criteria.where(property).is(value) };
 			}
@@ -539,22 +539,22 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 			LocalDateTime localDateTime = mongoDateHandling(attrClass, value, restrictionType);
 			value = localDateTime != null ? localDateTime : value;
 			return new Object[] { org.springframework.data.mongodb.core.query.Criteria.where(property).gt(value),
-					dateFromString(property, "$gt", value) };
+					dateFromString(property, "$gt", value, attrClass) };
 		} else if (Criterion.RestrictionType.GREATER_OR_EQUAL.equals(restrictionType)) {
 			LocalDateTime localDateTime = mongoDateHandling(attrClass, value, restrictionType);
 			value = localDateTime != null ? localDateTime : value;
 			return new Object[] { org.springframework.data.mongodb.core.query.Criteria.where(property).gte(value),
-					dateFromString(property, "$gte", value) };
+					dateFromString(property, "$gte", value, attrClass) };
 		} else if (Criterion.RestrictionType.LESS.equals(restrictionType)) {
 			LocalDateTime localDateTime = mongoDateHandling(attrClass, value, restrictionType);
 			value = localDateTime != null ? localDateTime : value;
 			return new Object[] { org.springframework.data.mongodb.core.query.Criteria.where(property).lt(value),
-					dateFromString(property, "$lt", value) };
+					dateFromString(property, "$lt", value, attrClass) };
 		} else if (Criterion.RestrictionType.LESS_OR_EQUAL.equals(restrictionType)) {
 			LocalDateTime localDateTime = mongoDateHandling(attrClass, value, restrictionType);
 			value = localDateTime != null ? localDateTime : value;
 			return new Object[] { org.springframework.data.mongodb.core.query.Criteria.where(property).lte(value),
-					dateFromString(property, "$lte", value) };
+					dateFromString(property, "$lte", value, attrClass) };
 		}
 		// unknown
 		else {
@@ -575,67 +575,76 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 		return inputString;
 	}
 
-	private LocalDateTime mongoDateHandling(Class<?> attrClass, Object value, RestrictionType restrictionType) {
+	protected LocalDateTime mongoDateHandling(Class<?> attrClass, Object value, RestrictionType restrictionType) {
 		if (ClassUtils.isAssignable(attrClass, Date.class) || ClassUtils.isAssignable(attrClass, LocalDateTime.class)
 				|| ClassUtils.isAssignable(attrClass, LocalDate.class)) {
 			int year = 0;
 			int month = 0;
 			int day = 0;
+			LocalDateTime temp = null;
 			if (value instanceof String) {
-				try {
-					Calendar calendar = Calendar.getInstance();
-					calendar.setTime(DateUtils.parseDateStrictly((String) value, STD_DATEFORMAT));
-					year = calendar.get(Calendar.YEAR);
-					month = calendar.get(Calendar.MONTH) + 1;
-					day = calendar.get(Calendar.DAY_OF_MONTH);
-				} catch (ParseException e) {
-					LOGGER.error(e.getMessage(), e);
+				String strValue = (String) value;
+				if (strValue.length() > 10) {
+					temp = DateUtil.parseToLocalDateTime(strValue);
+				} else {
+					temp = TimeZoneUtil.returnTimeZone(strValue);
 				}
+				//				try {
+				//					Calendar calendar = Calendar.getInstance();
+				//					calendar.setTime(DateUtils.parseDateStrictly((String) value, STD_DATEFORMAT));
+				//					year = calendar.get(Calendar.YEAR);
+				//					month = calendar.get(Calendar.MONTH) + 1;
+				//					day = calendar.get(Calendar.DAY_OF_MONTH);
+				//				} catch (ParseException e) {
+				//					LOGGER.error(e.getMessage(), e);
+				//				}
 			} else if (value instanceof Date) {
 				Calendar calendar = Calendar.getInstance();
 				calendar.setTime((Date) value);
 				year = calendar.get(Calendar.YEAR);
 				month = calendar.get(Calendar.MONTH) + 1;
 				day = calendar.get(Calendar.DAY_OF_MONTH);
+				temp = LocalDateTime.of(year, month, day, calendar.get(Calendar.HOUR), 0);
 			} else if (value instanceof LocalDate) {
 				LocalDate vLocalDate = (LocalDate) value;
-				year = vLocalDate.getYear();
-				month = vLocalDate.getMonthValue();
-				day = vLocalDate.getDayOfMonth();
+				temp = TimeZoneUtil.returnTimeZone(vLocalDate.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+				//				year = vLocalDate.getYear();
+				//				month = vLocalDate.getMonthValue();
+				//				day = vLocalDate.getDayOfMonth();
 			} else if (value instanceof LocalDateTime) {
-				LocalDateTime vLocalDate = (LocalDateTime) value;
-				return vLocalDate;
+				temp = (LocalDateTime) value;
+				//				return vLocalDate;
 			}
 
-			if (RestrictionType.LESS.equals(restrictionType) || RestrictionType.LESS_OR_EQUAL.equals(restrictionType)) {
-				return LocalDateTime.of(year, month, day, 23, 59, 59, 999999999);
-			} else {
-				return LocalDateTime.of(year, month, day, 0, 0);
-			}
+			//			if (RestrictionType.LESS.equals(restrictionType) || RestrictionType.LESS_OR_EQUAL.equals(restrictionType)) {
+			//				return LocalDateTime.of(year, month, day, 23, 59, 59, 999999999);
+			//				return temp.plusHours(23).plusMinutes(59).plusSeconds(59);
+			//			} else {
+			//				return LocalDateTime.of(year, month, day, 0, 0);
+			return temp;
+			//			}
 
 		}
 		return null;
 	}
 
-	private DBObject dateFromString(String property, String operator, Object value) {
-		String strDate = null;
+	protected DBObject dateFromString(String property, String operator, Object value, Class<?> attrClass) {
+		//		String mongoDateFormat = (ClassUtils.isAssignable(attrClass, Date.class) || ClassUtils.isAssignable(attrClass, LocalDateTime.class))
+		//				? Criterion.DEFAULT_MONGO_DATE_TIME_FORMAT
+		//				: Criterion.DEFAULT_MONGO_DATE_FORMAT;
+		//		String dateFormat = Criterion.DEFAULT_MONGO_DATE_TIME_FORMAT.equals(mongoDateFormat) ? VariableContext.DEFAULT_DATE_TIME_FORMAT
+		//				: VariableContext.DEFAULT_DATE_FORMAT;
+
 		if (value instanceof String) {
-			strDate = (String) value;
-		} else if (value instanceof Date) {
-			strDate = new SimpleDateFormat(VariableContext.DEFAULT_DATE_FORMAT).format((Date) value);
-		} else if (value instanceof LocalDate) {
-			LocalDate vLocalDate = (LocalDate) value;
-			strDate = vLocalDate.format(DateTimeFormatter.ofPattern(VariableContext.DEFAULT_DATE_FORMAT));
-		} else if (value instanceof LocalDateTime) {
-			LocalDateTime vLocalDate = (LocalDateTime) value;
-			strDate = vLocalDate.format(DateTimeFormatter.ofPattern(VariableContext.DEFAULT_DATE_FORMAT));
+			value = TimeZoneUtil.returnTimeZone((String) value);
 		}
+		if (value == null) return null;
 
-		if (strDate == null) return null;
-
-		return new BasicDBObject("$expr", new BasicDBObject(operator,
-				new Object[] { "$" + property, new BasicDBObject("$dateFromString", new BasicDBObject("dateString", strDate)
-						.append("format", Criterion.DEFAULT_MONGO_DATE_FORMAT).append("timezone", ZoneId.systemDefault().toString())) }));
+		//		return new BasicDBObject("$expr",
+		//				new BasicDBObject(operator,
+		//						new Object[] { "$" + property, new BasicDBObject("$dateFromString", new BasicDBObject("dateString", strDate)
+		//								.append("format", mongoDateFormat).append("timezone", ZoneId.systemDefault().toString())) }));
+		return new BasicDBObject(property, new BasicDBObject(operator, value));
 	}
 
 	protected Field getField(Class<?> javaClass, String property) throws NoSuchFieldException, SecurityException {

@@ -11,13 +11,33 @@ trigger:
       - master
       - release/*
   paths:
-    include:
-    - docs
     exclude:
-    - docs/README.md
+      - docs/README.md
+
+#schedules:
+#  - cron: "25 0 * * *"
+#    displayName: Daily morning build 845am SGT
+#    branches:
+#      include:
+#        - release/develop
+#    always: true
+
+pr: none
 
 pool:
   vmImage: ubuntu-latest
+
+variables:
+  - name: CDN_TARGET_CONNECTION
+    value: azuredev-spn-connection
+  - name: CR_TARGET_CONNECTION
+    value: azuredev-docker-connection
+  - ${{ if contains(variables['Build.SourceBranch'], 'master') }}:
+      - group: 'THUNDERCLOUD-VARS-PROD'
+  - ${{ if contains(variables['Build.SourceBranch'], 'release/develop') }}:
+      - group: 'THUNDERCLOUD-VARS-DEV'
+  - ${{ if contains(variables['Build.SourceBranch'], 'release/v') }}:
+      - group: 'THUNDERCLOUD-VARS-UAT'
 
 steps:
   - task: MavenAuthenticate@0
@@ -34,7 +54,7 @@ steps:
       jdkArchitectureOption: 'x64'
       publishJUnitResults: true
       testResultsFiles: '**/surefire-reports/TEST-*.xml'
-      goals: 'package'
+      goals: 'package deploy'
 
   - task: PublishBuildArtifacts@1
     enabled: false

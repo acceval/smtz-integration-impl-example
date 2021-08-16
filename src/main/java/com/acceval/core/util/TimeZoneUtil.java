@@ -51,6 +51,7 @@ public class TimeZoneUtil {
 		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 		if (StringUtils.isNotBlank(timeZone)) {
+			localDateString = localDateString.replaceAll("/", "-");
 			if (localDateString.length() == 10) {
 				return LocalDate.parse(localDateString, dateFormatter).atStartOfDay().atZone(ZoneId.of(timeZone))
 						.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();

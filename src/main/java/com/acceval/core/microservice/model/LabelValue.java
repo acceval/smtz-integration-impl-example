@@ -125,8 +125,14 @@ public class LabelValue implements Comparable<LabelValue>, Serializable {
 
 	@Override
 	public int compareTo(LabelValue other) {
-
 		return this.label.compareTo(other.label);
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj != null && obj instanceof LabelValue) {
+			return StringUtils.equals(this.getValue(), ((LabelValue) obj).getValue());
+		}
+		return super.equals(obj);
+	}
 }

@@ -1,0 +1,278 @@
+<!DOCTYPE html> 
+<html> 
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<!-- <link th:href="${cssPath}" rel="stylesheet"/> -->
+		<style>
+		table {
+			width: 100%;
+			border: 1px solid #AFAFAF;
+			border-collapse: collapse;
+		}
+		
+		table table.noBorder {
+			width: 100%;
+			border: 0;
+		}
+		
+		table table.noBorder tr {
+			border: 0;
+		}
+		
+		table table.noBorder td {
+			border: 0;
+		}
+		
+		table, th, td {
+			border: 1px solid #AFAFAF;
+		}
+		
+		td {
+			padding: 0.5rem
+		}
+		
+		.labelBold {
+			text-align: left;
+			padding: 0.3rem 0.5rem;
+			font-weight: bold;
+		}
+		
+		.page-break {
+			height: 0;
+			page-break-after: always;
+			margin: 0;
+			border-top: none;
+		}
+		
+		.inlineTable {
+			width: 40%;
+			border: 2px solid black;
+		}
+		</style>		 
+	</head>	
+	<body style="font-family: arial; font-size: large;">  
+		<table style="margin-top: 2rem;"> 	
+			<tr> 		
+				<td class="labelBold" width="30%">INVOICE NO.</td>
+				<td width="70%" th:text="${reference}">invoice Number</td> 	
+			</tr> 	
+			<tr>
+				<td class="labelBold" width="30%">INVOICE DATE</td>
+				<td width="70%" th:text="${contractDate}">Invoice Date</td>
+			</tr> 	
+			<tr>
+				<td class="labelBold" width="30%">REFERENCE</td>
+				<td witdh="70%" th:text="${contractNo}">Reference</td> 	
+			</tr> 
+		</table> 
+		<table style="margin: 1rem 0 3rem 0;">			
+			<tr> 		
+				<td class="labelBold" width="30%">SELLER</td>
+				<td width="70%"> 			
+					<table class="noBorder"> 				
+						<tr>
+							<td style="padding: 0.3rem 0;" colspan="2" th:utext="${sellerName}">Seller Name</td> 				
+						</tr>
+						<tr> 					
+							<td style="padding: 0.3rem 0;" colspan="2" th:utext="${sellerAddress}">Seller Address</td>
+						</tr>
+						<tr> 					
+							<td style="padding: 0.3rem 0;" width="50%"><span class="labelBold" style="padding-left: 0;">Telephone: </span><span th:text="${sellerTelephoneNo}">Seller Telephone Number</span></td>							
+							<td width="50%"><span class="labelBold">Facsimile: </span><span th:text="${sellerFacsimile}">Seller Facsimile Number</span></td>							
+						</tr> 
+						<tr>
+							<td style="padding: 0.3rem 0;" colspan="2"><span class="labelBold" style="padding-left: 0;">Attention: </span><span th:text="${sellerAttention}">Seller Attention</span></td>
+						</tr>
+					</table> 		
+				</td> 	
+			</tr> 	
+			<tr>
+				<td class="labelBold" width="30%">BUYER</td> 		
+				<td width="70%">
+					<table class="noBorder"> 				
+						<tr>
+							<td style="padding: 0.3rem 0;" colspan="2" th:utext="${buyerName}">Buyer Name</td> 				
+						</tr>
+						<tr> 					
+							<td style="padding: 0.3rem 0;" colspan="2" th:utext="${buyerAddress}">Buyer Address</td>
+						</tr> 				
+						<tr> 					
+							<td style="padding: 0.3rem 0;" width="50%"><span class="labelBold" style="padding-left: 0;">Telephone: </span><span th:text="${buyerTelephoneNo}">Buyer Telephone Number</span></td>							
+							<td width="50%"><span class="labelBold">Facsimile: </span><span th:text="${buyerFacsimile}">Buyer Facsimile Number</span></td>							
+						</tr> 				
+						<tr> 					
+							<td style="padding: 0.3rem 0;" colspan="2"><span class="labelBold" style="padding-left: 0;">Attention: </span><span th:text="${buyerAttention}">Buyer Attention</span></td>
+						</tr>
+					</table> 		
+				</td> 	
+			</tr>
+			<tr th:unless="${buyerBank == ''}">
+				<td class="labelBold" width="30%">BUYER BANK</td>
+				<td width="70%">
+					<span th:utext="${buyerBank}">Buyer Bank</span>
+				</td>
+			</tr>
+			<tr>
+				<td class="labelBold" width="30%">TERMS OF DELIVERY</td>
+				<td width="70%" th:text="${termOfDelivery}">Terms of Delivery</td> 	
+			</tr> 
+			<tr> 		
+				<td class="labelBold" width="30%">DELIVERY DATE RANGE</td>
+				<td width="70%" th:text="${deliveryDateRange}">Delivery Date Range</td> 	
+			</tr>
+			<tr th:each="deliveryTerm, iter: ${deliveryTerms}">
+				<td class="labelBold" width="30%" th:text="${deliveryTerm.label}">Delivery Title</td>
+				<td width="70%" th:text="${deliveryTerm.value}">Delivery Value</td> 								
+			</tr>
+			<tr> 		
+				<td class="labelBold" width="30%">FORM</td>
+				<td width="70%">Fine</td> 	
+			</tr>
+			<tr> 		
+				<td class="labelBold" width="30%">SIZE</td>
+				<td width="70%">0-30MM 100% (0-20MM 97.50%, +20 - 30MM 2.5%)</td> 	
+			</tr>
+			<tr> 		
+				<td class="labelBold" width="30%">ORIGIN</td>
+				<td width="70%">India</td> 	
+			</tr>
+		</table>	  		
+		
+		<table style="margin-top: 1rem;"> 	
+			<tr>
+				<th class="labelBold">PRODUCT</th>
+				<th class="labelBold">QUANTITY</th> 		
+				<th class="labelBold">DRY QUANTITY</th>
+				<th class="labelBold">PACKAGING</th> 		
+				<th class="labelBold">UNIT PRICE</th>
+				<th class="labelBold">PROPORTION</th>
+				<th class="labelBold">TOTAL AMOUNT</th> 	
+			</tr>
+			<tr th:each="orderItem, iter: ${orderItems}">
+				<td th:text="${orderItem.product.name}">Product</td>
+				<td><span th:text="${#numbers.formatDecimal(orderItem.shortTermQuantity, 0, 'COMMA', 0, 'POINT')}"></span><span style="margin-left: 0.5rem;">MT</span></td>
+				<td><span th:text="${#numbers.formatDecimal(orderItem.quantity, 0, 'COMMA', 0, 'POINT')}"></span><span style="margin-left: 0.5rem;" th:text="${orderItem.uomCode}"></span></td>
+				<td style="padding: 0.5rem;" th:utext="${orderItem.skuLabel}">Packaging</td>
+				<td><span th:text="${#numbers.formatDecimal(orderItem.invoicePrice, 0, 'COMMA', 2, 'POINT')}"></span><span style="margin-left: 0.5rem;" th:text="${currencyCode}"></span>/<span th:text="${orderItem.uomCode}"></span></td>
+				<td><span th:text="${#numbers.formatDecimal(orderItem.chargeRate, 0, 'COMMA', 0, 'POINT')}"></span><span style="margin-left: 0.5rem;">%</span></td>
+				<td><span th:text="${#numbers.formatDecimal(orderItem.amount, 0, 'COMMA', 0, 'POINT')}"></span><span style="margin-left: 0.5rem;" th:text="${currencyCode}"></span></td>				
+			</tr> 
+		</table> 
+
+		<table style="margin-top: 2rem;"> 	
+			<tr>
+				<th class="labelBold" style="background-color: #343a40; color: white;">COMPOSITION</th>
+				<th class="labelBold" style="background-color: #343a40; color: white;">VALUE FROM</th> 		
+				<th class="labelBold" style="background-color: #343a40; color: white;">VALUE TO</th>
+				<th class="labelBold" style="background-color: #343a40; color: white;">PER %</th> 		
+				<th class="labelBold" style="background-color: #343a40; color: white;">PRICE ADJUSTMENT</th>
+				<th class="labelBold" style="background-color: #343a40; color: white;">FINAL SELLER COUNTER OFFER</th>				 	
+			</tr>
+			<tr>
+				<td>Iron (Fe)</td>
+				<td>63.50%</td>
+				<td>100.00%</td>
+				<td>1.00%</td>
+				<td>1.50 USD/DMT</td>
+				<td>1.40 USD/DMT<USD>	
+			</tr> 
+			<tr>
+				<td>Iron (Fe)</td>
+				<td>61.00%</td>
+				<td>62.50%</td>
+				<td>1.00%</td>
+				<td>-1.50 USD/DMT</td>
+				<td>-1.50 USD/DMT<USD>	
+			</tr> 
+			<tr>
+				<td>Alumina (Al2O3)</td>
+				<td>3.50%</td>
+				<td>100.00%</td>
+				<td>1.00%</td>
+				<td>-0.10 USD/DMT</td>
+				<td>-0.10 USD/DMT<USD>	
+			</tr> 
+			<tr>
+				<td>Silica (SiO2)</td>
+				<td>5.00%</td>
+				<td>100.00%</td>
+				<td>1.00%</td>
+				<td>-0.10 USD/DMT</td>
+				<td>-0.12 USD/DMT<USD>	
+			</tr> 
+			<tr>
+				<td>Sulphur (S)</td>
+				<td>0.10%</td>
+				<td>100.00%</td>
+				<td>0.01%</td>
+				<td>-0.10 USD/DMT</td>
+				<td>-0.10 USD/DMT<USD>	
+			</tr> 
+			<tr>
+				<td>Phosphorus (P)</td>
+				<td>0.10%</td>
+				<td>100.00%</td>
+				<td>0.01%</td>
+				<td>-0.10 USD/DMT</td>
+				<td>-0.10 USD/DMT<USD>	
+			</tr> 
+		</table> 
+
+
+		<table style="margin-top: 2rem;"> 	
+			<tr> 		
+				<td class="labelBold" width="30%">PRICE</td>
+				<td width="70%"> 			
+					<table class="noBorder">
+						<tr th:each="price, iter : ${prices}">
+							<td style="padding-left: 0;">
+								<!-- <span th:text="'Line item ' + ${iter.count} + ') '"></span> -->
+								<span th:text="${#numbers.formatDecimal(price, 0, 'COMMA', 0, 'POINT')}"></span><span style="margin-left: 0.5rem;" th:text="${currencyCode}"></span>
+							</td>
+						</tr>
+					</table>
+				</td> 	
+			</tr> 	
+			
+			<tr>
+				<td class="labelBold" width="30%">TOTAL PRICE</td>
+				<td width="70%"><span th:text="${#numbers.formatDecimal(totalPrice, 0, 'COMMA', 0, 'POINT')}"> </span><span style="margin-left: 0.5rem;" th:text="${currencyCode}"></td>				 
+			</tr> 	
+			<tr>
+				<td class="labelBold" width="30%">PAYMENT</td> 		
+				<td width="70%" th:text="${payment}">Payment</td>
+			</tr>
+			<tr th:unless="${sellerBank == ''}">
+				<td class="labelBold" width="30%">SELLER BANK</td>
+				<td width="70%">
+					<span th:utext="${sellerBank}">Seller Bank</span>
+				</td>
+			</tr>
+		</table> 
+		<!-- <div class="page-break"></div> -->
+		<br><br><br><br><br>
+		<div style="margin-top: 3.5rem;"> 
+			<table align="left" class="inlineTable">
+				
+			</table>     
+			<table align="right" class="inlineTable">         
+				<tr>
+					<td class="labelBold" width="30%">SELLER</td>
+					<td width="70%" th:utext="${sellerName}">Tax and Duties</td>         
+				</tr>
+				<tr>
+					<td class="labelBold" width="30%" style="vertical-align: top;">Signature</td>
+					<td width="70%" style="height: 5rem;"></td>
+				</tr>         
+				<tr>
+					<td class="labelBold" width="30%">Name</td>
+					<td width="70%"></td>         
+				</tr>
+				<tr>
+					<td class="labelBold" width="30%">Designation</td>
+					<td width="70%"></td>
+				</tr>
+			</table>
+		</div> 
+	</body> 
+</html>
