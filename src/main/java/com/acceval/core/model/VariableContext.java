@@ -56,7 +56,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String FINAL_ALPHA = "FINAL_ALPHA";
 	public static final String ALPHA_ADJUSTMENT = "ALPHA_ADJUSTMENT";
 	public static final String ALPHA_2 = "ALPHA_2";
-	
+	public static final String SALES_OFFICE = "SALES_OFFICE";
 
 	public static final String DEFAULT_DATE_FORMAT = Criterion.DEFAULT_DATE_FORMAT;
 	public static final String DEFAULT_DATE_TIME_FORMAT = Criterion.DEFAULT_DATE_TIME_FORMAT;
@@ -110,6 +110,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String CT_HIST_REBATE = "HIST_REBATE_COIM";
 	public static final String CT_PACKAGINGCOST = "PACKAGING_COST";
 	public static final String CT_COUNTRYSTANDARDDEEMEDFREIGHT = "STANDARD_DEEMED_FREIGHT";
+	public static final String CT_SPOT_LOA_ASSIGNMENT = "SPOT_LOA_ASSIGNMENT";
 
 	// Condition Table Fields / context key
 	public static final String CONDFIELDCODE_NORMALISE_FOR_FLOOR_PRICE = "NORMALISE_FOR_FLOOR_PRICE";
@@ -120,6 +121,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public final static String CONDFIELDCODE_SOLD_TO_CUSTOMER = "SOLD_TO_CUSTOMER";
 	public final static String CONDFIELDCODE_GRADE = "GRADE";
 	public static final String CONDFIELDCODE_DOMESTIC = "DOMESTIC";
+	public static final String CONDFIELDCODE_ACCAMTINRM = "ACCAMTINRM";
 
 	// Condition Table Values / context key
 	public static final String CONDVALUECODE_PRODUCT_BASE_PRICE_INCO = "INCOTERM";
