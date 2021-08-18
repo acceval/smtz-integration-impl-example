@@ -268,6 +268,8 @@ public class SalesContractCreateRequest {
         private double alphaPrice;
         private double floorPrice;
         private String storageLocation;
+        private String prefTenderNo;
+        private String pcmlpoNo;
 
         public String getItemNumber() {
             return itemNumber;
@@ -363,6 +365,22 @@ public class SalesContractCreateRequest {
 
         public void setStorageLocation(String storageLocation) {
             this.storageLocation = storageLocation;
+        }
+
+        public String getPrefTenderNo() {
+            return prefTenderNo;
+        }
+
+        public void setPrefTenderNo(String prefTenderNo) {
+            this.prefTenderNo = prefTenderNo;
+        }
+
+        public String getPcmlpoNo() {
+            return pcmlpoNo;
+        }
+
+        public void setPcmlpoNo(String pcmlpoNo) {
+            this.pcmlpoNo = pcmlpoNo;
         }
     }
 
