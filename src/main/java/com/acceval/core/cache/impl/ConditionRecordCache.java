@@ -19,6 +19,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Cache structure
@@ -56,9 +57,9 @@ public class ConditionRecordCache implements CacheIF {
         this.hazelcastInstance = Hazelcast.newHazelcastInstance(config);
     }
 
-    private IMap<String, Object> getTopMap(String companyID) {
+    private Map<String, Object> getTopMap(String companyID) {
         String key = companyID;
-        return hazelcastInstance.getMap(key);
+        return hazelcastInstance.getReplicatedMap(key);
     }
 
     private ConditionRecordCacheHolder getHolder(String companyID, String code) {
