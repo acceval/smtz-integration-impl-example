@@ -485,7 +485,9 @@ public class VariableContext implements Serializable, Cloneable {
 			return map;
 		}
 		for (String key : getVariableMap().keySet()) {
-			if (!(getVariableMap().get(key) instanceof BaseModel)) {
+			
+			if (!(getVariableMap().get(key) instanceof BaseModel)
+					&& !key.equals(COMMITMENT)) {
 				map.put(key, getVariableMap().get(key));
 			}
 		}
