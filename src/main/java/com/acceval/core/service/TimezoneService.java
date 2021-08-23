@@ -1,15 +1,10 @@
 package com.acceval.core.service;
 
-import com.acceval.core.microservice.model.LabelValue;
-import com.acceval.core.model.Timezone;
-import org.springframework.core.io.Resource;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.InputStream;
-import java.nio.file.Path;
 import java.util.List;
 import java.util.TimeZone;
-import java.util.stream.Stream;
+
+import com.acceval.core.microservice.model.LabelValue;
+import com.acceval.core.model.Timezone;
 
 public interface TimezoneService {
 
