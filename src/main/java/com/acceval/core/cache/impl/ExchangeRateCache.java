@@ -4,12 +4,11 @@ import com.acceval.core.cache.CacheIF;
 import com.acceval.core.cache.CacheInfo;
 import com.acceval.core.cache.model.ExchangeRate;
 import com.github.jknack.handlebars.internal.lang3.StringUtils;
-import com.hazelcast.config.Config;
-import com.hazelcast.config.JoinConfig;
-import com.hazelcast.config.NetworkConfig;
+import com.hazelcast.config.*;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
+import com.hazelcast.kubernetes.HazelcastKubernetesDiscoveryStrategyFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -64,12 +63,21 @@ public class ExchangeRateCache implements CacheIF {
         }
 
         if (kubernetesEnable) {
+            config.setProperty("hazelcast.discovery.enabled", "true");
+
             NetworkConfig network = config.getNetworkConfig();
             JoinConfig join = network.getJoin();
             join.getMulticastConfig().setEnabled(false);
-            join.getKubernetesConfig().setEnabled(true)
-                    .setProperty("namespace", kubernetesNamespace)
-                    .setProperty("service-name", hazelCastServiceName);
+//            join.getKubernetesConfig().setEnabled(true)
+//                    .setProperty("namespace", kubernetesNamespace)
+//                    .setProperty("service-name", hazelCastServiceName);
+
+            DiscoveryConfig dc = config.getNetworkConfig().getJoin().getDiscoveryConfig();
+            HazelcastKubernetesDiscoveryStrategyFactory factory = new HazelcastKubernetesDiscoveryStrategyFactory();
+            DiscoveryStrategyConfig strategyConfig = new DiscoveryStrategyConfig(factory);
+            strategyConfig.addProperty("namespace", kubernetesNamespace);
+            strategyConfig.addProperty("service-name", hazelCastServiceName);
+            dc.addDiscoveryStrategyConfig(strategyConfig);
         } else {
             config.getNetworkConfig().setPort(5730);
         }
