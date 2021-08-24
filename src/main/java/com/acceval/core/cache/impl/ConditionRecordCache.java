@@ -36,11 +36,17 @@ public class ConditionRecordCache implements CacheIF {
 
     private HazelcastInstance hazelcastInstance;
 
-    public ConditionRecordCache(@Value("${microservice.env}") String env) {
+    public ConditionRecordCache(@Value("${microservice.env}") String env,
+                                @Value("${microservice.cache-config.kubernetes.enable:false}") boolean kubernetesEnable,
+                                @Value("${microservice.cache-config.kubernetes.namespace:dummy}") String kubernetesNamespace,
+                                @Value("${microservice.cache-config.kubernetes.service-name:dummy}") String hazelCastServiceName
+                                ) {
 
         Config config = new Config();
 
-        config.getNetworkConfig().setPort(5710);
+        logger.info("Condition Record Cache Property : Kubernetes Enable : " + kubernetesEnable);
+        logger.info("Condition Record Cache Property : Kubernetes Namespace : " + kubernetesNamespace);
+        logger.info("Condition Record Cache Property : Kubernetes Service Name : " + hazelCastServiceName);
 
         if (StringUtils.isNotBlank(env) && StringUtils.containsIgnoreCase(env, "local")) {
             config.getManagementCenterConfig().setEnabled(true).setUrl("http://localhost:9090/mancenter");
@@ -51,6 +57,18 @@ public class ConditionRecordCache implements CacheIF {
         } else {
             // other environment
         }
+
+        if (kubernetesEnable) {
+            NetworkConfig network = config.getNetworkConfig();
+            JoinConfig join = network.getJoin();
+            join.getMulticastConfig().setEnabled(false);
+            join.getKubernetesConfig().setEnabled(true)
+                    .setProperty("namespace", kubernetesNamespace)
+                    .setProperty("service-name", hazelCastServiceName);
+        } else {
+            config.getNetworkConfig().setPort(5710);
+        }
+
         logger.info("Condition Record Cache construct. " + env);
         String instanceName = "smtz_enterprise:" + env + ":" + CACHE_NAME;
         config.getGroupConfig().setName(instanceName);
