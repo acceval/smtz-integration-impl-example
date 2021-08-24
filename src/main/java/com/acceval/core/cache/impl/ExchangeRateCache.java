@@ -34,12 +34,18 @@ public class ExchangeRateCache implements CacheIF {
 
     private HazelcastInstance hazelcastInstance;
 
-    private ExchangeRateCache(@Value("${microservice.env}") String env) {
+    private ExchangeRateCache(@Value("${microservice.env}") String env,
+                              @Value("${microservice.cache-config.kubernetes.enable:false}") boolean kubernetesEnable,
+                              @Value("${microservice.cache-config.kubernetes.namespace:dummy}") String kubernetesNamespace,
+                              @Value("${microservice.cache-config.kubernetes.service-name:dummy}") String hazelCastServiceName
+    ) {
 //        NetworkInterface.getNetworkInterfaces()
 
         Config config = new Config();
 
-        config.getNetworkConfig().setPort(5730);
+        logger.info("Exchange Rate Cache Property : Kubernetes Enable : " + kubernetesEnable);
+        logger.info("Exchange Rate Cache Property : Kubernetes Namespace : " + kubernetesNamespace);
+        logger.info("Exchange Rate Cache Property : Kubernetes Service Name : " + hazelCastServiceName);
 
         if (StringUtils.isNotBlank(env) && StringUtils.containsIgnoreCase(env, "local")) {
 //            UUID uuid = UUID.randomUUID();
@@ -56,6 +62,18 @@ public class ExchangeRateCache implements CacheIF {
 //            this.applicationName = env + ":" + applicationName;
 //            instanceName = env;
         }
+
+        if (kubernetesEnable) {
+            NetworkConfig network = config.getNetworkConfig();
+            JoinConfig join = network.getJoin();
+            join.getMulticastConfig().setEnabled(false);
+            join.getKubernetesConfig().setEnabled(true)
+                    .setProperty("namespace", kubernetesNamespace)
+                    .setProperty("service-name", hazelCastServiceName);
+        } else {
+            config.getNetworkConfig().setPort(5730);
+        }
+
         logger.info("Exchange Rate Cache construct. " + env);
         String instanceName = "smtz_enterprise:" + env + ":" + CACHE_NAME;
         config.getGroupConfig().setName(instanceName);
