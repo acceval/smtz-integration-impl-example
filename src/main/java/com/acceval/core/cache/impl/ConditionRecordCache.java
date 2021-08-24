@@ -73,7 +73,10 @@ public class ConditionRecordCache implements CacheIF {
             HazelcastKubernetesDiscoveryStrategyFactory factory = new HazelcastKubernetesDiscoveryStrategyFactory();
             DiscoveryStrategyConfig strategyConfig = new DiscoveryStrategyConfig(factory);
             strategyConfig.addProperty("namespace", kubernetesNamespace);
-            strategyConfig.addProperty("service-name", hazelCastServiceName);
+//            strategyConfig.addProperty("service-name", hazelCastServiceName);
+            strategyConfig.addProperty("service-label-name", "hazelcast-member");
+            strategyConfig.addProperty("service-label-value", "active");
+
             dc.addDiscoveryStrategyConfig(strategyConfig);
         } else {
             config.getNetworkConfig().setPort(5710);
