@@ -114,14 +114,14 @@ public class VariableContext implements Serializable, Cloneable {
 
 	// Condition Table Fields / context key
 	public static final String CONDFIELDCODE_NORMALISE_FOR_FLOOR_PRICE = "NORMALISE_FOR_FLOOR_PRICE";
-	public static final String CONDFIELDCODE_INVOICEDOCUMENT = "INVOICE_DOCUMENT";
-	public static final String CONDFIELDCODE_SWAPINVOICE = "SWAP_INVOICE";
+	public static final String CONDFIELDCODE_INVOICE_DOCUMENT = "INVOICE_DOCUMENT";
+	public static final String CONDFIELDCODE_SWAP_INVOICE = "SWAP_INVOICE";
 	public static final String CONDFIELDCODE_CEV_FOR_FLOOR_PRICE = "CEV_FOR_FLOOR_PRICE";
 	public final static String CONDFIELDCODE_DOCUMENT_ID = "DOCUMENT_ID";
 	public final static String CONDFIELDCODE_SOLD_TO_CUSTOMER = "SOLD_TO_CUSTOMER";
 	public final static String CONDFIELDCODE_GRADE = "GRADE";
 	public static final String CONDFIELDCODE_DOMESTIC = "DOMESTIC";
-	public static final String CONDFIELDCODE_ACCAMTINRM = "ACCAMTINRM";
+	public static final String CONDFIELDCODE_ACCUMULATIVE_AMOUNT_IN_RM = "ACCUMULATIVE_AMOUNT_IN_RM";
 
 	// Condition Table Values / context key
 	public static final String CONDVALUECODE_PRODUCT_BASE_PRICE_INCO = "INCOTERM";
@@ -174,6 +174,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String IS_QUOTATION = "IS_QUOTATION";
 	public static final String IS_PENDING_STATE = "IS_PENDING_STATE";
 	public static final String WFL_VIO_NOR_FLOOR_ALPHA = "WFLVIONORFLOORALPHA";
+	public static final String WFL_NO_APPROVAL = "NO_APPROVAL";
 
 	// Workflow Context
 	public static final String FORMULAPRICINGADJ = "FORMULAPRICINGADJ";
