@@ -77,8 +77,8 @@ public class ExchangeRateCache implements CacheIF {
             DiscoveryStrategyConfig strategyConfig = new DiscoveryStrategyConfig(factory);
             strategyConfig.addProperty("namespace", kubernetesNamespace);
 //            strategyConfig.addProperty("service-name", hazelCastServiceName);
-            strategyConfig.addProperty("service-label-name", "hazelcast-member");
-            strategyConfig.addProperty("service-label-value", "active");
+//            strategyConfig.addProperty("service-label-name", "hazelcast-member");
+//            strategyConfig.addProperty("service-label-value", "active");
 
             dc.addDiscoveryStrategyConfig(strategyConfig);
         } else {
