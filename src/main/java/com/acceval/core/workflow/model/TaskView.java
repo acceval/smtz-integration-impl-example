@@ -20,6 +20,8 @@ public class TaskView<T> {
 	public final LocalDateTime createTime;
 	public final LocalDateTime dueDate;
 
+	public String workflowStatus;
+
 	public TaskView(
 			@JsonProperty("id") String id,
 			@JsonProperty("processInstanceId") String processInstanceId,
@@ -47,6 +49,14 @@ public class TaskView<T> {
 
 	public void setAssigneeName(String assigneeName) {
 		this.assigneeName = assigneeName;
+	}
+
+	public String getWorkflowStatus() {
+		return workflowStatus;
+	}
+
+	public void setWorkflowStatus(String workflowStatus) {
+		this.workflowStatus = workflowStatus;
 	}
 
 	@Override
