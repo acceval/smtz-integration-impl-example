@@ -42,6 +42,8 @@ public class ExchangeRateCache implements CacheIF {
 
         Config config = new Config();
 
+        config.getNetworkConfig().setPort(5730);
+
         logger.info("Exchange Rate Cache Property : Kubernetes Enable : " + kubernetesEnable);
         logger.info("Exchange Rate Cache Property : Kubernetes Namespace : " + kubernetesNamespace);
         logger.info("Exchange Rate Cache Property : Kubernetes Service Name : " + hazelCastServiceName);
@@ -60,30 +62,29 @@ public class ExchangeRateCache implements CacheIF {
             // other environment
 //            this.applicationName = env + ":" + applicationName;
 //            instanceName = env;
-        }
 
-        if (kubernetesEnable) {
-            config.setProperty("hazelcast.discovery.enabled", "true");
+            if (kubernetesEnable) {
+                config.setProperty("hazelcast.discovery.enabled", "true");
 
-            NetworkConfig network = config.getNetworkConfig();
-            JoinConfig join = network.getJoin();
-            join.getMulticastConfig().setEnabled(false);
+                NetworkConfig network = config.getNetworkConfig();
+                JoinConfig join = network.getJoin();
+                join.getMulticastConfig().setEnabled(false);
 //            join.getKubernetesConfig().setEnabled(true)
 //                    .setProperty("namespace", kubernetesNamespace)
 //                    .setProperty("service-name", hazelCastServiceName);
 
-            DiscoveryConfig dc = config.getNetworkConfig().getJoin().getDiscoveryConfig();
-            HazelcastKubernetesDiscoveryStrategyFactory factory = new HazelcastKubernetesDiscoveryStrategyFactory();
-            DiscoveryStrategyConfig strategyConfig = new DiscoveryStrategyConfig(factory);
-            strategyConfig.addProperty("namespace", kubernetesNamespace);
+                DiscoveryConfig dc = config.getNetworkConfig().getJoin().getDiscoveryConfig();
+                HazelcastKubernetesDiscoveryStrategyFactory factory = new HazelcastKubernetesDiscoveryStrategyFactory();
+                DiscoveryStrategyConfig strategyConfig = new DiscoveryStrategyConfig(factory);
+                strategyConfig.addProperty("namespace", kubernetesNamespace);
 //            strategyConfig.addProperty("service-name", hazelCastServiceName);
 //            strategyConfig.addProperty("service-label-name", "hazelcast-member");
 //            strategyConfig.addProperty("service-label-value", "active");
 
-            dc.addDiscoveryStrategyConfig(strategyConfig);
-        } else {
-            config.getNetworkConfig().setPort(5730);
+                dc.addDiscoveryStrategyConfig(strategyConfig);
+            }
         }
+
 
         logger.info("Exchange Rate Cache construct. " + env);
         String instanceName = "smtz_enterprise:" + env + ":" + CACHE_NAME;
