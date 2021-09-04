@@ -52,9 +52,10 @@ public class ConditionEvaluationResult {
 	}
 	
 	public void logError(Throwable ex) {
-		
-		PrintWriter writer = new PrintWriter(new StringWriter());		
-		ex.printStackTrace(writer);
+
+	    StringWriter writer = new StringWriter();
+		PrintWriter pw = new PrintWriter(writer);
+		ex.printStackTrace(pw);
 		this.isSuccess = false;
 		message.append(writer.toString());
 	}

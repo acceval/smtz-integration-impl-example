@@ -4,6 +4,7 @@ import com.acceval.core.cache.CacheIF;
 import com.acceval.core.cache.CacheInfo;
 import com.acceval.core.cache.HazelcastCacheInstance;
 import com.acceval.core.cache.model.ConditionRecord;
+import com.acceval.core.cache.model.ConditionRecordCacheHelper;
 import com.acceval.core.cache.model.ConditionRecordCacheHolder;
 import com.acceval.core.cache.model.ConditionRecordConfig;
 import com.acceval.core.security.PrincipalUtil;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Cache structure
@@ -57,12 +59,17 @@ public class ConditionRecordCache implements CacheIF {
         return getHolder(companyID, code).getConfig();
     }
 
+    public ConditionRecordCacheHolder getConditionRecordCacheHolder(String code) {
+        String companyID = Long.toString(PrincipalUtil.getCompanyID());
+        return getHolder(companyID, code);
+    }
+
     public ConditionRecordConfig getConditionRecordConfig(String code) {
         String companyID = Long.toString(PrincipalUtil.getCompanyID());
         return getHolder(companyID, code).getConfig();
     }
 
-    public List<ConditionRecord> getAllConditionRecords(String companyID, String code) {
+    public List<ConditionRecordCacheHelper> getAllConditionRecords(String companyID, String code) {
         ConditionRecordCacheHolder holder = getHolder(companyID, code);
         return holder.getRecords();
     }
@@ -71,7 +78,9 @@ public class ConditionRecordCache implements CacheIF {
         ConditionRecordCacheHolder holder = getHolder(companyID, config.getCode());
 
         holder.setConfig(config);
-        holder.setRecords(records);
+
+        List<ConditionRecordCacheHelper> helpers = records.stream().map(conditionRecord -> holder.toHelper(conditionRecord)).collect(Collectors.toList());
+        holder.setRecords(helpers);
 
         saveHolder(companyID, config.getCode(), holder);
     }
@@ -85,5 +94,22 @@ public class ConditionRecordCache implements CacheIF {
     @Override
     public CacheInfo getCacheInfo(String companyID) {
         return null;
+    }
+
+    public String test(String code) {
+        String companyID = PrincipalUtil.getCompanyID().toString();
+
+        StringBuffer buffer = new StringBuffer();
+
+        List temp = getAllConditionRecords(companyID, code);
+        if (temp == null) {
+            buffer.append("Condition Record : No condition record ["+code+"] found in cache.");
+            buffer.append("\n");
+        } else {
+            buffer.append("Condition Record : Total condition record ["+code+"] : " + temp.size() + ". ");
+            buffer.append("\n");
+        }
+
+        return buffer.toString();
     }
 }

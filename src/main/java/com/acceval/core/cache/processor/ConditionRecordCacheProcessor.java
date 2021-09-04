@@ -16,7 +16,6 @@ import com.acceval.core.cache.model.Currency;
 import com.acceval.core.cache.model.ExchangeRateType;
 import com.acceval.core.cache.model.Uom;
 import com.acceval.core.microservice.ObjectNotFoundException;
-import com.acceval.core.microservice.model.LabelValue;
 import com.acceval.core.model.VariableContext;
 import com.acceval.core.security.PrincipalUtil;
 import org.apache.commons.collections.CollectionUtils;
@@ -83,6 +82,10 @@ public class ConditionRecordCacheProcessor {
     }
 
     public ConditionEvaluationResult evaluate(String conditionRecordCode, MultiValueMap<String, String> mapParam) {
+
+        LinkedMultiValueMap<String, String> cloneMapParam = new LinkedMultiValueMap<>();
+        cloneMapParam.addAll(mapParam);
+        mapParam = cloneMapParam.deepCopy();
 
         // pre resolve the context value for property based context key in the master
         // so already assume that the context passed into this method already resolve
@@ -392,5 +395,47 @@ public class ConditionRecordCacheProcessor {
         }
 
         return map;
+    }
+
+    public String test(String conditionRecordCode, MultiValueMap<String, String> mapParam) {
+        StringBuffer buffer = new StringBuffer();
+
+        ConditionEvaluationResult result = this.evaluate(conditionRecordCode, mapParam);
+
+        buffer.append("Condition Record Evaluation : " + (result.isSuccess() ? "Success" : "Fail"));
+        buffer.append("\n");
+
+        if (result.isSuccess()) {
+            buffer.append("Condition Record Evaluation : Condition Record Found with value " + printValue(result.getConditionRecord()) + ".");
+            buffer.append("\n");
+            buffer.append("Condition Record Evaluation : Numeric : " + result.getNumericValue());
+            buffer.append("\n");
+        } else {
+        }
+
+        buffer.append("Condition Record Evaluation : Message : " + result.getMessage());
+        buffer.append("\n");
+
+        return buffer.toString();
+    }
+
+    private String printValue(ConditionRecord cr) {
+        StringBuffer buffer = new StringBuffer();
+
+        String sep = "";
+        for (ConditionValue cv : cr.getConditionValues()) {
+            buffer.append(sep).append(cv.getValue());
+
+            if (cv.getConfig().getType() == ConditionValueConfig.ConditionValueType.UNIT_AMOUNT) {
+                buffer.append(" ").append(cv.getCurrency().getCode()).append("/").append(cv.getUom().getCode());
+            } else if (cv.getConfig().getType() == ConditionValueConfig.ConditionValueType.AMOUNT) {
+                buffer.append(" ").append(cv.getCurrency().getCode());
+            } else if (cv.getConfig().getType() == ConditionValueConfig.ConditionValueType.QUANTITY) {
+                buffer.append(" ").append(cv.getUom().getCode());
+            }
+            sep = ", ";
+        }
+
+        return buffer.toString();
     }
 }

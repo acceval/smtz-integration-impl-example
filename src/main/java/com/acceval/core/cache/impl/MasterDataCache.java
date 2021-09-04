@@ -5,20 +5,24 @@ import com.acceval.core.cache.CacheInfo;
 import com.acceval.core.cache.HazelcastCacheInstance;
 import com.acceval.core.cache.model.Currency;
 import com.acceval.core.cache.model.GlobalUomConversion;
+import com.acceval.core.cache.model.RangeGroup;
 import com.acceval.core.cache.model.SkuProductAltUom;
 import com.acceval.core.cache.model.Uom;
 import com.acceval.core.microservice.ObjectNotFoundException;
 import com.acceval.core.security.PrincipalUtil;
 import com.hazelcast.core.ReplicatedMap;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -30,6 +34,9 @@ import java.util.stream.Collectors;
  *                              |ALL_GLOBAL_UOM_CONVERSION  > DEFAULT > All Global Uom Conversion
  *                              |ALL_SKU_PRODUCT_ALT_UOM    > DEFAULT > All SKU Product Alt Uom
  *                              |PRODUCT_BASEUOM            > [PRODUCT_ID] > Base UOM
+ *                              |PRODUCT_PARENT             > DEFAULT > All Product Parent ID Map
+ *                              |REGION_COUNTRY             > DEFAULT > All Region Country ID Map
+ *                              |ALL_RANGE_GROUP            > DEFAULT > All Range Group
  */
 @Component
 @ConditionalOnProperty(name = "microservice.cache", havingValue = "true")
@@ -43,6 +50,9 @@ public class MasterDataCache implements CacheIF {
     public final static String KEY_ALL_GLOBAL_UOM_CONVERSION = "ALL_GLOBAL_UOM_CONVERSION";
     public final static String KEY_ALL_SKU_PRODUCT_ALT_UOM = "ALL_SKU_PRODUCT_ALT_UOM";
     public final static String KEY_PRODUCT_BASEUOM = "PRODUCT_BASEUOM";
+    public final static String KEY_PRODUCT_PARENT = "PRODUCT_PARENT";
+    public final static String KEY_REGION_COUNTRY = "REGION_COUNTRY";
+    public final static String KEY_ALL_RANGE_GROUP = "ALL_RANGE_GROUP";
 
     public final static String KEY_DEFAULT = "DEFAULT";
 
@@ -113,8 +123,8 @@ public class MasterDataCache implements CacheIF {
         if (CollectionUtils.isEmpty(rates)) return Collections.emptyList();
 
         return rates.stream().filter(data -> {
-            return data.getAlternateFromUom().getUomID() == fromUomID &&
-                    data.getAlternateToUom().getUomID() == toUomID &&
+            return data.getAlternateFromUomID() == fromUomID &&
+                    data.getAlternateToUomID() == toUomID &&
                     data.getSkuID() == productID;
         }).collect(Collectors.toList());
     }
@@ -135,6 +145,73 @@ public class MasterDataCache implements CacheIF {
         if (baseUom != null) return baseUom;
 
         throw new ObjectNotFoundException("Product [" + productID + "] not found.");
+    }
+
+    /**
+     * Product Parent
+     */
+    public void refreshProductParent(String companyID, Map<String, String> productParents) {
+        getTopMap(companyID, KEY_PRODUCT_PARENT).put(KEY_DEFAULT, productParents);
+    }
+
+    public String getProductParent(long productID) {
+        if (productID == 0) return null;
+
+        String companyID = PrincipalUtil.getCompanyID().toString();
+
+        Map<String, String> productParents = (Map<String, String>) getTopMap(companyID, KEY_PRODUCT_PARENT).get(KEY_DEFAULT);
+
+        String productIDString = String.valueOf(productID);
+        if (productParents.containsKey(productIDString)) {
+            return productParents.get(productIDString);
+        }
+        return null;
+    }
+
+    public List<String> getProductParentToTop(long productID) {
+        List<String> parents = new ArrayList<>();
+
+        boolean proceed = true;
+        long id = productID;
+        while (proceed) {
+            String parent = getProductParent(id);
+
+            if (StringUtils.isNotBlank(parent) && !parents.contains(parent)) {
+                parents.add(parent);
+                id = Long.parseLong(parent);
+            } else {
+                proceed = false;
+            }
+        }
+
+        return parents;
+    }
+
+    /**
+     * Region Country
+     */
+    public void refreshRegionCountry(String companyID, Map<String, List<String>> regionCountries) {
+        getTopMap(companyID, KEY_REGION_COUNTRY).put(KEY_DEFAULT, regionCountries);
+    }
+
+    public List<String> getRegionsByCountry(long countryID) {
+
+        List<String> regions = new ArrayList<>();
+
+        if (countryID == 0) return regions;
+
+        String companyID = PrincipalUtil.getCompanyID().toString();
+        Map<String, List<String>> regionCountries = (Map<String, List<String>>) getTopMap(companyID, KEY_REGION_COUNTRY).get(KEY_DEFAULT);
+
+        for (String key : regionCountries.keySet()) {
+            List<String> countries = regionCountries.get(key);
+
+            if (countries.contains(String.valueOf(countryID))) {
+                regions.add(key);
+            }
+        }
+
+        return regions;
     }
 
     /**
@@ -162,6 +239,20 @@ public class MasterDataCache implements CacheIF {
         }
 
         throw new ObjectNotFoundException("UOM [" + code + "] not found.");
+    }
+
+    public Uom getUomByID(long uomID) throws ObjectNotFoundException {
+
+        List<Uom> uoms = getAllUoms();
+
+        if (uoms != null && !uoms.isEmpty()) {
+
+            Optional<Uom> temp = uoms.stream().filter(uom -> uom.getUomID() == uomID).findFirst();
+
+            if (temp.isPresent()) return temp.get();
+        }
+
+        throw new ObjectNotFoundException("UOM [" + uomID + "] not found.");
     }
 
     /**
@@ -195,12 +286,38 @@ public class MasterDataCache implements CacheIF {
 
         if (currencies != null && !currencies.isEmpty()) {
 
-            Optional<Currency> temp = currencies.stream().filter(currency -> currency.getCurrencyID() == id).findFirst();
+            Optional<Currency> temp = currencies.stream().filter(currency -> currency.getCurrencyID() == id.longValue()).findFirst();
 
             if (temp.isPresent()) return temp.get();
         }
 
         throw new ObjectNotFoundException("Currency [" + id + "] not found.");
+    }
+
+    /**
+     * Range Group Cache
+     */
+    public List<RangeGroup> getAllRangeGroups() {
+        String companyID = PrincipalUtil.getCompanyID().toString();
+
+        return (List<RangeGroup>) getTopMap(companyID, KEY_ALL_RANGE_GROUP).get(KEY_DEFAULT);
+    }
+
+    public void refreshAllRangeGroups(String companyID, List<RangeGroup> rangeGroups) {
+        getTopMap(companyID, KEY_ALL_RANGE_GROUP).put(KEY_DEFAULT, rangeGroups);
+    }
+
+    public RangeGroup getRangeGroup(Long id) {
+        List<RangeGroup> rangeGroups = getAllRangeGroups();
+
+        if (rangeGroups != null && !rangeGroups.isEmpty()) {
+
+            Optional<RangeGroup> temp = rangeGroups.stream().filter(rg -> rg.getRangeGroupId().longValue() == id.longValue()).findFirst();
+
+            if (temp.isPresent()) return temp.get();
+        }
+
+        return null;
     }
 
     @Override
@@ -368,6 +485,14 @@ public class MasterDataCache implements CacheIF {
             buffer.append("Product Base Uom : Get : Not found.");
             buffer.append("\n");
         }
+
+        buffer.append("Parent Product : " + getProductParentToTop(202103230000472l));
+//        buffer.append("Parent Product : " + getProductParentToTop(202109040001894l));
+        buffer.append("\n");
+
+        buffer.append("Region Country : " + getRegionsByCountry(202101291400129l));
+        buffer.append("\n");
+
 
         return buffer.toString();
     }

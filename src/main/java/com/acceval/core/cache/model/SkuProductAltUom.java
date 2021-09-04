@@ -5,10 +5,21 @@ import java.io.Serializable;
 public class SkuProductAltUom implements Serializable {
 
     private long skuProductAltUomID;
-    private Uom alternateFromUom;
-    private Uom alternateToUom;
+    private long alternateFromUomID;
+    private long alternateToUomID;
     private Double conversionFactor;
     private long skuID;
+
+    public SkuProductAltUom() {
+    }
+
+    public SkuProductAltUom(long skuProductAltUomID, long alternateFromUomID, long alternateToUomID, Double conversionFactor, long skuID) {
+        this.skuProductAltUomID = skuProductAltUomID;
+        this.alternateFromUomID = alternateFromUomID;
+        this.alternateToUomID = alternateToUomID;
+        this.conversionFactor = conversionFactor;
+        this.skuID = skuID;
+    }
 
     public long getSkuProductAltUomID() {
         return skuProductAltUomID;
@@ -18,20 +29,20 @@ public class SkuProductAltUom implements Serializable {
         this.skuProductAltUomID = skuProductAltUomID;
     }
 
-    public Uom getAlternateFromUom() {
-        return alternateFromUom;
+    public long getAlternateFromUomID() {
+        return alternateFromUomID;
     }
 
-    public void setAlternateFromUom(Uom alternateFromUom) {
-        this.alternateFromUom = alternateFromUom;
+    public void setAlternateFromUomID(long alternateFromUomID) {
+        this.alternateFromUomID = alternateFromUomID;
     }
 
-    public Uom getAlternateToUom() {
-        return alternateToUom;
+    public long getAlternateToUomID() {
+        return alternateToUomID;
     }
 
-    public void setAlternateToUom(Uom alternateToUom) {
-        this.alternateToUom = alternateToUom;
+    public void setAlternateToUomID(long alternateToUomID) {
+        this.alternateToUomID = alternateToUomID;
     }
 
     public Double getConversionFactor() {
