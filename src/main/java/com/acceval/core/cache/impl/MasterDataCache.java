@@ -43,18 +43,20 @@ import java.util.stream.Collectors;
 public class MasterDataCache implements CacheIF {
     private static final Logger logger = LoggerFactory.getLogger(MasterDataCache.class);
 
-    public final static String CACHE_NAME = "MASTERDATA_CACHE";
+    private final static String CACHE_NAME = "MASTERDATA_CACHE";
 
-    public final static String KEY_ALL_UOM = "ALL_UOM";
-    public final static String KEY_ALL_CURRENCY = "ALL_CURRENCY";
-    public final static String KEY_ALL_GLOBAL_UOM_CONVERSION = "ALL_GLOBAL_UOM_CONVERSION";
-    public final static String KEY_ALL_SKU_PRODUCT_ALT_UOM = "ALL_SKU_PRODUCT_ALT_UOM";
-    public final static String KEY_PRODUCT_BASEUOM = "PRODUCT_BASEUOM";
-    public final static String KEY_PRODUCT_PARENT = "PRODUCT_PARENT";
-    public final static String KEY_REGION_COUNTRY = "REGION_COUNTRY";
-    public final static String KEY_ALL_RANGE_GROUP = "ALL_RANGE_GROUP";
+    private final static String KEY_CACHE_READY = "READY";
+    private final static String KEY_DEFAULT = "DEFAULT";
 
-    public final static String KEY_DEFAULT = "DEFAULT";
+    private final static String KEY_ALL_UOM = "ALL_UOM";
+    private final static String KEY_ALL_CURRENCY = "ALL_CURRENCY";
+    private final static String KEY_ALL_GLOBAL_UOM_CONVERSION = "ALL_GLOBAL_UOM_CONVERSION";
+    private final static String KEY_ALL_SKU_PRODUCT_ALT_UOM = "ALL_SKU_PRODUCT_ALT_UOM";
+    private final static String KEY_PRODUCT_BASEUOM = "PRODUCT_BASEUOM";
+    private final static String KEY_PRODUCT_PARENT = "PRODUCT_PARENT";
+    private final static String KEY_REGION_COUNTRY = "REGION_COUNTRY";
+    private final static String KEY_ALL_RANGE_GROUP = "ALL_RANGE_GROUP";
+
 
     @Autowired
     private HazelcastCacheInstance hazelcastCacheInstance;
@@ -63,6 +65,19 @@ public class MasterDataCache implements CacheIF {
     private ReplicatedMap<String, Object> getTopMap(String companyID, String code) {
         String key = CACHE_NAME + "|" + companyID + "|" + code;
         return this.hazelcastCacheInstance.getHazelcastInstance().getReplicatedMap(key);
+    }
+
+    public void setCacheReady(String companyID) {
+        getTopMap(companyID, KEY_CACHE_READY).put(KEY_DEFAULT, Boolean.TRUE);
+    }
+
+    public boolean isCacheReady() {
+        String companyID = PrincipalUtil.getCompanyID().toString();
+        Boolean ready = (Boolean) getTopMap(companyID, KEY_CACHE_READY).get(KEY_DEFAULT);
+
+        if (ready != null && ready) return true;
+
+        return false;
     }
 
     /**

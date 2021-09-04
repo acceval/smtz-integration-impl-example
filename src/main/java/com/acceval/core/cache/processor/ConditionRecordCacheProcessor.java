@@ -68,16 +68,14 @@ public class ConditionRecordCacheProcessor {
     // TODO evaluate if cache is ready?
     // use @Aspect and @Around thingy?
     private void checkCacheReady() {
-        Long companyID = PrincipalUtil.getCompanyID();
-
-        // check condition record cache
-
-        // check exchange rate cache
-
-//        return false;
-
-        if (true) {
-            throw new CacheException("Cache not ready. Please try again.");
+        if (!conditionRecordCache.isCacheReady()) {
+            throw new CacheException("Condition Record Cache not ready. Please try again later.");
+        }
+        if (!exchangeRateCache.isCacheReady()) {
+            throw new CacheException("Exchange Rate Cache not ready. Please try again later.");
+        }
+        if (!masterDataCache.isCacheReady()) {
+            throw new CacheException("Master Data Cache not ready. Please try again later.");
         }
     }
 
@@ -142,7 +140,7 @@ public class ConditionRecordCacheProcessor {
     }
 
 
-    public ConditionRecord singleResultQuery(String conditionRecordCode, MultiValueMap<String, String> mapParam) {
+    private ConditionRecord singleResultQuery(String conditionRecordCode, MultiValueMap<String, String> mapParam) {
 
         ConditionRecordConfig recordConfig = null;
         if (!mapParam.containsKey("COMPANY_ID")) {
@@ -205,7 +203,7 @@ public class ConditionRecordCacheProcessor {
         return evaluate(conditionTableCode, mapParam);
     }
 
-    public Set<String> getRequiredCondFieldCode(String conditionTableCode) {
+    private Set<String> getRequiredCondFieldCode(String conditionTableCode) {
 
         Set<String> lstCondFieldCode = new LinkedHashSet<>();
 

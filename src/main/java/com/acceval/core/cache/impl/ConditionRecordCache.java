@@ -29,15 +29,31 @@ public class ConditionRecordCache implements CacheIF {
     private static final Logger logger = LoggerFactory.getLogger(ConditionRecordCache.class);
 
     private final static String CACHE_NAME = "CONDITION_RECORD_CACHE";
+
+    private final static String KEY_CACHE_READY = "READY";
+    private final static String KEY_DEFAULT = "DEFAULT";
+
     private final static String KEY_HOLDER = "HOLDER";
 
     @Autowired
     private HazelcastCacheInstance hazelcastCacheInstance;
 
-
     private Map<String, Object> getTopMap(String companyID, String code) {
         String key = CACHE_NAME + "|" + companyID + "|" + code.toUpperCase();
         return this.hazelcastCacheInstance.getHazelcastInstance().getReplicatedMap(key);
+    }
+
+    public void setCacheReady(String companyID) {
+        getTopMap(companyID, KEY_CACHE_READY).put(KEY_DEFAULT, Boolean.TRUE);
+    }
+
+    public boolean isCacheReady() {
+        String companyID = PrincipalUtil.getCompanyID().toString();
+        Boolean ready = (Boolean) getTopMap(companyID, KEY_CACHE_READY).get(KEY_DEFAULT);
+
+        if (ready != null && ready) return true;
+
+        return false;
     }
 
     private ConditionRecordCacheHolder getHolder(String companyID, String code) {
