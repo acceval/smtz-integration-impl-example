@@ -59,14 +59,18 @@
 	<br>
 			<table style="margin-top: 1rem;"> 	
 			<tr>
-				<th class="labelBold" style="text-align: center;">PRODUCT</th> 		
+				{{#context.TABLE_COLUMN}}
+				<th class="labelBold" style="text-align: center;">{{name}}</th> 
+				{{/context.TABLE_COLUMN}}		
 				<th class="labelBold" style="text-align: center;">VALID TO</th>
 				<th class="labelBold" style="text-align: center;">VALID FROM</th>	
 				<th class="labelBold" style="text-align: center;">STATUS</th>	
 			</tr>
 			{{#context.TABLE_CONTENT}}
 			<tr style="text-align: center;">
+				{{#context.TABLE_VALUE}}
 				<td>{{name}}</td>
+				{{/context.TABLE_VALUE}}
 				<td>{{validTo}}</td>
 				<td>{{validFrom}}</td>
 				<td>{{status}}</td>
