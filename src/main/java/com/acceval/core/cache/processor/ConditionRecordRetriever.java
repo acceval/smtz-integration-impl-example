@@ -3,6 +3,7 @@ package com.acceval.core.cache.processor;
 import com.acceval.core.cache.CacheException;
 import com.acceval.core.cache.impl.ConditionRecordCache;
 import com.acceval.core.cache.impl.MasterDataCache;
+import com.acceval.core.cache.model.ConditionField;
 import com.acceval.core.cache.model.ConditionFieldConfig;
 import com.acceval.core.cache.model.ConditionFieldWrapper;
 import com.acceval.core.cache.model.ConditionRecord;
@@ -14,6 +15,7 @@ import com.acceval.core.cache.model.ConditionValueConfig;
 import com.acceval.core.cache.model.Range;
 import com.acceval.core.cache.model.RangeGroup;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
@@ -90,7 +92,7 @@ public class ConditionRecordRetriever {
                 continue;
             }
 
-            if (score == 0) return helper.getConditionRecord();
+            if (score == 0) return cloneRecord(helper.getConditionRecord());
             TemporalResult temp = new TemporalResult();
             temp.score = score;
             temp.helper = helper;
@@ -105,9 +107,29 @@ public class ConditionRecordRetriever {
         records = temporalResults.stream().sorted(Comparator.comparingInt(o -> o.score)).map(t -> t.helper).collect(Collectors.toList());
 
         if (records != null && records.size() > 0) {
-            return records.get(0).getConditionRecord();
+            return cloneRecord(records.get(0).getConditionRecord());
         }
         return null;
+    }
+
+    private ConditionRecord cloneRecord(ConditionRecord record) {
+        ConditionRecord clone = new ConditionRecord();
+
+        BeanUtils.copyProperties(record, clone);
+
+        clone.setConditionFields(record.getConditionFields().stream().map(conditionField -> {
+            ConditionField c = new ConditionField();
+            BeanUtils.copyProperties(conditionField, c);
+            return c;
+        }).collect(Collectors.toList()));
+
+        clone.setConditionValues(record.getConditionValues().stream().map(conditionValue -> {
+            ConditionValue c = new ConditionValue();
+            BeanUtils.copyProperties(conditionValue, c);
+            return c;
+        }).collect(Collectors.toList()));
+
+        return clone;
     }
 
 //    public String generateMapKey(ConditionRecordCacheHolder holder,
@@ -274,7 +296,7 @@ public class ConditionRecordRetriever {
             buffer.append("Condition Record Retriever : No condition record found.");
             buffer.append("\n");
         } else {
-            buffer.append("Condition Record Retriever : Found with value " + printValue(cr) + ".");
+            buffer.append("Condition Record Retriever : Found " + cr.getId() + " with value " + printValue(cr) + ".");
             buffer.append("\n");
         }
 

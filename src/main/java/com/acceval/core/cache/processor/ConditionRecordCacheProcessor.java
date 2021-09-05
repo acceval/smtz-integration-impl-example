@@ -30,9 +30,11 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -65,25 +67,26 @@ public class ConditionRecordCacheProcessor {
     @Autowired
     private ConditionRecordRetriever conditionRecordRetriever;
 
-    // TODO evaluate if cache is ready?
-    // use @Aspect and @Around thingy?
-    private void checkCacheReady() {
-        if (!conditionRecordCache.isCacheReady()) {
-            throw new CacheException("Condition Record Cache not ready. Please try again later.");
-        }
-        if (!exchangeRateCache.isCacheReady()) {
-            throw new CacheException("Exchange Rate Cache not ready. Please try again later.");
-        }
-        if (!masterDataCache.isCacheReady()) {
-            throw new CacheException("Master Data Cache not ready. Please try again later.");
-        }
-    }
-
     public ConditionEvaluationResult evaluate(String conditionRecordCode, MultiValueMap<String, String> mapParam) {
+        conditionRecordCode = conditionRecordCode.replaceAll("-", "_");
+
 
         LinkedMultiValueMap<String, String> cloneMapParam = new LinkedMultiValueMap<>();
         cloneMapParam.addAll(mapParam);
         mapParam = cloneMapParam.deepCopy();
+
+        // clean mapParam
+        List<String> removeKeys = new ArrayList();
+        for (Iterator<String> itr = mapParam.keySet().iterator(); itr.hasNext();) {
+            String key = itr.next();
+            if (mapParam.getFirst(key) == null || mapParam.getFirst(key).length() == 0) {
+                removeKeys.add(key);
+            }
+        }
+
+        for (Iterator<String> itr = removeKeys.iterator(); itr.hasNext();) {
+            mapParam.remove(itr.next());
+        }
 
         // pre resolve the context value for property based context key in the master
         // so already assume that the context passed into this method already resolve
@@ -203,7 +206,7 @@ public class ConditionRecordCacheProcessor {
         return evaluate(conditionTableCode, mapParam);
     }
 
-    private Set<String> getRequiredCondFieldCode(String conditionTableCode) {
+    public Set<String> getRequiredCondFieldCode(String conditionTableCode) {
 
         Set<String> lstCondFieldCode = new LinkedHashSet<>();
 
@@ -317,6 +320,7 @@ public class ConditionRecordCacheProcessor {
                     }
 
                 }
+
                 numericValue = currencyConversionUtil.getConvertedAmount(
                         Double.valueOf(numericConditionValue.getValue()).doubleValue(),
                         numericConditionValue.getCurrencyId().longValue(), targetCurrency.getCurrencyID(),
@@ -404,7 +408,7 @@ public class ConditionRecordCacheProcessor {
         buffer.append("\n");
 
         if (result.isSuccess()) {
-            buffer.append("Condition Record Evaluation : Condition Record Found with value " + printValue(result.getConditionRecord()) + ".");
+            buffer.append("Condition Record Evaluation : Condition Record Found " + result.getConditionRecord().getId() + " with value " + printValue(result.getConditionRecord()) + ".");
             buffer.append("\n");
             buffer.append("Condition Record Evaluation : Numeric : " + result.getNumericValue());
             buffer.append("\n");
