@@ -36,13 +36,15 @@ import java.util.stream.Collectors;
 public class ExchangeRateCache implements CacheIF {
     private static final Logger logger = LoggerFactory.getLogger(ExchangeRateCache.class);
 
-    public final static String CACHE_NAME = "EXCHANGE_RATE_CACHE";
+    private final static String CACHE_NAME = "EXCHANGE_RATE_CACHE";
 
-    public final static String KEY_ALL_EXCHANGE_RATE = "ALL_EXCHANGE_RATE";
-    public final static String KEY_ALL_EXCHANGE_RATE_TYPE = "ALL_EXCHANGE_RATE_TYPE";
-    public final static String KEY_DEFAULT_EXCHANGE_RATE_TYPE = "DEFAULT_EXCHANGE_RATE_TYPE";
+    private final static String KEY_CACHE_READY = "READY";
+    private final static String KEY_DEFAULT = "DEFAULT";
 
-    public final static String KEY_DEFAULT = "DEFAULT";
+    private final static String KEY_ALL_EXCHANGE_RATE = "ALL_EXCHANGE_RATE";
+    private final static String KEY_ALL_EXCHANGE_RATE_TYPE = "ALL_EXCHANGE_RATE_TYPE";
+    private final static String KEY_DEFAULT_EXCHANGE_RATE_TYPE = "DEFAULT_EXCHANGE_RATE_TYPE";
+
 
     @Autowired
     private HazelcastCacheInstance hazelcastCacheInstance;
@@ -50,6 +52,19 @@ public class ExchangeRateCache implements CacheIF {
     private ReplicatedMap<String, Object> getTopMap(String companyID, String code) {
         String key = CACHE_NAME + "|" + companyID + "|" + code;
         return this.hazelcastCacheInstance.getHazelcastInstance().getReplicatedMap(key);
+    }
+
+    public void setCacheReady(String companyID) {
+        getTopMap(companyID, KEY_CACHE_READY).put(KEY_DEFAULT, Boolean.TRUE);
+    }
+
+    public boolean isCacheReady() {
+        String companyID = PrincipalUtil.getCompanyID().toString();
+        Boolean ready = (Boolean) getTopMap(companyID, KEY_CACHE_READY).get(KEY_DEFAULT);
+
+        if (ready != null && ready) return true;
+
+        return false;
     }
 
     /**

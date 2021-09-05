@@ -45,7 +45,7 @@ public class CurrencyConversionUtil {
 //	@Autowired
 //	private ExchangeRateService exchangeRateService;
 
-	public float getExchangeRate(long fromCurrencyID, long toCurrencyID, LocalDateTime effectiveDate,
+	private float getExchangeRate(long fromCurrencyID, long toCurrencyID, LocalDateTime effectiveDate,
 			Long exchangeRateTypeID) {
 		
 		float fExchangeRate = 1;
@@ -58,7 +58,7 @@ public class CurrencyConversionUtil {
 		return fExchangeRate;
 	}
 
-	public Collection getExchangeRates(long fromCurrencyID, long toCurrencyID, LocalDateTime effectiveDate,
+	private Collection getExchangeRates(long fromCurrencyID, long toCurrencyID, LocalDateTime effectiveDate,
 			Long exchangeRateTypeID) {
 		Collection<ExchangeRate> rates = exchangeRateCache.getExchangeRates(fromCurrencyID, toCurrencyID,
 				effectiveDate, exchangeRateTypeID);
@@ -119,7 +119,7 @@ public class CurrencyConversionUtil {
 		return convertedAmount;
 	}
 
-	public long getCurrencyIDByCode(String currencyCode) {
+	private long getCurrencyIDByCode(String currencyCode) {
 		Currency currency = null;
 		try {
 			currency = masterDataCache.getCurrencyByCode(currencyCode);
@@ -133,7 +133,7 @@ public class CurrencyConversionUtil {
 		return 0;
 	}
 
-	public Double zeroIfNulll(Double number) {
+	private Double zeroIfNulll(Double number) {
 		if (number == null)
 			return new Double(0);
 		return number;

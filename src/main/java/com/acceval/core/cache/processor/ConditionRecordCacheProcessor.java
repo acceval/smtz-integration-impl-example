@@ -16,7 +16,6 @@ import com.acceval.core.cache.model.Currency;
 import com.acceval.core.cache.model.ExchangeRateType;
 import com.acceval.core.cache.model.Uom;
 import com.acceval.core.microservice.ObjectNotFoundException;
-import com.acceval.core.microservice.model.LabelValue;
 import com.acceval.core.model.VariableContext;
 import com.acceval.core.security.PrincipalUtil;
 import org.apache.commons.collections.CollectionUtils;
@@ -31,9 +30,11 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -66,23 +67,26 @@ public class ConditionRecordCacheProcessor {
     @Autowired
     private ConditionRecordRetriever conditionRecordRetriever;
 
-    // TODO evaluate if cache is ready?
-    // use @Aspect and @Around thingy?
-    private void checkCacheReady() {
-        Long companyID = PrincipalUtil.getCompanyID();
-
-        // check condition record cache
-
-        // check exchange rate cache
-
-//        return false;
-
-        if (true) {
-            throw new CacheException("Cache not ready. Please try again.");
-        }
-    }
-
     public ConditionEvaluationResult evaluate(String conditionRecordCode, MultiValueMap<String, String> mapParam) {
+        conditionRecordCode = conditionRecordCode.replaceAll("-", "_");
+
+
+        LinkedMultiValueMap<String, String> cloneMapParam = new LinkedMultiValueMap<>();
+        cloneMapParam.addAll(mapParam);
+        mapParam = cloneMapParam.deepCopy();
+
+        // clean mapParam
+        List<String> removeKeys = new ArrayList();
+        for (Iterator<String> itr = mapParam.keySet().iterator(); itr.hasNext();) {
+            String key = itr.next();
+            if (mapParam.getFirst(key) == null || mapParam.getFirst(key).length() == 0) {
+                removeKeys.add(key);
+            }
+        }
+
+        for (Iterator<String> itr = removeKeys.iterator(); itr.hasNext();) {
+            mapParam.remove(itr.next());
+        }
 
         // pre resolve the context value for property based context key in the master
         // so already assume that the context passed into this method already resolve
@@ -139,7 +143,7 @@ public class ConditionRecordCacheProcessor {
     }
 
 
-    public ConditionRecord singleResultQuery(String conditionRecordCode, MultiValueMap<String, String> mapParam) {
+    private ConditionRecord singleResultQuery(String conditionRecordCode, MultiValueMap<String, String> mapParam) {
 
         ConditionRecordConfig recordConfig = null;
         if (!mapParam.containsKey("COMPANY_ID")) {
@@ -316,6 +320,7 @@ public class ConditionRecordCacheProcessor {
                     }
 
                 }
+
                 numericValue = currencyConversionUtil.getConvertedAmount(
                         Double.valueOf(numericConditionValue.getValue()).doubleValue(),
                         numericConditionValue.getCurrencyId().longValue(), targetCurrency.getCurrencyID(),
@@ -392,5 +397,47 @@ public class ConditionRecordCacheProcessor {
         }
 
         return map;
+    }
+
+    public String test(String conditionRecordCode, MultiValueMap<String, String> mapParam) {
+        StringBuffer buffer = new StringBuffer();
+
+        ConditionEvaluationResult result = this.evaluate(conditionRecordCode, mapParam);
+
+        buffer.append("Condition Record Evaluation : " + (result.isSuccess() ? "Success" : "Fail"));
+        buffer.append("\n");
+
+        if (result.isSuccess()) {
+            buffer.append("Condition Record Evaluation : Condition Record Found " + result.getConditionRecord().getId() + " with value " + printValue(result.getConditionRecord()) + ".");
+            buffer.append("\n");
+            buffer.append("Condition Record Evaluation : Numeric : " + result.getNumericValue());
+            buffer.append("\n");
+        } else {
+        }
+
+        buffer.append("Condition Record Evaluation : Message : " + result.getMessage());
+        buffer.append("\n");
+
+        return buffer.toString();
+    }
+
+    private String printValue(ConditionRecord cr) {
+        StringBuffer buffer = new StringBuffer();
+
+        String sep = "";
+        for (ConditionValue cv : cr.getConditionValues()) {
+            buffer.append(sep).append(cv.getValue());
+
+            if (cv.getConfig().getType() == ConditionValueConfig.ConditionValueType.UNIT_AMOUNT) {
+                buffer.append(" ").append(cv.getCurrency().getCode()).append("/").append(cv.getUom().getCode());
+            } else if (cv.getConfig().getType() == ConditionValueConfig.ConditionValueType.AMOUNT) {
+                buffer.append(" ").append(cv.getCurrency().getCode());
+            } else if (cv.getConfig().getType() == ConditionValueConfig.ConditionValueType.QUANTITY) {
+                buffer.append(" ").append(cv.getUom().getCode());
+            }
+            sep = ", ";
+        }
+
+        return buffer.toString();
     }
 }

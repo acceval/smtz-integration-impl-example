@@ -18,6 +18,7 @@ public class ConditionEvaluationResult {
 	private VariableContext variableContext;
 	private StringBuffer message;
 	private String notFoundMessage;
+    private boolean isFatal;
 	
 	public ConditionEvaluationResult() {
 		this.isSuccess = true;
@@ -44,7 +45,14 @@ public class ConditionEvaluationResult {
 		
 		this.notFoundMessage = builder.toString();
 	}
-	
+
+    public boolean isFatal() {
+        return isFatal;
+    }
+
+    public void setFatal(boolean isFatal) {
+        this.isFatal = isFatal;
+    }
 	
 	public void logInfo(String info) {
 		message.append(info);
@@ -52,9 +60,10 @@ public class ConditionEvaluationResult {
 	}
 	
 	public void logError(Throwable ex) {
-		
-		PrintWriter writer = new PrintWriter(new StringWriter());		
-		ex.printStackTrace(writer);
+
+	    StringWriter writer = new StringWriter();
+		PrintWriter pw = new PrintWriter(writer);
+		ex.printStackTrace(pw);
 		this.isSuccess = false;
 		message.append(writer.toString());
 	}

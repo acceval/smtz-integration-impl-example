@@ -10,7 +10,7 @@ public class ConditionValueConfig implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	public enum ConditionValueType {
-		NUMBER, PERCENTAGE, AMOUNT, UNIT_AMOUNT, QUANTITY, ENTITY, CONSTANT, FORMULA, REGIONCOUNTRY
+        NUMBER, PERCENTAGE, AMOUNT, UNIT_AMOUNT, QUANTITY, ENTITY, CONSTANT, FORMULA, REGIONCOUNTRY
 	}
 
 	private Long id;
@@ -191,6 +191,8 @@ public class ConditionValueConfig implements Serializable {
 				return true;
 			case ENTITY:
 				return false;
+            case REGIONCOUNTRY:
+				return false;
 			case CONSTANT:
 				return false;
 			case FORMULA:
@@ -216,6 +218,8 @@ public class ConditionValueConfig implements Serializable {
 				return false;
 			case ENTITY:
 				return false;
+            case REGIONCOUNTRY:
+				return false;
 			case CONSTANT:
 				return false;
 			case FORMULA:
@@ -239,6 +243,8 @@ public class ConditionValueConfig implements Serializable {
 			case QUANTITY:
 				return true;
 			case ENTITY:
+				return false;
+            case REGIONCOUNTRY:
 				return false;
 			case CONSTANT:
 				return false;

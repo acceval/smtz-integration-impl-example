@@ -81,7 +81,7 @@ public class UomConversionUtil {
 		return convertedQuantity;
 	}
 
-	public double getConvertedQuantity(long productId, String fromUomCode, String toUomCode, double quantity, VariableContext context) throws ObjectNotFoundException {
+	private double getConvertedQuantity(long productId, String fromUomCode, String toUomCode, double quantity, VariableContext context) throws ObjectNotFoundException {
 		long fromUomID = this.masterDataCache.getUomByCode(fromUomCode).getUomID();
 		long toUomID = this.masterDataCache.getUomByCode(toUomCode).getUomID();
 
@@ -124,11 +124,11 @@ public class UomConversionUtil {
 		return convertedQuantity;
 	}
 
-	public Collection<SkuProductAltUom> getSkuProductAltUom(long productId, long fromUomId, long toUomId) {
+	private Collection<SkuProductAltUom> getSkuProductAltUom(long productId, long fromUomId, long toUomId) {
 		return masterDataCache.getSKUAlternateUom(productId, fromUomId, toUomId);
 	}
 
-	public Collection<GlobalUomConversion> getGlobalUomConversion(long fromUomId, long toUomId, VariableContext context) {
+    private Collection<GlobalUomConversion> getGlobalUomConversion(long fromUomId, long toUomId, VariableContext context) {
 		/** find from condition record*/
 		VariableContext cloneContext = context.clone();
 		cloneContext.setVariable("FROM_UOM", fromUomId);
@@ -164,7 +164,7 @@ public class UomConversionUtil {
 		return Collections.EMPTY_LIST;
 	}
 
-	public boolean isUomIdValid(long uomId) {
+    private boolean isUomIdValid(long uomId) {
 		Collection lst = masterDataCache.getAllUoms();
 		for (Object obj : lst) {
 			Uom uom = (Uom) obj;
@@ -176,14 +176,14 @@ public class UomConversionUtil {
 		return false;
 	}
 
-	public long getSkuBaseUomId(long productID) throws ObjectNotFoundException {
+    private long getSkuBaseUomId(long productID) throws ObjectNotFoundException {
 	    Uom uom = masterDataCache.getProductBaseUom(productID);
 
 		if (uom != null) return uom.getUomID();
 		return 0;
 	}
 
-	public Map<String, Double> searchValues(long productID, long fromUomID, long toUomID, VariableContext context) {
+    private Map<String, Double> searchValues(long productID, long fromUomID, long toUomID, VariableContext context) {
 		Map<String, Double> conversionRates = new HashMap<String, Double>();
 		double conversionFactor = 0;
 		String operator = "";
@@ -274,7 +274,7 @@ public class UomConversionUtil {
 		return conversionRates;
 	}
 
-	public double recursiveConverter(Collection<Uom> fullUomList, long productID, long fromUomID, long toUomID, VariableContext context) {
+    private double recursiveConverter(Collection<Uom> fullUomList, long productID, long fromUomID, long toUomID, VariableContext context) {
 		Map<String, Double> conversionRates = searchValues(productID, fromUomID, toUomID, context);
 		double accumulativeConversionFactor = 0;
 
