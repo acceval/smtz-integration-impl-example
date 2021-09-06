@@ -17,8 +17,9 @@ import com.hazelcast.config.MapConfig;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
 
-@Component
-@ConditionalOnProperty(name = "microservice.cache", havingValue = "true")
+@Deprecated
+//@Component
+//@ConditionalOnProperty(name = "microservice.cache", havingValue = "true")
 public class MSUtilCache implements CacheIF {
 
 	private static final Logger logger = LoggerFactory.getLogger(MSUtilCache.class);

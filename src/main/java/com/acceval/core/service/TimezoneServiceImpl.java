@@ -111,6 +111,12 @@ public class TimezoneServiceImpl implements TimezoneService {
             }
         }
 
+		//backward compatibility with jdk8 utc timezoneid
+		if (timezone == null || StringUtils.isBlank(timezone.getUtcId())) {
+			timezone = new Timezone();
+			timezone.setUtcId(utcTimeZoneId);
+		}
+
         return timezone;
     }
 
