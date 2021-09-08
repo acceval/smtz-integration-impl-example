@@ -218,14 +218,14 @@ public class VariableContext implements Serializable, Cloneable {
 
 	public static enum WFL_VIOLATE {
 		CHANGED_PAYMENT_TERM("Violated Payment Term Credit Day"), DEAL_AMOUNT("Below Targeted Amount [?]"),
-		NORMALISED_PRICE(
+		WFL_NORMALISED_PRICE(
 				"Violated Normalised Price Rule. Product: [?], Country: [?], Normalised Price [?], Targeted Normalised Floor Price: [?]"),
 		WFL_NORMALISED_ALPHA(
 				"Violated Normalised Alpha Rule. Product: [?], Country: [?], Normalised Alpha [?], Targeted Normalised Alpha: [?]"),
 		WFL_CONTRIBUTION_MARGIN(
 				"Violated Contribution Margin (Legal Book) Rule. Product [?], Contribution Margin (Legal Book): [?], Targeted Contribution Margin: [?]"),
 		FORMULA_PRICING_ITEM("Formula Pricing's Item. "), REVISED_CASE("Revised Case"),
-		NEGOTIATED_DISCOUNT(
+		WFL_NEGOTIATED_DISCOUNT(
 				"Violated Negotiated Discount Control. Product: [?], Negotiated Discount: [?], Target Negotiated Discount Control: [?]"),
 		SPOT_LOA("Violated Spot LOA."), CONTRACT_LOA("Violated Contract LOA."),
 		OVERRIDE_EXCHANGE_RATE("Overwrite Exchange Rate");
@@ -236,7 +236,7 @@ public class VariableContext implements Serializable, Cloneable {
 			List<String> lst = new ArrayList<String>();
 
 			lst.add(FORMULA_PRICING_ITEM.toString());
-			lst.add(NORMALISED_PRICE.toString());
+			lst.add(WFL_NORMALISED_PRICE.toString());
 			lst.add(WFL_CONTRIBUTION_MARGIN.toString());
 
 			return lst;
