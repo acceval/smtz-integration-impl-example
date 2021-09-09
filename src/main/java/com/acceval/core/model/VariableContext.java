@@ -339,7 +339,11 @@ public class VariableContext implements Serializable, Cloneable {
 		if (this.variableMap == null) {
 			this.variableMap = Collections.synchronizedMap(new HashMap<>());
 		}
-		return (T) variableMap.get(key);
+		T val = (T) variableMap.get(key);
+		if (val instanceof String && "null".equals((String) val)) {
+			return null;
+		}
+		return val;
 	}
 
 	public String getVariableAsString(String key) {
