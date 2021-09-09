@@ -176,6 +176,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String WFL_VIO_NOR_FLOOR_ALPHA = "WFLVIONORFLOORALPHA";
 	public static final String WFL_NO_APPROVAL = "NO_APPROVAL";
 	public static final String WFL_VIO_LOA_SM_VERIFY = "WFLLOASMVERIFY";
+	public static final String IS_NQ_CONTRACT_EXECUTION = "IS_NQ_CONTRACT_EXECUTION";
 
 	// Workflow Context
 	public static final String FORMULAPRICINGADJ = "FORMULAPRICINGADJ";
@@ -338,7 +339,11 @@ public class VariableContext implements Serializable, Cloneable {
 		if (this.variableMap == null) {
 			this.variableMap = Collections.synchronizedMap(new HashMap<>());
 		}
-		return (T) variableMap.get(key);
+		T val = (T) variableMap.get(key);
+		if (val instanceof String && "null".equals((String) val)) {
+			return null;
+		}
+		return val;
 	}
 
 	public String getVariableAsString(String key) {
