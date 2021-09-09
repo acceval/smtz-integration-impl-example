@@ -176,6 +176,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String WFL_VIO_NOR_FLOOR_ALPHA = "WFLVIONORFLOORALPHA";
 	public static final String WFL_NO_APPROVAL = "NO_APPROVAL";
 	public static final String WFL_VIO_LOA_SM_VERIFY = "WFLLOASMVERIFY";
+	public static final String IS_NQ_CONTRACT_EXECUTION = "IS_NQ_CONTRACT_EXECUTION";
 
 	// Workflow Context
 	public static final String FORMULAPRICINGADJ = "FORMULAPRICINGADJ";
