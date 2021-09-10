@@ -204,6 +204,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String COMPONENT_FINAL_EXECUTION_ALPHA = "FINAL_EXECUTION_ALPHA";
 	public static final String COMPONENT_ALPHA_AS_PER_TERM_CONTRACT_AGREEMENT = "ALPHA_AS_PER_TERM_CONTRACT_AGREEMENT";
 	public static final String BYPASS_MARKET_MISSINGDATE_DEPENDENCY = "BYPASS_MARKET_MISSINGDATE_DEPENDENCY";
+	public static final String COMPONENT_CM_INTEGRATED = "CM_INTEGRATED";
 	
 	// Market Price Type
 	public static final String HISTORICAL = "HISTORICAL";
