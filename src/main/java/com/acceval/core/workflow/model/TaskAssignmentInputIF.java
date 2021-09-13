@@ -6,6 +6,7 @@ public interface TaskAssignmentInputIF {
 	final static String ASSIGN_USER_NAME = "assignUserName";
 	final static String TASK_OWNER = "taskOwner";
 	final static String FROM_CT = "fromCT";
+	final static String SALES_OFFICE_ID = "salesOfficeID";
 
 	enum TaskAssignment {
 		REPORT_TO("REPORT_TO", "Report To"),
