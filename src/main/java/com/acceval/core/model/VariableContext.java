@@ -43,6 +43,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public final static String PLANT = "PLANT";
 	public final static String BOM = "BOM";
 	public final static String FORMULA = "FORMULA";
+	public final static String RULE_FORMULA = "RULE_FORMULA";
 	public final static String DOCUMENT_CATEGORY = "DOCUMENTCATEGORY";
 	public final static String PACKAGING = "PACKAGING";
 	public final static String PAYMENT_TERM = "PAYMENTTERM";
@@ -57,6 +58,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String ALPHA_ADJUSTMENT = "ALPHA_ADJUSTMENT";
 	public static final String ALPHA_2 = "ALPHA_2";
 	public static final String SALES_OFFICE = "SALES_OFFICE";
+	public static final String MANDATE_ALPHA = "ALPHA";
 
 	public static final String DEFAULT_DATE_FORMAT = Criterion.DEFAULT_DATE_FORMAT;
 	public static final String DEFAULT_DATE_TIME_FORMAT = Criterion.DEFAULT_DATE_TIME_FORMAT;
@@ -111,6 +113,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String CT_PACKAGINGCOST = "PACKAGING_COST";
 	public static final String CT_COUNTRYSTANDARDDEEMEDFREIGHT = "STANDARD_DEEMED_FREIGHT";
 	public static final String CT_SPOT_LOA_ASSIGNMENT = "SPOT_LOA_ASSIGNMENT";
+	public static final String CT_PRICING_MANDATE = "PRICING_MANDATE";
 
 	// Condition Table Fields / context key
 	public static final String CONDFIELDCODE_NORMALISE_FOR_FLOOR_PRICE = "NORMALISE_FOR_FLOOR_PRICE";
@@ -230,7 +233,8 @@ public class VariableContext implements Serializable, Cloneable {
 		WFL_NEGOTIATED_DISCOUNT(
 				"Violated Negotiated Discount Control. Product: [?], Negotiated Discount: [?], Target Negotiated Discount Control: [?]"),
 		SPOT_LOA("Violated Spot LOA."), CONTRACT_LOA("Violated Contract LOA."),
-		OVERRIDE_EXCHANGE_RATE("Overwrite Exchange Rate");
+		OVERRIDE_EXCHANGE_RATE("Overwrite Exchange Rate"), WFL_PRICING_MANDATE(
+				"Violated Pricing Mandate Rule. Product: [?], Country: [?], Formula [?], Targeted Formula: [?]"),;
 
 		private final String msg;
 
