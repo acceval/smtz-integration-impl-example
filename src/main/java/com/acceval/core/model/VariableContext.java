@@ -114,6 +114,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String CT_COUNTRYSTANDARDDEEMEDFREIGHT = "STANDARD_DEEMED_FREIGHT";
 	public static final String CT_SPOT_LOA_ASSIGNMENT = "SPOT_LOA_ASSIGNMENT";
 	public static final String CT_PRICING_MANDATE = "PRICING_MANDATE";
+	public static final String CT_APPROVER_DELEGATION = "APPROVER_DELEGATION";
 
 	// Condition Table Fields / context key
 	public static final String CONDFIELDCODE_NORMALISE_FOR_FLOOR_PRICE = "NORMALISE_FOR_FLOOR_PRICE";
@@ -125,6 +126,8 @@ public class VariableContext implements Serializable, Cloneable {
 	public final static String CONDFIELDCODE_GRADE = "GRADE";
 	public static final String CONDFIELDCODE_DOMESTIC = "DOMESTIC";
 	public static final String CONDFIELDCODE_ACCUMULATIVE_AMOUNT_IN_RM = "ACCUMULATIVE_AMOUNT_IN_RM";
+	public static final String CONDFIELDCODE_TASK_NAME = "TASK_NAME";
+	public static final String CONDFIELDCODE_USER_ACCOUNT = "USER_ACCOUNT";
 
 	// Condition Table Values / context key
 	public static final String CONDVALUECODE_PRODUCT_BASE_PRICE_INCO = "INCOTERM";
