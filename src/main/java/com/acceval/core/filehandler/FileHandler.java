@@ -137,6 +137,11 @@ public abstract class FileHandler<T> {
 		Writer writer = null;
 
 		try {
+			
+			if (!Files.exists(templateFile.getParent())) {
+				
+				Files.createDirectories(templateFile.getParent());				
+			}
 
 			writer = new FileWriter(templateFile.toFile());
 			Field[] fields = this.templateClass.getDeclaredFields();
