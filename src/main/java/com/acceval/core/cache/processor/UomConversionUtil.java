@@ -88,6 +88,15 @@ public class UomConversionUtil {
 		return getConvertedQuantity(productId, fromUomID, toUomID, quantity, context);
 	}
 
+	public double getConvertedQuantitySafe(long productId, String fromUomCode, String toUomCode, double quantity, VariableContext context) {
+	    try {
+	        return getConvertedQuantity(productId, fromUomCode, toUomCode, quantity, context);
+        } catch (Throwable t) {
+	        t.printStackTrace();
+        }
+		return quantity;
+	}
+
 	/**
 	 * @deprecated use this method only if you don't have product, this method
 	 *             will only get Global UOM Convertion rate
