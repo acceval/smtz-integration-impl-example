@@ -25,6 +25,7 @@ public class BomRequest {
     public static class BomListRequest {
         private List<String> products;
         private List<String> plants;
+		private String delaySec;
 
         public List<String> getProducts() {
             return products;
@@ -41,5 +42,13 @@ public class BomRequest {
         public void setPlants(List<String> plants) {
             this.plants = plants;
         }
+
+		public String getDelaySec() {
+			return delaySec;
+		}
+
+		public void setDelaySec(String delaySec) {
+			this.delaySec = delaySec;
+		}
     }
 }
