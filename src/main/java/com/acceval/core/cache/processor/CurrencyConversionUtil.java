@@ -66,6 +66,20 @@ public class CurrencyConversionUtil {
 		return rates;
 	}
 
+    public Double getConvertedAmountSafe(double amountToConvert, String fromCurrencyCode, String toCurrencyCode,
+                                     LocalDateTime effectiveDate, Long exchangeRateTypeID) {
+	    try {
+	        long fromCurrencyID = this.masterDataCache.getCurrencyByCode(fromCurrencyCode).getCurrencyID();
+	        long toCurrencyID = this.masterDataCache.getCurrencyByCode(toCurrencyCode).getCurrencyID();
+
+	        return getConvertedAmount(amountToConvert, fromCurrencyID, toCurrencyID, effectiveDate, exchangeRateTypeID);
+        } catch (Throwable t) {
+	        t.printStackTrace();;
+        }
+
+	    return amountToConvert;
+    }
+
 	public Double getConvertedAmount(double amountToConvert, long fromCurrencyID, long toCurrencyID,
 			LocalDateTime effectiveDate, Long exchangeRateTypeID) {
 		
