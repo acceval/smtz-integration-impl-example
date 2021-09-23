@@ -30,7 +30,7 @@ public abstract class BaseModel implements Serializable {
 	@Column(nullable = false, updatable = false)
 	private String createdBy;
 
-	@JsonIgnore
+//	@JsonIgnore
 	@CreatedDate
 	@Column(nullable = false, updatable = false)
 	private LocalDateTime created;
