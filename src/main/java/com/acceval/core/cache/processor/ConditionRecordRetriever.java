@@ -82,11 +82,16 @@ public class ConditionRecordRetriever {
         // search record with score
         List<TemporalResult> temporalResults = new ArrayList<>();
 
-        for (ConditionRecordCacheHelper helper : records) {
+        begin: for (ConditionRecordCacheHelper helper : records) {
             int score = 0;
             try {
                 for (ConditionFieldWrapper field : holder.getSortedFields()) {
-                    score += getScore(field, helper, mapParam);
+                    int temp = getScore(field, helper, mapParam);
+
+                    if (temp == -1) {
+                        continue begin;
+                    }
+                    score += temp;
                 }
             } catch (CacheException e) {
                 continue;
@@ -194,7 +199,8 @@ public class ConditionRecordRetriever {
             }
         }
 
-        throw new CacheException("Not matched");
+//        throw new CacheException("Not matched");
+        return -1;
     }
 
     private void preQueryProcess(ConditionRecordConfig config, MultiValueMap<String, String> mapParam) {
