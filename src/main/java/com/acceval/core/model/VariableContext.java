@@ -229,7 +229,7 @@ public class VariableContext implements Serializable, Cloneable {
 		WFL_NORMALISED_PRICE(
 				"Violated Normalised Price Rule. Product: [?], Country: [?], Normalised Price [?], Targeted Normalised Floor Price: [?]"),
 		WFL_NORMALISED_ALPHA(
-				"Violated Normalised Alpha Rule. Product: [?], Country: [?], Normalised Alpha [?], Targeted Normalised Alpha: [?]"),
+				"Violated Alpha Rule. Product: [?], Country: [?], Alpha [?], Targeted Alpha: [?]"),
 		WFL_CONTRIBUTION_MARGIN(
 				"Violated Contribution Margin (Legal Book) Rule. Product [?], Contribution Margin (Legal Book): [?], Targeted Contribution Margin: [?]"),
 		FORMULA_PRICING_ITEM("Formula Pricing's Item. "), REVISED_CASE("Revised Case"),
