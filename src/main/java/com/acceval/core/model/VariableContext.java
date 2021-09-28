@@ -232,7 +232,7 @@ public class VariableContext implements Serializable, Cloneable {
 				"Violated Alpha Rule. Product: [?], Country: [?], Alpha [?], Targeted Alpha: [?]"),
 		WFL_CONTRIBUTION_MARGIN(
 				"Violated Contribution Margin (Legal Book) Rule. Product [?], Contribution Margin (Legal Book): [?], Targeted Contribution Margin: [?]"),
-		FORMULA_PRICING_ITEM("Formula Pricing's Item. "), REVISED_CASE("Revised Case"),
+		FORMULA_PRICING_ITEM("Violated Contract LOA"), REVISED_CASE("Revised Case"),
 		WFL_NEGOTIATED_DISCOUNT(
 				"Violated Negotiated Discount Control. Product: [?], Negotiated Discount: [?], Target Negotiated Discount Control: [?]"),
 		SPOT_LOA("Violated Spot LOA."), CONTRACT_LOA("Violated Contract LOA."),
