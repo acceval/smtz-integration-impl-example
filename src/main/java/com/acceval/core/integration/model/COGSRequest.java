@@ -8,6 +8,7 @@ public class COGSRequest {
     private List<String> paramProducts;
     private LocalDate paramDate;
     private Integer batchSize;
+	private String delaySec;
 
     private List<Item> items;
 
@@ -43,7 +44,15 @@ public class COGSRequest {
         this.batchSize = batchSize;
     }
 
-    public static class Item {
+	public String getDelaySec() {
+		return delaySec;
+	}
+
+	public void setDelaySec(String delaySec) {
+		this.delaySec = delaySec;
+	}
+
+	public static class Item {
         private String product;
         private String plant;
         private LocalDate date;
