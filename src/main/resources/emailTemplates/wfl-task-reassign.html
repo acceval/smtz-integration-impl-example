@@ -4,11 +4,17 @@
 <body>
 	<p style="margin: 0 0 30px 0;">To: 
 		{{this.context.SEND_TO_USER_NAME}},</p>
-	<p style="margin: 0 0 10px 0;">Please be informed that sales document case {{this.context.DOC_NUMBER}} violated {{this.context.PROCESS_NAME}}.</p>
+	<p style="margin: 0 0 10px 0;">{{this.context.DESCRIPTION}}</p>
+	
+	{{#if this.context.TASK_DESCRIPTION}}
+	<p style="margin: 0 0 10px 0; white-space: pre-line;">{{this.context.TASK_DESCRIPTION}}</p>
+	{{/if}}
 
-	<p style="margin: 0 0 10px 0;">If you want to view the sales document, please
+	{{#if this.context.SHOW_LINK}}
+	<p style="margin: 0 0 10px 0;">If you want to view the {{this.context.DOCUMENT_DESCRIPTION}}, please
 		click on the following link,</p>
-	<a style = "text-transform:capitalize;" href="{{this.context.DOMAIN_PATH}}{{this.context.LINK}}" target="indexcontent">View Sales Document</a>
+	<a style = "text-transform:capitalize;" href="{{this.context.DOMAIN_PATH}}{{this.context.LINK}}" target="indexcontent">View</a>
+	{{/if}}
 
 	<p style="margin: 20px 0 0 0;">From:</p>
 	<p style="margin: 0 0 10px 0;">System Admin</p>
