@@ -4,12 +4,8 @@
 <body>
 	<p style="margin: 0 0 30px 0;">To: 
 		{{this.context.SEND_TO_USER_NAME}},</p>
-	<p style="margin: 0 0 10px 0;">Please be informed that sales document case {{this.context.DOC_NUMBER}} with {{this.context.PROCESS_NAME}} is {{this.context.DECISION}}.</p>
-
-	<p style="margin: 0 0 10px 0;">If you want to view the sales document, please
-		click on the following link,</p>
-	<a style = "text-transform:capitalize;" href="{{this.context.DOMAIN_PATH}}{{this.context.LINK}}" target="indexcontent">View Sales Document</a>
-	<!-- http://localhost:4200/d/deal-management/contract/header/202106220000073 -->
+	<p style="margin: 0 0 10px 0;">Please be informed that volume allocation record is {{this.context.DECISION}}.</p>
+	<p style="margin: 0 0 10px 0;">Description: {{this.context.TASK_DESCRIPTION}}</p>
 
 	<p style="margin: 20px 0 0 0;">From:</p>
 	<p style="margin: 0 0 10px 0;">System Admin</p>
