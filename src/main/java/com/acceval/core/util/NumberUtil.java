@@ -50,7 +50,6 @@ public class NumberUtil {
 			}
 		}
 		String newNumberStr = formatNumber(number, format.toString(), roundingMode);
-		double test = new BigDecimal(number).setScale(decimalPoint, BigDecimal.ROUND_HALF_UP).doubleValue();
 
 		try {
 			return Double.parseDouble(newNumberStr);

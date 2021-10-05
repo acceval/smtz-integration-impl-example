@@ -35,4 +35,6 @@ public interface BaseMongoRepository<T> {
 	List<T> aggregateByCriteria(Criteria acceCriteria);
 
 	QueryResult<T> queryByCriteriaWithoutPagination(Criteria acceCriteria, Class<?> targetClass);
+
+	Object[] criterionToMongoCriteriaByField(Criterion criterion, Class<?> attrClass);
 }
