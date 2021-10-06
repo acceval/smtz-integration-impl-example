@@ -44,6 +44,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public final static String BOM = "BOM";
 	public final static String FORMULA = "FORMULA";
 	public final static String RULE_FORMULA = "RULE_FORMULA";
+	public final static String RULE_FORMULA_2 = "RULE_FORMULA_2";
 	public final static String DOCUMENT_CATEGORY = "DOCUMENTCATEGORY";
 	public final static String PACKAGING = "PACKAGING";
 	public final static String PAYMENT_TERM = "PAYMENTTERM";
@@ -240,7 +241,8 @@ public class VariableContext implements Serializable, Cloneable {
 				"Violated Negotiated Discount Control. Product: [?], Negotiated Discount: [?], Target Negotiated Discount Control: [?]"),
 		SPOT_LOA("Violated Spot LOA."), CONTRACT_LOA("Violated Contract LOA."),
 		OVERRIDE_EXCHANGE_RATE("Overwrite Exchange Rate"), WFL_PRICING_MANDATE(
-				"Violated Pricing Mandate Rule. Product: [?], Country: [?], Formula [?], Targeted Formula: [?]"),;
+				"Violated Pricing Mandate Rule. Product: [?], Country: [?], Formula [?], Targeted Formula: [?]"),
+		WFL_PRICING_MANDATE_FORMULA_2(" / Targeted Formula 2: [?]");
 
 		private final String msg;
 
