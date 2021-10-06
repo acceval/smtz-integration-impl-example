@@ -1,0 +1,27 @@
+<html>
+<head>
+</head>
+<body>
+	<p style="margin: 0 0 30px 0;">To: 
+		{{this.context.SEND_TO_USER_NAME}},</p>
+	<p style="margin: 0 0 10px 0;">{{this.context.DESCRIPTION}}</p>
+	
+	{{#if this.context.TASK_DESCRIPTION}}
+	<p style="margin: 0 0 10px 0; white-space: pre-line;">Description: {{this.context.TASK_DESCRIPTION}}</p>
+	{{/if}}
+
+	{{#if this.context.SHOW_LINK}}
+	<p style="margin: 0 0 10px 0;">If you want to view the {{this.context.DOCUMENT_DESCRIPTION}}, please
+		click on the following link,</p>
+	<a style = "text-transform:capitalize;" href="{{this.context.DOMAIN_PATH}}{{this.context.LINK}}" target="indexcontent">View</a>
+	{{/if}}
+
+	<p style="margin: 20px 0 0 0;">From:</p>
+	<p style="margin: 0 0 10px 0;">System Admin</p>
+	<br>
+	<p style="margin: 0 0 3px 0;">The information contained in this
+		message may be privileged and confidential.</p>
+	<p style="margin: 0 0 3px 0;">If you are NOT the intended
+		recipient, please notify the sender immediately.</p>
+</body>
+</html>

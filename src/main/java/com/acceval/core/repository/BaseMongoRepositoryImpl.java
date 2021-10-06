@@ -488,10 +488,6 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 				: criterion.getPropertyName();
 		property = StringUtils.isNotBlank(criterion.getAlternatePropertyName()) ? criterion.getAlternatePropertyName() : property;
 
-		Object value = criterion.getSearchValue();
-		Object[] values = criterion.getSearchValues();
-		RestrictionType restrictionType = criterion.getRestrictionType();
-
 		Class<?> attrClass = null;
 		try {
 			Field field = this.getField(targetClass, property);
@@ -505,6 +501,18 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 			ex.printStackTrace();
 			return null;
 		}
+		return criterionToMongoCriteriaByField(criterion, attrClass);
+	}
+
+	@Override
+	public Object[] criterionToMongoCriteriaByField(Criterion criterion, Class<?> attrClass) {
+		String property = getMapPropertyResolver().containsKey(criterion.getPropertyName())
+				? getMapPropertyResolver().get(criterion.getPropertyName())
+				: criterion.getPropertyName();
+
+		Object value = criterion.getSearchValue();
+		Object[] values = criterion.getSearchValues();
+		RestrictionType restrictionType = criterion.getRestrictionType();
 
 		// Null
 		if (Criterion.RestrictionType.IS_NULL.equals(restrictionType)) {
