@@ -269,9 +269,16 @@ public class RemoteServerTemplate {
 	public String getRemoteServerToken() throws Exception {
 
 		String authUrl = this.remoteConfig.getRemoteIp() + ":" + this.remoteConfig.getRemotePort() + "/auth-service/uaa/oauth/token";
+		System.out.println("####### firing: " + authUrl);
+		System.out.println("####### user: " + this.remoteConfig.getCredentialUser());
+		System.out.println("####### pass: " + this.remoteConfig.getCredentialPassword());
 
 		HttpHeaders basicHeaders =
 				this.createBasicHeaders(this.remoteConfig.getCredentialUser(), this.remoteConfig.getCredentialPassword());
+//		HttpHeaders basicHeaders =
+//				this.createBasicHeaders("buy-shopping-server", "buy-shopping-password");
+//		HttpHeaders basicHeaders =
+//				this.createBasicHeaders("workflow-service", "password");
 
 		RestTemplate authRestTemplate = new RestTemplate();
 		ignoreSSL(authRestTemplate);
@@ -338,6 +345,7 @@ public class RemoteServerTemplate {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.add("Authorization", encodedAuth);
+		System.out.println("###### auth: " + encodedAuth);
 		return headers;
 	}
 
