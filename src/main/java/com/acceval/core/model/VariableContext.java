@@ -63,6 +63,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String PRICING_TECHNIQUE_CODE = "PRICING_TECHNIQUE_CODE";
 	public static final String PRICE_MODEL_CODE = "PRICE_MODEL_CODE";
 	public static final String MARGIN_MODEL_CODE = "MARGIN_MODEL_CODE";
+	public static final String OVERWRITE_ALPHA_FLAG = "OVERWRITE_ALPHA_FLAG";
 
 	public static final String DEFAULT_DATE_FORMAT = Criterion.DEFAULT_DATE_FORMAT;
 	public static final String DEFAULT_DATE_TIME_FORMAT = Criterion.DEFAULT_DATE_TIME_FORMAT;
