@@ -15,6 +15,7 @@ public class ConditionFieldWrapper implements Serializable {
 	private String displayName;
 	private boolean isMandatory;
 	private String conversionParameter;
+	private boolean isSkipQuery;
 	
 	public Long getId() {
 		return id;
@@ -53,6 +54,12 @@ public class ConditionFieldWrapper implements Serializable {
 		this.isMandatory = isMandatory;
 	}
 	
+	public boolean isSkipQuery() {
+		return isSkipQuery;
+	}
+	public void setSkipQuery(boolean isSkipQuery) {
+		this.isSkipQuery = isSkipQuery;
+	}
 	public String getConversionParameter() {
 		return conversionParameter;
 	}
