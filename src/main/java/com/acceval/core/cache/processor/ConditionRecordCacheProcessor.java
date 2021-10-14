@@ -229,6 +229,9 @@ public class ConditionRecordCacheProcessor {
         lstCondFieldCode.add(VariableContext.QUANTITY);
         lstCondFieldCode.add(VariableContext.COMPANY_CODE);
         lstCondFieldCode.add(VariableContext.COMPANY_ID);
+        lstCondFieldCode.add(VariableContext.OVERWRITE_EXCHANGE_RATE);
+        lstCondFieldCode.add(VariableContext.OVERWRITE_CURRENCY_FROM);
+        lstCondFieldCode.add(VariableContext.OVERWRITE_CURRENCY_TO);
 
         if (config != null && CollectionUtils.isNotEmpty(config.getConditionTableInputParameters())) {
             for (ConditionTableInputParameter inputParam : config.getConditionTableInputParameters()) {
@@ -320,11 +323,11 @@ public class ConditionRecordCacheProcessor {
                     }
 
                 }
-
+                
                 numericValue = currencyConversionUtil.getConvertedAmount(
                         Double.valueOf(numericConditionValue.getValue()).doubleValue(),
                         numericConditionValue.getCurrencyId().longValue(), targetCurrency.getCurrencyID(),
-                        effectiveDate.atTime(0, 0, 0), exchangeRateTypeId);
+                        effectiveDate.atTime(0, 0, 0), exchangeRateTypeId, context);
             }
         }
 
