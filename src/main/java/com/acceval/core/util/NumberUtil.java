@@ -35,7 +35,7 @@ public class NumberUtil {
 	}
 
 	public static double round(double number, int decimalPoint) {
-		return round(number, decimalPoint, RoundingMode.CEILING);
+		return round(number, decimalPoint, RoundingMode.HALF_UP);
 	}
 
 	public static double round(double number, int decimalPoint, RoundingMode roundingMode) {
@@ -45,14 +45,15 @@ public class NumberUtil {
 		StringBuffer format = new StringBuffer("###########0");
 		if (decimalPoint > 0) {
 			format.append(".");
-			for (int i = 0; i < decimalPoint; i++) {
+			for (int i = 0; i < decimalPoint + 1; i++) {
 				format.append("#");
 			}
 		}
 		String newNumberStr = formatNumber(number, format.toString(), roundingMode);
 
 		try {
-			return Double.parseDouble(newNumberStr);
+			// special handling for 3.655 = 3.65
+			return new BigDecimal(newNumberStr).setScale(decimalPoint, RoundingMode.HALF_UP).doubleValue();
 		} catch (NumberFormatException e) {
 			throw new RuntimeException("Original Number [" + number + "] New Number [" + newNumberStr + "]" + e.getMessage(), e);
 
@@ -63,13 +64,6 @@ public class NumberUtil {
 		DecimalFormat df = new DecimalFormat(fmt);
 		df.setRoundingMode(roundingMode);
 		return df.format(num);
-	}
-
-	public static double round(double number, int decimalPoint, int roundingMode) {
-		if (Double.isNaN(number)) {
-			number = 0;
-		}
-		return new BigDecimal(number).setScale(decimalPoint, roundingMode).doubleValue();
 	}
 
 	public static String formatNumber(double num, int decimalPoint) {
@@ -89,13 +83,13 @@ public class NumberUtil {
         }
 
         DecimalFormat df = new DecimalFormat(NUMBER_FORMAT);
-		df.setRoundingMode(RoundingMode.CEILING);
+		df.setRoundingMode(RoundingMode.HALF_UP);
         return df.parse(value).doubleValue();
     }
 
 	public static String formatNumber(double num, String fmt) throws NumberFormatException {
 		DecimalFormat df = new DecimalFormat(fmt);
-		df.setRoundingMode(RoundingMode.CEILING);
+		df.setRoundingMode(RoundingMode.HALF_UP);
 		return df.format(num);
 	}
 }
