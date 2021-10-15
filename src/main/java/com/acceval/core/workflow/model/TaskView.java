@@ -22,6 +22,10 @@ public class TaskView<T> {
 
 	public String workflowStatus;
 
+	public String taskOwnerName;
+	public String taskOwnerDepartment;
+	public String dealTaskDescription;
+
 	public TaskView(
 			@JsonProperty("id") String id,
 			@JsonProperty("processInstanceId") String processInstanceId,
@@ -43,6 +47,30 @@ public class TaskView<T> {
 		this.dueDate = dueDate;
 	}
 	
+	public String getDealTaskDescription() {
+		return dealTaskDescription;
+	}
+
+	public void setDealTaskDescription(String dealTaskDescription) {
+		this.dealTaskDescription = dealTaskDescription;
+	}
+
+	public String getTaskOwnerDepartment() {
+		return taskOwnerDepartment;
+	}
+
+	public void setTaskOwnerDepartment(String taskOwnerDepartment) {
+		this.taskOwnerDepartment = taskOwnerDepartment;
+	}
+
+	public String getTaskOwnerName() {
+		return taskOwnerName;
+	}
+
+	public void setTaskOwnerName(String taskOwnerName) {
+		this.taskOwnerName = taskOwnerName;
+	}
+
 	public String getAssigneeName() {
 		return assigneeName;
 	}

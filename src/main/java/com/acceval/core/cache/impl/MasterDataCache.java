@@ -5,6 +5,7 @@ import com.acceval.core.cache.CacheInfo;
 import com.acceval.core.cache.HazelcastCacheInstance;
 import com.acceval.core.cache.model.Currency;
 import com.acceval.core.cache.model.GlobalUomConversion;
+import com.acceval.core.cache.model.PaymentTerm;
 import com.acceval.core.cache.model.RangeGroup;
 import com.acceval.core.cache.model.SkuProductAltUom;
 import com.acceval.core.cache.model.Uom;
@@ -56,6 +57,7 @@ public class MasterDataCache implements CacheIF {
     private final static String KEY_PRODUCT_PARENT = "PRODUCT_PARENT";
     private final static String KEY_REGION_COUNTRY = "REGION_COUNTRY";
     private final static String KEY_ALL_RANGE_GROUP = "ALL_RANGE_GROUP";
+    private final static String KEY_ALL_PAYMENT_TERM = "ALL_PAYMENT_TERM";
 
 
     @Autowired
@@ -335,6 +337,32 @@ public class MasterDataCache implements CacheIF {
         return null;
     }
 
+    /**
+     * Payment Term Cache
+     */
+    public List<PaymentTerm> getAllPaymentTerms() {
+        String companyID = PrincipalUtil.getCompanyID().toString();
+
+        return (List<PaymentTerm>) getTopMap(companyID, KEY_ALL_PAYMENT_TERM).get(KEY_DEFAULT);
+    }
+
+    public void refreshAllPaymentTerms(String companyID, List<PaymentTerm> paymentTerms) {
+        getTopMap(companyID, KEY_ALL_PAYMENT_TERM).put(KEY_DEFAULT, paymentTerms);
+    }
+
+    public PaymentTerm getPaymentTerm(Long id) throws ObjectNotFoundException {
+        List<PaymentTerm> paymentTerms = getAllPaymentTerms();
+
+        if (paymentTerms != null && !paymentTerms.isEmpty()) {
+
+            Optional<PaymentTerm> temp = paymentTerms.stream().filter(rg -> rg.getPaymentTermID() == id.longValue()).findFirst();
+
+            if (temp.isPresent()) return temp.get();
+        }
+
+        throw new ObjectNotFoundException("Payment Term [" + id + "] not found.");
+    }
+
     @Override
     public void clearAll(String companyID) {
         // TODO dangerous to be clear all first then put in the new data.. cause cache might be blank for few seconds if data is huge
@@ -499,6 +527,27 @@ public class MasterDataCache implements CacheIF {
         } catch (Throwable t) {
             buffer.append("Product Base Uom : Get : Not found.");
             buffer.append("\n");
+        }
+
+        List<PaymentTerm> temp5 = this.getAllPaymentTerms();
+
+        if (temp5 == null) {
+            buffer.append("Payment Term : No payment term found in cache.");
+            buffer.append("\n");
+        } else {
+            buffer.append("Payment Term : Total payment term : " + temp5.size());
+            buffer.append("\n");
+        }
+
+        try {
+            PaymentTerm pt = this.getPaymentTerm(202109270000002l);
+
+            buffer.append("Payment Term : Get : " + pt.getCode());
+            buffer.append("\n");
+            buffer.append("Payment Term : Get : Credit Days : " + pt.getCreditDay());
+            buffer.append("\n");
+        } catch (Throwable t) {
+            t.printStackTrace();
         }
 
         buffer.append("Parent Product : " + getProductParentToTop(202103230000472l));
