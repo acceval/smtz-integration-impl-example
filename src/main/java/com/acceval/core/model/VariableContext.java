@@ -65,6 +65,10 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String MARGIN_MODEL_CODE = "MARGIN_MODEL_CODE";
 	public static final String OVERWRITE_ALPHA_FLAG = "OVERWRITE_ALPHA_FLAG";
 	public static final String OVERWRITE_EXECUTION_ALPHA_FLAG = "OVERWRITE_EXECUTION_ALPHA_FLAG";
+	public static final String OVERWRITE_EXCHANGE_RATE = "OVERWRITE_EXCHANGE_RATE";
+	public static final String OVERWRITE_EXCHANGE_RATE_CTS = "OVERWRITE_EXCHANGE_RATE_CTS";
+	public static final String OVERWRITE_CURRENCY_FROM = "OVERWRITE_CURRENCY_FROM";
+	public static final String OVERWRITE_CURRENCY_TO = "OVERWRITE_CURRENCY_TO";
 
 	public static final String DEFAULT_DATE_FORMAT = Criterion.DEFAULT_DATE_FORMAT;
 	public static final String DEFAULT_DATE_TIME_FORMAT = Criterion.DEFAULT_DATE_TIME_FORMAT;

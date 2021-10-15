@@ -6,6 +6,7 @@ import com.acceval.core.cache.impl.MasterDataCache;
 import com.acceval.core.cache.model.Currency;
 import com.acceval.core.cache.model.ExchangeRate;
 import com.acceval.core.microservice.ObjectNotFoundException;
+import com.acceval.core.model.VariableContext;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,12 +68,12 @@ public class CurrencyConversionUtil {
 	}
 
     public Double getConvertedAmountSafe(double amountToConvert, String fromCurrencyCode, String toCurrencyCode,
-                                     LocalDateTime effectiveDate, Long exchangeRateTypeID) {
+                                     LocalDateTime effectiveDate, Long exchangeRateTypeID, VariableContext context) {
 	    try {
 	        long fromCurrencyID = this.masterDataCache.getCurrencyByCode(fromCurrencyCode).getCurrencyID();
 	        long toCurrencyID = this.masterDataCache.getCurrencyByCode(toCurrencyCode).getCurrencyID();
 
-	        return getConvertedAmount(amountToConvert, fromCurrencyID, toCurrencyID, effectiveDate, exchangeRateTypeID);
+	        return getConvertedAmount(amountToConvert, fromCurrencyID, toCurrencyID, effectiveDate, exchangeRateTypeID, context);
         } catch (Throwable t) {
 	        t.printStackTrace();;
         }
@@ -81,12 +82,28 @@ public class CurrencyConversionUtil {
     }
 
 	public Double getConvertedAmount(double amountToConvert, long fromCurrencyID, long toCurrencyID,
-			LocalDateTime effectiveDate, Long exchangeRateTypeID) {
+			LocalDateTime effectiveDate, Long exchangeRateTypeID, VariableContext context) {
 		
 		if(fromCurrencyID == toCurrencyID) {
 			return amountToConvert;
 		}
 		double convertedAmount = amountToConvert;
+		
+		// overwrite exchange rate
+		Double overwriteRate = context.getVariableAsDouble(VariableContext.OVERWRITE_EXCHANGE_RATE);
+		if (overwriteRate != null && overwriteRate != 0.0) {
+			Long overwriteCurrencyFromId = context.getVariableAsLong(VariableContext.OVERWRITE_CURRENCY_FROM);
+			Long overwriteCurrencyToId = context.getVariableAsLong(VariableContext.OVERWRITE_CURRENCY_TO);
+			if (overwriteCurrencyFromId != null && overwriteCurrencyToId != null) {
+				if (overwriteCurrencyFromId == fromCurrencyID && overwriteCurrencyToId == toCurrencyID) {
+					convertedAmount = amountToConvert * overwriteRate;
+				} else if (overwriteCurrencyFromId == toCurrencyID && overwriteCurrencyToId == fromCurrencyID) {
+					convertedAmount = amountToConvert / overwriteRate;
+				}
+				return convertedAmount;
+			}
+		}
+		
 		
 		// Multiplication Logic, FROM_CURRENCY exists
 		Collection result = getExchangeRates(fromCurrencyID, toCurrencyID, effectiveDate, exchangeRateTypeID);
