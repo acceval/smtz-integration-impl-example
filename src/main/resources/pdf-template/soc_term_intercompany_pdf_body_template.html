@@ -56,14 +56,15 @@
 		</style>		 
 	</head>	
 	<body style="font-family: arial; font-size: large;">  
+		<p class="labelBold" style="text-align: center">SALES ORDER CONFIRMATION</p>
 		<table style="margin-top: 2rem;"> 	
 			<tr> 		
 				<td class="labelBold" width="35%">AGREEMENT NUMBER :</td>
 				<td width="65%" th:text="${reference}">Agreement Number</td> 	
 			</tr> 	
 			<tr>
-				<td class="labelBold" width="35%">AGREEMENT COMMENCEMENT DATE :</td>
-				<td width="65%" th:text="${agreementCommencementDate}">Agreement Commencement Date</td> 	
+				<td class="labelBold" width="35%">SALES ORDER CONFIRMATION NUMBER & DATE :</td>
+				<td width="65%" th:text="${socNumberAndDate}">Sales Order Confirmation Number & Date</td> 	
 			</tr>
 			<tr> 		
 				<td class="labelBold" width="35%">SELLER</td>
@@ -94,8 +95,7 @@
 		</table> 
 		<br/>
 		
-		<p>The Seller and Buyer may be referred to individually as a "Party" and collectively as "Parties".
-			<br><br> NOW THEREFORE, it is hereby agreed as follows:</p>	
+		<p>NOW THEREFORE, it is hereby agreed as follows:</p>	
 		
 		<table style="margin-top: 1rem;"> 	
 			<tr>
@@ -116,27 +116,7 @@
 				<td><span th:text="${orderItem.destinationCountry}"></span></td>				
 			</tr> 
 		</table> 
-		<table style="margin-top: 1rem;"> 	
-			<tr> 		
-				<td width="30%">Document</td>
-				<td width="70%"> 			
-					<table class="noBorder">
-						<tr th:each="price, iter : ${prices}">
-							<td style="padding-left: 0;">
-								The following documents shall together consitute the Sales Contract between the Parties: <br>
-								Part 1 : Spot - Specific Terms and Conditions (including Appendix)<br>	
-								Part 2: Spot - Terms of Sale<br>	
-								Part 3: Spot - Terms of Delivery<br>	
-
-								The Agreement shall be read and construed as a whole. In the event of a
-								dispute or conflict between the above documents, the documents shall
-								prevail in the order listed above.
-								
-							</td>
-						</tr>
-					</table>
-				</td> 	
-			</tr> 	
+		<table style="margin-top: 1rem;"> 		
 			<tr>
 				<td width="30%">CARGO ORIGIN</td>
 				<td width="70%" th:text="${cargoOrigin}">Cargo Origin</td>
@@ -181,54 +161,5 @@
 			</tr>
 		</table> 
 		<!-- <div class="page-break"></div> -->
-		<br>
-		<div style="margin-top: 2rem;"> 
-			<table align="left" class="inlineTable">
-				<tr class="noBorder">
-					<td class="labelBold" colspan="2">SELLER</td>        
-				</tr>
-				<tr class="noBorder">
-					<td class="labelBold" colspan="2" th:utext="${sellerCompanyName}">Seller Company Name</td>        
-				</tr>
-				<tr class="noBorder">
-					<td colspan="2" style="height: 5rem;"></td>
-				</tr>   
-				<tr class="noBorder">
-					<td width="30%">Signature</td>
-					<td width="70%"></td>         
-				</tr>      
-				<tr class="noBorder">
-					<td width="30%">Name</td>
-					<td width="70%"></td>         
-				</tr>
-				<tr class="noBorder">
-					<td width="30%">Designation</td>
-					<td width="70%"></td>
-				</tr>
-			</table>     
-			<table align="right" class="inlineTable">         
-				<tr class="noBorder">
-					<td class="labelBold" colspan="2">BUYER</td>
-				</tr>
-				<tr class="noBorder">
-					<td class="labelBold" colspan="2" th:utext="${buyerName}">Seller Company Name</td>        
-				</tr>
-				<tr class="noBorder">
-					<td colspan="2" style="height: 5rem;"></td>
-				</tr>      
-				<tr class="noBorder">
-					<td width="30%">Signature</td>
-					<td width="70%"></td>         
-				</tr>   
-				<tr class="noBorder">
-					<td width="30%">Name</td>
-					<td width="70%"></td>
-				</tr>
-				<tr class="noBorder">
-					<td width="30%">Designation</td>             
-					<td width="70%"></td>
-				</tr>
-			</table>
-		</div> 
 	</body> 
 </html>
