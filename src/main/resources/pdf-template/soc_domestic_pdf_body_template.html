@@ -1,226 +1,390 @@
-<!DOCTYPE html> 
-<html> 
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<!-- <link th:href="${cssPath}" rel="stylesheet"/> -->
-		<style>
-		table {
-			width: 100%;
-			border: 1px solid #AFAFAF;
-			border-collapse: collapse;
-		}
-		
-		table table.noBorder {
-			width: 100%;
-			border: 0;
-		}
-		
-		table table.noBorder tr {
-			border: 0;
-		}
-		
-		table table.noBorder td {
-			border: 0;
-		}
-		
-		table, th, td {
-			border: 1px solid #AFAFAF;
-		}
-		
-		td {
-			padding: 0.5rem
-		}
-		
-		.labelBold {
-			text-align: left;
-			padding: 0.3rem 0.5rem;
-			font-weight: bold;
-		}
-		
-		.page-break {
-			height: 0;
-			page-break-after: always;
-			margin: 0;
-			border-top: none;
-		}
-		
-		.inlineTable {
-			width: 40%;
-			border: 0;
-		}
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<!-- <link th:href="${cssPath}" rel="stylesheet"/> -->
+<style>
+table {
+	width: 100%;
+	border: 1px solid #AFAFAF;
+	border-collapse: collapse;
+}
 
-		tr.noBorder td {
-			border: 0;
-		}
+table table.noBorder {
+	width: 100%;
+	border: 0;
+}
 
-		</style>		 
-	</head>	
-	<body style="font-family: arial; font-size: large;">  
-		<table style="margin-top: 2rem;"> 	
-			<tr> 		
-				<td class="labelBold" width="35%">AGREEMENT NUMBER :</td>
-				<td width="65%" th:text="${reference}">Agreement Number</td> 	
-			</tr> 	
-			<tr>
-				<td class="labelBold" width="35%">AGREEMENT COMMENCEMENT DATE :</td>
-				<td width="65%" th:text="${agreementCommencementDate}">Agreement Commencement Date</td> 	
-			</tr>
-			<tr> 		
-				<td class="labelBold" width="35%">SELLER</td>
-				<td width="65%"> 			
-					<table class="noBorder"> 				
-						<tr>
-							<td style="padding: 0.3rem 0;" colspan="2" class="labelBold" th:utext="${sellerCompanyName}">Seller Company Name</b></td> 				
-						</tr>
-						<tr> 					
-							<td style="padding: 0.3rem 0;" colspan="2" th:utext="${sellerAddress}">Seller Address</td>
-						</tr>
-					</table> 		
-				</td> 	
-			</tr> 	
-			<tr>
-				<td class="labelBold" width="35%">BUYER</td> 		
-				<td width="65%">
-					<table class="noBorder"> 				
-						<tr>
-							<td style="padding: 0.3rem 0;" colspan="2" class="labelBold" th:utext="${buyerName}">Buyer Name</td> 				
-						</tr>
-						<tr> 					
-							<td style="padding: 0.3rem 0;" colspan="2" th:utext="${buyerAddress}">Buyer Address</td>
-						</tr> 	
-					</table> 		
-				</td> 	
-			</tr> 			
-		</table> 
-		<br/>
-		
-		<p>The Seller and Buyer may be referred to individually as a "Party" and collectively as "Parties".
-			<br><br> NOW THEREFORE, it is hereby agreed as follows:</p>	
-		
-		<table style="margin-top: 1rem;"> 	
-			<tr>
-				<th class="labelBold" style="text-align: center;">PRODUCT</th> 		
-				<th class="labelBold" style="text-align: center;">QUANTITY / VOLUME</th>
-				<th class="labelBold" style="text-align: center;">CONTAINER SIZE</th>	
-				<th class="labelBold" style="text-align: center;">UNIT PRICE</th>
-				<th class="labelBold" style="text-align: center;">DESTINATION PORT / CITY</th> 	
-			</tr>
-			<tr th:each="orderItem, iter: ${orderItems}" style="text-align: center;">
-				<td th:text="${orderItem.productName}">Product</td>		
-				<td><span th:text="${#numbers.formatDecimal(orderItem.quantity, 0, 'COMMA', 0, 'POINT')}"></span>
-					<span style="margin-left: 0.25rem;" th:text="${orderItem.uomCode}"></span>
-					<span style="margin-left: 0.5rem;" th:text="${orderItem.tolerance}"></span>
-				</td>
-				<td style="padding: 0.5rem;" th:utext="${orderItem.containerSize}">Container Size</td>
-				<td><span th:text="${#numbers.formatDecimal(orderItem.invoicePrice, 0, 'COMMA', 2, 'POINT')}"></span><span style="margin-left: 0.5rem;" th:text="${currencyCode}"></span>/<span th:text="${orderItem.uomCode}"></span></td>				
-				<td><span th:text="${orderItem.destinationCountry}"></span></td>				
-			</tr> 
-		</table> 
-		<table style="margin-top: 1rem;"> 	
-			<tr> 		
-				<td width="30%">Document</td>
-				<td width="70%"> 			
-					<table class="noBorder">
-						<tr th:each="price, iter : ${prices}">
-							<td style="padding-left: 0;">
-								The following documents shall together consitute the Sales Contract between the Parties: <br>
-								Part 1 : Spot - Specific Terms and Conditions (including Appendix)<br>	
-								Part 2: Spot - Terms of Sale<br>	
-								Part 3: Spot - Terms of Delivery<br>	
+table table.noBorder tr {
+	border: 0;
+}
 
-								The Agreement shall be read and construed as a whole. In the event of a
-								dispute or conflict between the above documents, the documents shall
-								prevail in the order listed above.
-								
-							</td>
-						</tr>
-					</table>
-				</td> 	
-			</tr> 	
-			<tr>
-				<td width="30%">CARGO ORIGIN</td>
-				<td width="70%" th:text="${cargoOrigin}">Cargo Origin</td>
-			</tr> 	
-			<tr>
-				<td  width="30%">PACKAGING</td>
-				<td width="70%" th:text="${packagingTexts}">Pakaging</td> 	
-			</tr> 	
-			<tr>
-				<td  width="30%">TERMS OF DELIVERY</td>
-				<td width="70%" th:text="${termOfDelivery}">Terms of Delivery</td> 	
-			</tr> 	
-			<tr>
-				<td width="30%">TOTAL PRICE</td>
-				<td width="70%"><span th:text="${currencyCode}"> </span><span style="margin-left: 0.5rem;" th:text="${#numbers.formatDecimal(totalPrice, 0, 'COMMA', 2, 'POINT')}"></td>				 
-			</tr> 	
-			<tr>
-				<td width="30%">PAYMENT</td> 		
-				<td width="70%" th:text="${payment}" style="white-space: pre;">
-				</td>
-			</tr> 	
-			<tr> 		
-				<td width="30%">DELIVERY DATE RANGE</td>
-				<td width="70%" th:text="${deliveryDateRange}">Delivery Date Range</td> 	
+table table.noBorder td {
+	border: 0;
+}
+
+table, th, td {
+	border: 1px solid #AFAFAF;
+}
+
+td {
+	padding: 0.5rem
+}
+
+.labelBold {
+	text-align: left;
+	padding: 0.3rem 0.5rem;
+	font-weight: bold;
+}
+
+.page-break {
+	height: 0;
+	page-break-after: always;
+	margin: 0;
+	border-top: none;
+}
+
+.inlineTable {
+	width: 40%;
+	border: 0;
+}
+
+tr.noBorder td {
+	border: 0;
+}
+
+.customTable { /
+	width: 30%; / /
+	border: 1px solid #AFAFAF; /
+	border: none;
+	height: 100px; /
+	border-collapse: collapse;
+	/
+}
+
+.labelNormal {
+	text-align: left;
+	padding: 0.3rem 0.5rem;
+	font-weight: normal;
+	border: 0;
+}
+
+.xlabelBold {
+	text-align: left;
+	padding: 0.3rem 0.5rem;
+	font-weight: bold;
+	border: 0;
+}
+
+.centerLabel {
+	text-align: center;
+	padding: 0.3rem 0.5rem;
+	font-weight: bold;
+}
+
+.page-break {
+	height: 0;
+	page-break-after: always;
+	margin: 0;
+	border-top: none;
+}
+</style>
+</head>
+<body style="font-family: arial; font-size: large;">
+	<table style="margin-top: 2rem; border: none;">
+		<tr>
+			<th width="35%" style="border: 1px solid #AFAFAF;">
+				<table style="border: none;">
+					<tr>
+						<th class="xlabelBold" width="35%">Customer:</th>
+						<th class="xlabelBold" width="65%" th:utext="${buyerCode}">CUSTOMER</th>
+					</tr>
+					<tr>
+						<th class="xlabelBold" colspan="2" th:utext="${buyerName}">Seller
+							Company Name</th>
+					</tr>
+					<tr>
+						<th class="labelNormal" colspan="2" th:utext="${buyerAddress}">Seller
+							Address</th>
+					</tr>
+					<tr>
+						<th class="labelNormal" colspan="2" style="height: 39px;"></th>
+					</tr>
+					<tr>
+						<th class="labelNormal" width="35%">Telephone:</th>
+						<th class="labelNormal" width="65%" th:utext="${buyerTelephoneNo}">123</th>
+					</tr>
+					<tr>
+						<th class="labelNormal" width="35%">Fax No:</th>
+						<th class="labelNormal" width="65%" th:utext="${buyerFacsimile}">12323333333333</th>
+					</tr>
+				</table>
+			</th>
+			<th width="1%" style="border: none;"></th>
+			<th width="35%" style="border: 1px solid #AFAFAF;">
+				<table style="border: none;">
+					<tr>
+						<th class="xlabelBold" width="35%">Delivery To:</th>
+						<th class="xlabelBold" width="65%" th:utext="${buyerCode}">123</th>
+					</tr>
+					<tr>
+						<th class="xlabelBold" colspan="2" th:utext="${buyerName}">Seller
+							Company Name</th>
+					</tr>
+					<tr>
+						<th class="labelNormal" colspan="2" th:utext="${buyerAddress}">Seller
+							Address</th>
+					</tr>
+					<tr>
+						<th class="labelNormal" colspan="2" style="height: 39px;"></th>
+					</tr>
+					<tr>
+						<th class="labelNormal" width="35%">Telephone:</th>
+						<th class="labelNormal" width="65%" th:utext="${buyerTelephoneNo}">123</th>
+					</tr>
+				</table>
+			</th>
+			<th width="1%" style="border: none;"></th>
+			<th width="35%" style="border: none;">
+				<table style="border: none;">
+					<tr>
+						<th class="xlabelBold" colspan="2" style="padding-bottom: 20px;">Sales
+							Order Confirmation</th>
+					</tr>
+					<tr>
+						<th class="xlabelBold" width="35%">S.O.C. No:</th>
+						<th class="labelNormal" width="65%" th:utext="${reference}">CTN-00000123-1</th>
+					</tr>
+					<tr>
+						<th class="xlabelBold" width="35%">SAP Sales Contract:</th>
+						<th class="labelNormal" width="65%" th:utext="${sapNumber}">1234567</th>
+					</tr>
+					<tr>
+						<th class="xlabelBold" width="35%">Delivery:</th>
+						<th class="labelNormal" width="65%" th:utext="${delivery}">August
+							2021</th>
+					</tr>
+					<tr>
+						<th class="xlabelBold" width="35%">PO. No:</th>
+						<th class="labelNormal" width="65%" th:utext="${PONumber}">1234567
+							(AUG 2021)</th>
+					</tr>
+					<tr>
+						<th class="xlabelBold" width="35%">Valid From:</th>
+						<th class="labelNormal" width="65%" th:utext="${validFrom}">09
+							Aug 2021</th>
+					</tr>
+					<tr>
+						<th class="xlabelBold" width="35%">Valid To:</th>
+						<th class="labelNormal" width="65%" th:utext="${validTo}">09
+							Aug 2021</th>
+					</tr>
+				</table>
+			</th>
+		</tr>
+		<tr>
+			<th style="height: 20px; border: none;"></th>
+		</tr>
+	</table>
+
+	<table style="margin-top: 1rem;">
+		<tr class="noBorder">
+			<td class="labelBold" width="35%">Payment Terms :</td>
+			<td width="65%" th:utext="${paymentTerm}">ZB90 - Within 90 days
+				Due net</td>
+		</tr>
+		<tr class="noBorder">
+			<td class="labelBold" width="35%">Currency :</td>
+			<td width="65%" th:utext="${currencyCode}">USD</td>
+		</tr>
+	</table>
+
+	<table style="margin-top: 1rem;">
+		<tr>
+			<td class="centerLabel" width="25%">Description of Goods</td>
+			<td class="centerLabel" width="15%">Term of Delivery</td>
+			<td class="centerLabel" width="16%">Quantity</td>
+			<td class="centerLabel" width="19%">Unit Price (<span th:utext="${currencyCode}"></span>)</td>
+			<td class="centerLabel" width="25%" colspan="2">Amount (<span th:utext="${currencyCode}"></span>)</td>
+		</tr>
+		<tr th:each="salesItem, iter: ${salesItems}">
+			<td style="font-weight: bold;" th:text="${salesItem.productName}"></td>
+			<td th:text="${salesItem.incoterm}"></td>
+			<td>
+				<span th:text="${#numbers.formatDecimal(salesItem.quantity, 0, 'COMMA', quantityDecimalDigits, 'POINT')}"></span>
+				<span style="margin-left: 0.25rem;" th:text="${salesItem.uomCode}"></span>
+			</td>
+			<td>
+				<span th:text="${#numbers.formatDecimal(salesItem.itemInvoice, 0, 'COMMA', priceDecimalDigits, 'POINT')}"></span><span style="margin-left: 0.5rem;" th:text="${currencyCode}"></span>/<span th:text="${salesItem.uomCode}"></span>
+			</td>
+			<td style="border: none;" th:text="${currencyCode}">USD</td>
+			<td style="text-align: right; border: none;">
+				<span th:text="${#numbers.formatDecimal(salesItem.itemLevelTotal, 0, 'COMMA', priceDecimalDigits, 'POINT')}"></span>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2"></td>
+			<td style="border: none; text-align: right; font-weight: bold;">TOTAL</td>
+			<td style="border: none; text-align: right;" th:text="${totalItemQuantity}">495.00</td>
+			<td style="border-right: 0px;">USD</td>
+			<td style="text-align: right; border-left: 0px;">
+				<span th:text="${#numbers.formatDecimal(totalItemAmount, 0, 'COMMA', priceDecimalDigits, 'POINT')}"></span>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="4">Total Amount (<span th:text="${currencyCode}"></span>)</td>
+			<td style="border-right: 0px;" th:text="${currencyCode}">USD</td>
+			<td style="text-align: right; border-left: 0px;">
+				<span th:text="${#numbers.formatDecimal(totalItemAmount, 0, 'COMMA', priceDecimalDigits, 'POINT')}"></span>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="6" style="font-weight: bold;">MYR Equivalent
+				Amount:</td>
+		</tr>
+		<tr>
+			<td colspan="4" style="text-align: right;">Total Amount (MYR)</td>
+			<td style="border-right: 0px;">MYR</td>
+			<td style="text-align: right; border-left: 0px;">
+				<span th:if="${!exchangePrice.equals('0.0')}" th:text="${#numbers.formatDecimal(exchangePrice, 0, 'COMMA', priceDecimalDigits, 'POINT')}"></span>
+				<span th:if="${exchangePrice.equals('0.0')}">-</span>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" style="border-right: 0px;">Exchange Rate
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+				<span th:if="${!exchangeRate.equals('0.0')}" th:utext="${exchangeRate}"></sapn>
+				<span th:if="${exchangeRate.equals('0.0')}">-</sapn>
+			</td>
+			<td colspan="2" style="text-align: right; border-left: 0px;">Total
+				Amount Payable (MYR)</td>
+			<td style="border-right: 0px;">MYR</td>
+			<td style="text-align: right; border-left: 0px;">
+				<span th:if="${!exchangePrice.equals('0.0')}" th:text="${#numbers.formatDecimal(exchangePrice, 0, 'COMMA', priceDecimalDigits, 'POINT')}"></span>
+				<span th:if="${exchangePrice.equals('0.0')}">-</span>
+			</td>
+		</tr>
+	</table>
+	<div class="page-break"></div>
+	<!-- ----------------------------------------------------- -->
+
+	<div style="font-weight: bold;">REMARKS:</div>
+	<br>
+
+	<table style="border: none">
+		<tr class="noBorder">
+			<td width="15%" style="padding: 0px;">Please Pay to:</td>
+		</tr>
+		<tr class="noBorder">
+			<td style="padding-left: 0px;">Beneficiary:</td>
+			<td style="padding-left: 0px;" th:text="${sellerName}">PETROLIAM NASIONAL BERHAD</td>
+		</tr>
+		<tr class="noBorder">
+			<td style="padding-left: 0px;">Account No.:</td>
+			<td style="padding-left: 0px;" th:text="${bankAccountNumber}">PETROLIAM NASIONAL BERHAD</td>
+		</tr>
+		<tr class="noBorder">
+			<td style="padding-left: 0px;">Bank Name:</td>
+			<td style="padding-left: 0px;" th:text="${bankName}">PETROLIAM NASIONAL BERHAD</td>
+		</tr>
+		<tr class="noBorder">
+			<td style="padding-left: 0px;">Branch Name:</td>
+			<td style="padding-left: 0px;" th:text="${bankBranch}">PETROLIAM NASIONAL BERHAD</td>
+		</tr>
+		<tr class="noBorder">
+			<td style="padding-left: 0px;">Bank Address:</td>
+			<td style="padding-left: 0px;" th:text="${bankAddress}">PETROLIAM NASIONAL BERHAD</td>
+		</tr>
+		<tr class="noBorder">
+			<td style="padding-left: 0px;">Swift Code:</td>
+			<td style="padding-left: 0px;" th:text="${bankSwift}">PETROLIAM NASIONAL BERHAD</td>
+		</tr>
+	</table>
+	<p style="font-size: medium;">Please state your invoice number(s)
+		and account number when making payment.</p>
+	<br>
+	<p>PLEASE NOTE THAT THE SALES ORDER CONFIRMATION IS SUBJECT TO THE
+		TERMS AND CONDITIONS STATED OVERLEAF, KINDLY SIGN AND RETURN THE
+		DUPLICATE OF THIS FORM TO INDICATE YOUR ACCEPTANCE OF THE TERMS AND
+		CONDITIONS.</p>
+
+	<p>THANK YOU.</p>
+	<p>YOUR FAITHFULLY</p>
+
+	for <span style="font-weight: bold;">PETRONAS Chemicals Marketing (Labuan) Ltd (LL08320)</span>
+	<!-- <span style="font-weight: bold;" th:utext="${buyer}">Name</span> -->
+
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<div style="margin-top: 2rem;">
+		<div style="display: inline-block; width: 100%;">
+			<hr style="display: inline-block; width: 30%;">
+			<hr style="display: inline-block; width: 30%; float: right;">
+		</div>
+
+		<table style="border: 0px;">
+			<tr class="noBorder">
+				<td width="50%">SALES EXECUTIVE</td>
+				<td width="50%" style="padding-left: 20%;">(COMPANY STAMP AND
+					SIGN)</td>
 			</tr>
-			<tr>
-				<td width="30%">LOAD PORT</td>
-				<td width="70%" th:text="${loadPort}"></td> 								
+			<tr class="noBorder">
+				<td width="50%"></td>
+				<td width="50%" style="padding-left: 20%;">WE ACCEPT THE TERMS
+					AND CONDITIONS</td>
 			</tr>
-			<tr>
-				<td width="30%">INSURANCE</td>
-				<td width="70%">Buyer's account</td> 								
+			<tr class="noBorder">
+				<td width="50%"></td>
+				<td width="50%" style="padding-left: 20%;">NAME:</td>
 			</tr>
-			<tr>
-				<td width="30%">TAX AND DUTIES</td>
-				<td width="70%" th:utext="${taxDuties}">Tax and Duties
-				</td> 								
+			<tr class="noBorder">
+				<td width="50%"></td>
+				<td width="50%" style="padding-left: 20%;">DATE:</td>
 			</tr>
-			<tr> 		
-				<td width="30%">OTHER TERMS & CONDITIONS</td>
-				<td width="70%" th:utext="${termsConditions}">Other terms and conditions</td> 	
+		</table>
+		<table style="border: none;">
+			<hr style="display: inline-block; width: 30%;">
+			<tr class="noBorder">
+				<td width="50%">SALES MANAGER</td>
+				<td width="50%"></td>
 			</tr>
-		</table> 
-		<!-- <div class="page-break"></div> -->
-		<br>
-		<div style="margin-top: 2rem;"> 
-			<table align="left" class="inlineTable">
-				<tr class="noBorder">
-					<td class="labelBold" colspan="2">SELLER</td>        
-				</tr>
-				<tr class="noBorder">
-					<td class="labelBold" colspan="2" th:utext="${sellerCompanyName}">Seller Company Name</td>        
-				</tr>
-				<tr class="noBorder">
-					<td colspan="2" style="height: 5rem;"></td>
-				</tr>         
-				<tr class="noBorder">
-					<td width="30%">Name</td>
-					<td width="70%"></td>         
-				</tr>
-				<tr class="noBorder">
-					<td width="30%">Designation</td>
-					<td width="70%"></td>
-				</tr>
-			</table>     
-			<table align="right" class="inlineTable">         
-				<tr class="noBorder">
-					<td class="labelBold" colspan="2">BUYER</td>
-				</tr>
-				<tr class="noBorder">
-					<td class="labelBold" colspan="2" th:utext="${buyerName}">Seller Company Name</td>        
-				</tr>
-				<tr class="noBorder">
-					<td colspan="2" style="height: 5rem;"></td>
-				</tr>      
-				<tr class="noBorder">
-					<td width="30%">Name</td>
-					<td width="70%"></td>
-				</tr>
-				<tr class="noBorder">
-					<td width="30%">Designation</td>             
-					<td width="70%"></td>
-				</tr>
-			</table>
-		</div> 
-	</body> 
+		</table>
+	</div>
+
+	<div class="page-break"></div>
+	<h1 style="font-weight: bold; text-align: center; font-size: large;">
+		<u>CONDITIONS OF SALES</u>
+	</h1>
+	<p>
+		(1) ORDERS MADE BY ANY MEANS OF COMMUNICATION FROM THE BUYER ARE NOT
+		BINDING TO THE SELLER UNLESS CONFIRMED USING THE SOC FORM PREPARED BY
+		THE SELLER. ANY VARIATION OR DELETION OF THESE CONDITIONS IS
+		INAPPLICABLE UNLESS ACCEPTED IN WRITING BY THE SELLER. <br /> <br />
+		(2) ANY DATE OR TIME FOR DELIVERY QUOTED BY THE SELLER IS ONLY AN
+		ESTIMATION AND THE SELLER SHALL NOT BE RELIABLE FOR THE CONSEQUENCE OF
+		ANY DELAY FROM THE ESTIMATED DATE. <br /> <br /> (3) GOODS
+		REPRESENTED BY THE BUYER TO BE DEFECTIVE SHALL NOT FORM THE OBLIGATION
+		FOR THE SELLER TO BEAR ANY CLAIM FOR WORK DONE BY THE BUYER, NOR FOR
+		ANY LOSS, DAMAGE OR EXPENSE WHATSOEVER DIRECTLY OR INDIRECTLY FROM
+		SUCH DEFECTS, BUT SUCH GOODS, IF RETURNED TO THE SELLER AND ACCEPTED
+		AS DEFECTIVE WILL BE REPLACED AS ORIGINALLY ORDERED OR TREATED AS
+		MATERIALS RETURNED, BY THE SELLER, DEPENDING ON THE AVAILABILITY OF
+		THE MATERIALS. <br /> <br /> (4) THE SELLER SHALL BE RELIEVED FROM
+		THE OBLIGATION TO SUPPLY AS LONG AS THE BUYER HAS ANY ARREARS WITH
+		PAYMENTS. IF DOUBT ARISES ON THE SOLVENCY OF THE BUYER, THE SELLER
+		RESERVES THE RIGHT TO STOP FURTHER DELIVERIES UNTIL SATISFACTORY
+		SECURITIES OR PAYMENT IS RECEIVED. <br /> <br /> (5) PAYMENT OF THE
+		PRICE SHALL BE MADE IN ACCORDANCE WITH PAYMENT CONDITIONS AGREED UPON
+		BOTH PARTIES. <br /> <br /> (6) LATE PAYMENT CHARGE OF 2.0% ABOVE
+		THE BANKS PREVAILING BASE LENDING RATE (BLR) WILL BE IMPOSED FOR LATE
+		PAYMENTS. <br /> <br /> (7) RESIN SOLD IS ONLY FOR OWN CONSUMPTION.
+		<br /> <br /> (8) THESE CONDITIONS AND THE CONTRACT SHALL BE SUBJECT
+		TO AND CONSTRUCTED IN ACCORDANCE WITH THE PREVAILING MALAYSIAN LAW. <br />
+		<br /> (9) OTHER TERMS AND CONDITIONS AS STIPULATED IN GENERAL TERM &
+		CONDITION - REV. 2017 V 1. <br /> <br />
+	</p>
+</body>
 </html>
