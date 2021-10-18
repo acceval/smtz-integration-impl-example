@@ -246,18 +246,22 @@ tr.noBorder td {
 			<td colspan="4" style="text-align: right;">Total Amount (MYR)</td>
 			<td style="border-right: 0px;">MYR</td>
 			<td style="text-align: right; border-left: 0px;">
-				<span th:text="${#numbers.formatDecimal(exchangePrice, 0, 'COMMA', priceDecimalDigits, 'POINT')}"></span>
+				<span th:if="${!exchangePrice.equals('0.0')}" th:text="${#numbers.formatDecimal(exchangePrice, 0, 'COMMA', priceDecimalDigits, 'POINT')}"></span>
+				<span th:if="${exchangePrice.equals('0.0')}">-</span>
 			</td>
 		</tr>
 		<tr>
 			<td colspan="2" style="border-right: 0px;">Exchange Rate
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span th:utext="${exchangeRate}"></sapn>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+				<span th:if="${!exchangeRate.equals('0.0')}" th:utext="${exchangeRate}"></sapn>
+				<span th:if="${exchangeRate.equals('0.0')}">-</sapn>
 			</td>
 			<td colspan="2" style="text-align: right; border-left: 0px;">Total
 				Amount Payable (MYR)</td>
 			<td style="border-right: 0px;">MYR</td>
 			<td style="text-align: right; border-left: 0px;">
-				<span th:text="${#numbers.formatDecimal(exchangePrice, 0, 'COMMA', priceDecimalDigits, 'POINT')}"></span>
+				<span th:if="${!exchangePrice.equals('0.0')}" th:text="${#numbers.formatDecimal(exchangePrice, 0, 'COMMA', priceDecimalDigits, 'POINT')}"></span>
+				<span th:if="${exchangePrice.equals('0.0')}">-</span>
 			</td>
 		</tr>
 	</table>
