@@ -90,70 +90,72 @@ tr.noBorder td {
 }
 </style>
 </head>
-<body style="font-family: arial; font-size: large;">
+<body style="font-family: arial;">
 	<table style="margin-top: 2rem; border: none;">
 		<tr>
-			<th width="35%" style="border: 1px solid #AFAFAF;">
+			<th width="32%" style="border: 1px solid #AFAFAF; vertical-align: tex-top">
 				<table style="border: none;">
 					<tr>
 						<th class="xlabelBold" width="35%">Customer:</th>
-						<th class="xlabelBold" width="65%" th:utext="${buyerCode}">CUSTOMER</th>
+						<th class="xlabelBold" width="65%" th:utext="${buyerCode}">8010001505</th>
 					</tr>
 					<tr>
-						<th class="xlabelBold" colspan="2" th:utext="${buyerName}">Seller
-							Company Name</th>
+						<th class="xlabelBold" colspan="2" th:utext="${buyerName}">
+							UNIPLAST POLYMERS SDN BHD
+						</th>
 					</tr>
-					<tr>
-						<th class="labelNormal" colspan="2" th:utext="${buyerAddress}">Seller
-							Address</th>
+					<tr style="height: 150px; vertical-align: text-top;">
+						<th class="labelNormal" colspan="2" th:utext="${buyerAddress}">
+							NO .1 JALAN 12/10 TAMAN KOPERASI POLIS FASA 1 68100 MALAYSIA
+						</th>
 					</tr>
-					<tr>
-						<th class="labelNormal" colspan="2" style="height: 39px;"></th>
-					</tr>
+				</table>
+				<table style="border: none;">
 					<tr>
 						<th class="labelNormal" width="35%">Telephone:</th>
-						<th class="labelNormal" width="65%" th:utext="${buyerTelephoneNo}">123</th>
+						<th class="labelNormal" width="65%" th:utext="${buyerTelephoneNo}">0361872936</th>
 					</tr>
 					<tr>
 						<th class="labelNormal" width="35%">Fax No:</th>
-						<th class="labelNormal" width="65%" th:utext="${buyerFacsimile}">12323333333333</th>
+						<th class="labelNormal" width="65%" th:utext="${buyerFacsimile}">03-61872909</th>
 					</tr>
 				</table>
 			</th>
 			<th width="1%" style="border: none;"></th>
-			<th width="35%" style="border: 1px solid #AFAFAF;">
+			<th width="32%" style="border: 1px solid #AFAFAF; vertical-align: text-top;">
 				<table style="border: none;">
 					<tr>
-						<th class="xlabelBold" width="35%">Delivery To:</th>
-						<th class="xlabelBold" width="65%" th:utext="${buyerCode}">123</th>
+						<th class="xlabelBold" width="45%">Delivery To:</th>
+						<th class="xlabelBold" width="55%" th:utext="${buyerCode}">8010001505</th>
 					</tr>
 					<tr>
-						<th class="xlabelBold" colspan="2" th:utext="${buyerName}">Seller
-							Company Name</th>
+						<th class="xlabelBold" colspan="2" th:utext="${buyerName}">
+							UNIPLAST POLYMERS SDN BHD
+						</th>
 					</tr>
-					<tr>
-						<th class="labelNormal" colspan="2" th:utext="${buyerAddress}">Seller
-							Address</th>
+					<tr style="height: 178px; vertical-align: text-top;">
+						<th class="labelNormal" colspan="2" th:utext="${buyerAddress}">
+							NO .1 JALAN 12/10 TAMAN KOPERASI POLIS FASA 1 68100 MALAYSIA
+						</th>
 					</tr>
-					<tr>
-						<th class="labelNormal" colspan="2" style="height: 39px;"></th>
-					</tr>
+				</table>
+				<table style="border: none;">
 					<tr>
 						<th class="labelNormal" width="35%">Telephone:</th>
-						<th class="labelNormal" width="65%" th:utext="${buyerTelephoneNo}">123</th>
+						<th class="labelNormal" width="65%" th:utext="${buyerTelephoneNo}">0361872936</th>
 					</tr>
 				</table>
 			</th>
 			<th width="1%" style="border: none;"></th>
-			<th width="35%" style="border: none;">
+			<th width="35%" style="border: none; vertical-align: text-top;">
 				<table style="border: none;">
 					<tr>
-						<th class="xlabelBold" colspan="2" style="padding-bottom: 20px;">Sales
-							Order Confirmation</th>
+						<th class="xlabelBold" colspan="2" style="padding-bottom: 20px;">SALES
+							ORDER CONFIRMATION</th>
 					</tr>
 					<tr>
-						<th class="xlabelBold" width="35%">S.O.C. No:</th>
-						<th class="labelNormal" width="65%" th:utext="${reference}">CTN-00000123-1</th>
+						<th class="xlabelBold" width="40%">S.O.C. No:</th>
+						<th class="labelNormal" width="60%" th:utext="${reference}">CTN-00000123-1</th>
 					</tr>
 					<tr>
 						<th class="xlabelBold" width="35%">SAP Sales Contract:</th>
