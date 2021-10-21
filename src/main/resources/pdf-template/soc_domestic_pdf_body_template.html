@@ -96,8 +96,7 @@ tr.noBorder td {
 			<th width="31%" style="border: 1px solid #AFAFAF; vertical-align: tex-top">
 				<table style="border: none;">
 					<tr>
-						<th class="xlabelBold" width="35%">Customer:</th>
-						<th class="xlabelBold" width="65%" th:utext="${buyerCode}">8010001505</th>
+						<th class="xlabelBold" colspan="2">Customer: <span class="xlabelBold" th:utext="${buyerCode}"></span></th>
 					</tr>
 					<tr>
 						<th class="xlabelBold" colspan="2" th:utext="${buyerName}">
@@ -125,8 +124,8 @@ tr.noBorder td {
 			<th width="31%" style="border: 1px solid #AFAFAF; vertical-align: text-top;">
 				<table style="border: none;">
 					<tr>
-						<th class="xlabelBold" width="45%">Delivery To:</th>
-						<th class="xlabelBold" width="55%" th:utext="${buyerCode}">8010001505</th>
+						<th class="xlabelBold" colspan="2">Delivery To: <span class="xlabelBold" th:utext="${buyerCode}"></span></th>
+						<!-- <th class="xlabelBold" width="50%" th:utext="${buyerCode}">8010001505</th> -->
 					</tr>
 					<tr>
 						<th class="xlabelBold" colspan="2" th:utext="${buyerName}">
@@ -145,8 +144,8 @@ tr.noBorder td {
 						<th class="labelNormal" width="65%" th:utext="${buyerTelephoneNo}">0361872936</th>
 					</tr>
 					<tr>
-						<th class="labelNormal" width="35%"></th>
-						<th class="labelNormal" width="65%"></th>
+						<th class="labelNormal" width="35%"> </th>
+						<th class="labelNormal" width="65%"> </th>
 					</tr>
 				</table>
 			</th>
