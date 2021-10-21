@@ -191,12 +191,12 @@ tr.noBorder td {
 
 	<table style="margin-top: 1rem;">
 		<tr class="noBorder">
-			<td class="labelBold" width="35%">Payment Terms :</td>
+			<td class="labelBold" width="30%" style="border-right: 1px solid #AFAFAF;">Payment Terms</td>
 			<td width="65%" th:utext="${paymentTerm}">ZB90 - Within 90 days
 				Due net</td>
 		</tr>
 		<tr class="noBorder">
-			<td class="labelBold" width="35%">Currency :</td>
+			<td class="labelBold" width="30%"  style="border-right: 1px solid #AFAFAF;">Currency</td>
 			<td width="65%" th:utext="${currencyCode}">USD</td>
 		</tr>
 	</table>
@@ -225,7 +225,7 @@ tr.noBorder td {
 			</td>
 		</tr>
 		<tr>
-			<td colspan="2"></td>
+			<td colspan="2" style="border: none"></td>
 			<td style="border: none; text-align: right; font-weight: bold;">TOTAL</td>
 			<td style="border: none; text-align: right;" th:text="${totalItemQuantity}">495.00</td>
 			<td style="border-right: 0px;">USD</td>
@@ -234,7 +234,7 @@ tr.noBorder td {
 			</td>
 		</tr>
 		<tr>
-			<td colspan="4">Total Amount (<span th:text="${currencyCode}"></span>)</td>
+			<td colspan="4" style="font-weight: bold;">Total Amount (<span th:text="${currencyCode}"></span>)</td>
 			<td style="border-right: 0px;" th:text="${currencyCode}">USD</td>
 			<td style="text-align: right; border-left: 0px;">
 				<span th:text="${#numbers.formatDecimal(totalItemAmount, 0, 'COMMA', priceDecimalDigits, 'POINT')}"></span>
@@ -313,7 +313,7 @@ tr.noBorder td {
 	<p>THANK YOU.</p>
 	<p>YOUR FAITHFULLY</p>
 
-	for <span style="font-weight: bold;">PETRONAS Chemicals Marketing (Labuan) Ltd (LL08320)</span>
+	<span style="font-weight: bold;">for PETRONAS Chemicals Marketing (Labuan) Ltd (LL08320)</span>
 	<!-- <span style="font-weight: bold;" th:utext="${buyer}">Name</span> -->
 
 	<br>
