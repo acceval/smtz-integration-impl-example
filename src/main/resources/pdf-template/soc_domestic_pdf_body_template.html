@@ -93,7 +93,7 @@ tr.noBorder td {
 <body style="font-family: arial;">
 	<table style="margin-top: 2rem; border: none;">
 		<tr>
-			<th width="31%" style="border: 1px solid #AFAFAF; vertical-align: tex-top">
+			<th width="31%" style="border: 1px solid #AFAFAF; vertical-align: text-top">
 				<table style="border: none;">
 					<tr>
 						<th class="xlabelBold" colspan="2">Customer: <span class="xlabelBold" th:utext="${buyerCode}"></span></th>
@@ -103,7 +103,7 @@ tr.noBorder td {
 							UNIPLAST POLYMERS SDN BHD
 						</th>
 					</tr>
-					<tr style="height: 150px; vertical-align: text-top;">
+					<tr style="height: 160px; vertical-align: text-top;">
 						<th class="labelNormal" colspan="2" th:utext="${buyerAddress}">
 							NO .1 JALAN 12/10 TAMAN KOPERASI POLIS FASA 1 68100 MALAYSIA
 						</th>
@@ -157,11 +157,11 @@ tr.noBorder td {
 							ORDER CONFIRMATION</th>
 					</tr>
 					<tr>
-						<th class="xlabelBold" width="40%" style="padding-bottom: 20px;">S.O.C. No:</th>
+						<th class="xlabelBold" width="40%" style="padding-bottom: 10px;">S.O.C. No:</th>
 						<th class="labelNormal" width="60%" th:utext="${reference}">CTN-00000123-1</th>
 					</tr>
 					<tr>
-						<th class="xlabelBold" width="35%" style="padding-bottom: 20px;">SAP Sales Contract:</th>
+						<th class="xlabelBold" width="35%" style="padding-bottom: 10px;">SAP Sales Contract:</th>
 						<th class="labelNormal" width="65%" th:utext="${sapNumber}">1234567</th>
 					</tr>
 					<tr>
@@ -230,7 +230,9 @@ tr.noBorder td {
 		<tr>
 			<td colspan="2" style="border: none"></td>
 			<td style="border: none; text-align: right; font-weight: bold;">TOTAL</td>
-			<td style="border: none; text-align: right;" th:text="${totalItemQuantity}">495.00</td>
+			<td style="border: none; text-align: right;">
+				<span th:text="${#numbers.formatDecimal(totalItemQuantity, 0, 'COMMA', quantityDecimalDigits, 'POINT')}"></span>
+			</td>
 			<td style="border-right: 0px;">USD</td>
 			<td style="text-align: right; border-left: 0px;">
 				<span th:text="${#numbers.formatDecimal(totalItemAmount, 0, 'COMMA', priceDecimalDigits, 'POINT')}"></span>
