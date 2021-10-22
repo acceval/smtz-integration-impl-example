@@ -223,7 +223,7 @@ tr.noBorder td {
 			<td style="font-weight: bold;" th:text="${salesItem.productName}"></td>
 			<td th:text="${salesItem.incoterm}"></td>
 			<td>
-				<span th:text="${#numbers.formatDecimal(salesItem.quantity, 0, 'COMMA', quantityDecimalDigits, 'POINT')}"></span>
+				<span th:text="${#numbers.formatDecimal(salesItem.quantity, 0, 'COMMA', 3, 'POINT')}"></span>
 				<span style="margin-left: 0.25rem;" th:text="${salesItem.uomCode}"></span>
 			</td>
 			<td>
@@ -238,7 +238,7 @@ tr.noBorder td {
 			<td colspan="2" style="border: none"></td>
 			<td style="border: none; text-align: right; font-weight: bold;">TOTAL</td>
 			<td style="border: none; text-align: right;">
-				<span th:text="${#numbers.formatDecimal(totalItemQuantity, 0, 'COMMA', quantityDecimalDigits, 'POINT')}"></span>
+				<span th:text="${#numbers.formatDecimal(totalItemQuantity, 0, 'COMMA', 3, 'POINT')}"></span>
 			</td>
 			<td style="border-right: 0px;">USD</td>
 			<td style="text-align: right; border-left: 0px;">
