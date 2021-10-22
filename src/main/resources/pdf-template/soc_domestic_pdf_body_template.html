@@ -156,7 +156,7 @@ tr.noBorder td {
 							ORDER CONFIRMATION</th>
 					</tr>
 					<tr>
-						<th class="xlabelBold" width="40%" style="padding-bottom: 10px;">S.O.C. No:</th>
+						<th class="xlabelBold" width="40%" style="padding-bottom: 10px;">S.O.C. No.:</th>
 						<th class="labelNormal" width="60%" style="padding-bottom: 10px;">
 							<span th:utext="${reference}">CTN-00000123-1</span>
 						</th>
@@ -229,8 +229,8 @@ tr.noBorder td {
 			<td>
 				<span th:text="${#numbers.formatDecimal(salesItem.itemInvoice, 0, 'COMMA', priceDecimalDigits, 'POINT')}"></span><span style="margin-left: 0.5rem;" th:text="${currencyCode}"></span>/<span th:text="${salesItem.uomCode}"></span>
 			</td>
-			<td style="border: none;" th:text="${currencyCode}">USD</td>
-			<td style="text-align: right; border: none;">
+			<td style="border-right: 0px;" th:text="${currencyCode}">USD</td>
+			<td style="text-align: right; border-left: 0px;">
 				<span th:text="${#numbers.formatDecimal(salesItem.itemLevelTotal, 0, 'COMMA', priceDecimalDigits, 'POINT')}"></span>
 			</td>
 		</tr>
@@ -291,7 +291,7 @@ tr.noBorder td {
 		</tr>
 		<tr class="noBorder">
 			<td style="padding-left: 0px;">Beneficiary:</td>
-			<td style="padding-left: 0px;" th:text="${sellerName}">PETROLIAM NASIONAL BERHAD</td>
+			<td style="padding-left: 0px;" th:text="${sellerAttention}">PETROLIAM NASIONAL BERHAD</td>
 		</tr>
 		<tr class="noBorder">
 			<td style="padding-left: 0px;">Account No.:</td>
