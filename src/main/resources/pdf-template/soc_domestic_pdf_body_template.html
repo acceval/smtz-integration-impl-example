@@ -267,7 +267,7 @@ tr.noBorder td {
 		<tr>
 			<td colspan="2" style="border-right: 0px;">Exchange Rate
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-				<span th:if="${!exchangeRate.equals('0.0')}" th:utext="${exchangeRate}"></sapn>
+				<span th:if="${!exchangeRate.equals('0.0')}" th:text="${#numbers.formatDecimal(exchangeRate, 0, 'COMMA', 5, 'POINT')}"></sapn>
 				<span th:if="${exchangeRate.equals('0.0')}">-</sapn>
 			</td>
 			<td colspan="2" style="text-align: right; border-left: 0px;">Total
