@@ -56,10 +56,19 @@ public class DefaultJobLogger implements SchedulerJobLogger {
 	}
 	
 	public void logError(Long schedulerJobLogId) {
-		this.logError(schedulerJobLogId, null);
+		this.logError(schedulerJobLogId, null, null);
+	}
+	
+	public void logError(Long schedulerJobLogId, String message) {
+		this.logError(schedulerJobLogId, message, null);
 	}
 	
 	public void logError(Long schedulerJobLogId, Exception exception) {
+		this.logError(schedulerJobLogId, null, exception);
+	}
+	
+	
+	public void logError(Long schedulerJobLogId, String message, Exception exception) {
 		
 		JobLoggerRequest request = new JobLoggerRequest();
 		request.setSchedulerJobLogId(schedulerJobLogId);		
@@ -68,6 +77,10 @@ public class DefaultJobLogger implements SchedulerJobLogger {
 		if (exception != null) {
 			request.setException(exception);
 			request.setMessage(exception.getMessage());
+		}
+		
+		if (message != null) {
+			request.setMessage(message);
 		}
 
 		this.updateSchedulerJobStatus(request);
