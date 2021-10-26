@@ -92,20 +92,20 @@ tr.noBorder td {
 <body style="font-family: arial;">
 	<table style="margin-top: 2rem; border: none;">
 		<tr>
-			<th width="31%" style="border: 1px solid #AFAFAF; vertical-align: text-top">
+			<th width="31%"
+				style="border: 1px solid #AFAFAF; vertical-align: text-top">
 				<table style="border: none;">
 					<tr>
-						<th class="xlabelBold" colspan="2">Customer: <span class="xlabelBold" th:utext="${buyerCode}"></span></th>
+						<th class="xlabelBold" colspan="2">Customer: <span
+							class="xlabelBold" th:utext="${buyerCode}"></span></th>
 					</tr>
 					<tr>
 						<th class="xlabelBold" colspan="2" th:utext="${buyerName}">
-							UNIPLAST POLYMERS SDN BHD
-						</th>
+							UNIPLAST POLYMERS SDN BHD</th>
 					</tr>
 					<tr style="height: 160px; vertical-align: text-top;">
 						<th class="labelNormal" colspan="2" th:utext="${buyerAddress}">
-							NO .1 JALAN 12/10 TAMAN KOPERASI POLIS FASA 1 68100 MALAYSIA
-						</th>
+							NO .1 JALAN 12/10 TAMAN KOPERASI POLIS FASA 1 68100 MALAYSIA</th>
 					</tr>
 				</table>
 				<table style="border: none;">
@@ -120,21 +120,21 @@ tr.noBorder td {
 				</table>
 			</th>
 			<th width="1%" style="border: none;"></th>
-			<th width="31%" style="border: 1px solid #AFAFAF; vertical-align: text-top;">
+			<th width="31%"
+				style="border: 1px solid #AFAFAF; vertical-align: text-top;">
 				<table style="border: none;">
 					<tr>
-						<th class="xlabelBold" colspan="2">Delivery To: <span class="xlabelBold" th:utext="${buyerCode}"></span></th>
+						<th class="xlabelBold" colspan="2">Delivery To: <span
+							class="xlabelBold" th:utext="${buyerCode}"></span></th>
 						<!-- <th class="xlabelBold" width="50%" th:utext="${buyerCode}">8010001505</th> -->
 					</tr>
 					<tr>
 						<th class="xlabelBold" colspan="2" th:utext="${buyerName}">
-							UNIPLAST POLYMERS SDN BHD
-						</th>
+							UNIPLAST POLYMERS SDN BHD</th>
 					</tr>
 					<tr style="height: 160px; vertical-align: text-top;">
 						<th class="labelNormal" colspan="2" th:utext="${buyerAddress}">
-							NO .1 JALAN 12/10 TAMAN KOPERASI POLIS FASA 1 68100 MALAYSIA
-						</th>
+							NO .1 JALAN 12/10 TAMAN KOPERASI POLIS FASA 1 68100 MALAYSIA</th>
 					</tr>
 				</table>
 				<table style="border: none;">
@@ -143,8 +143,8 @@ tr.noBorder td {
 						<th class="labelNormal" width="65%" th:utext="${buyerTelephoneNo}">0361872936</th>
 					</tr>
 					<tr>
-						<th class="labelNormal" width="35%"> </th>
-						<th class="labelNormal" width="65%"> </th>
+						<th class="labelNormal" width="35%"></th>
+						<th class="labelNormal" width="65%"></th>
 					</tr>
 				</table>
 			</th>
@@ -156,37 +156,55 @@ tr.noBorder td {
 							ORDER CONFIRMATION</th>
 					</tr>
 					<tr>
-						<th class="xlabelBold" width="40%" style="padding-bottom: 10px;">S.O.C. No.:</th>
-						<th class="labelNormal" width="60%" style="padding-bottom: 10px;">
+						<th class="xlabelBold" width="40%" style="padding-bottom: 10px;">
+							<div style="float: left; width: 90%;">S.O.C. No.</div>
+							<div style="float: right; width: 10%; text-align: end;">:</div>
+						</th>
+						<th class="labelNormal" width="59%" style="padding-bottom: 10px;">
 							<span th:utext="${reference}">CTN-00000123-1</span>
 						</th>
 					</tr>
 					<tr>
-						<th class="xlabelBold" width="35%" style="padding-bottom: 10px;">SAP Sales Contract:</th>
+						<th class="xlabelBold" width="35%" style="padding-bottom: 10px;">
+							<div style="float: left; width: 90%;">SAP Sales Contract</div>
+							<div style="float: right; width: 10%; text-align: end;">:</div>
+						</th>
 						<th class="labelNormal" width="65%" style="padding-bottom: 10px;">
 							<span th:utext="${sapNumber}">1234567</span>
 						</th>
 					</tr>
 					<tr>
-						<th class="xlabelBold" width="35%" style="padding-bottom: 10px;">Delivery:</th>
+						<th class="xlabelBold" width="35%" style="padding-bottom: 10px;">
+							<div style="float: left; width: 90%;">Delivery</div>
+							<div style="float: right; width: 10%; text-align: end;">:</div>
+						</th>
 						<th class="labelNormal" width="65%" style="padding-bottom: 10px;">
 							<span th:utext="${delivery}">August 2021</span>
 						</th>
 					</tr>
 					<tr>
-						<th class="xlabelBold" width="35%" style="padding-bottom: 10px;">PO. No:</th>
+						<th class="xlabelBold" width="35%" style="padding-bottom: 10px;">
+							<div style="float: left; width: 90%;">PO. No</div>
+							<div style="float: right; width: 10%; text-align: end;">:</div>
+						</th>
 						<th class="labelNormal" width="65%" style="padding-bottom: 10px;">
 							<span th:utext="${PONumber}">1234567 (AUG 2021)</span>
 						</th>
 					</tr>
 					<tr>
-						<th class="xlabelBold" width="35%" style="padding-bottom: 10px;">Valid From:</th>
+						<th class="xlabelBold" width="35%" style="padding-bottom: 10px;">
+							<div style="float: left; width: 90%;">Valid From</div>
+							<div style="float: right; width: 10%; text-align: end;">:</div>
+						</th>
 						<th class="labelNormal" width="65%" style="padding-bottom: 10px;">
 							<span th:utext="${validFrom}">09 Aug 2021</span>
 						</th>
 					</tr>
 					<tr>
-						<th class="xlabelBold" width="35%">Valid To:</th>
+						<th class="xlabelBold" width="35%">
+							<div style="float: left; width: 90%;">Valid To</div>
+							<div style="float: right; width: 10%; text-align: end;">:</div>
+						</th>
 						<th class="labelNormal" width="65%" style="padding-bottom: 10px;">
 							<span th:utext="${validTo}">09 Aug 2021</span>
 						</th>
@@ -201,12 +219,14 @@ tr.noBorder td {
 
 	<table style="margin-top: 1rem;">
 		<tr class="noBorder">
-			<td class="labelBold" width="30%" style="border-right: 1px solid #AFAFAF;">Payment Terms</td>
+			<td class="labelBold" width="30%"
+				style="border-right: 1px solid #AFAFAF;">Payment Terms</td>
 			<td width="65%" th:utext="${paymentTerm}">ZB90 - Within 90 days
 				Due net</td>
 		</tr>
 		<tr class="noBorder">
-			<td class="labelBold" width="30%"  style="border-right: 1px solid #AFAFAF;">Currency</td>
+			<td class="labelBold" width="30%"
+				style="border-right: 1px solid #AFAFAF;">Currency</td>
 			<td width="65%" th:utext="${currencyCode}">USD</td>
 		</tr>
 	</table>
@@ -216,40 +236,47 @@ tr.noBorder td {
 			<td class="centerLabel" width="25%">Description of Goods</td>
 			<td class="centerLabel" width="15%">Term of Delivery</td>
 			<td class="centerLabel" width="16%">Quantity</td>
-			<td class="centerLabel" width="19%">Unit Price (<span th:utext="${currencyCode}"></span>)</td>
-			<td class="centerLabel" width="25%" colspan="2">Amount (<span th:utext="${currencyCode}"></span>)</td>
+			<td class="centerLabel" width="19%">Unit Price (<span
+				th:utext="${currencyCode}"></span>)
+			</td>
+			<td class="centerLabel" width="25%" colspan="2">Amount (<span
+				th:utext="${currencyCode}"></span>)
+			</td>
 		</tr>
 		<tr th:each="salesItem, iter: ${salesItems}">
 			<td style="font-weight: bold;" th:text="${salesItem.productName}"></td>
 			<td th:text="${salesItem.incoterm}"></td>
-			<td>
-				<span th:text="${#numbers.formatDecimal(salesItem.quantity, 0, 'COMMA', 3, 'POINT')}"></span>
+			<td><span
+				th:text="${#numbers.formatDecimal(salesItem.quantity, 0, 'COMMA', 3, 'POINT')}"></span>
 				<span style="margin-left: 0.25rem;" th:text="${salesItem.uomCode}"></span>
 			</td>
-			<td>
-				<span th:text="${#numbers.formatDecimal(salesItem.itemInvoice, 0, 'COMMA', priceDecimalDigits, 'POINT')}"></span><span style="margin-left: 0.5rem;" th:text="${currencyCode}"></span>/<span th:text="${salesItem.uomCode}"></span>
-			</td>
+			<td><span
+				th:text="${#numbers.formatDecimal(salesItem.itemInvoice, 0, 'COMMA', priceDecimalDigits, 'POINT')}"></span><span
+				style="margin-left: 0.5rem;" th:text="${currencyCode}"></span>/<span
+				th:text="${salesItem.uomCode}"></span></td>
 			<td style="border-right: 0px;" th:text="${currencyCode}">USD</td>
-			<td style="text-align: right; border-left: 0px;">
-				<span th:text="${#numbers.formatDecimal(salesItem.itemLevelTotal, 0, 'COMMA', priceDecimalDigits, 'POINT')}"></span>
+			<td style="text-align: right; border-left: 0px;"><span
+				th:text="${#numbers.formatDecimal(salesItem.itemLevelTotal, 0, 'COMMA', priceDecimalDigits, 'POINT')}"></span>
 			</td>
 		</tr>
 		<tr>
 			<td colspan="2" style="border: none"></td>
 			<td style="border: none; text-align: right; font-weight: bold;">TOTAL</td>
-			<td style="border: none; text-align: right;">
-				<span th:text="${#numbers.formatDecimal(totalItemQuantity, 0, 'COMMA', 3, 'POINT')}"></span>
+			<td style="border: none; text-align: right;"><span
+				th:text="${#numbers.formatDecimal(totalItemQuantity, 0, 'COMMA', 3, 'POINT')}"></span>
 			</td>
 			<td style="border-right: 0px;">USD</td>
-			<td style="text-align: right; border-left: 0px;">
-				<span th:text="${#numbers.formatDecimal(totalItemAmount, 0, 'COMMA', priceDecimalDigits, 'POINT')}"></span>
+			<td style="text-align: right; border-left: 0px;"><span
+				th:text="${#numbers.formatDecimal(totalItemAmount, 0, 'COMMA', priceDecimalDigits, 'POINT')}"></span>
 			</td>
 		</tr>
 		<tr>
-			<td colspan="4" style="font-weight: bold;">Total Amount (<span th:text="${currencyCode}"></span>)</td>
+			<td colspan="4" style="font-weight: bold;">Total Amount (<span
+				th:text="${currencyCode}"></span>)
+			</td>
 			<td style="border-right: 0px;" th:text="${currencyCode}">USD</td>
-			<td style="text-align: right; border-left: 0px;">
-				<span th:text="${#numbers.formatDecimal(totalItemAmount, 0, 'COMMA', priceDecimalDigits, 'POINT')}"></span>
+			<td style="text-align: right; border-left: 0px;"><span
+				th:text="${#numbers.formatDecimal(totalItemAmount, 0, 'COMMA', priceDecimalDigits, 'POINT')}"></span>
 			</td>
 		</tr>
 		<tr>
@@ -259,24 +286,25 @@ tr.noBorder td {
 		<tr>
 			<td colspan="4" style="text-align: right;">Total Amount (MYR)</td>
 			<td style="border-right: 0px;">MYR</td>
-			<td style="text-align: right; border-left: 0px;">
-				<span th:if="${!exchangePrice.equals('0.0')}" th:text="${#numbers.formatDecimal(exchangePrice, 0, 'COMMA', priceDecimalDigits, 'POINT')}"></span>
-				<span th:if="${exchangePrice.equals('0.0')}">-</span>
-			</td>
+			<td style="text-align: right; border-left: 0px;"><span
+				th:if="${!exchangePrice.equals('0.0')}"
+				th:text="${#numbers.formatDecimal(exchangePrice, 0, 'COMMA', priceDecimalDigits, 'POINT')}"></span>
+				<span th:if="${exchangePrice.equals('0.0')}">-</span></td>
 		</tr>
 		<tr>
 			<td colspan="2" style="border-right: 0px;">Exchange Rate
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-				<span th:if="${!exchangeRate.equals('0.0')}" th:text="${#numbers.formatDecimal(exchangeRate, 0, 'COMMA', 5, 'POINT')}"></sapn>
-				<span th:if="${exchangeRate.equals('0.0')}">-</sapn>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span
+				th:if="${!exchangeRate.equals('0.0')}"
+				th:text="${#numbers.formatDecimal(exchangeRate, 0, 'COMMA', 5, 'POINT')}"></sapn>
+					<span th:if="${exchangeRate.equals('0.0')}">-</sapn>
 			</td>
 			<td colspan="2" style="text-align: right; border-left: 0px;">Total
 				Amount Payable (MYR)</td>
 			<td style="border-right: 0px;">MYR</td>
-			<td style="text-align: right; border-left: 0px;">
-				<span th:if="${!exchangePrice.equals('0.0')}" th:text="${#numbers.formatDecimal(exchangePrice, 0, 'COMMA', priceDecimalDigits, 'POINT')}"></span>
-				<span th:if="${exchangePrice.equals('0.0')}">-</span>
-			</td>
+			<td style="text-align: right; border-left: 0px;"><span
+				th:if="${!exchangePrice.equals('0.0')}"
+				th:text="${#numbers.formatDecimal(exchangePrice, 0, 'COMMA', priceDecimalDigits, 'POINT')}"></span>
+				<span th:if="${exchangePrice.equals('0.0')}">-</span></td>
 		</tr>
 	</table>
 	<div class="page-break"></div>
@@ -291,27 +319,33 @@ tr.noBorder td {
 		</tr>
 		<tr class="noBorder">
 			<td style="padding-left: 0px;">Beneficiary:</td>
-			<td style="padding-left: 0px;" th:text="${sellerAttention}">PETROLIAM NASIONAL BERHAD</td>
+			<td style="padding-left: 0px;" th:text="${sellerAttention}">PETROLIAM
+				NASIONAL BERHAD</td>
 		</tr>
 		<tr class="noBorder">
 			<td style="padding-left: 0px;">Account No.:</td>
-			<td style="padding-left: 0px;" th:text="${bankAccountNumber}">PETROLIAM NASIONAL BERHAD</td>
+			<td style="padding-left: 0px;" th:text="${bankAccountNumber}">PETROLIAM
+				NASIONAL BERHAD</td>
 		</tr>
 		<tr class="noBorder">
 			<td style="padding-left: 0px;">Bank Name:</td>
-			<td style="padding-left: 0px;" th:text="${bankName}">PETROLIAM NASIONAL BERHAD</td>
+			<td style="padding-left: 0px;" th:text="${bankName}">PETROLIAM
+				NASIONAL BERHAD</td>
 		</tr>
 		<tr class="noBorder">
 			<td style="padding-left: 0px;">Branch Name:</td>
-			<td style="padding-left: 0px;" th:text="${bankBranch}">PETROLIAM NASIONAL BERHAD</td>
+			<td style="padding-left: 0px;" th:text="${bankBranch}">PETROLIAM
+				NASIONAL BERHAD</td>
 		</tr>
 		<tr class="noBorder">
 			<td style="padding-left: 0px;">Bank Address:</td>
-			<td style="padding-left: 0px;" th:text="${bankAddress}">PETROLIAM NASIONAL BERHAD</td>
+			<td style="padding-left: 0px;" th:text="${bankAddress}">PETROLIAM
+				NASIONAL BERHAD</td>
 		</tr>
 		<tr class="noBorder">
 			<td style="padding-left: 0px;">Swift Code:</td>
-			<td style="padding-left: 0px;" th:text="${bankSwift}">PETROLIAM NASIONAL BERHAD</td>
+			<td style="padding-left: 0px;" th:text="${bankSwift}">PETROLIAM
+				NASIONAL BERHAD</td>
 		</tr>
 	</table>
 	<p style="font-size: medium;">Please state your invoice number(s)
@@ -325,7 +359,8 @@ tr.noBorder td {
 	<p>THANK YOU.</p>
 	<p>YOUR FAITHFULLY</p>
 
-	<span style="font-weight: bold;">for PETRONAS Chemicals Marketing (Labuan) Ltd (LL08320)</span>
+	<span style="font-weight: bold;">for PETRONAS Chemicals
+		Marketing (Labuan) Ltd (LL08320)</span>
 	<!-- <span style="font-weight: bold;" th:utext="${buyer}">Name</span> -->
 
 	<br>
