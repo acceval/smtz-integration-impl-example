@@ -48,7 +48,7 @@ steps:
   - task: Bash@3
     inputs:
       targetType: 'inline'
-      script: sed 's/-SNAPSHOT/$(VERSION_SUFFIX)/g' pom.xml && cat pom.xml && pwd && ls -lah && cat /home/vsts/work/1/s/pom.xml
+      script: pwd && ls -lah && sed 's/-SNAPSHOT/$(VERSION_SUFFIX)/g' pom.xml > pom.xml && cat pom.xml
     env:
       VERSION_SUFFIX: $(VERSION_SUFFIX)
 
