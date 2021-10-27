@@ -161,10 +161,10 @@ public abstract class FileHandler<T> {
 			for (String column : columns) {
 
 				if (index < columns.size() - 1) {
-					writer.write(column);
+					writer.write("\"" + column + "\"");
 					writer.write(",");
 				} else {
-					writer.write(column);
+					writer.write("\"" + column + "\"");
 				}
 
 				index++;
