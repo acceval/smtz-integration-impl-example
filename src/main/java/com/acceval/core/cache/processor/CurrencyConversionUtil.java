@@ -1,12 +1,7 @@
 package com.acceval.core.cache.processor;
 
-import com.acceval.core.cache.CacheException;
-import com.acceval.core.cache.impl.ExchangeRateCache;
-import com.acceval.core.cache.impl.MasterDataCache;
-import com.acceval.core.cache.model.Currency;
-import com.acceval.core.cache.model.ExchangeRate;
-import com.acceval.core.microservice.ObjectNotFoundException;
-import com.acceval.core.model.VariableContext;
+import java.time.LocalDateTime;
+import java.util.Collection;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,8 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.Collection;
+import com.acceval.core.cache.CacheException;
+import com.acceval.core.cache.impl.ExchangeRateCache;
+import com.acceval.core.cache.impl.MasterDataCache;
+import com.acceval.core.cache.model.Currency;
+import com.acceval.core.cache.model.ExchangeRate;
+import com.acceval.core.microservice.ObjectNotFoundException;
+import com.acceval.core.model.VariableContext;
 
 @Service("cacheCurrencyConversionUtil")
 @ConditionalOnProperty(name = "microservice.cache", havingValue = "true")
@@ -148,6 +148,15 @@ public class CurrencyConversionUtil {
 		}
 
 		return convertedAmount;
+	}
+
+	public Currency getCurrencyByID(long currencyID) {
+		try {
+			return masterDataCache.getCurrencyByID(currencyID);
+		} catch (Throwable t) {
+			t.printStackTrace();
+		}
+		return null;
 	}
 
 	private long getCurrencyIDByCode(String currencyCode) {
