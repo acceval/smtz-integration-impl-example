@@ -98,9 +98,17 @@ public class FileUtil {
 		DataFormatter formatter = new DataFormatter();
 		PrintStream out = new PrintStream(new FileOutputStream(csvFile), true, "UTF-8");
 		for (Sheet sheet : wb) {
+			boolean firstRow = true;
+			int headerCellSize = 0;
 			for (Row row : sheet) {
+				if (firstRow) {
+					headerCellSize = row.getLastCellNum();
+				}
 				boolean firstCell = true;
 				for (Cell cell : row) {
+					if (cell.getColumnIndex() >= headerCellSize) {
+						break;
+					}
 					if (!firstCell) out.print(',');
 					String text = formatter.formatCellValue(cell);
 
@@ -118,6 +126,7 @@ public class FileUtil {
 					firstCell = false;
 				}
 				out.println();
+				firstRow = false;
 			}
 		}
 
