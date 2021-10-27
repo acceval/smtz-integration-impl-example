@@ -45,14 +45,12 @@ steps:
       artifactsFeeds: 'Thundercloud'
       mavenServiceConnections: 'artifacts-feed-connection'
 
-  - task: AzureCLI@2
+  - task: Bash@3
     inputs:
-      azureSubscription: 'azuredev-spn-connection'
-      scriptType: 'bash'
-      scriptLocation: 'inlineScript'
-      inlineScript: |
-        sed 's/-SNAPSHOT/$(VERSION_SUFFIX)/g' pom.xml
-        cat pom.xml
+      targetType: 'inline'
+      script: sed 's/-SNAPSHOT/$(VERSION_SUFFIX)/g' pom.xml && cat pom.xml
+    env:
+      VERSION_SUFFIX: $(VERSION_SUFFIX)
 
   - task: Maven@3
     inputs:
