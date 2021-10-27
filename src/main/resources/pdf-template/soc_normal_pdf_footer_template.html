@@ -15,19 +15,26 @@
 				    var elements = document.getElementsByClassName(name); 
 				    for (var i = 0; elements && i < elements.length; i++) {             
 				    	elements[i].textContent = value;
-				    }     
+				    }   
+				    var e = document.getElementsByClassName("test");  
 				}      
 				
 				['topage', 'page'].forEach(function(param) {
 					substitute(param);
+					
+				if(getParameterByName("toPage") == getParameterByName("page")) {
+					var elements = document.getElementsByClassName("test");
+					elements[i].textContent = "Hello World";
+				}
 				}); 
 			} 
+			
 		</script>
 	</head> 
 	<body style="border:0; margin: 0; font-family: arial;" onload="substitutePdfVariables()">
-		<table style="border-top: 1px solid black; width: 100%">     
+		<table style="border: none; width: 100%">     
 			<tr>       
-				<td></td>
+				<td class="test"></td>
 				<td style="text-align:right">Page <span class="page"></span> of <span class="topage"></span></td>
 			</tr>
 		</table> 
