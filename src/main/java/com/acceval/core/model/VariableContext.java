@@ -239,16 +239,18 @@ public class VariableContext implements Serializable, Cloneable {
 		WFL_NORMALISED_PRICE(
 				"Violated Normalised Price Rule. Product: [?], Country: [?], Normalised Price [?], Targeted Normalised Floor Price: [?]"),
 		WFL_NORMALISED_ALPHA(
-				"Violated Alpha Rule. Product: [?], Country: [?], Alpha [?], Targeted Alpha: [?]"),
+				"Violated Alpha Rule. Line Item ?, Product: [?], Country: [?], Alpha [?], Targeted Alpha: [?]"),
 		WFL_CONTRIBUTION_MARGIN(
 				"Violated Contribution Margin (Legal Book) Rule. Product [?], Contribution Margin (Legal Book): [?], Targeted Contribution Margin: [?]"),
 		FORMULA_PRICING_ITEM("Violated Contract LOA"), REVISED_CASE("Revised Case"),
 		WFL_NEGOTIATED_DISCOUNT(
 				"Violated Negotiated Discount Control. Product: [?], Negotiated Discount: [?], Target Negotiated Discount Control: [?]"),
 		SPOT_LOA("Violated Spot LOA."), CONTRACT_LOA("Violated Contract LOA."),
-		OVERRIDE_EXCHANGE_RATE("Overwrite Exchange Rate"), WFL_PRICING_MANDATE(
-				"Violated Pricing Mandate Rule. Product: [?], Country: [?], Formula [?], Targeted Formula: [?]"),
-		WFL_PRICING_MANDATE_FORMULA_2(" / Targeted Formula 2: [?]");
+		OVERRIDE_EXCHANGE_RATE("Overwrite Exchange Rate"),
+		WFL_PRICING_MANDATE(
+				"Violated Pricing Mandate Formula Rule. Line Item ?, Product: [?], Country: [?], Formula [?], Targeted Formula: [?]"),
+		WFL_PRICING_MANDATE_FORMULA_2(" / Targeted Formula 2: [?]"), WFL_PRICING_MANDATE_VOLUME(
+				"Violated Pricing Mandate [?] Rule, Line Item ? ? Exceeded. Requested Volume: [?], ? Remaining: [?]");
 
 		private final String msg;
 

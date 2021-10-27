@@ -22,9 +22,11 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -202,6 +204,26 @@ public class MasterDataCache implements CacheIF {
         }
 
         return parents;
+    }
+
+    public Set<String> getChildProducts(long productID) {
+        Set<String> childs = new HashSet<>();
+
+        String productIDString = String.valueOf(productID);
+        childs.add(productIDString);
+
+        String companyID = PrincipalUtil.getCompanyID().toString();
+        Map<String, String> productParents = (Map<String, String>) getTopMap(companyID, KEY_PRODUCT_PARENT).get(KEY_DEFAULT);
+
+        for (Map.Entry<String, String> entry : productParents.entrySet()) {
+            if (entry.getValue().equals(productIDString)) {
+                childs.add(entry.getKey());
+
+                childs.addAll(getChildProducts(Long.parseLong(entry.getKey())));
+            }
+        }
+
+        return childs;
     }
 
     /**
@@ -551,6 +573,10 @@ public class MasterDataCache implements CacheIF {
         }
 
         buffer.append("Parent Product : " + getProductParentToTop(202103230000472l));
+//        buffer.append("Parent Product : " + getProductParentToTop(202109040001894l));
+        buffer.append("\n");
+
+        buffer.append("Child Product : " + getChildProducts(202103230000158l));
 //        buffer.append("Parent Product : " + getProductParentToTop(202109040001894l));
         buffer.append("\n");
 

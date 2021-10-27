@@ -45,6 +45,15 @@ steps:
       artifactsFeeds: 'Thundercloud'
       mavenServiceConnections: 'artifacts-feed-connection'
 
+  - task: AzureCLI@2
+    inputs:
+      azureSubscription: 'azuredev-spn-connection'
+      scriptType: 'bash'
+      scriptLocation: 'inlineScript'
+      inlineScript: |
+        sed 's/-SNAPSHOT/$(VERSION_SUFFIX)/g' pom.xml
+        cat pom.xml
+
   - task: Maven@3
     inputs:
       mavenPomFile: 'pom.xml'
@@ -65,6 +74,6 @@ steps:
 
   - task: PublishPipelineArtifact@1
     inputs:
-      targetPath: '$(Pipeline.Workspace)/s/target/ms-util-0.0.1-SNAPSHOT.jar'
+      targetPath: '$(Pipeline.Workspace)/s/target/ms-util-0.0.1$(VERSION_SUFFIX).jar'
       artifact: 'drop'
       publishLocation: 'pipeline'
