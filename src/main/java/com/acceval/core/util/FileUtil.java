@@ -100,31 +100,45 @@ public class FileUtil {
 		for (Sheet sheet : wb) {
 			boolean firstRow = true;
 			int headerCellSize = 0;
+			
+			for (int c = sheet.getFirstRowNum(); c <= sheet.getLastRowNum(); c++) {
+				boolean isRowEmpty = isRowEmpty(sheet.getRow(c));
+				if (isRowEmpty) {
+					sheet.getRow(c).setZeroHeight(true);
+				    sheet.removeRow(sheet.getRow(c));
+				}
+			}
+			
 			for (Row row : sheet) {
 				if (firstRow) {
 					headerCellSize = row.getLastCellNum();
 				}
 				boolean firstCell = true;
-				for (Cell cell : row) {
-					if (cell.getColumnIndex() >= headerCellSize) {
-						break;
-					}
-					if (!firstCell) out.print(',');
-					String text = formatter.formatCellValue(cell);
-
-					if (CellType.NUMERIC.equals(cell.getCellTypeEnum())) {
-						String cellValue = null;
-						if (HSSFDateUtil.isCellDateFormatted(cell)) {
-							DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-							Date date = cell.getDateCellValue();
-							cellValue = df.format(date);
-							text = cellValue;
+				
+				if (row.getCell(0) != null) {
+					for (int cn=0; cn<headerCellSize; cn++) {
+						if (cn >= headerCellSize) {
+							break;
 						}
-					}
+						Cell cell = row.getCell(cn, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
+						if (!firstCell) out.print(',');
+						String text = formatter.formatCellValue(cell);
 
-					out.print("\"" + text + "\"");
-					firstCell = false;
+						if (CellType.NUMERIC.equals(cell.getCellTypeEnum())) {
+							String cellValue = null;
+							if (HSSFDateUtil.isCellDateFormatted(cell)) {
+								DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+								Date date = cell.getDateCellValue();
+								cellValue = df.format(date);
+								text = cellValue;
+							}
+						}
+
+						out.print("\"" + text + "\"");
+						firstCell = false;
+					}
 				}
+				
 				out.println();
 				firstRow = false;
 			}
@@ -133,6 +147,17 @@ public class FileUtil {
 		wb.close();
 
 		return Paths.get(csvFile);
+	}
+	
+	private static boolean isRowEmpty(Row row) {
+	    for (int c = row.getFirstCellNum(); c < row.getLastCellNum(); c++) {
+	        Cell cell = row.getCell(c);
+	        if (cell != null) {
+		        if (cell != null && Cell.CELL_TYPE_BLANK != cell.getCellType()) 
+		            return false;
+	        }
+	    }
+	    return true;
 	}
 
 	public static Path convertCsvToExcel(Path path) throws IOException, InvalidFormatException {
