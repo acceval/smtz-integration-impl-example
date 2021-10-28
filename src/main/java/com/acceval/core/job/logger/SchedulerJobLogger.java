@@ -13,4 +13,6 @@ public interface SchedulerJobLogger {
 	void logError(Long schedulerJobLogId, String message);
 	
 	void logError(Long schedulerJobLogId, Exception exception);
+	
+	void setServiceClientName(String clientName);
 }
