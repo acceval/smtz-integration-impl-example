@@ -153,7 +153,7 @@ public class FileUtil {
 	    for (int c = row.getFirstCellNum(); c < row.getLastCellNum(); c++) {
 	        Cell cell = row.getCell(c);
 	        if (cell != null) {
-		        if (cell != null && Cell.CELL_TYPE_BLANK != cell.getCellType()) 
+		        if (cell != null && !CellType.BLANK.equals(cell.getCellTypeEnum())) 
 		            return false;
 	        }
 	    }
