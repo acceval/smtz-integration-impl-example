@@ -125,6 +125,10 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String CT_SPOT_LOA_ASSIGNMENT = "SPOT_LOA_ASSIGNMENT";
 	public static final String CT_PRICING_MANDATE = "LONG_TERM_DEAL_PRICING_MANDATE";
 	public static final String CT_APPROVER_DELEGATION = "APPROVER_DELEGATION";
+	public static final String CT_TENDER_PRICE_FORMULA = "TENDER_PRICE_FORMULA";
+	public static final String CT_TENDER_PRICE_FIXED_FIRM = "TENDER_PRICE_FIXED_FIRM";
+	
+	
 
 	// Condition Table Fields / context key
 	public static final String CONDFIELDCODE_NORMALISE_FOR_FLOOR_PRICE = "NORMALISE_FOR_FLOOR_PRICE";

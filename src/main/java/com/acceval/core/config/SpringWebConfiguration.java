@@ -9,17 +9,20 @@ import com.acceval.core.security.PrincipalProviderHandlerInterceptor;
 
 @Configuration
 public class SpringWebConfiguration extends WebMvcConfigurerAdapter {
-	private final PrincipalProviderHandlerInterceptor interceptor;
+	
+	private final PrincipalProviderHandlerInterceptor  principalInterceptor;
 	private final AuditLogHandlerInterceptor auditLogInterceptor;
 
-	public SpringWebConfiguration(PrincipalProviderHandlerInterceptor interceptor, AuditLogHandlerInterceptor auditLogInterceptor) {
-		this.interceptor = interceptor;
+	public SpringWebConfiguration(PrincipalProviderHandlerInterceptor principalInterceptor, AuditLogHandlerInterceptor auditLogInterceptor) {
+		
+		this.principalInterceptor = principalInterceptor;
 		this.auditLogInterceptor = auditLogInterceptor;
 	}
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(interceptor);
+		
+		registry.addInterceptor(principalInterceptor);
 		registry.addInterceptor(auditLogInterceptor);
 	}
 }
