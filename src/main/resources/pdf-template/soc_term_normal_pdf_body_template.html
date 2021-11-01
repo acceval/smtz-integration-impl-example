@@ -90,8 +90,8 @@
                         <td width="65%" th:text="${PONumber}">Agreement Number</td>
                     </tr>
                     <tr>
-                        <td class="labelBold" width="35%">AGREEMENT COMMENCEMENT DATE :</td>
-                        <td width="65%" th:text="${agreementCommencementDate}">Agreement Commencement Date</td>
+                        <td class="labelBold" width="35%">SALES ORDER CONFIRMATION NUMBER & DATE :</td>
+                        <td width="65%" th:text="${socNumberAndDate}">Agreement Commencement Date</td>
                     </tr>
                     <tr>
                         <td class="labelBold" width="35%">SELLER</td>
@@ -133,13 +133,13 @@
                         <th class="labelBold" style="text-align: center;">DESTINATION PORT / CITY</th>
                     </tr>
                     <tr th:each="orderItem, iter: ${orderItems}" style="text-align: center;">
-                        <td th:text="${orderItem.productName}">Product</td>
+                        <td style="font-weight: bold;" th:text="${orderItem.productName}">Product</td>
                         <td><span th:text="${#numbers.formatDecimal(orderItem.quantity, 0, 'COMMA', 3, 'POINT')}"></span>
                             <span style="margin-left: 0.25rem;" th:text="${orderItem.uomCode}"></span>
                         </td>
                         <td style="padding: 0.5rem;" th:utext="${orderItem.containerSize}">Container Size</td>
                         <td><span th:text="${#numbers.formatDecimal(orderItem.invoicePrice, 0, 'COMMA', priceDecimalDigits, 'POINT')}"></span><span style="margin-left: 0.5rem;" th:text="${currencyCode}"></span>/<span th:text="${orderItem.uomCode}"></span></td>
-                        <td><span th:text="${orderItem.destinationCountry}"></span></td>
+                        <td><span th:text="${#strings.capitalizeWords(#strings.toLowerCase(orderItem.destinationCountry))}"></span></td>
                     </tr>
                 </table>
                 <table style="margin-top: 2rem;">
@@ -183,7 +183,7 @@
                     </tr>
                     <tr>
                         <td width="30%">OTHER TERMS & CONDITIONS</td>
-                        <td width="70%" th:utext="${termsConditions}">Other terms and conditions</td>
+                        <td style="page-break-inside: avoid;" width="70%" th:utext="${termsConditions}">Other terms and conditions</td>
                     </tr>
                 </table>
                 <!-- <div class="page-break"></div> -->
