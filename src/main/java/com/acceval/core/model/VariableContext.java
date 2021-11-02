@@ -112,6 +112,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String CT_PRODUCT_LIST_PRICE_BY_COUNTRY = "GRADE_LIST_PRICE_BY_COUNTRY";
 	public static final String CT_APPLICATION_ADJUSTMENT = "APPLICATION_ADJUSTMENT";
 	public static final String CT_NORMALISED_PRICE = "STANDARD_FLOOR_PRICE";
+	public static final String CT_FLOOR_PRICE_BASELINE = "FLOOR_PRICE_BASELINE";
 	public static final String CT_NORMALISED_ALPHA = "STANDARD_FLOOR_ALPHA";
 	public static final String CT_RULECONTRIBUTIONMARGIN = "CONTRIBUTION_MARGIN_RULES";
 	public static final String CT_NORMALISED_PRICE_FOB = "NORMALISED_PRICE_FOB";
