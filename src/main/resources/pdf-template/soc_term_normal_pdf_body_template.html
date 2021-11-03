@@ -70,7 +70,7 @@
         <script>
             function setBodyHeight() {
                 var mainBody = document.querySelectorAll('.main-body')[0];
-                var pageHeight = 1130;
+                var pageHeight = 2260;
                 var mainBodyHeight = (mainBody.clientHeight) /  2;
                 var totalPage = Math.ceil(mainBodyHeight / pageHeight);
                 var totalHeight = totalPage * pageHeight;
@@ -161,7 +161,7 @@
                     </tr>
                     <tr>
                         <td width="30%">PAYMENT</td>
-                        <td width="70%" th:text="${payment}" style="white-space: pre-line;">
+                        <td width="70%" th:text="${payment}" style="white-space: pre-line;">JP
                         </td>
                     </tr>
                     <tr>
