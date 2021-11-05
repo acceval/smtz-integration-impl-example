@@ -54,8 +54,7 @@
 		}
 
         .main-body {
-            display: flex;
-            display: -webkit-box;
+            display: block;
 
             flex-direction: column;
             -webkit-box-orient: vertical;
@@ -64,6 +63,12 @@
             -webkit-box-pack: justify;
 
             position: relative;
+        }
+        
+        .bottom-section {
+			bottom: 0;
+            position: absolute;
+            width: 100%;
         }
 
 		</style>
@@ -183,7 +188,7 @@
                     </tr>
                     <tr>
                         <td width="30%">OTHER TERMS & CONDITIONS</td>
-                        <td style="page-break-inside: avoid; page-break-after: auto;" width="70%" th:utext="${termsConditions}">Other terms and conditions</td>
+                        <td style="break-inside: avoid; page-break-inside: avoid;" width="70%" th:utext="${termsConditions}">Other terms and conditions</td>
                     </tr>
                 </table>
                 <!-- <div class="page-break"></div> -->
