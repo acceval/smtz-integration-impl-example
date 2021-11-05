@@ -102,6 +102,9 @@ public class FileUtil {
 			int headerCellSize = 0;
 			
 			for (int c = sheet.getFirstRowNum(); c <= sheet.getLastRowNum(); c++) {
+				if (sheet.getRow(c) == null) {
+					continue;
+				}
 				boolean isRowEmpty = isRowEmpty(sheet.getRow(c));
 				if (isRowEmpty) {
 					sheet.getRow(c).setZeroHeight(true);
@@ -150,6 +153,9 @@ public class FileUtil {
 	}
 	
 	private static boolean isRowEmpty(Row row) {
+		if (row == null) {
+			return true;
+		}
 	    for (int c = row.getFirstCellNum(); c < row.getLastCellNum(); c++) {
 	        Cell cell = row.getCell(c);
 	        if (cell != null) {
