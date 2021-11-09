@@ -93,7 +93,7 @@ tr.noBorder td {
 	<table style="margin-top: 2rem; border: none;">
 		<tr>
 			<th width="31%"
-				style="border: 1px solid #AFAFAF; vertical-align: text-top">
+				style="border: 1px solid #AFAFAF; vertical-align: text-top; position: relative;">
 				<table style="border: none;">
 					<tr>
 						<th class="xlabelBold" colspan="2">Customer: <span
@@ -108,7 +108,7 @@ tr.noBorder td {
 							NO .1 JALAN 12/10 TAMAN KOPERASI POLIS FASA 1 68100 MALAYSIA</th>
 					</tr>
 				</table>
-				<table style="border: none;">
+				<table style="border: none; position: absolute; bottom: 0;">
 					<tr>
 						<th class="labelNormal" width="35%">Telephone:</th>
 						<th class="labelNormal" width="65%" th:utext="${buyerTelephoneNo}">0361872936</th>
@@ -121,7 +121,7 @@ tr.noBorder td {
 			</th>
 			<th width="1%" style="border: none;"></th>
 			<th width="31%"
-				style="border: 1px solid #AFAFAF; vertical-align: text-top;">
+				style="border: 1px solid #AFAFAF; vertical-align: text-top; position: relative;">
 				<table style="border: none;">
 					<tr>
 						<th class="xlabelBold" colspan="2">Delivery To: <span
@@ -132,19 +132,19 @@ tr.noBorder td {
 						<th class="xlabelBold" colspan="2" th:utext="${buyerName}">
 							UNIPLAST POLYMERS SDN BHD</th>
 					</tr>
-					<tr style="height: 160px; vertical-align: text-top;">
+					<tr style="height: 160px; max-height: 160px; vertical-align: text-top;">
 						<th class="labelNormal" colspan="2" th:utext="${buyerAddress}">
 							NO .1 JALAN 12/10 TAMAN KOPERASI POLIS FASA 1 68100 MALAYSIA</th>
 					</tr>
 				</table>
-				<table style="border: none;">
+				<table style="border: none; position: absolute; bottom: 0;">
 					<tr>
 						<th class="labelNormal" width="35%">Telephone:</th>
 						<th class="labelNormal" width="65%" th:utext="${buyerTelephoneNo}">0361872936</th>
 					</tr>
 					<tr>
-						<th class="labelNormal" width="35%"></th>
-						<th class="labelNormal" width="65%"></th>
+						<th style="visibility: hidden;" class="labelNormal" width="35%">1</th>
+						<th style="visibility: hidden;" class="labelNormal" width="65%">1</th>
 					</tr>
 				</table>
 			</th>
