@@ -62,8 +62,8 @@
 				{{#each context.TABLE_COLUMN}}
 				<th class="labelBold" style="text-align: center;">{{this}}</th> 
 				{{/each}}		
+				<th class="labelBold" style="text-align: center;">VALID FROM</th>
 				<th class="labelBold" style="text-align: center;">VALID TO</th>
-				<th class="labelBold" style="text-align: center;">VALID FROM</th>	
 				<th class="labelBold" style="text-align: center;">STATUS</th>	
 			</tr>
 			{{#context.TABLE_CONTENT}}
@@ -71,8 +71,8 @@
 				{{#valueList}}
 				<td>{{this}}</td>
 				{{/valueList}}
-				<td>{{validTo}}</td>
 				<td>{{validFrom}}</td>
+				<td>{{validTo}}</td>
 				<td>{{status}}</td>
 			</tr>
 			{{/context.TABLE_CONTENT}}

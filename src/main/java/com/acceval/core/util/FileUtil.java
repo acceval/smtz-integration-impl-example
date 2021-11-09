@@ -194,6 +194,7 @@ public class FileUtil {
 		Sheet sheet = wb.createSheet();
 		// read from file
 		String line = br.readLine();
+		CellStyle builtInShortDate = wb.createCellStyle();
 		for (int rows = 0; line != null; rows++) {
 			// create one row per line
 			Row row = sheet.createRow(rows);
@@ -213,7 +214,6 @@ public class FileUtil {
 				if (isValidDate(item)) {
 					try {
 						Date itemDate = DateUtils.parseDateStrictly(item, STD_DATEFORMAT);
-						CellStyle builtInShortDate = wb.createCellStyle();
 						cell.setCellStyle(builtInShortDate);
 						builtInShortDate.setDataFormat((short) 14);
 						cell.setCellValue(itemDate);
