@@ -22,6 +22,7 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.openxml4j.util.ZipSecureFile;
 import org.apache.poi.poifs.filesystem.NPOIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -92,6 +93,7 @@ public class FileUtil {
 			isXssf = false;
 
 		} else {
+			ZipSecureFile.setMinInflateRatio(0);
 			wb = new XSSFWorkbook(new File(path.toString()));
 			isXssf = true;
 		}
