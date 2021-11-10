@@ -87,6 +87,9 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String NORMALISED_INCOTERM = "NORMALISED_INCOTERM";
 	public static final String MARKET_STRUCTURE_REGION = "MARKET_STRUCTURE_REGION";
 	public static final String REFERENCE_MARKET_PRICE = "REFERENCE_MARKET_PRICE";
+	public static final String NORMALISED_SHIPPING_CONDITION = "NORMALISED_SHIPPING_CONDITION";
+	public static final String NORMALISED_QUANTITY = "NORMALISED_QUANTITY";
+	public static final String NORMALISED_CONTAINER_SIZE = "NORMALISED_CONTAINER_SIZE";
 
 	// formula exchange rate
 	public static final String FORMULA_EXCHANGE_RATE = "formulaExchangeRate";
