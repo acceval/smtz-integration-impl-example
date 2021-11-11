@@ -146,7 +146,7 @@ Kg</td>
                     </tr>
                     <tr>
                     	<td colspan="5" class="labelBold" style="text-align: end;">TOTAL</td>
-                    	<td style="text-align: right;"><span th:text="${currencyCode}"> </span><span th:text="${#numbers.formatDecimal(totalPrice, 0, 'COMMA', priceDecimalDigits, 'POINT')}"></td>
+                    	<td style="text-align: right;"><span th:text="${currencyCode}"></span> <span th:text="${#numbers.formatDecimal(totalPrice, 0, 'COMMA', priceDecimalDigits, 'POINT')}"></td>
                     </tr>
                 </table>
                 <table style="margin-top: 2rem;">
@@ -184,7 +184,7 @@ Kg</td>
                     </tr>
                     <tr>
                         <td width="30%">TOTAL PRICE</td>
-                        <td width="70%"><span th:text="${currencyCode}"> </span><span style="margin-left: 0.5rem;" th:text="${#numbers.formatDecimal(totalPrice, 0, 'COMMA', priceDecimalDigits, 'POINT')}"></td>
+                        <td width="70%"><span th:text="${currencyCode}"></span><span style="margin-left: 0.5rem;" th:text="${#numbers.formatDecimal(totalPrice, 0, 'COMMA', priceDecimalDigits, 'POINT')}"></td>
                     </tr>
                     <tr>
                         <td width="30%">PAYMENT</td>
@@ -228,19 +228,19 @@ Kg</td>
                             <td colspan="3" style="height: 5rem;">&nbsp;</td>
                         </tr>
                         <tr class="noBorder">
-                            <td style="width: 45%">Signature</td>
+                            <td style="width: 45%">Signature: </td>
                             <td style="width: 10%"></td>
-                            <td style="width: 45%">Signature</td>
+                            <td style="width: 45%">Signature: </td>
                         </tr>
                         <tr class="noBorder">
-                            <td style="width: 45%">Name</td>
+                            <td style="width: 45%">Name: </td>
                             <td style="width: 10%"></td>
-                            <td style="width: 45%">Name</td>
+                            <td style="width: 45%">Name: </td>
                         </tr>
                         <tr class="noBorder">
-                            <td style="width: 45%">Designation</td>
+                            <td style="width: 45%">Designation: </td>
                             <td style="width: 10%"></td>
-                            <td style="width: 45%">Designation</td>
+                            <td style="width: 45%">Designation: </td>
                         </tr>
                     </table>
                 </div>
