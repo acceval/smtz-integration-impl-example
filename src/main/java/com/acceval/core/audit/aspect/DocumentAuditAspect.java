@@ -78,12 +78,52 @@ public class DocumentAuditAspect {
 					String file = uri.substring(lastIndex + 1);
 					logRequest.setInfo1(file);
 				}
-			}
+			}			
+		} else if (auditDocument.contentType().equals("CUSTOM")) {
 			
+			logRequest.setInfo1(method.getName());
+			
+		} else if (auditDocument.contentType().equals("TEMPLATE")) {
+			
+			if (args.length > 1 && args[0] instanceof String 
+					&& args[1] instanceof String) {
+				
+				String fileFunction = (String) args[0];
+				String filename = (String) args[1];
+				logRequest.setInfo1("Template");
+				logRequest.setInfo2(fileFunction);
+				logRequest.setInfo3(filename);
+			} else if ( args.length > 0 && args[0] instanceof String) {
+				String fileFunction = (String) args[0];
+				logRequest.setInfo1("Template");
+				logRequest.setInfo2(fileFunction);				
+			}
+		} else if (auditDocument.contentType().equals("RECORD")) {
+			
+			String name = signature.getDeclaringTypeName();
+			
+			if ( args.length > 0 && args[0] instanceof String) {
+				String fileFunction = (String) args[0];
+				
+				logRequest.setInfo1("Record");
+				if (name != null) {
+					if (name.indexOf("ConditionRecordController") != -1) {
+						logRequest.setInfo2("Condition Record");
+					} else if (name.indexOf("PricingPowerController") != -1) {
+						logRequest.setInfo2("Pricing Power");
+					} else if (name.indexOf("AllocationRecordController") != -1) {
+						logRequest.setInfo2("Allocation Record");
+					} else if (name.indexOf("AllocationReportController") != -1) {
+						logRequest.setInfo2("Allocation Report");
+					}					
+				}
+				
+				logRequest.setInfo3(fileFunction);
+			}
 		}
 
 	    proceed = joinPoint.proceed();
-	        
+
 		/** other info */
 		CurrentUser currentUser = PrincipalUtil.getCurrentUser();
 		if (currentUser != null && currentUser.getId() != null) {

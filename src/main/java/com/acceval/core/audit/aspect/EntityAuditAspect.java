@@ -123,20 +123,25 @@ public class EntityAuditAspect {
         	Object[] args = joinPoint.getArgs();
         	
         	if (args.length > 0) {
-        		Long[] ids = (Long[]) args[0];
-        		
-        		String idText = "";
-        		boolean isFirst = true;
-        		for (Long id: ids) {
-        			if (!isFirst) {
-        				idText = idText + ", " + id.toString();
-        			} else {
-        				idText = id.toString();
-        			}
-        			isFirst = false;
+        		if (args[0] instanceof Long) {
+        			Long id = (Long) args[0];
+        			logRequest.setInfo2(id.toString());
+        		} else {
+	        		Long[] ids = (Long[]) args[0];
+	        		
+	        		String idText = "";
+	        		boolean isFirst = true;
+	        		for (Long id: ids) {
+	        			if (!isFirst) {
+	        				idText = idText + ", " + id.toString();
+	        			} else {
+	        				idText = id.toString();
+	        			}
+	        			isFirst = false;
+	        		}
+	        		
+	        		logRequest.setInfo2(idText);
         		}
-        		
-        		logRequest.setInfo2(idText);	        		
         	}
         }
         	
