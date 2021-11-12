@@ -141,7 +141,7 @@
 				</tr>
 				<tr th:each="orderItem, iter: ${orderItems}" style="text-align: center;">
 					<td style="font-weight: bold; text-align: left;">
-						<span th:text="${orderItem.productName}">Product</span>
+						<span th:text="${#strings.capitalizeWords(#strings.toLowerCase(orderItem.productName))}">Product</span>
 						<span>
 							<table style="border: none; margin-top: 0;">
 								<tr th:each="product, iter: ${orderItem.productName2}">
