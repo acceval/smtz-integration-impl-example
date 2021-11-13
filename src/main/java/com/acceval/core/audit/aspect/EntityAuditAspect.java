@@ -3,7 +3,6 @@ package com.acceval.core.audit.aspect;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -12,15 +11,13 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.javers.core.Changes;
-import org.javers.core.Javers;
-import org.javers.core.diff.Diff;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import com.acceval.core.amqp.AuditLogQueueSender;
+import com.acceval.core.amqp.AuditTrailChange;
 import com.acceval.core.amqp.AuditTrailRequest;
 import com.acceval.core.audit.AuditEntity;
 import com.acceval.core.audit.AuditType;
@@ -31,14 +28,11 @@ import com.acceval.core.util.ClassUtil;
 
 @Aspect
 @Component
-public class EntityAuditAspect {
+public class EntityAuditAspect extends CompareAspect {
 	
 	@Autowired
 	private GenericCommonController genericCommonController;
-	
-	@Autowired
-	private Javers javers;
-	
+		
 	@Autowired
 	private AuditLogQueueSender auditLogQueueSender;
 	
@@ -90,10 +84,10 @@ public class EntityAuditAspect {
 	        
 	        if (queryObject != null && proceed != null) {
 	        	
-	        	List<String> changes = this.compareChanges(queryObject, proceed);
+	        	List<AuditTrailChange> changes = this.compareChanges(queryObject, proceed);
 	    		
 	    		if (changes.size() > 0) {
-	    			logRequest.setChangedValues(changes);
+	    			logRequest.setAuditTrailChanges(changes);
 	    		}
 	        } 
         	
@@ -165,18 +159,4 @@ public class EntityAuditAspect {
         return proceed;
     }
     
-    
-    public List<String> compareChanges(Object before, Object after) {
-
-    	List<String> values = new ArrayList<String>();
-    	Diff diff = javers.compare(before, after);	        	
-    	Changes changes = diff.getChanges();
-		changes.forEach(change -> {	    			
-			values.add(change.toString())
-			;
-		});
-		
-		return values;
-    }
-
 }

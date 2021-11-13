@@ -26,7 +26,8 @@ public class AuditTrailRequest implements Serializable {
 	private String info2;
 	private String info3;
 	
-	private List<String> changedValues;
+//	private List<String> changedValues;
+	private List<AuditTrailChange> auditTrailChanges;
 
 	
 	public LocalDateTime getLogTime() {
@@ -133,12 +134,12 @@ public class AuditTrailRequest implements Serializable {
 		this.info3 = info3;
 	}
 
-	public List<String> getChangedValues() {
-		return changedValues;
+	public List<AuditTrailChange> getAuditTrailChanges() {
+		return auditTrailChanges;
 	}
 
-	public void setChangedValues(List<String> changedValues) {
-		this.changedValues = changedValues;
+	public void setAuditTrailChanges(List<AuditTrailChange> auditTrailChanges) {
+		this.auditTrailChanges = auditTrailChanges;
 	}
 
 }
