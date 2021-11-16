@@ -137,6 +137,11 @@ public abstract class FileHandler<T> {
 		Writer writer = null;
 
 		try {
+			
+			if (!Files.exists(templateFile.getParent())) {
+				
+				Files.createDirectories(templateFile.getParent());				
+			}
 
 			writer = new FileWriter(templateFile.toFile());
 			Field[] fields = this.templateClass.getDeclaredFields();
@@ -156,10 +161,10 @@ public abstract class FileHandler<T> {
 			for (String column : columns) {
 
 				if (index < columns.size() - 1) {
-					writer.write(column);
+					writer.write("\"" + column + "\"");
 					writer.write(",");
 				} else {
-					writer.write(column);
+					writer.write("\"" + column + "\"");
 				}
 
 				index++;

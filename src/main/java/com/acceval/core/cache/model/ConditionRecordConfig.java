@@ -31,6 +31,7 @@ public class ConditionRecordConfig implements Serializable, TaskAssignmentInputI
 	private String code;
 
 	private ConditionRecordType type;
+    private DeciderType deciderType;
 	private DateType dateType;
 	private boolean hasValidDate;
 	private String validatorClass;
@@ -41,6 +42,7 @@ public class ConditionRecordConfig implements Serializable, TaskAssignmentInputI
 
 	private Set<ConditionFieldWrapper> conditionFieldWrappers;
 	private Set<ConditionValueConfig> conditionValueConfigs;
+    private Set<ConditionTableInputParameter> conditionTableInputParameters;
 
 	private TaskAssignment taskAssignment;
 	private String taskAssignParam1;
@@ -183,4 +185,20 @@ public class ConditionRecordConfig implements Serializable, TaskAssignmentInputI
 	public void setShortMsg(String shortMsg) {
 		this.shortMsg = shortMsg;
 	}
+
+    public DeciderType getDeciderType() {
+        return deciderType;
+    }
+
+    public void setDeciderType(DeciderType deciderType) {
+        this.deciderType = deciderType;
+    }
+
+    public Set<ConditionTableInputParameter> getConditionTableInputParameters() {
+        return conditionTableInputParameters;
+    }
+
+    public void setConditionTableInputParameters(Set<ConditionTableInputParameter> conditionTableInputParameters) {
+        this.conditionTableInputParameters = conditionTableInputParameters;
+    }
 }

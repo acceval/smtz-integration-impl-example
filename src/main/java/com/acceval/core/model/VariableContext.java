@@ -43,6 +43,8 @@ public class VariableContext implements Serializable, Cloneable {
 	public final static String PLANT = "PLANT";
 	public final static String BOM = "BOM";
 	public final static String FORMULA = "FORMULA";
+	public final static String RULE_FORMULA = "RULE_FORMULA";
+	public final static String RULE_FORMULA_2 = "RULE_FORMULA_2";
 	public final static String DOCUMENT_CATEGORY = "DOCUMENTCATEGORY";
 	public final static String PACKAGING = "PACKAGING";
 	public final static String PAYMENT_TERM = "PAYMENTTERM";
@@ -57,6 +59,16 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String ALPHA_ADJUSTMENT = "ALPHA_ADJUSTMENT";
 	public static final String ALPHA_2 = "ALPHA_2";
 	public static final String SALES_OFFICE = "SALES_OFFICE";
+	public static final String MANDATE_ALPHA = "ALPHA";
+	public static final String PRICING_TECHNIQUE_CODE = "PRICING_TECHNIQUE_CODE";
+	public static final String PRICE_MODEL_CODE = "PRICE_MODEL_CODE";
+	public static final String MARGIN_MODEL_CODE = "MARGIN_MODEL_CODE";
+	public static final String OVERWRITE_ALPHA_FLAG = "OVERWRITE_ALPHA_FLAG";
+	public static final String OVERWRITE_EXECUTION_ALPHA_FLAG = "OVERWRITE_EXECUTION_ALPHA_FLAG";
+	public static final String OVERWRITE_EXCHANGE_RATE = "OVERWRITE_EXCHANGE_RATE";
+	public static final String OVERWRITE_EXCHANGE_RATE_CTS = "OVERWRITE_EXCHANGE_RATE_CTS";
+	public static final String OVERWRITE_CURRENCY_FROM = "OVERWRITE_CURRENCY_FROM";
+	public static final String OVERWRITE_CURRENCY_TO = "OVERWRITE_CURRENCY_TO";
 
 	public static final String DEFAULT_DATE_FORMAT = Criterion.DEFAULT_DATE_FORMAT;
 	public static final String DEFAULT_DATE_TIME_FORMAT = Criterion.DEFAULT_DATE_TIME_FORMAT;
@@ -68,6 +80,8 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String CONTEXTKEY_EXCHANGE_RATE_TO_OVERRIDE = "EXCHANGERATETOOVERRIDE";
 	public final static String CONTEXTKEY_MARKET_STRUCTURE_REGION = "MARKET_STRUCTURE_REGION";
 	public static final String CONTEXTCONFIGCODE_PRICESTATUS = "PRICESTATUS";
+	public static final String CONTAINER_SIZE = "CONTAINER_SIZE";
+	public static final String SHIPPING_CONDITION = "SHIPPING_CONDITION";
 
 	// normalisation
 	public static final String NORMALISED_PACKAGING = "NORMALISED_PACKAGING";
@@ -75,6 +89,9 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String NORMALISED_INCOTERM = "NORMALISED_INCOTERM";
 	public static final String MARKET_STRUCTURE_REGION = "MARKET_STRUCTURE_REGION";
 	public static final String REFERENCE_MARKET_PRICE = "REFERENCE_MARKET_PRICE";
+	public static final String NORMALISED_SHIPPING_CONDITION = "NORMALISED_SHIPPING_CONDITION";
+	public static final String NORMALISED_QUANTITY = "NORMALISED_QUANTITY";
+	public static final String NORMALISED_CONTAINER_SIZE = "NORMALISED_CONTAINER_SIZE";
 
 	// formula exchange rate
 	public static final String FORMULA_EXCHANGE_RATE = "formulaExchangeRate";
@@ -100,6 +117,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String CT_PRODUCT_LIST_PRICE_BY_COUNTRY = "GRADE_LIST_PRICE_BY_COUNTRY";
 	public static final String CT_APPLICATION_ADJUSTMENT = "APPLICATION_ADJUSTMENT";
 	public static final String CT_NORMALISED_PRICE = "STANDARD_FLOOR_PRICE";
+	public static final String CT_FLOOR_PRICE_BASELINE = "FLOOR_PRICE_BASELINE";
 	public static final String CT_NORMALISED_ALPHA = "STANDARD_FLOOR_ALPHA";
 	public static final String CT_RULECONTRIBUTIONMARGIN = "CONTRIBUTION_MARGIN_RULES";
 	public static final String CT_NORMALISED_PRICE_FOB = "NORMALISED_PRICE_FOB";
@@ -111,6 +129,12 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String CT_PACKAGINGCOST = "PACKAGING_COST";
 	public static final String CT_COUNTRYSTANDARDDEEMEDFREIGHT = "STANDARD_DEEMED_FREIGHT";
 	public static final String CT_SPOT_LOA_ASSIGNMENT = "SPOT_LOA_ASSIGNMENT";
+	public static final String CT_PRICING_MANDATE = "LONG_TERM_DEAL_PRICING_MANDATE";
+	public static final String CT_APPROVER_DELEGATION = "APPROVER_DELEGATION";
+	public static final String CT_TENDER_PRICE_FORMULA = "TENDER_PRICE_FORMULA";
+	public static final String CT_TENDER_PRICE_FIXED_FIRM = "TENDER_PRICE_FIXED_FIRM";
+	
+	
 
 	// Condition Table Fields / context key
 	public static final String CONDFIELDCODE_NORMALISE_FOR_FLOOR_PRICE = "NORMALISE_FOR_FLOOR_PRICE";
@@ -122,6 +146,8 @@ public class VariableContext implements Serializable, Cloneable {
 	public final static String CONDFIELDCODE_GRADE = "GRADE";
 	public static final String CONDFIELDCODE_DOMESTIC = "DOMESTIC";
 	public static final String CONDFIELDCODE_ACCUMULATIVE_AMOUNT_IN_RM = "ACCUMULATIVE_AMOUNT_IN_RM";
+	public static final String CONDFIELDCODE_TASK_NAME = "TASK_NAME";
+	public static final String CONDFIELDCODE_USER_ACCOUNT = "USER_ACCOUNT";
 
 	// Condition Table Values / context key
 	public static final String CONDVALUECODE_PRODUCT_BASE_PRICE_INCO = "INCOTERM";
@@ -176,6 +202,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String WFL_VIO_NOR_FLOOR_ALPHA = "WFLVIONORFLOORALPHA";
 	public static final String WFL_NO_APPROVAL = "NO_APPROVAL";
 	public static final String WFL_VIO_LOA_SM_VERIFY = "WFLLOASMVERIFY";
+	public static final String IS_NQ_CONTRACT_EXECUTION = "IS_NQ_CONTRACT_EXECUTION";
 
 	// Workflow Context
 	public static final String FORMULAPRICINGADJ = "FORMULAPRICINGADJ";
@@ -202,6 +229,8 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String COMPONENT_PREFCHEM_STANDARD_FLOOR_PRICE = "PREFCHEM_STANDARD_FLOOR_PRICE";
 	public static final String COMPONENT_FINAL_EXECUTION_ALPHA = "FINAL_EXECUTION_ALPHA";
 	public static final String COMPONENT_ALPHA_AS_PER_TERM_CONTRACT_AGREEMENT = "ALPHA_AS_PER_TERM_CONTRACT_AGREEMENT";
+	public static final String BYPASS_MARKET_MISSINGDATE_DEPENDENCY = "BYPASS_MARKET_MISSINGDATE_DEPENDENCY";
+	public static final String COMPONENT_CM_INTEGRATED = "CM_INTEGRATED";
 	
 	// Market Price Type
 	public static final String HISTORICAL = "HISTORICAL";
@@ -217,17 +246,21 @@ public class VariableContext implements Serializable, Cloneable {
 
 	public static enum WFL_VIOLATE {
 		CHANGED_PAYMENT_TERM("Violated Payment Term Credit Day"), DEAL_AMOUNT("Below Targeted Amount [?]"),
-		NORMALISED_PRICE(
+		WFL_NORMALISED_PRICE(
 				"Violated Normalised Price Rule. Product: [?], Country: [?], Normalised Price [?], Targeted Normalised Floor Price: [?]"),
 		WFL_NORMALISED_ALPHA(
-				"Violated Normalised Alpha Rule. Product: [?], Country: [?], Normalised Alpha [?], Targeted Normalised Alpha: [?]"),
+				"Violated Alpha Rule. Line Item ?, Product: [?], Country: [?], Alpha [?], Targeted Alpha: [?]"),
 		WFL_CONTRIBUTION_MARGIN(
 				"Violated Contribution Margin (Legal Book) Rule. Product [?], Contribution Margin (Legal Book): [?], Targeted Contribution Margin: [?]"),
-		FORMULA_PRICING_ITEM("Formula Pricing's Item. "), REVISED_CASE("Revised Case"),
-		NEGOTIATED_DISCOUNT(
+		FORMULA_PRICING_ITEM("Violated Contract LOA"), REVISED_CASE("Revised Case"),
+		WFL_NEGOTIATED_DISCOUNT(
 				"Violated Negotiated Discount Control. Product: [?], Negotiated Discount: [?], Target Negotiated Discount Control: [?]"),
 		SPOT_LOA("Violated Spot LOA."), CONTRACT_LOA("Violated Contract LOA."),
-		OVERRIDE_EXCHANGE_RATE("Overwrite Exchange Rate");
+		OVERRIDE_EXCHANGE_RATE("Overwrite Exchange Rate"),
+		WFL_PRICING_MANDATE(
+				"Violated Pricing Mandate Formula Rule. Line Item ?, Product: [?], Country: [?], Formula [?], Targeted Formula: [?]"),
+		WFL_PRICING_MANDATE_FORMULA_2(" / Targeted Formula 2: [?]"), WFL_PRICING_MANDATE_VOLUME(
+				"Violated Pricing Mandate [?] Rule, Line Item ? ? Exceeded. Requested Volume: [?], ? Remaining: [?]");
 
 		private final String msg;
 
@@ -235,7 +268,7 @@ public class VariableContext implements Serializable, Cloneable {
 			List<String> lst = new ArrayList<String>();
 
 			lst.add(FORMULA_PRICING_ITEM.toString());
-			lst.add(NORMALISED_PRICE.toString());
+			lst.add(WFL_NORMALISED_PRICE.toString());
 			lst.add(WFL_CONTRIBUTION_MARGIN.toString());
 
 			return lst;
@@ -337,7 +370,11 @@ public class VariableContext implements Serializable, Cloneable {
 		if (this.variableMap == null) {
 			this.variableMap = Collections.synchronizedMap(new HashMap<>());
 		}
-		return (T) variableMap.get(key);
+		T val = (T) variableMap.get(key);
+		if (val instanceof String && "null".equals((String) val)) {
+			return null;
+		}
+		return val;
 	}
 
 	public String getVariableAsString(String key) {

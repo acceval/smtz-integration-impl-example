@@ -60,5 +60,6 @@ class DefaultEmailSender implements EmailSender {
 	    }
 
 	    data.setSubject(data.getSubject());
+	    data.setSubject(this.titlePrefix + data.getSubject());
     }
 }
