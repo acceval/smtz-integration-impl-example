@@ -80,6 +80,8 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String CONTEXTKEY_EXCHANGE_RATE_TO_OVERRIDE = "EXCHANGERATETOOVERRIDE";
 	public final static String CONTEXTKEY_MARKET_STRUCTURE_REGION = "MARKET_STRUCTURE_REGION";
 	public static final String CONTEXTCONFIGCODE_PRICESTATUS = "PRICESTATUS";
+	public static final String CONTAINER_SIZE = "CONTAINER_SIZE";
+	public static final String SHIPPING_CONDITION = "SHIPPING_CONDITION";
 
 	// normalisation
 	public static final String NORMALISED_PACKAGING = "NORMALISED_PACKAGING";
