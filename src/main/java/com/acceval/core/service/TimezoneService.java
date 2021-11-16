@@ -17,4 +17,6 @@ public interface TimezoneService {
     String convertToUTCTimeZoneId(String timezoneid);
 
     TimeZone convertToUTCTimeZone(String timezoneid);
+
+	Timezone getTimezoneByUtc(String utc);
 }
