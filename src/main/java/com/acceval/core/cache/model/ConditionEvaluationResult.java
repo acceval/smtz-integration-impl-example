@@ -5,6 +5,7 @@ import org.springframework.util.MultiValueMap;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.time.LocalDateTime;
 
 public class ConditionEvaluationResult {
 	
@@ -19,6 +20,8 @@ public class ConditionEvaluationResult {
 	private StringBuffer message;
 	private String notFoundMessage;
     private boolean isFatal;
+    private LocalDateTime validFrom;
+    private LocalDateTime validTo;
 	
 	public ConditionEvaluationResult() {
 		this.isSuccess = true;
@@ -131,6 +134,22 @@ public class ConditionEvaluationResult {
 	}
 	public void setQuantity(Double quantity) {
 		this.quantity = quantity;
+	}
+
+	public LocalDateTime getValidFrom() {
+		return validFrom;
+	}
+
+	public void setValidFrom(LocalDateTime validFrom) {
+		this.validFrom = validFrom;
+	}
+
+	public LocalDateTime getValidTo() {
+		return validTo;
+	}
+
+	public void setValidTo(LocalDateTime validTo) {
+		this.validTo = validTo;
 	}
 	
 }

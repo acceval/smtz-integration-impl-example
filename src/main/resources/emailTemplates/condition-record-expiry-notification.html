@@ -54,25 +54,25 @@
 </head>
 <body>
 	<p style="margin: 0 0 30px 0;">Dear,</p>
-	<p style="margin: 0 0 10px 0;">The condition record is expired. Please login to update.</p>
+	<p style="margin: 0 0 10px 0;">The {{context.CONDITION_TABLE_NAME}} {{context.TOTAL_EXPIRE_RECORDS}} records was/were expired{{#if context.TOTAL_EXPIRING_RECORDS}}, {{context.TOTAL_EXPIRING_RECORDS}} is/are going expire{{/if}}{{#if context.TOTAL_MISSING_RECORDS}}, {{context.TOTAL_MISSING_RECORDS}} is missing{{/if}}. Please login to update.</p>
 	<br>
 	<br>
 			<table style="margin-top: 1rem;"> 	
 			<tr>
-				{{#context.TABLE_COLUMN}}
-				<th class="labelBold" style="text-align: center;">{{name}}</th> 
-				{{/context.TABLE_COLUMN}}		
+				{{#each context.TABLE_COLUMN}}
+				<th class="labelBold" style="text-align: center;">{{this}}</th> 
+				{{/each}}		
+				<th class="labelBold" style="text-align: center;">VALID FROM</th>
 				<th class="labelBold" style="text-align: center;">VALID TO</th>
-				<th class="labelBold" style="text-align: center;">VALID FROM</th>	
 				<th class="labelBold" style="text-align: center;">STATUS</th>	
 			</tr>
 			{{#context.TABLE_CONTENT}}
 			<tr style="text-align: center;">
-				{{#context.TABLE_VALUE}}
-				<td>{{name}}</td>
-				{{/context.TABLE_VALUE}}
-				<td>{{validTo}}</td>
+				{{#valueList}}
+				<td>{{this}}</td>
+				{{/valueList}}
 				<td>{{validFrom}}</td>
+				<td>{{validTo}}</td>
 				<td>{{status}}</td>
 			</tr>
 			{{/context.TABLE_CONTENT}}

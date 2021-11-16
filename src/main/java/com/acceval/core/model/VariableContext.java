@@ -80,6 +80,8 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String CONTEXTKEY_EXCHANGE_RATE_TO_OVERRIDE = "EXCHANGERATETOOVERRIDE";
 	public final static String CONTEXTKEY_MARKET_STRUCTURE_REGION = "MARKET_STRUCTURE_REGION";
 	public static final String CONTEXTCONFIGCODE_PRICESTATUS = "PRICESTATUS";
+	public static final String CONTAINER_SIZE = "CONTAINER_SIZE";
+	public static final String SHIPPING_CONDITION = "SHIPPING_CONDITION";
 
 	// normalisation
 	public static final String NORMALISED_PACKAGING = "NORMALISED_PACKAGING";
@@ -87,6 +89,9 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String NORMALISED_INCOTERM = "NORMALISED_INCOTERM";
 	public static final String MARKET_STRUCTURE_REGION = "MARKET_STRUCTURE_REGION";
 	public static final String REFERENCE_MARKET_PRICE = "REFERENCE_MARKET_PRICE";
+	public static final String NORMALISED_SHIPPING_CONDITION = "NORMALISED_SHIPPING_CONDITION";
+	public static final String NORMALISED_QUANTITY = "NORMALISED_QUANTITY";
+	public static final String NORMALISED_CONTAINER_SIZE = "NORMALISED_CONTAINER_SIZE";
 
 	// formula exchange rate
 	public static final String FORMULA_EXCHANGE_RATE = "formulaExchangeRate";
@@ -112,6 +117,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String CT_PRODUCT_LIST_PRICE_BY_COUNTRY = "GRADE_LIST_PRICE_BY_COUNTRY";
 	public static final String CT_APPLICATION_ADJUSTMENT = "APPLICATION_ADJUSTMENT";
 	public static final String CT_NORMALISED_PRICE = "STANDARD_FLOOR_PRICE";
+	public static final String CT_FLOOR_PRICE_BASELINE = "FLOOR_PRICE_BASELINE";
 	public static final String CT_NORMALISED_ALPHA = "STANDARD_FLOOR_ALPHA";
 	public static final String CT_RULECONTRIBUTIONMARGIN = "CONTRIBUTION_MARGIN_RULES";
 	public static final String CT_NORMALISED_PRICE_FOB = "NORMALISED_PRICE_FOB";
@@ -125,6 +131,10 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String CT_SPOT_LOA_ASSIGNMENT = "SPOT_LOA_ASSIGNMENT";
 	public static final String CT_PRICING_MANDATE = "LONG_TERM_DEAL_PRICING_MANDATE";
 	public static final String CT_APPROVER_DELEGATION = "APPROVER_DELEGATION";
+	public static final String CT_TENDER_PRICE_FORMULA = "TENDER_PRICE_FORMULA";
+	public static final String CT_TENDER_PRICE_FIXED_FIRM = "TENDER_PRICE_FIXED_FIRM";
+	
+	
 
 	// Condition Table Fields / context key
 	public static final String CONDFIELDCODE_NORMALISE_FOR_FLOOR_PRICE = "NORMALISE_FOR_FLOOR_PRICE";

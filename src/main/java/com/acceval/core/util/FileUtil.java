@@ -22,6 +22,7 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.openxml4j.util.ZipSecureFile;
 import org.apache.poi.poifs.filesystem.NPOIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -92,6 +93,7 @@ public class FileUtil {
 			isXssf = false;
 
 		} else {
+			ZipSecureFile.setMinInflateRatio(0);
 			wb = new XSSFWorkbook(new File(path.toString()));
 			isXssf = true;
 		}
@@ -102,6 +104,9 @@ public class FileUtil {
 			int headerCellSize = 0;
 			
 			for (int c = sheet.getFirstRowNum(); c <= sheet.getLastRowNum(); c++) {
+				if (sheet.getRow(c) == null) {
+					continue;
+				}
 				boolean isRowEmpty = isRowEmpty(sheet.getRow(c));
 				if (isRowEmpty) {
 					sheet.getRow(c).setZeroHeight(true);
@@ -150,10 +155,13 @@ public class FileUtil {
 	}
 	
 	private static boolean isRowEmpty(Row row) {
+		if (row == null) {
+			return true;
+		}
 	    for (int c = row.getFirstCellNum(); c < row.getLastCellNum(); c++) {
 	        Cell cell = row.getCell(c);
 	        if (cell != null) {
-		        if (cell != null && Cell.CELL_TYPE_BLANK != cell.getCellType()) 
+		        if (cell != null && StringUtils.isNotBlank(cell.toString()) && !CellType.BLANK.equals(cell.getCellTypeEnum())) 
 		            return false;
 	        }
 	    }
@@ -188,6 +196,7 @@ public class FileUtil {
 		Sheet sheet = wb.createSheet();
 		// read from file
 		String line = br.readLine();
+		CellStyle builtInShortDate = wb.createCellStyle();
 		for (int rows = 0; line != null; rows++) {
 			// create one row per line
 			Row row = sheet.createRow(rows);
@@ -207,7 +216,6 @@ public class FileUtil {
 				if (isValidDate(item)) {
 					try {
 						Date itemDate = DateUtils.parseDateStrictly(item, STD_DATEFORMAT);
-						CellStyle builtInShortDate = wb.createCellStyle();
 						cell.setCellStyle(builtInShortDate);
 						builtInShortDate.setDataFormat((short) 14);
 						cell.setCellValue(itemDate);

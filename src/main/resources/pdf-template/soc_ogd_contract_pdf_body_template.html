@@ -83,14 +83,15 @@
 
         <div class="main-body">
             <div class="top-section">
-                <table style="margin-top: 3rem;">
+            	<p class="labelBold" style="text-align: center; margin-top: 3rem; margin-bottom: 0rem;">SALES ORDER CONFIRMATION</p>
+                <table>
                     <tr>
                         <td class="labelBold" width="35%">AGREEMENT NUMBER :</td>
                         <td width="65%" th:text="${PONumber}">Agreement Number</td>
                     </tr>
                     <tr>
-                        <td class="labelBold" width="35%">AGREEMENT COMMENCEMENT DATE :</td>
-                        <td width="65%" th:text="${agreementCommencementDate}">Agreement Commencement Date</td>
+                        <td class="labelBold" width="35%">SALES ORDER CONFIRMATION NUMBER & DATE :</td>
+                        <td width="65%" th:text="${socNumberAndDate}">Agreement Commencement Date</td>
                     </tr>
                     <tr>
                         <td class="labelBold" width="35%">SELLER</td>
@@ -121,72 +122,52 @@
                 </table>
                 <br/>
 
-                <p>The Seller and the Buyer may be referred to individually as a "Party" and collectively as "Parties".
-                    <br><br> NOW THEREFORE, it is hereby agreed as follows:</p>
+                <p>NOW THEREFORE, it is hereby agreed as follows:</p>
 
                 <table style="margin-top: 1rem;">
                     <tr>
-                        <th class="labelBold" style="text-align: center;">PRODUCT</th>
-                        <th class="labelBold" style="text-align: center;">QUANTITY / VOLUME</th>
-                        <th class="labelBold" style="text-align: center;">CONTAINER SIZE</th>
-                        <th class="labelBold" style="text-align: center;">UNIT PRICE</th>
-                        <th class="labelBold" style="text-align: center;">DESTINATION PORT / CITY</th>
+                        <th class="labelBold" style="text-align: left; width: 35%;">PRODUCT</th>
+                        <th class="labelBold" style="text-align: center; width: 15%;">QUANTITY / VOLUME</th>
+                        <th class="labelBold" style="text-align: center; width: 15%;">PACKAGING</th>
+                        <th class="labelBold" style="text-align: center; width: 10%;">UNIT PRICE</th>
+                        <th class="labelBold" style="text-align: center; width: 25%;">DESTINATION PORT / CITY</th>
                     </tr>
                     <tr th:each="orderItem, iter: ${orderItems}" style="text-align: center;">
-                        <td style="font-weight: bold;" th:text="${orderItem.productName}">Product</td>
+                        <td style="font-weight: bold; text-align: left;" th:text="${orderItem.productName}">Product</td>
                         <td><span th:text="${#numbers.formatDecimal(orderItem.quantity, 0, 'COMMA', 3, 'POINT')}"></span>
-                            <span style="margin-left: 0.25rem;" th:text="${orderItem.uomCode}"></span>
+                            <span style="margin-left: 0.25rem;" th:text="${orderItem.uomCode}"></span> 
+                            <span th:text="${orderItem.tolerance}"></span>
                         </td>
-                        <td style="padding: 0.5rem;" th:utext="${orderItem.containerSize}">Container Size</td>
-                        <td><span th:text="${#numbers.formatDecimal(orderItem.invoicePrice, 0, 'COMMA', priceDecimalDigits, 'POINT')}"></span><span style="margin-left: 0.5rem;" th:text="${currencyCode}"></span>/<span th:text="${orderItem.uomCode}"></span></td>
+                        <td style="padding: 0.5rem;" th:text="${#strings.capitalizeWords(#strings.toLowerCase(orderItem.packaging))}">Container Size</td>
+                        <td><span th:text="${#numbers.formatDecimal(orderItem.invoicePrice, 0, 'COMMA', priceDecimalDigits, 'POINT')}"></span> <span style="margin-left: 0.5rem;" th:text="${currencyCode}"></span>/<span th:text="${orderItem.uomCode}"></span></td>
                         <td><span th:text="${#strings.capitalizeWords(#strings.toLowerCase(orderItem.destinationCountry))}"></span></td>
                     </tr>
                 </table>
                 <table style="margin-top: 2rem;">
                     <tr>
-                        <td width="30%">DOCUMENTS</td>
-                        <td width="70%">
-                            <table class="noBorder">
-                                <tr th:each="price, iter : ${prices}">
-                                    <td style="padding: 0;">
-                                        The following documents shall together consitute the Sales Contract between the Parties: <br>
-                                        Part 1: Spot - Specific Terms and Conditions (including Appendix)<br>
-                                        Part 2: Spot - Terms of Sale<br>
-                                        Part 3: Spot - Terms of Delivery<br>
-
-                                        The Agreement shall be read and construed as a whole. In the event of a
-                                        dispute or conflict between the above documents, the documents shall
-                                        prevail in the order listed above.
-
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                    <tr>
                         <td width="30%">CARGO ORIGIN</td>
                         <td width="70%" th:text="${cargoOrigin}">Cargo Origin</td>
-                    </tr>
-                    <tr>
-                        <td  width="30%">PACKAGING</td>
-                        <td width="70%" style="white-space: pre;" th:text="${packagingTexts}">Pakaging</td>
                     </tr>
                     <tr>
                         <td  width="30%">TERMS OF DELIVERY</td>
                         <td width="70%" th:text="${termOfDelivery}">Terms of Delivery</td>
                     </tr>
                     <tr>
+                        <td  width="30%">FORMULA</td>
+                        <td width="70%" th:text="${formula}">Pakaging</td>
+                    </tr>
+                    <tr>
                         <td width="30%">TOTAL PRICE</td>
-                        <td width="70%"><span th:text="${currencyCode}"> </span><span style="margin-left: 0.5rem;" th:text="${#numbers.formatDecimal(totalPrice, 0, 'COMMA', priceDecimalDigits, 'POINT')}"></td>
+                        <td width="70%"><span th:text="${currencyCode}"></span><span style="margin-left: 0.5rem;" th:text="${#numbers.formatDecimal(totalPrice, 0, 'COMMA', priceDecimalDigits, 'POINT')}"></td>
                     </tr>
                     <tr>
                         <td width="30%">PAYMENT</td>
-                        <td width="70%" th:text="${payment}" style="white-space: pre-line;">
+                        <td width="70%" th:text="${payment}" style="white-space: pre-line;">JP
                         </td>
                     </tr>
                     <tr>
                         <td width="30%">DELIVERY DATE RANGE</td>
-                        <td width="70%" th:text="${deliveryDateRange}">Delivery Date Range</td>
+                        <td width="70%" th:text="${retaString}">Delivery Date Range</td>
                     </tr>
                     <tr>
                         <td width="30%">LOAD PORT</td>
@@ -198,12 +179,8 @@
                     </tr>
                     <tr>
                         <td width="30%">TAX AND DUTIES</td>
-                        <td width="70%" th:utext="${taxDuties}">Tax and Duties
+                        <td width="70%" th:utext="${insurance}">Tax and Duties
                         </td>
-                    </tr>
-                    <tr style="page-break-inside: avoid !important;">
-                        <td width="30%">OTHER TERMS & CONDITIONS</td>
-                        <td width="70%" th:utext="${termsConditions}">Other terms and conditions</td>
                     </tr>
                 </table>
                 <!-- <div class="page-break"></div> -->

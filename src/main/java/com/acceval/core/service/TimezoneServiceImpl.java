@@ -141,4 +141,23 @@ public class TimezoneServiceImpl implements TimezoneService {
     private InputStream getResource(String resourcePath) {
         return this.getClass().getResourceAsStream(resourcePath);
     }
+    
+    @Override
+    public Timezone getTimezoneByUtc(String utc) {
+    	
+    	Timezone timezone = null;
+    	List<Timezone> timezones = getTimezones();
+    	if (timezones != null) {
+    		for (int i = 0; i < timezones.size(); i++) {
+    			Timezone stimeZone = timezones.get(i);
+    			List<String> utcTimeZoneList = stimeZone.getUtc();
+    			String utcTimeZone = utcTimeZoneList.stream().filter(x -> x.equalsIgnoreCase(utc)).findFirst().orElse(null);
+    			if(utcTimeZone != null) {
+    				timezone = stimeZone;
+    			}
+    		}
+    	}
+    	
+        return timezone;
+    }
 }
