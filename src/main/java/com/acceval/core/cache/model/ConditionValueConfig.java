@@ -1,9 +1,9 @@
 package com.acceval.core.cache.model;
 
+import java.io.Serializable;
+
 import com.acceval.core.cache.model.ConditionFieldConfig.InputType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import java.io.Serializable;
 
 public class ConditionValueConfig implements Serializable {
 
@@ -38,6 +38,7 @@ public class ConditionValueConfig implements Serializable {
 	private Uom defaultUom;
 	
 	private String category;
+	private RangeGroup rangeGroup;
 
 	public Long getId() {
 		return id;
@@ -45,6 +46,14 @@ public class ConditionValueConfig implements Serializable {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public RangeGroup getRangeGroup() {
+		return rangeGroup;
+	}
+
+	public void setRangeGroup(RangeGroup rangeGroup) {
+		this.rangeGroup = rangeGroup;
 	}
 
 	public ConditionRecordConfig getConditionRecordConfig() {
