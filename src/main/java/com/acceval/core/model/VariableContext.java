@@ -80,6 +80,8 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String CONTEXTKEY_EXCHANGE_RATE_TO_OVERRIDE = "EXCHANGERATETOOVERRIDE";
 	public final static String CONTEXTKEY_MARKET_STRUCTURE_REGION = "MARKET_STRUCTURE_REGION";
 	public static final String CONTEXTCONFIGCODE_PRICESTATUS = "PRICESTATUS";
+	public static final String CONTAINER_SIZE = "CONTAINER_SIZE";
+	public static final String SHIPPING_CONDITION = "SHIPPING_CONDITION";
 
 	// normalisation
 	public static final String NORMALISED_PACKAGING = "NORMALISED_PACKAGING";
@@ -89,6 +91,8 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String REFERENCE_MARKET_PRICE = "REFERENCE_MARKET_PRICE";
 	public static final String NORMALISED_SHIPPING_CONDITION = "NORMALISED_SHIPPING_CONDITION";
 	public static final String NORMALISED_QUANTITY = "NORMALISED_QUANTITY";
+	public static final String NORMALISED_PARCEL_RANGE_GROUP = "NORMALISED_PARCEL_RANGE_GROUP";
+	public static final String NORMALISED_PARCEL_RANGE_ID = "NORMALISED_PARCEL_RANGE_ID";
 	public static final String NORMALISED_CONTAINER_SIZE = "NORMALISED_CONTAINER_SIZE";
 
 	// formula exchange rate
