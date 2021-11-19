@@ -17,7 +17,7 @@ import com.acceval.core.amqp.AuditLogRequest.RequestType;
 import com.acceval.core.security.PrincipalUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@ControllerAdvice
+//@ControllerAdvice
 public class AuditLogRequestBodyAdvice implements RequestBodyAdvice {
 
 	@Autowired

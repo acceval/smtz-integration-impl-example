@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import com.acceval.core.amqp.MessageBody;
 import com.acceval.core.amqp.QueueSender;
 
-@Component
+//@Component
 public class PathAuditQueueSender extends QueueSender {
 	    
     private static final String SENDER_QUEUE_NAME = "commons-audittrail-queue";
