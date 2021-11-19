@@ -40,7 +40,7 @@ import com.acceval.core.util.ClassUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@Component
+//@Component
 public class AuditLogHandlerInterceptor implements HandlerInterceptor {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());

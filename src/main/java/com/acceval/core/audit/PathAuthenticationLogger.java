@@ -10,30 +10,24 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.audit.AuditEvent;
 import org.springframework.boot.actuate.audit.listener.AuditApplicationEvent;
-import org.springframework.context.event.EventListener;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
-import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.acceval.core.amqp.MessageBody;
 import com.acceval.core.amqp.audit.PathAuditQueueSender;
 import com.acceval.core.amqp.audit.PathAuthenticationRequest;
-import com.acceval.core.security.PrincipalUtil;
 
-
-@Component
+//@Component
 public class PathAuthenticationLogger {
 	
 	private  final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@Autowired
+//	@Autowired
 	private PathAuditQueueSender auditQueueSender;	
 	
-	@EventListener
+//	@EventListener
     public void auditEventHappened(AuditApplicationEvent auditApplicationEvent) {
          
 		AuditEvent auditEvent = auditApplicationEvent.getAuditEvent();
