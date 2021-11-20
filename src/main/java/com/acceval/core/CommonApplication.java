@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.handler.annotation.support.DefaultMessageHandlerMethodFactory;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class CommonApplication implements RabbitListenerConfigurer {
     
@@ -23,12 +24,22 @@ public class CommonApplication implements RabbitListenerConfigurer {
 
 	@Bean
 	public Jackson2JsonMessageConverter producerJackson2MessageConverter() {
-		return new Jackson2JsonMessageConverter();
+		
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.findAndRegisterModules();
+
+		return new Jackson2JsonMessageConverter(mapper);
 	}
 
 	@Bean
 	public MappingJackson2MessageConverter consumerJackson2MessageConverter() {
-		return new MappingJackson2MessageConverter();
+		
+		MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
+
+        converter.getObjectMapper().findAndRegisterModules();
+
+        return converter;
+
 	}
 
 	@Bean
