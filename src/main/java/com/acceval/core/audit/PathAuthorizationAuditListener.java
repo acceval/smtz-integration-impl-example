@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @IgnoreAuditScan
-public class AttemptedPathAuthorizationAuditListener extends AbstractAuthorizationAuditListener {
+public class PathAuthorizationAuditListener extends AbstractAuthorizationAuditListener {
 	
     public static final String AUTHORIZATION_FAILURE = "AUTHORIZATION_FAILURE";
 
