@@ -107,7 +107,7 @@
 				<th th:if="${allExchangeRateZero == 'false'}" class="labelBold" style="text-align: center;">EXCHANGE RATE</th> 	
 			</tr>
 			<tr th:each="orderItem, iter: ${orderItems}" style="text-align: center;">
-				<td th:text="${orderItem.productName}">Product</td>		
+				<td style="font-weight: bold;" th:text="${orderItem.productName}">Product</td>		
 				<td><span th:text="${#numbers.formatDecimal(orderItem.quantity, 0, 'COMMA', quantityDecimalDigits, 'POINT')}"></span>
 					<span style="margin-left: 0.25rem;" th:text="${orderItem.uomCode}"></span>
 				</td>
