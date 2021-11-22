@@ -65,6 +65,15 @@
 
             position: relative;
         }
+        
+        table { 
+			page-break-inside:auto 
+		}
+		
+    	tr { 
+			page-break-inside:avoid; 
+			page-break-after:auto 
+		}
 
 		</style>
         <script>
@@ -143,7 +152,7 @@
                     </tr>
                 </table>
                 <table style="margin-top: 2rem;">
-                    <tr>
+                    <tr style="height: 0;">
                         <td width="30%">DOCUMENTS</td>
                         <td width="70%">
                             <table class="noBorder">
