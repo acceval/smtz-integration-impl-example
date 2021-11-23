@@ -65,6 +65,15 @@
 
             position: relative;
         }
+        
+        table { 
+			page-break-inside:auto 
+		}
+		
+    	tr { 
+			page-break-inside:avoid; 
+			page-break-after:auto 
+		}
 
 		</style>
         <script>
@@ -73,6 +82,12 @@
                 var pageHeight = 2260;
                 var mainBodyHeight = (mainBody.clientHeight) /  2;
                 var totalPage = Math.ceil(mainBodyHeight / pageHeight);
+                
+                if(mainBodyHeight > (pageHeight * 75 /100)){
+					pageHeight = pageHeight + (1130 * totalPage);
+					totalPage = Math.ceil(mainBodyHeight / pageHeight);
+				}
+				
                 var totalHeight = totalPage * pageHeight;
 
                 document.querySelectorAll('.main-body')[0].style.height = totalHeight + 'px';
@@ -153,21 +168,14 @@ Kg</td>
                     <tr>
                         <td width="30%">DOCUMENTS</td>
                         <td width="70%">
-                            <table class="noBorder">
-                                <tr th:each="price, iter : ${prices}">
-                                    <td style="padding: 0;">
-                                        The following documents shall together consitute the Sales Contract between the Parties: <br>
-                                        Part 1: Spot - Specific Terms and Conditions (including Appendix)<br>
-                                        Part 2: Spot - Terms of Sale<br>
-                                        Part 3: Spot - Terms of Delivery<br>
-
-                                        The Agreement shall be read and construed as a whole. In the event of a
-                                        dispute or conflict between the above documents, the documents shall
-                                        prevail in the order listed above.
-
-                                    </td>
-                                </tr>
-                            </table>
+							The following documents shall together consitute the Sales Contract between the Parties: <br>
+							Part 1: Spot - Specific Terms and Conditions (including Appendix)<br>
+							Part 2: Spot - Terms of Sale<br>
+							Part 3: Spot - Terms of Delivery<br>
+							
+							The Agreement shall be read and construed as a whole. In the event of a
+							dispute or conflict between the above documents, the documents shall
+							prevail in the order listed above.
                         </td>
                     </tr>
                     <tr>

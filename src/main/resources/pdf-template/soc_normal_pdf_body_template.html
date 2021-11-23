@@ -65,6 +65,15 @@
 
             position: relative;
         }
+        
+        table { 
+			page-break-inside:auto 
+		}
+		
+    	tr { 
+			page-break-inside:avoid; 
+			page-break-after:auto 
+		}
 
 		</style>
         <script>
@@ -73,6 +82,11 @@
                 var pageHeight = 2260;
                 var mainBodyHeight = (mainBody.clientHeight) /  2;
                 var totalPage = Math.ceil(mainBodyHeight / pageHeight);
+                
+                if(mainBodyHeight > (pageHeight * 75 /100)){
+					pageHeight = pageHeight + (1130 * totalPage);
+					totalPage = Math.ceil(mainBodyHeight / pageHeight);
+				}
                 var totalHeight = totalPage * pageHeight;
 
                 document.querySelectorAll('.main-body')[0].style.height = totalHeight + 'px';
@@ -134,19 +148,22 @@
                     </tr>
                     <tr th:each="orderItem, iter: ${orderItems}" style="text-align: center;">
                         <td style="font-weight: bold;" th:text="${orderItem.productName}">Product</td>
-                        <td><span th:text="${#numbers.formatDecimal(orderItem.quantity, 0, 'COMMA', 3, 'POINT')}"></span>
+                        <td><span th:if="${orderItem.quantity != '0.0'}" th:text="${#numbers.formatDecimal(orderItem.quantity, 0, 'COMMA', 3, 'POINT')}"></span>
+                        	<span th:if="${orderItem.quantity == '0.0'}">0.000</span>
                             <span style="margin-left: 0.25rem;" th:text="${orderItem.uomCode}"></span>
                         </td>
                         <td style="padding: 0.5rem;" th:utext="${orderItem.containerSize}">Container Size</td>
-                        <td><span th:text="${#numbers.formatDecimal(orderItem.invoicePrice, 0, 'COMMA', priceDecimalDigits, 'POINT')}"></span><span style="margin-left: 0.5rem;" th:text="${currencyCode}"></span>/<span th:text="${orderItem.uomCode}"></span></td>
+                        <td><span th:if="${orderItem.invoicePrice != '0.0'}" th:text="${#numbers.formatDecimal(orderItem.invoicePrice, 0, 'COMMA', priceDecimalDigits, 'POINT')}"></span>
+                        	<span th:if="${orderItem.invoicePrice == '0.0'}">0.000</span>
+                        	<span style="margin-left: 0.5rem;" th:text="${currencyCode}"></span>/<span th:text="${orderItem.uomCode}"></span></td>
                         <td><span th:text="${#strings.capitalizeWords(#strings.toLowerCase(orderItem.destinationCountry))}"></span></td>
                     </tr>
                 </table>
                 <table style="margin-top: 2rem;">
-                    <tr>
+                    <tr style="height: 0;">
                         <td width="30%">DOCUMENTS</td>
                         <td width="70%">
-                            <table class="noBorder">
+                            <!--<table class="noBorder">
                                 <tr th:each="price, iter : ${prices}">
                                     <td style="padding: 0;">
                                         The following documents shall together consitute the Sales Contract between the Parties: <br>
@@ -160,7 +177,15 @@
 
                                     </td>
                                 </tr>
-                            </table>
+                            </table>-->
+							The following documents shall together consitute the Sales Contract between the Parties: <br>
+							Part 1: Spot - Specific Terms and Conditions (including Appendix)<br>
+							Part 2: Spot - Terms of Sale<br>
+							Part 3: Spot - Terms of Delivery<br>
+							
+							The Agreement shall be read and construed as a whole. In the event of a
+							dispute or conflict between the above documents, the documents shall
+							prevail in the order listed above.
                         </td>
                     </tr>
                     <tr>
@@ -177,7 +202,10 @@
                     </tr>
                     <tr>
                         <td width="30%">TOTAL PRICE</td>
-                        <td width="70%"><span th:text="${currencyCode}"> </span><span style="margin-left: 0.5rem;" th:text="${#numbers.formatDecimal(totalPrice, 0, 'COMMA', priceDecimalDigits, 'POINT')}"></td>
+                        <td width="70%"><span th:text="${currencyCode}"> </span>
+                        	<span th:if="${totalPrice != 0.0}" th:text="${#numbers.formatDecimal(totalPrice, 0, 'COMMA', priceDecimalDigits, 'POINT')}"></span>
+                        	<span th:if="${totalPrice == 0.0}">0.000</span>
+                        </td>
                     </tr>
                     <tr>
                         <td width="30%">PAYMENT</td>
