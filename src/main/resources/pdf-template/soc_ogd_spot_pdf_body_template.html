@@ -150,18 +150,17 @@
                     </tr>
                     <tr th:each="orderItem, iter: ${orderItems}" style="text-align: center;">
                         <td style="font-weight: bold; text-align: left;" th:text="${orderItem.productName}">Product</td>
-                        <td><span th:text="${#numbers.formatDecimal(orderItem.quantity, 0, 'COMMA', 3, 'POINT')}"></span>
-                            <span th:text="${orderItem.uomCode}"></span>
+                        <td><span th:text="${#numbers.formatDecimal(orderItem.quantity, 1, 'COMMA', 3, 'POINT')}"></span> <span th:text="${orderItem.uomCode}"></span>
                         </td>
                         <td style="padding: 0.5rem;" th:text="${#strings.capitalizeWords(#strings.toLowerCase(orderItem.packaging))}">Packaging Bags 25
 Kg</td>
-                        <td style="text-align: right; text-align: right;"><span th:text="${#numbers.formatDecimal(orderItem.invoicePrice, 0, 'COMMA', priceDecimalDigits, 'POINT')}"></span> <span th:text="${currencyCode}"></span>/<span th:text="${orderItem.uomCode}"></span></td>
+                        <td style="text-align: right; text-align: right;"><span th:text="${#numbers.formatDecimal(orderItem.invoicePrice, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></span> <span th:text="${currencyCode}"></span>/<span th:text="${orderItem.uomCode}"></span></td>
                         <td><span th:text="${#strings.capitalizeWords(#strings.toLowerCase(orderItem.destinationCountry))}"></span></td>
-                        <td style="text-align: right;"><span th:text="${currencyCode}"></span> <span th:text="${#numbers.formatDecimal(orderItem.itemPrice, 0, 'COMMA', priceDecimalDigits, 'POINT')}">Quantity * invocie</span></td>
+                        <td style="text-align: right;"><span th:text="${currencyCode}"></span> <span th:text="${#numbers.formatDecimal(orderItem.itemPrice, 1, 'COMMA', priceDecimalDigits, 'POINT')}">Quantity * invocie</span></td>
                     </tr>
                     <tr>
                     	<td colspan="5" class="labelBold" style="text-align: end;">TOTAL</td>
-                    	<td style="text-align: right;"><span th:text="${currencyCode}"></span> <span th:text="${#numbers.formatDecimal(totalPrice, 0, 'COMMA', priceDecimalDigits, 'POINT')}"></td>
+                    	<td style="text-align: right;"><span th:text="${currencyCode}"></span> <span th:text="${#numbers.formatDecimal(totalPrice, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></td>
                     </tr>
                 </table>
                 <table style="margin-top: 2rem;">
@@ -192,7 +191,7 @@ Kg</td>
                     </tr>
                     <tr>
                         <td width="30%">TOTAL PRICE</td>
-                        <td width="70%"><span th:text="${currencyCode}"></span><span style="margin-left: 0.5rem;" th:text="${#numbers.formatDecimal(totalPrice, 0, 'COMMA', priceDecimalDigits, 'POINT')}"></td>
+                        <td width="70%"><span th:text="${currencyCode}"></span> <span th:text="${#numbers.formatDecimal(totalPrice, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></td>
                     </tr>
                     <tr>
                         <td width="30%">PAYMENT</td>
