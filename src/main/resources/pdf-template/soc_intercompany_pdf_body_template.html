@@ -117,11 +117,10 @@
 			</tr>
 			<tr th:each="orderItem, iter: ${orderItems}" style="text-align: center;">
 				<td style="font-weight: bold;" th:text="${orderItem.productName}">Product</td>		
-				<td><span th:text="${#numbers.formatDecimal(orderItem.quantity, 0, 'COMMA', quantityDecimalDigits, 'POINT')}"></span>
-					<span style="margin-left: 0.25rem;" th:text="${orderItem.uomCode}"></span>
+				<td><span th:text="${#numbers.formatDecimal(orderItem.quantity, 1, 'COMMA', quantityDecimalDigits, 'POINT')}"></span> <span th:text="${orderItem.uomCode}"></span>
 				</td>
 				<td style="padding: 0.5rem;" th:utext="${orderItem.containerSize}">Container Size</td>
-				<td><span th:text="${#numbers.formatDecimal(orderItem.invoicePrice, 0, 'COMMA', priceDecimalDigits, 'POINT')}"></span><span style="margin-left: 0.5rem;" th:text="${currencyCode}"></span>/<span th:text="${orderItem.uomCode}"></span></td>				
+				<td><span th:text="${#numbers.formatDecimal(orderItem.invoicePrice, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></span> <span th:text="${currencyCode}"></span>/<span th:text="${orderItem.uomCode}"></span></td>				
 				<td><span th:text="${orderItem.destinationCountry}"></span></td>	
 				<td th:if="${allExchangeRateZero == 'false'}">
 					<span th:if="${orderItem.exchangeRate != '0.0'}" th:text="${#numbers.formatDecimal(orderItem.exchangeRate, 0, 'COMMA', 5, 'POINT')}"></span>
@@ -144,7 +143,7 @@
 			</tr> 	
 			<tr>
 				<td width="30%">TOTAL PRICE</td>
-				<td width="70%"><span th:text="${currencyCode}"> </span><span style="margin-left: 0.5rem;" th:text="${#numbers.formatDecimal(totalPrice, 0, 'COMMA', priceDecimalDigits, 'POINT')}"></td>				 
+				<td width="70%"><span th:text="${currencyCode}"></span> <span th:text="${#numbers.formatDecimal(totalPrice, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></td>				 
 			</tr> 	
 			<tr>
 				<td width="30%">PAYMENT</td> 		

@@ -146,7 +146,25 @@
 			<tr>
 				<td class="labelBold" width="30%">TERMS OF DELIVERY</td>
 				<td width="70%" th:text="${termOfDelivery}">Terms of Delivery</td> 	
-			</tr> 	
+			</tr>
+			{{#if context.transportationCharge}}
+			<tr>
+				<td class="labelBold" width="30%">TRANSPORTATION CHARGE</td>
+				<td width="70%" th:text="${#numbers.formatDecimal(transportationCharge, 0, 'COMMA', 0, 'POINT')}">Transportation Charge</td> 	
+			</tr>
+			{{/if}}	
+			{{#if context.packagingCost}}
+			<tr>
+				<td class="labelBold" width="30%">PACKAGING COST</td>
+				<td width="70%" th:text="${#numbers.formatDecimal(packagingCost, 0, 'COMMA', 0, 'POINT')}">Packaging Cost</td> 	
+			</tr> 
+			{{/if}}	
+			{{#if context.sstTax}}
+			<tr>
+				<td class="labelBold" width="30%">SST 6%</td>
+				<td width="70%" th:text="${#numbers.formatDecimal(sstTax, 0, 'COMMA', 0, 'POINT')}">SST 6%</td> 	
+			</tr> 
+			{{/if}}	
 			<tr>
 				<td class="labelBold" width="30%">TOTAL PRICE</td>
 				<td width="70%"><span th:text="${#numbers.formatDecimal(totalPrice, 0, 'COMMA', 0, 'POINT')}"> </span><span style="margin-left: 0.5rem;" th:text="${currencyCode}"></td>				 
