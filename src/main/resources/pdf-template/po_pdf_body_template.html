@@ -152,8 +152,8 @@
 				<td width="70%" th:text="${#numbers.formatDecimal(transportationCharge, 0, 'COMMA', 0, 'POINT')}">Transportation Charge</td> 	
 			</tr>
 			<tr th:if="hasPackagingCost == 'true'}">
-				<td class="labelBold" width="30%">PACKAGING COST</td>
-				<td width="70%" th:text="${#numbers.formatDecimal(packagingCost, 0, 'COMMA', 0, 'POINT')}">Packaging Cost</td> 	
+				<td class="labelBold" width="30%">PACKAGING MATERIAL AND PROCESSING CHARGE</td>
+				<td width="70%" th:text="${#numbers.formatDecimal(packagingCost, 0, 'COMMA', 0, 'POINT')}">Packaging Material And Processing Charge</td> 	
 			</tr> 
 			<tr th:if="hasSst == 'true'}">
 				<td class="labelBold" width="30%">SST 6%</td>
