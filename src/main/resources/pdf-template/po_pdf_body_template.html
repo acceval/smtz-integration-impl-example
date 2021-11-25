@@ -147,15 +147,15 @@
 				<td class="labelBold" width="30%">TERMS OF DELIVERY</td>
 				<td width="70%" th:text="${termOfDelivery}">Terms of Delivery</td> 	
 			</tr>
-			<tr th:if="hasTransportationCharge == 'true'}">
+			<tr th:if="${hasTransportationCharge == 'true'}">
 				<td class="labelBold" width="30%">TRANSPORTATION CHARGE</td>
 				<td width="70%" th:text="${#numbers.formatDecimal(transportationCharge, 0, 'COMMA', 0, 'POINT')}">Transportation Charge</td> 	
 			</tr>
-			<tr th:if="hasPackagingCost == 'true'}">
+			<tr th:if="${hasPackagingCost == 'true'}">
 				<td class="labelBold" width="30%">PACKAGING MATERIAL AND PROCESSING CHARGE</td>
 				<td width="70%" th:text="${#numbers.formatDecimal(packagingCost, 0, 'COMMA', 0, 'POINT')}">Packaging Material And Processing Charge</td> 	
 			</tr> 
-			<tr th:if="hasSst == 'true'}">
+			<tr th:if="${hasSst == 'true'}">
 				<td class="labelBold" width="30%">SST 6%</td>
 				<td width="70%" th:text="${#numbers.formatDecimal(sstTax, 0, 'COMMA', 0, 'POINT')}">SST 6%</td> 	
 			</tr> 
