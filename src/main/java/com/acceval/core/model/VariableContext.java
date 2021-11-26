@@ -244,6 +244,8 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String OGD = "OGD";
 	public static final String POLYMER = "Polymer";
 
+	public static final String OS_BUSINESS_MODEL = "OS_BUSINESS_MODEL";
+	
 	public final static double DEFAULT_NOT_FOUND_NOR_FLOOR_PRICE_VALUE = 1000000;
 
 	public static enum WFL_VIOLATE {
