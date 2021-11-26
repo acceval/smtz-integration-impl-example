@@ -137,7 +137,7 @@
 				<td th:text="${orderItem.product.name}">Product</td>				
 				<td><span th:text="${#numbers.formatDecimal(orderItem.quantity, 0, 'COMMA', 0, 'POINT')}"></span><span style="margin-left: 0.5rem;" th:text="${orderItem.uomCode}"></span></td>
 				<td style="padding: 0.5rem;" th:utext="${orderItem.skuLabel}">Packaging</td>
-				<td><span th:text="${#numbers.formatDecimal(orderItem.invoicePrice, 0, 'COMMA', 0, 'POINT')}"></span><span style="margin-left: 0.5rem;" th:text="${currencyCode}"></span>/<span th:text="${orderItem.uomCode}"></span></td>				
+				<td><span th:text="${#numbers.formatDecimal(orderItem.invoicePrice, 0, 'COMMA', 2, 'POINT')}"></span><span style="margin-left: 0.5rem;" th:text="${currencyCode}"></span>/<span th:text="${orderItem.uomCode}"></span></td>				
 				<td><span th:text="${#numbers.formatDecimal(orderItem.amount, 0, 'COMMA', 0, 'POINT')}"></span><span style="margin-left: 0.5rem;" th:text="${currencyCode}"></span></td>				
 			</tr> 
 		</table> 
@@ -149,7 +149,7 @@
 						<tr th:each="price, iter : ${prices}">
 							<td style="padding-left: 0;">
 								<!-- <span th:text="'Line item ' + ${iter.count} + ') '"></span> -->
-								<span th:text="${#numbers.formatDecimal(price, 0, 'COMMA', 0, 'POINT')}"></span><span style="margin-left: 0.5rem;" th:text="${currencyCode}"></span>
+								<span th:text="${#numbers.formatDecimal(price, 0, 'COMMA', 2, 'POINT')}"></span><span style="margin-left: 0.5rem;" th:text="${currencyCode}"></span>
 							</td>
 						</tr>
 					</table>
@@ -158,7 +158,7 @@
 			
 			<tr>
 				<td class="labelBold" width="30%">TOTAL PRICE</td>
-				<td width="70%"><span th:text="${#numbers.formatDecimal(totalPrice, 0, 'COMMA', 0, 'POINT')}"> </span><span style="margin-left: 0.5rem;" th:text="${currencyCode}"></td>				 
+				<td width="70%"><span th:text="${#numbers.formatDecimal(totalPrice, 0, 'COMMA', 2, 'POINT')}"> </span><span style="margin-left: 0.5rem;" th:text="${currencyCode}"></td>				 
 			</tr> 	
 			<tr>
 				<td class="labelBold" width="30%">PAYMENT</td> 		
@@ -172,7 +172,7 @@
 			</tr>
 		</table> 
 		<!-- <div class="page-break"></div> -->
-		<br><br><br><br><br>
+		<br><br><br><br><br><br>
 		<div style="margin-top: 3.5rem;"> 
 			<table align="left" class="inlineTable">
 				
