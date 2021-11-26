@@ -45,6 +45,8 @@ public class VariableContext implements Serializable, Cloneable {
 	public final static String FORMULA = "FORMULA";
 	public final static String RULE_FORMULA = "RULE_FORMULA";
 	public final static String RULE_FORMULA_2 = "RULE_FORMULA_2";
+	public final static String LOGISTICS_INCENTIVE = "LOGISTICS_INCENTIVE";
+	public final static String ALPHA__PERCENTAGE_ = "ALPHA__PERCENTAGE_";
 	public final static String DOCUMENT_CATEGORY = "DOCUMENTCATEGORY";
 	public final static String PACKAGING = "PACKAGING";
 	public final static String PAYMENT_TERM = "PAYMENTTERM";
@@ -60,6 +62,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String ALPHA_2 = "ALPHA_2";
 	public static final String SALES_OFFICE = "SALES_OFFICE";
 	public static final String MANDATE_ALPHA = "ALPHA";
+	public final static String MANDATE_ALPHA__PERCENTAGE_ = "ALPHA__PERCENTAGE_";
 	public static final String PRICING_TECHNIQUE_CODE = "PRICING_TECHNIQUE_CODE";
 	public static final String PRICE_MODEL_CODE = "PRICE_MODEL_CODE";
 	public static final String MARGIN_MODEL_CODE = "MARGIN_MODEL_CODE";
@@ -264,7 +267,9 @@ public class VariableContext implements Serializable, Cloneable {
 		WFL_PRICING_MANDATE(
 				"Violated Pricing Mandate Formula Rule. Line Item ?, Product: [?], Country: [?], Formula [?], Targeted Formula: [?]"),
 		WFL_PRICING_MANDATE_FORMULA_2(" / Targeted Formula 2: [?]"), WFL_PRICING_MANDATE_VOLUME(
-				"Violated Pricing Mandate [?] Rule, Line Item ? ? Exceeded. Requested Volume: [?], ? Remaining: [?]");
+				"Violated Pricing Mandate [?] Rule, Line Item ? ? Exceeded. Requested Volume: [?], ? Remaining: [?]"),
+		WFL_LOGISTICS_INCENTIVE(
+				"Violated Logistics Incentive Rule. Line Item ?, Product: [?], Country: [?], Logistics Incentive [?], Targeted Logistics Incentive: [?]");
 
 		private final String msg;
 
