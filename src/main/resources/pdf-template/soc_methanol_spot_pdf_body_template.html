@@ -68,28 +68,13 @@
 
 			position: relative;
 		}
-		
-		table { 
-			page-break-inside:auto 
-		}
-		
-    	tr { 
-			page-break-inside:avoid; 
-			page-break-after:auto 
-		}
 	</style>
 	<script>
 		function setBodyHeight() {
 			var mainBody = document.querySelectorAll('.main-body')[0];
-			var pageHeight = 2260;
+			var pageHeight = 1130;
 			var mainBodyHeight = (mainBody.clientHeight) / 2;
 			var totalPage = Math.ceil(mainBodyHeight / pageHeight);
-			
-			if (mainBodyHeight > (pageHeight * 75 / 100)) {
-				pageHeight = pageHeight + (1130 * totalPage);
-				totalPage = Math.ceil(mainBodyHeight / pageHeight);
-			}
-				
 			var totalHeight = totalPage * pageHeight;
 
 			document.querySelectorAll('.main-body')[0].style.height = totalHeight + 'px';
@@ -155,11 +140,13 @@
 				</tr>
 				<tr th:each="orderItem, iter: ${orderItems}" style="text-align: center;">
 					<td style="font-weight: bold; text-align: left;">
-						<span th:text="${#strings.capitalizeWords(#strings.toLowerCase(orderItem.productName))}">Product</span>
+						<span
+							th:text="${#strings.capitalizeWords(#strings.toLowerCase(orderItem.productName))}">Product</span>
 						<span>
 							<table style="border: none; margin-top: 0;">
 								<tr th:each="product, iter: ${orderItem.productName2}">
-									<td style="border: none; padding: 0; text-align: left;" th:text="${product.key}">1</td>
+									<td style="border: none; padding: 0; text-align: left;" th:text="${product.key}">1
+									</td>
 									<td style="border: none; padding: 0; text-align: left;"
 										th:text="${#strings.replace(#strings.replace(product.value, ']', ''), '[', '')}">
 										2</td>
@@ -168,14 +155,16 @@
 						</span>
 						<span style="margin-top: 0;" th:text="${orderItem.productName3}">Product3</span>
 					</td>
-					<td><span th:text="${#numbers.formatDecimal(orderItem.quantity, 1, 'COMMA', 3, 'POINT')}"></span> <span th:text="${orderItem.uomCode}"></span>
+					<td><span th:text="${#numbers.formatDecimal(orderItem.quantity, 1, 'COMMA', 3, 'POINT')}"></span>
+						<span th:text="${orderItem.uomCode}"></span>
 					</td>
 					<td style="padding: 0.5rem;"
 						th:text="${#strings.capitalizeWords(#strings.toLowerCase(orderItem.packaging))}">Packaging Bags
 						25
 						Kg</td>
 					<td style="text-align: center;"><span
-							th:text="${#numbers.formatDecimal(orderItem.invoicePrice, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></span> <span th:text="${currencyCode}"></span>/<span th:text="${orderItem.uomCode}"></span></td>
+							th:text="${#numbers.formatDecimal(orderItem.invoicePrice, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></span>
+						<span th:text="${currencyCode}"></span>/<span th:text="${orderItem.uomCode}"></span></td>
 					<td><span
 							th:text="${#strings.capitalizeWords(#strings.toLowerCase(orderItem.destinationCountry))}"></span>
 					</td>
@@ -190,7 +179,7 @@
 						Part 1: Spot - Specific Terms and Conditions (including Appendix)<br>
 						Part 2: Spot - Terms of Sale<br>
 						Part 3: Spot - Terms of Delivery<br>
-						
+
 						The Agreement shall be read and construed as a whole. In the event of a
 						dispute or conflict between the above documents, the documents shall
 						prevail in the order listed above.
@@ -210,7 +199,8 @@
 				</tr>
 				<tr>
 					<td width="30%">TOTAL PRICE</td>
-					<td width="70%"><span th:text="${currencyCode}"></span> <span th:text="${#numbers.formatDecimal(totalPrice, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></span>
+					<td width="70%"><span th:text="${currencyCode}"></span> <span
+							th:text="${#numbers.formatDecimal(totalPrice, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></span>
 					</td>
 				</tr>
 				<tr>
@@ -237,42 +227,37 @@
 			<!-- <div class="page-break"></div> -->
 			<br>
 		</div>
-		<div class="bottom-section">
-			<div style="margin-top: 2rem;">
-
-				<table style="border: 0; width: 100%; margin-top: 3rem;">
-					<tr class="noBorder">
-						<td class="labelBold" style="width: 45%">SELLER</td>
-						<td style="width: 10%"></td>
-						<td class="labelBold" style="width: 45%">BUYER</td>
-					</tr>
-					<tr class="noBorder" style="vertical-align: top">
-						<td class="labelBold" style="width: 45%" th:utext="${sellerCompanyName}">Seller Company Name
-						</td>
-						<td style="width: 10%"></td>
-						<td class="labelBold" style="width: 45%" th:utext="${buyerName}">Buyer Company Name</td>
-					</tr>
-					<tr class="noBorder">
-						<td colspan="3" style="height: 5rem;">&nbsp;</td>
-					</tr>
-					<tr class="noBorder">
-						<td style="width: 45%">Signature: </td>
-						<td style="width: 10%"></td>
-						<td style="width: 45%">Signature: </td>
-					</tr>
-					<tr class="noBorder">
-						<td style="width: 45%">Name: </td>
-						<td style="width: 10%"></td>
-						<td style="width: 45%">Name: </td>
-					</tr>
-					<tr class="noBorder">
-						<td style="width: 45%">Designation: </td>
-						<td style="width: 10%"></td>
-						<td style="width: 45%">Designation: </td>
-					</tr>
-				</table>
-			</div>
-		</div>
+		<table style="border: 0; width: 100%;">
+				<tr class="noBorder">
+					<td class="labelBold" style="width: 45%">SELLER</td>
+					<td style="width: 10%"></td>
+					<td class="labelBold" style="width: 45%">BUYER</td>
+				</tr>
+				<tr class="noBorder" style="vertical-align: top">
+					<td class="labelBold" style="width: 45%" th:utext="${sellerCompanyName}">Seller Company Name
+					</td>
+					<td style="width: 10%"></td>
+					<td class="labelBold" style="width: 45%" th:utext="${buyerName}">Buyer Company Name</td>
+				</tr>
+				<tr class="noBorder">
+					<td colspan="3" style="height: 5rem;">&nbsp;</td>
+				</tr>
+				<tr class="noBorder">
+					<td style="width: 45%">Signature: </td>
+					<td style="width: 10%"></td>
+					<td style="width: 45%">Signature: </td>
+				</tr>
+				<tr class="noBorder">
+					<td style="width: 45%">Name: </td>
+					<td style="width: 10%"></td>
+					<td style="width: 45%">Name: </td>
+				</tr>
+				<tr class="noBorder">
+					<td style="width: 45%">Designation: </td>
+					<td style="width: 10%"></td>
+					<td style="width: 45%">Designation: </td>
+				</tr>
+			</table>
 	</div>
 </body>
 
