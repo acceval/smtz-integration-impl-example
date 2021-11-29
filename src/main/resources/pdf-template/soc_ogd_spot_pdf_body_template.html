@@ -82,11 +82,6 @@
                 var pageHeight = 2260;
                 var mainBodyHeight = (mainBody.clientHeight) /  2;
                 var totalPage = Math.ceil(mainBodyHeight / pageHeight);
-                
-                if(mainBodyHeight > (pageHeight * 75 /100)){
-					pageHeight = pageHeight + (1130 * totalPage);
-					totalPage = Math.ceil(mainBodyHeight / pageHeight);
-				}
 				
                 var totalHeight = totalPage * pageHeight;
 
@@ -100,7 +95,7 @@
             <div class="top-section">
                 <table style="margin-top: 3rem;">
                     <tr>
-                        <td class="labelBold" width="35%">AGREEMENT NUMBER :</td>
+                        <td class="labelBold" width="35%">AGREEMENT NUMBER 3:</td>
                         <td width="65%" th:text="${PONumber}">Agreement Number</td>
                     </tr>
                     <tr>
