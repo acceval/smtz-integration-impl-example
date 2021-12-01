@@ -1,5 +1,21 @@
 package com.acceval.core.cache.processor;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+
 import com.acceval.core.cache.CacheException;
 import com.acceval.core.cache.impl.ConditionRecordCache;
 import com.acceval.core.cache.impl.MasterDataCache;
@@ -14,21 +30,7 @@ import com.acceval.core.cache.model.ConditionValue;
 import com.acceval.core.cache.model.ConditionValueConfig;
 import com.acceval.core.cache.model.Range;
 import com.acceval.core.cache.model.RangeGroup;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.stereotype.Component;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.acceval.core.model.VariableContext;
 
 @Component
 @ConditionalOnProperty(name = "microservice.cache", havingValue = "true")
@@ -245,10 +247,12 @@ public class ConditionRecordRetriever {
 //                }
 
             }
+			String strCountryRegion = mapParam.getFirst("COUNTRY");
+			strCountryRegion = StringUtils.isBlank(strCountryRegion) ? mapParam.getFirst(VariableContext.REGION) : strCountryRegion;
             if (wrapper.getConditionFieldConfig().getType() == ConditionFieldConfig.ConditionFieldType.REGIONCOUNTRY
-                    && mapParam.getFirst("COUNTRY") != null) {
+					&& strCountryRegion != null) {
 
-                Long countryId = Long.valueOf(mapParam.getFirst("COUNTRY"));
+				Long countryId = Long.valueOf(strCountryRegion);
                 mapParam.add(wrapper.getConditionFieldConfig().getCode(),
                         String.valueOf(countryId));
                 List<String> regions = masterDataCache.getRegionsByCountry(countryId);
