@@ -84,6 +84,15 @@ public class TimeZoneUtil {
 		}
 	}
 
+	public static LocalDateTime returnTimeZoneAndToStartOfDay(LocalDateTime localDateTime) {
+		if (localDateTime == null) return null;
+
+		LocalDateTime userDate = TimeZoneUtil.reverseTimeZone(localDateTime);
+		String strUserTdy = userDate.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+		userDate = LocalDate.parse(strUserTdy, DateTimeFormatter.ofPattern("dd-MM-yyyy")).atStartOfDay();
+		return TimeZoneUtil.returnTimeZone(userDate);
+	}
+
 	public static LocalDateTime reverseTimeZone(LocalDateTime localDateTime) {
 		String timeZone = PrincipalUtil.getTimeZone();
 		if (StringUtils.isNotBlank(timeZone)) {
