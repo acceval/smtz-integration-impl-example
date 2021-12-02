@@ -68,6 +68,15 @@
 
 			position: relative;
 		}
+		
+		table { 
+			page-break-inside:auto 
+		}
+		
+    	tr { 
+			page-break-inside:avoid; 
+			page-break-after:auto 
+		}
 	</style>
 	<script>
 		function setBodyHeight() {
@@ -75,6 +84,18 @@
 			var pageHeight = 1130;
 			var mainBodyHeight = (mainBody.clientHeight) / 2;
 			var totalPage = Math.ceil(mainBodyHeight / pageHeight);
+			
+			if (mainBodyHeight > pageHeight && (mainBodyHeight / pageHeight)%1 > 0.4) {	
+				document.getElementById('display').innerHTML="2, " + mainBodyHeight + ", " + (mainBodyHeight / pageHeight) + ", " + pageHeight;
+				pageHeight = pageHeight + (1130);
+				totalPage = Math.ceil(mainBodyHeight / pageHeight);
+			} else {
+				document.getElementById('display').innerHTML="4, " + mainBodyHeight + ", " + (mainBodyHeight / pageHeight) + ", " +totalPage + ", " + pageHeight;
+				if((mainBodyHeight / pageHeight)%1 < 0.1){
+					totalPage = totalPage - 1;
+				}
+			}
+			
 			var totalHeight = totalPage * pageHeight;
 
 			document.querySelectorAll('.main-body')[0].style.height = totalHeight + 'px';
@@ -90,6 +111,7 @@
 				<tr>
 					<td class="labelBold" width="35%">AGREEMENT NUMBER :</td>
 					<td width="65%" th:text="${PONumber}">Agreement Number</td>
+					<!--<td width="65%"><span id="display"></span></td>-->
 				</tr>
 				<tr>
 					<td class="labelBold" width="35%">AGREEMENT COMMENCEMENT DATE :</td>
@@ -227,6 +249,8 @@
 			<!-- <div class="page-break"></div> -->
 			<br>
 		</div>
+		<div class="bottom-section">
+			<div style="margin-top: 2rem;">
 		<table style="border: 0; width: 100%;">
 				<tr class="noBorder">
 					<td class="labelBold" style="width: 45%">SELLER</td>
@@ -258,6 +282,8 @@
 					<td style="width: 45%">Designation: </td>
 				</tr>
 			</table>
+			</div>
+		</div>
 	</div>
 </body>
 

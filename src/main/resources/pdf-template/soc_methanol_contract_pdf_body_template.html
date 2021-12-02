@@ -84,7 +84,17 @@
 			var pageHeight = 1130;
 			var mainBodyHeight = (mainBody.clientHeight) / 2;
 			var totalPage = Math.ceil(mainBodyHeight / pageHeight);
-				
+			
+			if (mainBodyHeight > (pageHeight * 65 / 100) && mainBodyHeight < (pageHeight * 75 / 100)) {	
+				pageHeight = pageHeight + (1130 * (totalPage / 2));
+				totalPage = Math.ceil(mainBodyHeight / pageHeight);
+			} else if (mainBodyHeight > pageHeight && (mainBodyHeight / pageHeight)%1 > 0.4) {	
+				pageHeight = pageHeight + (1130 * totalPage);
+				totalPage = Math.ceil(mainBodyHeight / pageHeight);
+			} else if (mainBodyHeight > (pageHeight * 85 / 100) && mainBodyHeight < pageHeight){
+				pageHeight = pageHeight + (1130 * (totalPage));
+				totalPage = Math.ceil(mainBodyHeight / pageHeight);
+			}
 			var totalHeight = totalPage * pageHeight;
 
 			document.querySelectorAll('.main-body')[0].style.height = totalHeight + 'px';
