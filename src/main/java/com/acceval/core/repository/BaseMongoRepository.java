@@ -22,6 +22,8 @@ public interface BaseMongoRepository<T> {
 
 	QueryResult<T> queryByCriteria(Criteria acceCriteria);
 
+	QueryResult<T> queryByCriteria(Criteria andCriteria, Criteria orCriteria, Class<?> targetClass);
+	
 	QueryResult<T> queryByCriteria(Criteria acceCriteria, Class<?> targetClass);
 
 	Criteria getCriteriaByMapParam(MultiValueMap<String, String> mapParam);
