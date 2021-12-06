@@ -71,6 +71,7 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 		return queryByMapParam(mapParam, this.getTargetClass());
 	}
 
+	
 	/**
 	 * convert map to criteria and inquiry, normally use for Search Form, with
 	 * pagination
@@ -259,9 +260,23 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 				acceCriteria.appendCriterion(new Criterion("companyId", companyId));
 			}
 		}
+		
+		for (String key: mapParam.keySet()) {
+			int index = key.indexOf("_");
+			if (index != -1) {
+				String nestedKey = key.substring(0, index);
+				String propertyKey = key.substring(index + 1);
+				for (Criterion criterion: acceCriteria.getCriterion()) {
+					if (criterion.getPropertyName().equals(propertyKey)) {
+						criterion.setNestedConditionKey(nestedKey);
+					}
+				}
+			}
+		}
 
 		return acceCriteria;
 	}
+
 
 	@Override
 	public QueryResult<T> queryByCriteria(Criteria acceCriteria) {
@@ -1050,6 +1065,11 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 		}
 
 		return queryResult;
+	}
+	
+	@Override
+	public QueryResult<T> queryByCriteria(Criteria andCriteria, Criteria orCriteria) {
+		return queryByCriteria(andCriteria, orCriteria, this.getTargetClass());
 	}
 
 	/**
