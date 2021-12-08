@@ -84,11 +84,8 @@
                 var totalPage = Math.ceil(mainBodyHeight / pageHeight);
                 
                 if(mainBodyHeight > (pageHeight * 75 /100)){
-					document.getElementById('display').innerHTML="1, " + mainBodyHeight + ", " + (mainBodyHeight / pageHeight) + ", " +totalPage + ", " + pageHeight;
 					pageHeight = pageHeight + (1130 * totalPage);
 					totalPage = Math.ceil(mainBodyHeight / pageHeight);
-				} else {
-					document.getElementById('display').innerHTML="2, " + mainBodyHeight + ", " + (mainBodyHeight / pageHeight) + ", " +totalPage + ", " + pageHeight;
 				}
                 var totalHeight = totalPage * pageHeight;
 
@@ -139,7 +136,7 @@
                 </table>
                 <br/>
 
-                <p>NOW THEREFORE, it is hereby agreed as follows:</p>
+                <p>NOW THEREFORE, it is hereby agreed as follows: </p>
 
                 <table style="margin-top: 1rem;">
                     <tr>
@@ -211,6 +208,7 @@
                 <br>
             </div>
             <div class="bottom-section">
+                <div style="margin-top: 2rem;">
 
                     <table style="border: 0; width: 100%; margin-top: 3rem;">
                         <tr class="noBorder">
@@ -242,6 +240,7 @@
                             <td style="width: 45%">Designation: </td>
                         </tr>
                     </table>
+                </div>
             </div>
         </div>
 	</body>
