@@ -27,7 +27,7 @@ public class Criterion implements Serializable, Cloneable {
 
 	public enum RestrictionType {
 		EQUAL("="), LESS_OR_EQUAL(SIGN_LESS_OR_EQUAL), GREATER_OR_EQUAL(SIGN_GREATER_OR_EQUAL), GREATER(">"), LESS("<"), NOT_EQUAL("<>"),
-		IN("in"), NOT_IN("not in"), IS_NULL("is null"), IS_NOT_NULL("is not null");
+		IN("in"), NOT_IN("not in"), IS_NULL("is null"), IS_NOT_NULL("is not null"), IS_BLANK("is null");
 
 		private String sign;
 
