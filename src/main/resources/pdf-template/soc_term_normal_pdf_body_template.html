@@ -83,10 +83,17 @@
                 var mainBodyHeight = (mainBody.clientHeight) /  2;
                 var totalPage = Math.ceil(mainBodyHeight / pageHeight);
                 
-                if(mainBodyHeight > (pageHeight * 75 /100)){
-					pageHeight = pageHeight + (1130 * totalPage);
-					totalPage = Math.ceil(mainBodyHeight / pageHeight);
-				}
+                if (mainBodyHeight > pageHeight && (mainBodyHeight / pageHeight)%1 > 0.4) {	
+				//document.getElementById('display').innerHTML="1, " + mainBodyHeight + ", " + (mainBodyHeight / pageHeight) + ", " + pageHeight;
+				pageHeight = pageHeight + (1130 * totalPage);
+				totalPage = Math.ceil(mainBodyHeight / pageHeight);
+			} else if((mainBodyHeight / pageHeight) > 0.9 && (mainBodyHeight / pageHeight) < 1.0){
+				//document.getElementById('display').innerHTML="2, " + mainBodyHeight + ", " + (mainBodyHeight / pageHeight) + ", " +totalPage + ", " + pageHeight;
+				pageHeight = pageHeight + (1130 * totalPage);
+				totalPage = Math.ceil(mainBodyHeight / pageHeight);
+			} else {
+				//document.getElementById('display').innerHTML="3, " + mainBodyHeight + ", " + (mainBodyHeight / pageHeight) + ", " +totalPage + ", " + pageHeight;
+			}
                 var totalHeight = totalPage * pageHeight;
 
                 document.querySelectorAll('.main-body')[0].style.height = totalHeight + 'px';
@@ -204,8 +211,6 @@
                         <td width="70%" th:utext="${termsConditions}">Other terms and conditions</td>
                     </tr>
                 </table>
-                <!-- <div class="page-break"></div> -->
-                <br>
             </div>
             <div class="bottom-section">
                 <div style="margin-top: 2rem;">
