@@ -64,6 +64,8 @@
             -webkit-box-pack: justify;
 
             position: relative;
+            
+            letter-spacing: 10px;
         }
         
         table { 
@@ -82,7 +84,18 @@
                 var pageHeight = 2260;
                 var mainBodyHeight = (mainBody.clientHeight) /  2;
                 var totalPage = Math.ceil(mainBodyHeight / pageHeight);
-				
+				if (mainBodyHeight > pageHeight && (mainBodyHeight / pageHeight)%1 > 0.4) {	
+				if((mainBodyHeight / pageHeight) > 2.0){
+					//document.getElementById('display').innerHTML="1, " + mainBodyHeight + ", " + (mainBodyHeight / pageHeight) + ", " +totalPage + ", " + pageHeight;
+					pageHeight = pageHeight + (1130 * totalPage);
+					totalPage = Math.ceil(mainBodyHeight / pageHeight);
+				}
+			}else {
+				if((mainBodyHeight / pageHeight)%1 < 0.1){
+					//document.getElementById('display').innerHTML="3, " + mainBodyHeight + ", " + (mainBodyHeight / pageHeight) + ", " +totalPage + ", " + pageHeight;
+					totalPage = totalPage - 1;
+				}
+			}
                 var totalHeight = totalPage * pageHeight;
 
                 document.querySelectorAll('.main-body')[0].style.height = totalHeight + 'px';
@@ -210,7 +223,7 @@ Kg</td>
                     </tr>
                 </table>
                 <!-- <div class="page-break"></div> -->
-                <br>
+                <!--<br>-->
             </div>
             <div class="bottom-section">
                 <div style="margin-top: 2rem;">
