@@ -89,7 +89,7 @@
 				//document.getElementById('display').innerHTML="1, " + mainBodyHeight + ", " + (mainBodyHeight / pageHeight) + ", " + pageHeight;
 				pageHeight = pageHeight + (1130 * totalPage);
 				totalPage = Math.ceil(mainBodyHeight / pageHeight);
-			} else if((mainBodyHeight / pageHeight) > 0.9 && (mainBodyHeight / pageHeight) < 1.0){
+			} else if((mainBodyHeight / pageHeight) > 0.9 && (mainBodyHeight / pageHeight) <= 1.0){
 				//document.getElementById('display').innerHTML="2, " + mainBodyHeight + ", " + (mainBodyHeight / pageHeight) + ", " +totalPage + ", " + pageHeight;
 				pageHeight = pageHeight + (1130 * totalPage);
 				totalPage = Math.ceil(mainBodyHeight / pageHeight);
