@@ -68,15 +68,6 @@
 
 			position: relative;
 		}
-
-		table {
-			page-break-inside: auto
-		}
-
-		tr {
-			page-break-inside: avoid;
-			page-break-after: auto
-		}
 	</style>
 	<script>
 		function setBodyHeight() {
@@ -95,7 +86,7 @@
 <body style="font-family: arial;" onload="setBodyHeight()">
 
 	<div class="main-body">
-		<div class="top-section" style="margin-top: 1rem;">
+		<div class="top-section">
 			<table>
 				<tr>
 					<td class="labelBold" width="35%">AGREEMENT NUMBER :</td>
@@ -214,7 +205,7 @@
 							th:text="${#numbers.formatDecimal(totalPrice, 0, 'COMMA', priceDecimalDigits, 'POINT')}">
 					</td>
 				</tr>
-				<tr>
+				<tr style="page-break-inside: avoid;">
 					<td width="30%">PAYMENT</td>
 					<td width="70%" th:text="${payment}" style="white-space: pre-line;"></td>
 				</tr>
