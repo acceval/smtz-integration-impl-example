@@ -71,6 +71,7 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 		return queryByMapParam(mapParam, this.getTargetClass());
 	}
 
+	
 	/**
 	 * convert map to criteria and inquiry, normally use for Search Form, with
 	 * pagination
@@ -140,8 +141,9 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 			try {
 				String resolveKey = this.getMapPropertyResolver().containsKey(key) ? getMapPropertyResolver().get(key) : key;
 				Field field = this.getField(targetClass, resolveKey);
-				if (field == null) 
+				if (field == null) {
 					continue;
+				}
 				Class<?> attrClass = field.getType();
 
 				if (mapParam.getFirst(key) == null) {
@@ -219,6 +221,10 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 					} else {
 						lstCrriterion.add(
 								new Criterion(resolveKey, Enum.valueOf(attrClass.asSubclass(Enum.class), mapParam.getFirst(key)), true));
+						if (resolveKey.equals("state")) {
+						lstCrriterion.add(
+								new Criterion("salesDocNumber", "CTN-0000000034", true));
+						}
 					}
 				} else if (ClassUtils.isAssignable(attrClass, Collection.class)) {
 					// seem Collection work in mongo
@@ -254,14 +260,28 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 				acceCriteria.appendCriterion(new Criterion("companyId", companyId));
 			}
 		}
+		
+		for (String key: mapParam.keySet()) {
+			int index = key.indexOf("_");
+			if (index != -1) {
+				String nestedKey = key.substring(0, index);
+				String propertyKey = key.substring(index + 1);
+				for (Criterion criterion: acceCriteria.getCriterion()) {
+					if (criterion.getPropertyName().equals(propertyKey)) {
+						criterion.setNestedConditionKey(nestedKey);
+					}
+				}
+			}
+		}
 
 		return acceCriteria;
 	}
 
+
 	@Override
 	public QueryResult<T> queryByCriteria(Criteria acceCriteria) {
 		return queryByCriteria(acceCriteria, this.getTargetClass());
-	}
+	}	
 
 	@Override
 	public QueryResult<T> queryByCriteria(Criteria acceCriteria, Class<?> targetClass) {
@@ -1046,11 +1066,17 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 
 		return queryResult;
 	}
+	
+	@Override
+	public QueryResult<T> queryByCriteria(Criteria andCriteria, Criteria orCriteria) {
+		return queryByCriteria(andCriteria, orCriteria, this.getTargetClass());
+	}
 
 	/**
 	 * @Deprecated use queryByCriteria(Criteria, Class<?>)
 	 */
-	@Deprecated
+//	@Deprecated
+	@Override
 	public QueryResult<T> queryByCriteria(Criteria andCriteria, Criteria orCriteria, Class<?> targetClass) {
 
 		/** start query */
@@ -1067,10 +1093,81 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 
 		List<org.springframework.data.mongodb.core.query.Criteria> orCriterias =
 				(List<org.springframework.data.mongodb.core.query.Criteria>) this.getMongoCriterias(orCriteria)[0];
-		org.springframework.data.mongodb.core.query.Criteria[] orCriteriaArray =
-				orCriterias.toArray(new org.springframework.data.mongodb.core.query.Criteria[orCriterias.size()]);
+		
 		org.springframework.data.mongodb.core.query.Criteria criteria = new org.springframework.data.mongodb.core.query.Criteria();
-		criteria.orOperator(orCriteriaArray);
+		
+		if (orCriterias != null && orCriterias.size() > 0) {
+			
+			List<org.springframework.data.mongodb.core.query.Criteria> reformCriterias 
+				= new ArrayList<org.springframework.data.mongodb.core.query.Criteria>();
+						
+			HashMap<String, List<org.springframework.data.mongodb.core.query.Criteria>> nestedCriteriaMap 
+				= new HashMap<String, List<org.springframework.data.mongodb.core.query.Criteria>>();
+			
+			for (Criterion criterion: orCriteria.getCriterion()) {
+				if (criterion.getNestedConditionKey() != null) {
+					String nestedKey = criterion.getNestedConditionKey();
+					if (!nestedCriteriaMap.containsKey(nestedKey)) {
+						List<org.springframework.data.mongodb.core.query.Criteria> nestedCriterias 
+							= new ArrayList<org.springframework.data.mongodb.core.query.Criteria>();
+						org.springframework.data.mongodb.core.query.Criteria nestedCriteria = null;
+						for (org.springframework.data.mongodb.core.query.Criteria searchCriteria: orCriterias) {
+							if (searchCriteria.getKey().equals(criterion.getPropertyName())) {
+								nestedCriteria = searchCriteria;
+							}
+						}
+						if (nestedCriteria != null) {
+							nestedCriterias.add(nestedCriteria);
+							nestedCriteriaMap.put(nestedKey, nestedCriterias);
+						}
+					} else {
+						List<org.springframework.data.mongodb.core.query.Criteria> nestedCriterias 
+							= nestedCriteriaMap.get(nestedKey);
+						org.springframework.data.mongodb.core.query.Criteria nestedCriteria = null;
+						for (org.springframework.data.mongodb.core.query.Criteria searchCriteria: orCriterias) {
+							if (searchCriteria.getKey().equals(criterion.getPropertyName())) {
+								nestedCriteria = searchCriteria;
+							}
+						}
+						if (nestedCriteria != null) {
+							nestedCriterias.add(nestedCriteria);
+						}
+					}
+				} else {
+
+					org.springframework.data.mongodb.core.query.Criteria mainCriteria = null;
+					for (org.springframework.data.mongodb.core.query.Criteria searchCriteria: orCriterias) {
+						if (searchCriteria.getKey().equals(criterion.getPropertyName())) {
+							mainCriteria = searchCriteria;
+						}
+					}
+					if (mainCriteria != null) {
+						reformCriterias.add(mainCriteria);
+					}					
+				}
+			}
+			
+			for (String key: nestedCriteriaMap.keySet()) {
+				List<org.springframework.data.mongodb.core.query.Criteria> nestedCriterias = nestedCriteriaMap.get(key);
+				org.springframework.data.mongodb.core.query.Criteria nestedCriteria = null;
+				
+				for (org.springframework.data.mongodb.core.query.Criteria subCriteria: nestedCriterias) {
+					if (nestedCriteria == null) {
+						nestedCriteria = subCriteria;
+					} else {
+						nestedCriteria.andOperator(subCriteria);
+					}
+				}
+				if (nestedCriteria != null) {
+					reformCriterias.add(nestedCriteria);
+				}
+			}
+						
+			org.springframework.data.mongodb.core.query.Criteria[] criteriaArray =
+					reformCriterias.toArray(new org.springframework.data.mongodb.core.query.Criteria[reformCriterias.size()]);
+			
+			criteria.orOperator(criteriaArray);
+		}
 
 		query.addCriteria(criteria);
 

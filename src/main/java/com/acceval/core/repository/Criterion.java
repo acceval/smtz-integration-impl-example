@@ -57,6 +57,8 @@ public class Criterion implements Serializable, Cloneable {
 	private String searchValueDataType = STRING;
 
 	RestrictionType restrictionType = RestrictionType.EQUAL;
+	
+	private String nestedConditionKey;
 
 	public Criterion() {
 
@@ -233,6 +235,14 @@ public class Criterion implements Serializable, Cloneable {
 
 	public void setAlternatePropertyName(String alternatePropertyName) {
 		this.alternatePropertyName = alternatePropertyName;
+	}
+	
+	public String getNestedConditionKey() {
+		return nestedConditionKey;
+	}
+
+	public void setNestedConditionKey(String nestedConditionKey) {
+		this.nestedConditionKey = nestedConditionKey;
 	}
 
 	public static void buildDefaultSortingDesc(MultiValueMap<String, String> mapParam, String... properties) {

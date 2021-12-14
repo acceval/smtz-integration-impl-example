@@ -21,8 +21,12 @@ public interface BaseMongoRepository<T> {
 		List<DateTimeRange> dateTimeRanges);
 
 	QueryResult<T> queryByCriteria(Criteria acceCriteria);
-
+	
 	QueryResult<T> queryByCriteria(Criteria acceCriteria, Class<?> targetClass);
+	
+	QueryResult<T> queryByCriteria(Criteria andCriteria, Criteria orCriteria);
+
+	QueryResult<T> queryByCriteria(Criteria andCriteria, Criteria orCriteria, Class<?> targetClass);		
 
 	Criteria getCriteriaByMapParam(MultiValueMap<String, String> mapParam);
 
