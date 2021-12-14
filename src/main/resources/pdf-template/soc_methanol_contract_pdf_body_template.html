@@ -84,7 +84,19 @@
 			var pageHeight = 1130;
 			var mainBodyHeight = (mainBody.clientHeight) / 2;
 			var totalPage = Math.ceil(mainBodyHeight / pageHeight);
-				
+			
+			if (mainBodyHeight > pageHeight && (mainBodyHeight / pageHeight)%1 > 0.4) {	
+				//document.getElementById('display').innerHTML="1, " + mainBodyHeight + ", " + (mainBodyHeight / pageHeight) + ", " + pageHeight;
+				pageHeight = pageHeight + (1130 * totalPage);
+				totalPage = Math.ceil(mainBodyHeight / pageHeight);
+			} else if((mainBodyHeight / pageHeight) > 0.9 && (mainBodyHeight / pageHeight) <= 1.0){
+				//document.getElementById('display').innerHTML="2, " + mainBodyHeight + ", " + (mainBodyHeight / pageHeight) + ", " +totalPage + ", " + pageHeight;
+				pageHeight = pageHeight + (1130 * totalPage);
+				totalPage = Math.ceil(mainBodyHeight / pageHeight);
+			} else {
+				//document.getElementById('display').innerHTML="3, " + mainBodyHeight + ", " + (mainBodyHeight / pageHeight) + ", " +totalPage + ", " + pageHeight;
+			}
+			
 			var totalHeight = totalPage * pageHeight;
 
 			document.querySelectorAll('.main-body')[0].style.height = totalHeight + 'px';
@@ -102,6 +114,7 @@
 				<tr>
 					<td class="labelBold" width="35%">AGREEMENT NUMBER :</td>
 					<td width="65%" th:text="${PONumber}">Agreement Number</td>
+					<!--<td width="65%"><span id="display"></span></td>-->
 				</tr>
 				<tr>
 					<td class="labelBold" width="35%">SALES ORDER CONFIRMATION NUMBER & DATE :</td>

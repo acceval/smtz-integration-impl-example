@@ -239,6 +239,62 @@ public class FileUtil {
 		return Paths.get(xlsxFile);
 	}
 
+	public static Path convertCsvStringToExcel(String fileName, List<String> csvString)
+			throws IOException, InvalidFormatException {
+
+		String xlsxFile = fileName;
+		Path rootLocation = Paths.get(new StorageProperties().getLocation());
+		Path xlsxPath = rootLocation.resolve(xlsxFile);
+		if (!Files.exists(xlsxPath.getParent())) {
+			Files.createDirectories(xlsxPath.getParent());
+		}
+		// create sheet
+		Workbook wb = new XSSFWorkbook();
+		Sheet sheet = wb.createSheet();
+		// read from file
+		CellStyle builtInShortDate = wb.createCellStyle();
+		int rowNum = 0;
+		for (String line : csvString) {
+			// create one row per line
+			Row row = sheet.createRow(rowNum);
+			// split by comma
+			List<String> itemsLst = Splitter.on(Pattern.compile(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)")).splitToList(line);
+			String[] items = itemsLst.toArray(new String[0]);
+			// ignore first item
+			for (int i = 0, col = 0; i < items.length; i++) {
+				String item = "";
+				// strip quotation marks
+				if (StringUtils.isNotBlank(items[i])) {
+					item = items[i].substring(1, items[i].length() - 1);
+				}
+
+				Cell cell = row.createCell(col++);
+				// set item
+				if (isValidDate(item)) {
+					try {
+						Date itemDate = DateUtils.parseDateStrictly(item, STD_DATEFORMAT);
+						cell.setCellStyle(builtInShortDate);
+						builtInShortDate.setDataFormat((short) 14);
+						cell.setCellValue(itemDate);
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
+				} else {
+					cell.setCellValue(item);
+				}
+			}
+			// read next line
+			rowNum++;
+		}
+		// write to xlsx
+		FileOutputStream out = new FileOutputStream(xlsxFile);
+		wb.write(out);
+		// close resources
+		out.close();
+
+		return Paths.get(xlsxFile);
+	}
+
 	public static final void writeToFile(File file, String encoding, String content) throws IOException {
 
 		FileOutputStream fos = null;

@@ -495,6 +495,8 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 			return new Predicate[] { builder.isNull(path) };
 		} else if (Criterion.RestrictionType.IS_NOT_NULL.equals(restrictionType)) {
 			return new Predicate[] { builder.isNotNull(path) };
+		} else if (Criterion.RestrictionType.IS_BLANK.equals(restrictionType)) {
+			return new Predicate[] { builder.or(builder.isNull(path), builder.equal(path, "")) };
 		}
 		// LIKE
 		else if (!criterion.isExactSearch() && value instanceof String) {
@@ -811,7 +813,7 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 				Class<?> attrClass = getPath(root, resolveKey).getJavaType();
 
 				if (mapParam.getFirst(key) == null || mapParam.getFirst(key).equalsIgnoreCase("isNil")) {
-					lstCrriterion.add(new Criterion(resolveKey, RestrictionType.IS_NULL, mapParam.getFirst(key)));
+					lstCrriterion.add(new Criterion(resolveKey, RestrictionType.IS_BLANK, mapParam.getFirst(key)));
 				} else if (ClassUtils.isAssignable(attrClass, Long.class, true)) {
 					List<String> searchValue = mapParam.get(key);
 
