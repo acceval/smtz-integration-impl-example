@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<!-- <link th:href="${cssPath}" rel="stylesheet"/> -->
+		<style>
+		table {
+			width: 100%;
+			border: 1px solid rgb(0, 0, 0);
+			border-collapse: collapse;
+		}
+
+		table table.noBorder {
+			width: 100%;
+			border: 0;
+		}
+
+		table table.noBorder tr {
+			border: 0;
+		}
+
+		table table.noBorder td {
+			border: 0;
+		}
+
+		table, th, td {
+			border: 1px solid rgb(0, 0, 0);
+		}
+
+		td {
+			padding: 0.5rem
+		}
+
+		.labelBold {
+			text-align: left;
+			padding: 0.3rem 0.5rem;
+			font-weight: bold;
+		}
+
+		.page-break {
+			height: 0;
+			page-break-after: always;
+			margin: 0;
+			border-top: none;
+		}
+
+		.inlineTable {
+			width: 40%;
+			border: 0;
+		}
+
+		tr.noBorder td {
+			border: 0;
+		}
+
+        .main-body {
+            display: flex;
+            display: -webkit-box;
+
+            flex-direction: column;
+            -webkit-box-orient: vertical;
+
+            justify-content: space-between;
+            -webkit-box-pack: justify;
+
+            position: relative;
+        }
+        
+        table { 
+			page-break-inside:auto 
+		}
+		
+    	tr { 
+			page-break-inside:avoid; 
+			page-break-after:auto 
+		}
+
+		</style>
+        <script>
+            function setBodyHeight() {
+                var mainBody = document.querySelectorAll('.main-body')[0];
+                var pageHeight = 1130;
+                var mainBodyHeight = (mainBody.clientHeight) /  2;
+                var totalPage = Math.ceil(mainBodyHeight / pageHeight);
+                var totalHeight = totalPage * pageHeight;
+
+                document.querySelectorAll('.main-body')[0].style.height = totalHeight + 'px';
+            }
+        </script>
+	</head>
+	<body style="font-family: arial;" onload="setBodyHeight()">
+
+        <div class="main-body">
+            <div class="top-section">
+                <table style="margin-top: 3rem;">
+                    <tr>
+                        <td class="labelBold" width="35%">CONTRACT NO:</td>
+                        <td width="65%" th:text="${PONumber}">Agreement Number</td>
+                    </tr>
+                    <tr>
+                        <td class="labelBold" width="35%">CONTRACT DATE :</td>
+                        <td width="65%" th:text="${agreementCommencementDate}">Agreement Commencement Date</td>
+                    </tr>
+                    <tr>
+                        <td class="labelBold" width="35%" style="vertical-align: baseline;">SELLER</td>
+                        <td width="65%">
+                        	<p style="margin: 0; padding-left: 0;" class="labelBold" th:utext="${sellerCompanyNameUpperCase}">abc</p>
+                            <p style="margin: 0;" th:utext="${sellerAddress}">efg</p>
+                            <p style="margin: 0;"><span>Telephone: </span><span th:utext="${sellerPhoneNumber}">123456</span></p>
+                            <p style="margin: 0;"><span>Attention: </span><span th:utext="${sellerAttention}">WHO</span></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="labelBold" width="35%" style="vertical-align: baseline;">BUYER</td>
+                        <td width="65%">
+                        	<p style="margin: 0; padding-left: 0;" class="labelBold" th:utext="${buyerName}">hij</p>
+                            <p style="margin: 0;" th:utext="${buyerAddress}">klm</p>
+                            <p style="margin: 0;"><span>Telephone: </span><span th:utext="${buyerTelephoneNo}">123456</span></p>
+                            <p style="margin: 0;;"><span>Facsimile: </span><span th:utext="${buyerFacsimile}">987654</span></p>
+                            <p style="margin: 0;"><span>Attention: </span><span th:utext="${buyerAttention}">WHO</span></p>
+                        </td>
+                    </tr>
+                </table>
+                <br/>
+
+                <p>TNOW THEREFORE, it is hereby agreed as follows:</p>
+
+                <table>
+                    <tr style="height: 0;">
+                        <td width="30%" class="labelBold" style="vertical-align: baseline;">PRODUCT</td>
+                        <td width="70%" th:text="${productListText}">C150Y</td>
+                    </tr>
+                    <tr>
+                        <td width="30%" class="labelBold" style="vertical-align: baseline;">CARGO ORIGIN</td>
+                        <td width="70%" th:text="${cargoOrigin}">Cargo Origin</td>
+                    </tr>
+                    <tr>
+                        <td width="30%" class="labelBold" style="vertical-align: baseline;">VOLUME</td>
+                        <td width="70%">
+                        	<p style="margin: 0;" th:each="orderItem, iter: ${orderItems}">
+                        		<span th:text="${orderItem.productName}"></span>
+                        		 - 
+                        		<span th:text="${#numbers.formatDecimal(orderItem.quantity, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></span>
+                        		 <span th:text="${orderItem.uomCode}"></span> 
+                        		<span th:if="${orderItem.containerVolume != null}">(<span th:text="${orderItem.containerVolume}"></span>)</span>
+                        	</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td  width="30%" class="labelBold" style="vertical-align: baseline;">PACKAGING</td>
+                        <td width="70%" style="white-space: pre;" th:text="${packagingTexts}">Pakaging</td>
+                    </tr>
+                    <tr>
+                        <td  width="30%" class="labelBold" style="vertical-align: baseline;">TERMS OF DELIVERY</td>
+                        <td width="70%" th:text="${termOfDelivery}">Terms of Delivery</td>
+                    </tr>
+                    <tr>
+                        <td  width="30%" class="labelBold" style="vertical-align: baseline;">UNIT PRICE</td>
+                        <td width="70%">
+                        	<p style="margin: 0;" th:each="orderItem, iter: ${orderItems}">
+                        		<span th:text="${orderItem.productName}"></span>
+                        		 - 
+                        		<span th:text="${thailandCurrencyCode}"></span> 
+                        		<span th:if="${orderItem.itemTotalInvoiceTHB != '0.00'}" th:text="${#numbers.formatDecimal(orderItem.itemTotalInvoiceTHB, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></span>
+                        		<span th:if="${orderItem.itemTotalInvoiceTHB == '0.00'}">-</span>
+                        		 / 
+                        		<span th:text="${orderItem.uomCode}"></span> 
+                        		(<span th:text="${currencyCode}"></span>
+                        		<span th:text="${#numbers.formatDecimal(orderItem.invoicePrice, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></span>
+                        		/ <span th:text="${orderItem.uomCode}"></span>)
+                        	</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="30%" class="labelBold" style="vertical-align: baseline;">TOTAL PRICE</td>
+                        <td width="70%">
+                        	<span>THB </span>
+                        	<span th:if="${totalPriceInTHB != '0.00'}">
+                        	<span th:text="${#numbers.formatDecimal(totalPriceInTHB, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></span>
+                        	(<span th:text="${mergePriceEnglishText}">...</span>)
+                        	</span>
+                        	<span th:if="${totalPriceInTHB == '0.00'}">-</span>
+                        	<br>
+                        	<span>Remark- This price is not include VAT7%</span>
+                        	<br>
+                        	<span>(Reference Exchange rate from Bank of Thailand at Buying Transfer column published on 
+                        	<span th:text="${exchangeRateDate}">October 11, 2021</span> THB <span th:if="${exchangeRate == '0.0'}">-</span><span th:if="${exchangeRate != '0.0'}" th:text="${#numbers.formatDecimal(exchangeRate, 1, 'COMMA', 5, 'POINT')}">33.70</span> / USD 1)</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="30%" class="labelBold" style="vertical-align: baseline;">PAYMENT</td>
+                        <td width="70%" th:text="${payment}" style="white-space: pre-line;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="30%" class="labelBold" style="vertical-align: baseline;">DELIVERY DATE RANGE</td>
+                        <td width="70%" th:text="${deliveryDateRange}">Delivery Date Range</td>
+                    </tr>
+                    <tr>
+                        <td width="30%" class="labelBold" style="vertical-align: baseline;">LOADING PORT</td>
+                        <td width="70%" th:text="${loadPort}"></td>
+                    </tr>
+                    <tr>
+                        <td width="30%" class="labelBold" style="vertical-align: baseline;">DISCHARGE PORT</td>
+                        <td width="70%" th:text="${dischargePortText}">Discharge Port</td>
+                    </tr>
+                    <tr>
+                        <td width="30%" class="labelBold" style="vertical-align: baseline;">INSURANCE</td>
+                        <td width="70%" th:text="${insurance}">Buyer's account</td>
+                    </tr>
+                    <tr>
+                        <td width="30%" class="labelBold" style="vertical-align: baseline;">TAX AND DUTIES</td>
+                        <td width="70%" th:utext="${taxDuties}">Tax and Duties</td>
+                    </tr>
+                    <tr>
+                        <td width="30%" class="labelBold" style="vertical-align: baseline;">PURPOSE OF PRODUCT USAGE IN THAILAND</td>
+                        <td width="70%">Plastic Packaging</td>
+                    </tr>
+                    <tr>
+                        <td width="30%" class="labelBold" style="vertical-align: baseline;">LICENSE AND DOCUMENTATION REQUIREMENTS IN THAILAND</td>
+                        <td width="70%">N/A</td>
+                    </tr>
+                    <tr>
+                        <td width="30%" class="labelBold" style="vertical-align: baseline;">RESPONSIBLE PERSON FOR APPLYING LICENSES</td>
+                        <td width="70%">
+                        	Undertakings: The Buyer shall be responsible for obtaining any necessary customs import
+                        	clearance, and shall give all reasonable assistance to the Seller in obtaining any import license,
+                        	hazardous substance licenses and all other licenses which the Seller may require at no  cost to Seller.
+                        	Buyer shall indemnify anf hold Seller harmless from and against any and all claims, liabilities and expenses
+                        	resulting from failure to assist the Seller in obtaining any import license, hazardous substance licenses
+                        	and all other licenses or from Buyer's incorrect notification or from failure to comply with customs import
+                        	clearance formality and regulations controlling hazardous substances from time to time in Thailand.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="30%" class="labelBold" style="vertical-align: baseline;">BOI INCENTIVES (IF ANY)</td>
+                        <td width="70%">N/A</td>
+                    </tr>
+                </table>
+            </div>
+			<div class="bottom-section" style="margin-top: 2rem;">
+				<table style="border: 0; width: 100%;">
+					<tr class="noBorder">
+						<td class="labelBold" style="width: 45%">SELLER</td>
+						<td style="width: 10%"></td>
+						<td class="labelBold" style="width: 45%">BUYER</td>
+					</tr>
+					<tr class="noBorder" style="vertical-align: top">
+						<td class="labelBold" style="width: 45%" th:utext="${sellerCompanyNameUpperCase}">Seller Company Name
+						</td>
+						<td style="width: 10%"></td>
+						<td class="labelBold" style="width: 45%" th:utext="${buyerName}">Buyer Company Name</td>
+					</tr>
+					<tr class="noBorder">
+						<td colspan="3" style="height: 5rem;">&nbsp;</td>
+					</tr>
+					<tr class="noBorder">
+						<td style="width: 45%;">Name: </td>
+						<td style="width: 10%;"></td>
+						<td style="width: 45%;">Name: </td>
+					</tr>
+					<tr class="noBorder">
+						<td style="width: 45%; padding-top: 0;">Designation: </td>
+						<td style="width: 10%; padding-top: 0;"></td>
+						<td style="width: 45%; padding-top: 0;">Designation: </td>
+					</tr>
+				</table>
+			</div>
+        </div>
+	</body>
+</html>
