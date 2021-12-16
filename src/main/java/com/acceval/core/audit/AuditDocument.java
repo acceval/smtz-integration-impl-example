@@ -11,5 +11,5 @@ public @interface AuditDocument {
 	
 	AuditType auditType();
 	String contentType();
-
+	String documentType();
 }

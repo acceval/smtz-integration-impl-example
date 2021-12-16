@@ -6,11 +6,12 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.WordUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.javers.core.Javers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,25 +45,39 @@ public class DocumentAuditAspect {
 		
 		Object[] args = joinPoint.getArgs();
 		
+		logRequest.setInfo1(auditDocument.documentType());
+		
 		if (auditDocument.contentType().equals("MULTIPART")) {
+			
 			for (Object arg: args) {
 				if (arg instanceof MultipartFile) {
 					MultipartFile file = (MultipartFile) arg;
-					logRequest.setInfo2(file.getOriginalFilename());				
+					logRequest.setInfo3(file.getOriginalFilename());				
 				}
 				
 				if (arg instanceof String) {
 					String fileFunction = (String) arg;
-					logRequest.setInfo1(fileFunction);
+					if (auditDocument.documentType().equals("Condition Record")							
+							|| auditDocument.documentType().equals("Allocation Record")							
+							|| auditDocument.documentType().equals("Dimension Record")
+							|| auditDocument.documentType().equals("Transaction Record")) {
+						
+						String functionName = fileFunction.replace("_", " ");
+						functionName = WordUtils.capitalize(functionName);
+						logRequest.setInfo2(functionName);
+						
+					} else {
+						logRequest.setInfo2(fileFunction);
+					}					
 				}
 			}
+			
 		} else if (auditDocument.contentType().equals("TEXT")) {
 			
 			if (args.length > 0 && args[0] instanceof String) {
 				
 				String filename = (String) args[0];
-				logRequest.setInfo1("Search Screen Download");
-				logRequest.setInfo2(filename);				
+				logRequest.setInfo2(filename);
 			}
 		} else if (auditDocument.contentType().equals("HTTP")) {
 			
@@ -76,12 +91,21 @@ public class DocumentAuditAspect {
 				int lastIndex = uri.lastIndexOf("/");				
 				if (lastIndex != -1) {
 					String file = uri.substring(lastIndex + 1);
-					logRequest.setInfo1(file);
+					logRequest.setInfo3(file);
 				}
 			}			
 		} else if (auditDocument.contentType().equals("CUSTOM")) {
 			
-			logRequest.setInfo1(method.getName());
+			String[] words = method.getName().split("(?=\\p{Upper})");
+			String name = "";
+			for (String word: words) {
+				if (name.length() == 0) {
+					name = StringUtils.capitalize(word);
+				} else {
+					name = name + " " + word;
+				}
+			}
+			logRequest.setInfo2(name);
 			
 		} else if (auditDocument.contentType().equals("TEMPLATE")) {
 			
@@ -89,34 +113,31 @@ public class DocumentAuditAspect {
 					&& args[1] instanceof String) {
 				
 				String fileFunction = (String) args[0];
-				String filename = (String) args[1];
-				logRequest.setInfo1("Template");
+				String filename = (String) args[1];				
 				logRequest.setInfo2(fileFunction);
 				logRequest.setInfo3(filename);
 			} else if ( args.length > 0 && args[0] instanceof String) {
 				String fileFunction = (String) args[0];
-				logRequest.setInfo1("Template");
-				logRequest.setInfo2(fileFunction);				
+				if (auditDocument.documentType().equals("Condition Record Template")							
+						|| auditDocument.documentType().equals("Allocation Record Template")) {
+					
+					String functionName = fileFunction.replace("_", " ");
+					functionName = WordUtils.capitalize(functionName);
+					logRequest.setInfo2(functionName);
+					
+				} else {
+					logRequest.setInfo2(fileFunction);
+				}
 			}
 		} else if (auditDocument.contentType().equals("RECORD")) {
-			
-			String name = signature.getDeclaringTypeName();
-			
+						
 			if ( args.length > 0 && args[0] instanceof String) {
+				
 				String fileFunction = (String) args[0];
 				
-				logRequest.setInfo1("Record");
-				if (name != null) {
-					if (name.indexOf("ConditionRecordController") != -1) {
-						logRequest.setInfo2("Condition Record");
-					} else if (name.indexOf("PricingPowerController") != -1) {
-						logRequest.setInfo2("Pricing Power");
-					} else if (name.indexOf("AllocationRecordController") != -1) {
-						logRequest.setInfo2("Allocation Record");
-					} else if (name.indexOf("AllocationReportController") != -1) {
-						logRequest.setInfo2("Allocation Report");
-					}					
-				}
+				String functionName = fileFunction.replace("_", " ");
+				functionName = WordUtils.capitalize(functionName);
+				logRequest.setInfo2(functionName);
 				
 				logRequest.setInfo3(fileFunction);
 			}
