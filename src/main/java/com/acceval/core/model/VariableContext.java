@@ -269,7 +269,7 @@ public class VariableContext implements Serializable, Cloneable {
 		WFL_PRICING_MANDATE_FORMULA_2(" / Targeted Formula 2: [?]"), WFL_PRICING_MANDATE_VOLUME(
 				"Violated Pricing Mandate [?] Rule, Line Item ? ? Exceeded. Requested Volume: [?], ? Remaining: [?]"),
 		WFL_LOGISTICS_INCENTIVE(
-				"Violated Logistics Adjustment Rule. Line Item ?, Product: [?], Country: [?], Logistics Incentive [?], Targeted Logistics Incentive: [?]");
+				"Violated Logistics Adjustment Rule. Line Item ?, Product: [?], Country: [?], Logistics Adjustment [?], Targeted Logistics Adjustment: [?]");
 
 		private final String msg;
 
