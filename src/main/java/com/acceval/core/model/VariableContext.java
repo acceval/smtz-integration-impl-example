@@ -45,7 +45,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public final static String FORMULA = "FORMULA";
 	public final static String RULE_FORMULA = "RULE_FORMULA";
 	public final static String RULE_FORMULA_2 = "RULE_FORMULA_2";
-	public final static String LOGISTICS_INCENTIVE = "LOGISTICS_INCENTIVE";
+	public final static String LOGISTICS_ADJUSTMENT = "LOGISTICS_ADJUSTMENT";
 	public final static String ALPHA__PERCENTAGE_ = "ALPHA__PERCENTAGE_";
 	public final static String DOCUMENT_CATEGORY = "DOCUMENTCATEGORY";
 	public final static String PACKAGING = "PACKAGING";
@@ -269,7 +269,7 @@ public class VariableContext implements Serializable, Cloneable {
 		WFL_PRICING_MANDATE_FORMULA_2(" / Targeted Formula 2: [?]"), WFL_PRICING_MANDATE_VOLUME(
 				"Violated Pricing Mandate [?] Rule, Line Item ? ? Exceeded. Requested Volume: [?], ? Remaining: [?]"),
 		WFL_LOGISTICS_INCENTIVE(
-				"Violated Logistics Incentive Rule. Line Item ?, Product: [?], Country: [?], Logistics Incentive [?], Targeted Logistics Incentive: [?]");
+				"Violated Logistics Adjustment Rule. Line Item ?, Product: [?], Country: [?], Logistics Adjustment [?], Targeted Logistics Adjustment: [?]");
 
 		private final String msg;
 
