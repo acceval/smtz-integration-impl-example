@@ -43,6 +43,7 @@ import com.acceval.core.util.DateUtil;
 import com.acceval.core.util.TimeZoneUtil;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
+import com.rabbitmq.client.AMQP.Basic.Return;
 
 public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<T> {
 
@@ -98,13 +99,18 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 	 */
 	public Criteria getCriteriaByMapParam(MultiValueMap<String, String> mapParam, Class<?> targetClass) {
 		return getCriteriaByMapParam(mapParam, targetClass, false);
+	}	
+	
+	public Criteria getCriteriaByMapParam(MultiValueMap<String, String> mapParam, Class<?> targetClass, boolean isOrCriteria) {
+		return getCriteriaByMapParam(mapParam, null, targetClass, isOrCriteria);
 	}
-
+	
 	/**
 	 * convert map to criteria
 	 */
-	public Criteria getCriteriaByMapParam(MultiValueMap<String, String> mapParam, Class<?> targetClass, boolean isOrCriteria) {
-
+	public Criteria getCriteriaByMapParam(MultiValueMap<String, String> mapParam, Map<String, String> propertyResolver, 
+			Class<?> targetClass, boolean isOrCriteria) {
+	
 		int page = mapParam.get(_PAGE) != null ? Integer.parseInt(mapParam.getFirst(_PAGE)) : 0;
 		int pageSize = mapParam.get(_PAGESIZE) != null ? Integer.parseInt(mapParam.getFirst(_PAGESIZE)) : 0;
 		boolean isFetchAll = mapParam.get(_FETCHALL) != null ? Boolean.parseBoolean(mapParam.getFirst(_FETCHALL)) : false;
@@ -139,7 +145,13 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 			}
 
 			try {
-				String resolveKey = this.getMapPropertyResolver().containsKey(key) ? getMapPropertyResolver().get(key) : key;
+				String resolveKey = null;
+				if (propertyResolver != null) {
+					resolveKey = propertyResolver.containsKey(key) ? propertyResolver.get(key) : key;
+				} else {
+					resolveKey = this.getMapPropertyResolver().containsKey(key) ? getMapPropertyResolver().get(key) : key;
+				}
+				
 				Field field = this.getField(targetClass, resolveKey);
 				if (field == null) {
 					continue;
@@ -262,7 +274,7 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 		}
 		
 		for (String key: mapParam.keySet()) {
-			int index = key.indexOf("_");
+			int index = key.indexOf("-");
 			if (index != -1) {
 				String nestedKey = key.substring(0, index);
 				String propertyKey = key.substring(index + 1);

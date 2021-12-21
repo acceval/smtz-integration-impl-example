@@ -1,6 +1,7 @@
 package com.acceval.core.repository;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.util.MultiValueMap;
 
@@ -26,12 +27,15 @@ public interface BaseMongoRepository<T> {
 	
 	QueryResult<T> queryByCriteria(Criteria andCriteria, Criteria orCriteria);
 
-	QueryResult<T> queryByCriteria(Criteria andCriteria, Criteria orCriteria, Class<?> targetClass);		
+	QueryResult<T> queryByCriteria(Criteria andCriteria, Criteria orCriteria, Class<?> targetClass);	
 
 	Criteria getCriteriaByMapParam(MultiValueMap<String, String> mapParam);
 
 	Criteria getCriteriaByMapParam(MultiValueMap<String, String> mapParam, Class<?> targetClass);
-
+	
+	Criteria getCriteriaByMapParam(MultiValueMap<String, String> mapParam, Map<String, String> propertyResolver, 
+			Class<?> targetClass, boolean isOrCriteria);
+	
 	Object[] getMongoCriterias(Criteria acceCriteria);
 
 	Object[] getMongoCriterias(Criteria acceCriteria, Class<?> targetClass);
