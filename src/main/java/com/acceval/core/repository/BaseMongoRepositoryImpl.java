@@ -232,11 +232,7 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 						lstCrriterion.add(new Criterion(resolveKey, searchValues));
 					} else {
 						lstCrriterion.add(
-								new Criterion(resolveKey, Enum.valueOf(attrClass.asSubclass(Enum.class), mapParam.getFirst(key)), true));
-						if (resolveKey.equals("state")) {
-						lstCrriterion.add(
-								new Criterion("salesDocNumber", "CTN-0000000034", true));
-						}
+								new Criterion(resolveKey, Enum.valueOf(attrClass.asSubclass(Enum.class), mapParam.getFirst(key)), true));						
 					}
 				} else if (ClassUtils.isAssignable(attrClass, Collection.class)) {
 					// seem Collection work in mongo
