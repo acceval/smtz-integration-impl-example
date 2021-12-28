@@ -178,7 +178,8 @@
                         	<p style="font-weight: normal; margin: 0;">
 								含税单价 （人民币/<span th:text="${docUomCodeChinese}"></span>）
 							</p>
-                			<p style="margin: 0; font-weight: normal;">UNIT PRICE (TAX INCLUDED, RMB / <span th:text="${docUomCode}"></span>)</p>
+                			<p style="margin: 0; font-weight: normal;">UNIT PRICE</p>
+                			<p style="margin: 0; font-weight: normal;">(TAX INCLUDED, RMB / <span th:text="${docUomCode}"></span>)</p>
                         </th>
                         <th class="labelBold" style="text-align: center; width: 20%;">
                         	<p style="font-weight: normal; margin: 0;">
@@ -192,7 +193,7 @@
                         	<p th:text="${orderItem.productNameInChinese}">Product</p>
                         	<p th:text="${orderItem.productName}">Product</p>
                         </td>
-                        <td style="text-align: center;"><span th:text="${#numbers.formatDecimal(orderItem.quantity, 1, 'COMMA', 3, 'POINT')}"></span>
+                        <td style="text-align: center;"><span th:text="${#numbers.formatDecimal(orderItem.quantity, 1, 'COMMA', 3, 'POINT')}"></span> (+/- 5% tolerance at seller’s option)
                         </td>
                         <td style="padding: 0.5rem; text-align: center;">
                         	<p style="margin: 0;" th:text="${orderItem.packagingChinese}">Bulk</p>
@@ -432,7 +433,7 @@
                         </td>
                         <td width="70%">
                         	<p style="margin: 0;">本合同一式两份，自双方正式签署之日起生效。</p>
-                        	<p style="margin: 0;">This Contract is made in two originals, and shall come into force upon both parties' duly execution</p>
+                        	<p style="margin: 0;">This Contract is made in two originals, and shall come into force upon both parties' duly execution.</p>
                         </td>
                     </tr>
                 </table>
@@ -443,6 +444,11 @@
 						<td class="labelBold" style="width: 45%; font-weight: normal;">卖方 SELLER</td>
 						<td style="width: 10%"></td>
 						<td class="labelBold" style="width: 45%; font-weight: normal;">买方 BUYER</td>
+					</tr>
+					<tr class="noBorder" style="height: 15px;">
+						<td style="width: 45%"></td>
+						<td style="width: 10%"></td>
+						<td style="width: 45%"></td>
 					</tr>
 					<tr class="noBorder" style="vertical-align: top">
 						<td class="labelBold" style="width: 45%" th:utext="${sellerCompanyNameInChinese}">Seller Company Name
