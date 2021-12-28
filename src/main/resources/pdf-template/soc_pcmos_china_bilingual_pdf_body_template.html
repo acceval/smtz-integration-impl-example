@@ -199,7 +199,7 @@
                         	<p style="margin: 0;" th:text="${orderItem.packagingChinese}">Bulk</p>
                         	<p style="margin: 0" th:text="${#strings.capitalizeWords(#strings.toLowerCase(orderItem.packaging))}"></p>
                         </td>
-                        <td style="text-align: center;"><span th:text="${#numbers.formatDecimal(orderItem.invoicePrice, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></span></td>
+                        <td style="text-align: center;"><span th:text="${#numbers.formatDecimal(orderItem.invoicePriceRMB, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></span></td>
                         <td style="text-align: center;"><span th:text="${#numbers.formatDecimal(orderItem.itemPrice, 1, 'COMMA', priceDecimalDigits, 'POINT')}">Quantity * invocie</span></td>
                     </tr>
                     <tr>
