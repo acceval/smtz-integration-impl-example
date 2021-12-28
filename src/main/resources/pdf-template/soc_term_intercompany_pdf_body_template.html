@@ -144,7 +144,7 @@
 			</tr> 	
 			<tr>
 				<td width="30%">TOTAL PRICE</td>
-				<td width="70%"><span th:text="${currencyCode}"> </span><span th:text="${#numbers.formatDecimal(totalPrice, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></td>				 
+				<td width="70%"><span th:text="${currencyCode}"></span> <span th:text="${#numbers.formatDecimal(totalPrice, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></td>				 
 			</tr> 	
 			<tr>
 				<td width="30%">PAYMENT</td> 		
