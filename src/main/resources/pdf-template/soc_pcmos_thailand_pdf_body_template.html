@@ -175,11 +175,11 @@
                         <td width="30%" class="labelBold" style="vertical-align: baseline;">TOTAL PRICE</td>
                         <td width="70%">
                         	<span>THB </span>
-                        	<span th:if="${totalPriceInTHB != '0.00'}">
-                        	<span th:text="${#numbers.formatDecimal(totalPriceInTHB, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></span>
-                        	(<span th:text="${mergePriceEnglishText}">...</span>)
+                        	<span th:if="${totalPriceInTHBTHB != '0.00'}">
+                        	<span th:text="${#numbers.formatDecimal(totalPriceInTHBTHB, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></span>
+                        	(<span th:text="${mergePriceEnglishTextTHB}">...</span>)
                         	</span>
-                        	<span th:if="${totalPriceInTHB == '0.00'}">-</span>
+                        	<span th:if="${totalPriceInTHBTHB == '0.00'}">-</span>
                         	<br>
                         	<span>Remark- This price is not include VAT7%</span>
                         	<br>
