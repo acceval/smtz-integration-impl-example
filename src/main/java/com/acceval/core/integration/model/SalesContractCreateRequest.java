@@ -43,6 +43,7 @@ public class SalesContractCreateRequest {
         private LocalDate validFrom;
         private LocalDate validTo;
         private String salesDocFullNumber;
+        private String customerPONumber;
         private LocalDate poDate;
         private String shippingCondition;
         private String customerType;
@@ -251,6 +252,14 @@ public class SalesContractCreateRequest {
 
         public void setTenderType(String tenderType) {
             this.tenderType = tenderType;
+        }
+
+        public String getCustomerPONumber() {
+            return customerPONumber;
+        }
+
+        public void setCustomerPONumber(String customerPONumber) {
+            this.customerPONumber = customerPONumber;
         }
     }
     
