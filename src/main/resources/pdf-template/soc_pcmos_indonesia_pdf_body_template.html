@@ -162,7 +162,7 @@
                         </th>
                         <th class="labelBold" style="text-align: center;">
                         	<p style="font-weight: bold; text-decoration: underline; margin: 0;">
-								Harge Per Unit
+								Harga Per Unit
 							</p>
                 			<p style="margin: 0; font-weight: normal; font-style: italic;">Unit Price</p>
                         </th>
@@ -183,7 +183,7 @@ Kg</td>
                         <td style="text-align: right;"><span style="float: left;" th:text="${currencyCode}"></span> <span style="float: right;" th:text="${#numbers.formatDecimal(orderItem.itemPrice, 1, 'COMMA', priceDecimalDigits, 'POINT')}">Quantity * invocie</span></td>
                     </tr>
                     <tr>
-                    	<td colspan="4" class="labelBold" style="text-align: end;">(Exclude PPN) TOTAL</td>
+                    	<td colspan="4" class="labelBold" style="text-align: end;">(Exclude PPN) Total</td>
                     	<td><span style="float: left;" th:text="${currencyCode}"></span><span style="float: right;" th:text="${#numbers.formatDecimal(totalPrice, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></td>
                     </tr>
                 </table>
