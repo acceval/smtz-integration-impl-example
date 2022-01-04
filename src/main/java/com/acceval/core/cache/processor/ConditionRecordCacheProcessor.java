@@ -30,6 +30,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -305,7 +306,7 @@ public class ConditionRecordCacheProcessor {
             numericValue = Double.valueOf(numericConditionValue.getValue());
         }
 
-        LocalDate effectiveDate = context.getVariableAsDate(VariableContext.VALID_FROM);
+        LocalDateTime effectiveDate = context.getVariableAsDateTime(VariableContext.VALID_FROM);
         if (numericConditionValue.getConfig().isContainsCurrency() && targetCurrency != null) {
             Currency valueCurrency = numericConditionValue.getCurrency();
             if (!valueCurrency.getCode().equals(targetCurrency.getCode())) {
@@ -327,7 +328,7 @@ public class ConditionRecordCacheProcessor {
                 numericValue = currencyConversionUtil.getConvertedAmount(
                         Double.valueOf(numericConditionValue.getValue()).doubleValue(),
                         numericConditionValue.getCurrencyId().longValue(), targetCurrency.getCurrencyID(),
-                        effectiveDate.atTime(0, 0, 0), exchangeRateTypeId, context);
+                        effectiveDate, exchangeRateTypeId, context);
             }
         }
 

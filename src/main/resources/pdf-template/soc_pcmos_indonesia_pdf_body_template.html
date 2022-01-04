@@ -174,7 +174,7 @@
                         </th>
                     </tr>
                     <tr th:each="orderItem, iter: ${orderItems}" style="text-align: center;">
-                        <td style="font-weight: bold; text-align: left;" th:text="${orderItem.productName}">Product</td>
+                        <td style="text-align: left;" th:text="${orderItem.productName}">Product</td>
                         <td style="text-align: right;"><span th:text="${#numbers.formatDecimal(orderItem.quantity, 1, 'COMMA', 3, 'POINT')}"></span>
                         </td>
                         <td style="padding: 0.5rem; text-align: left;" th:text="${#strings.capitalizeWords(#strings.toLowerCase(orderItem.packaging))}">Packaging Bags 25
@@ -322,7 +322,7 @@ Kg</td>
 								bagian yang tidak terpisahkan dari Perjanjian.
 							</p>
                 			<p style="margin: 0; font-style: italic;">
-                				All other terms and condition of this SOC shall be in accordance with the General Terms
+                				All other terms and conditions of this SOC shall be in accordance with the General Terms
                 				and Conditions of the Sale executed between the Parties. This SOC is issued under, and shall
                 				form an integral part of Agreement.
                 			</p>
