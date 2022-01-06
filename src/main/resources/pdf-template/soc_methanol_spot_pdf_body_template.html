@@ -178,7 +178,7 @@
 						Kg</td>
 					<td style="text-align: center;"><span
 							th:text="${#numbers.formatDecimal(orderItem.invoicePrice, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></span>
-						<span th:text="${currencyCode}"></span>/<span th:text="${orderItem.uomCode}"></span></td>
+						<span th:text="${orderItem.currencyCode}"></span>/<span th:text="${orderItem.uomCode}"></span></td>
 					<td><span
 							th:text="${#strings.capitalizeWords(#strings.toLowerCase(orderItem.destinationCountry))}"></span>
 					</td>
