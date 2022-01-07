@@ -158,7 +158,7 @@
                         <td style="font-weight: bold; text-align: left;" th:text="${orderItem.productName}">Product</td>
                         <td><span th:text="${#numbers.formatDecimal(orderItem.quantity, 1, 'COMMA', 3, 'POINT')}"></span> <span th:text="${orderItem.uomCode}"></span>
                         </td>
-                        <td style="padding: 0.5rem;" th:text="${#strings.capitalizeWords(#strings.toLowerCase(orderItem.packaging))}">Packaging Bags 25
+                        <td style="padding: 0.5rem;" th:text="${orderItem.packaging}">Packaging Bags 25
 Kg</td>
                         <td style="text-align: right; text-align: right;"><span th:text="${#numbers.formatDecimal(orderItem.invoicePrice, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></span> <span th:text="${orderItem.currencyCode}"></span>/<span th:text="${orderItem.uomCode}"></span></td>
                         <td><span th:text="${#strings.capitalizeWords(#strings.toLowerCase(orderItem.destinationCountry))}"></span></td>
