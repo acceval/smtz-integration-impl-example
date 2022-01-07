@@ -268,9 +268,9 @@ tr.noBorder td {
 				th:text="${#numbers.formatDecimal(salesItem.quantity, 1, 'COMMA', 3, 'POINT')}"></span> <span th:text="${salesItem.uomCode}"></span>
 			</td>
 			<td style="text-align: right;"><span
-				th:text="${#numbers.formatDecimal(salesItem.itemInvoice, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></span> <span th:text="${salesItem.currencyCode}"></span>/<span
+				th:text="${#numbers.formatDecimal(salesItem.itemInvoice, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></span> <span th:text="${firstItemCurrencyCode}"></span>/<span
 				th:text="${salesItem.uomCode}"></span></td>
-			<td style="border-right: 0px;" th:text="${salesItem.currencyCode}">USD</td>
+			<td style="border-right: 0px;" th:text="${firstItemCurrencyCode}">USD</td>
 			<td style="text-align: right; border-left: 0px;"><span
 				th:text="${#numbers.formatDecimal(salesItem.itemLevelTotal, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></span>
 			</td>
@@ -281,7 +281,7 @@ tr.noBorder td {
 			<td style="border: none; text-align: right;"><span
 				th:text="${#numbers.formatDecimal(totalItemQuantity, 1, 'COMMA', 3, 'POINT')}"></span>
 			</td>
-			<td style="border-right: 0px;">USD</td>
+			<td style="border-right: 0px;" th:utext="${firstItemCurrencyCode}">USD</td>
 			<td style="text-align: right; border-left: 0px;"><span
 				th:text="${#numbers.formatDecimal(totalItemAmount, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></span>
 			</td>
