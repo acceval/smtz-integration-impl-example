@@ -179,8 +179,8 @@
                         </td>
                         <td style="padding: 0.5rem; text-align: left;" th:text="${#strings.capitalizeWords(#strings.toLowerCase(orderItem.packaging))}">Packaging Bags 25
 Kg</td>
-                        <td style="text-align: right;"><span style="float: left;" th:text="${currencyCode}"></span> <span style="float: right;" th:text="${#numbers.formatDecimal(orderItem.invoicePrice, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></span></td>
-                        <td style="text-align: right;"><span style="float: left;" th:text="${currencyCode}"></span> <span style="float: right;" th:text="${#numbers.formatDecimal(orderItem.itemPrice, 1, 'COMMA', priceDecimalDigits, 'POINT')}">Quantity * invocie</span></td>
+                        <td style="text-align: right;"><span style="float: left;" th:text="${currencyCode}"></span> <span style="float: right;" th:text="${#numbers.formatDecimal(orderItem.itemUnitInvoiceTHB, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></span></td>
+                        <td style="text-align: right;"><span style="float: left;" th:text="${currencyCode}"></span> <span style="float: right;" th:text="${#numbers.formatDecimal(orderItem.itemTotalInvoiceTHB, 1, 'COMMA', priceDecimalDigits, 'POINT')}">Quantity * invocie</span></td>
                     </tr>
                     <tr>
                     	<td colspan="4" class="labelBold" style="text-align: end;">(Exclude PPN) Total</td>
@@ -389,7 +389,7 @@ Kg</td>
 					</tr>
 				</table>
 				<div style="width: 30%; margin-top: 1rem; font-size: 10px;">
-					<p style="margin: 0; padding-left: 0; color: mediumspringgreen;" class="labelBold"><span th:utext="${sellerCompanyNameUpperCase}">06919.2016</span> <span th:if="${sellerBusinessNo != ''}">(<span th:text="${sellerBusinessNo}">06919.2016</span>)</span></p>
+					<p style="margin: 0; padding-left: 0; color: mediumspringgreen;" class="labelBold"><span th:utext="${sellerCompanyNameUpperCase}">06919.2016</span> <span th:if="${sellerBusinessNo != ''}"><sup>(<span th:text="${sellerBusinessNo}">06919.2016</span>)</sup></span></p>
 					<p style="margin: 0;" th:utext="${sellerAddress}">efg</p>
 					<p style="margin: 0;">T: <span th:utext="${sellerPhoneNumber}"></span> F: <span
 							th:utext="${sellerFaxNumber}"></span></p>
