@@ -286,11 +286,13 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 		}
 		
 		for (Criterion criterion: acceCriteria.getCriterion()) {
-			String paramKey = criterion.getParamKey();			
-			int index = paramKey.indexOf("-");
-			if (index != -1) {
-				String nestedKey = paramKey.substring(0, index);				
-				criterion.setNestedConditionKey(nestedKey);										
+			String paramKey = criterion.getParamKey();
+			if (paramKey != null) {
+				int index = paramKey.indexOf("-");
+				if (index != -1) {
+					String nestedKey = paramKey.substring(0, index);				
+					criterion.setNestedConditionKey(nestedKey);										
+				}
 			}
 		}
 
