@@ -158,7 +158,7 @@
                         <td><span th:text="${#numbers.formatDecimal(orderItem.quantity, 1, 'COMMA', 3, 'POINT')}"></span> <span th:text="${orderItem.uomCode}"></span> <span th:text="${orderItem.tolerance}"></span>
                         </td>
                         <td style="padding: 0.5rem;" th:text="${orderItem.packaging}">Container Size</td>
-                        <td><span th:text="${#numbers.formatDecimal(orderItem.invoicePrice, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></span> <span th:text="${currencyCode}"></span>/<span th:text="${orderItem.uomCode}"></span></td>
+                        <td><span th:text="${#numbers.formatDecimal(orderItem.invoicePrice, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></span> <span th:text="${orderItem.currencyCode}"></span>/<span th:text="${orderItem.uomCode}"></span></td>
                         <td><span th:text="${#strings.capitalizeWords(#strings.toLowerCase(orderItem.destinationCountry))}"></span></td>
                     </tr>
                 </table>

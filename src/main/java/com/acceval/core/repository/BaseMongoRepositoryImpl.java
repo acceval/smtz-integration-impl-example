@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -160,6 +161,7 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 
 				if (mapParam.getFirst(key) == null) {
 					lstCrriterion.add(new Criterion(resolveKey, RestrictionType.IS_NULL, mapParam.getFirst(key)));
+					lstCrriterion.get(lstCrriterion.size() - 1).setParamKey(key);
 				} else if (ClassUtils.isAssignable(attrClass, Long.class, true)) {
 					List<String> searchValue = mapParam.get(key);
 					if (searchValue.size() > 1) {
@@ -178,9 +180,11 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 						}
 						if (!lstLong.isEmpty()) {
 							lstCrriterion.add(new Criterion(resolveKey, lstLong.toArray(new Long[lstLong.size()])));
+							lstCrriterion.get(lstCrriterion.size() - 1).setParamKey(key);
 						}
 					} else {
 						lstCrriterion.add(new Criterion(resolveKey, Long.valueOf(mapParam.getFirst(key))));
+						lstCrriterion.get(lstCrriterion.size() - 1).setParamKey(key);
 					}
 				} else if (attrClass.isAssignableFrom(String.class) || attrClass.isAssignableFrom(String[].class)) {
 					List<String> searchValue = mapParam.get(key);
@@ -188,17 +192,23 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 					if (searchValue.size() > 1) {
 						Object searchValues = searchValue.toArray();
 						lstCrriterion.add(new Criterion(resolveKey, searchValues));
+						lstCrriterion.get(lstCrriterion.size() - 1).setParamKey(key);
 					} else {
 						lstCrriterion.add(new Criterion(resolveKey, ".*" + mapParam.getFirst(key).toLowerCase() + ".*", false));
+						lstCrriterion.get(lstCrriterion.size() - 1).setParamKey(key);
 					}
 				} else if (ClassUtils.isAssignable(attrClass, Double.class, true)) {
 					lstCrriterion.add(new Criterion(resolveKey, Double.parseDouble(mapParam.getFirst(key))));
+					lstCrriterion.get(lstCrriterion.size() - 1).setParamKey(key);
 				} else if (ClassUtils.isAssignable(attrClass, Boolean.class, true)) {
 					lstCrriterion.add(new Criterion(resolveKey, Boolean.parseBoolean(mapParam.getFirst(key))));
+					lstCrriterion.get(lstCrriterion.size() - 1).setParamKey(key);
 				} else if (ClassUtils.isAssignable(attrClass, Float.class, true)) {
 					lstCrriterion.add(new Criterion(resolveKey, Float.parseFloat(mapParam.getFirst(key))));
+					lstCrriterion.get(lstCrriterion.size() - 1).setParamKey(key);
 				} else if (ClassUtils.isAssignable(attrClass, Integer.class, true)) {
 					lstCrriterion.add(new Criterion(resolveKey, Integer.parseInt(mapParam.getFirst(key))));
+					lstCrriterion.get(lstCrriterion.size() - 1).setParamKey(key);
 				} else if (ClassUtils.isAssignable(attrClass, Date.class) || ClassUtils.isAssignable(attrClass, LocalDate.class)
 						|| ClassUtils.isAssignable(attrClass, LocalDateTime.class)) {
 					try {
@@ -214,12 +224,14 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 									resType = Criterion.RestrictionType.getRestrictionTypeBySign(oper, resType);
 									if (ClassUtils.isAssignable(attrClass, LocalDateTime.class)) {
 										lstCrriterion.add(new Criterion(resolveKey, resType, DateUtil.parseToLocalDateTime(strDate)));
+										lstCrriterion.get(lstCrriterion.size() - 1).setParamKey(key);
 										isSpecial = true;
 									}
 								}
 							}
 							if (!isSpecial) {
 								lstCrriterion.add(new Criterion(resolveKey, resType, DateUtils.parseDateStrictly(strDate, STD_DATEFORMAT)));
+								lstCrriterion.get(lstCrriterion.size() - 1).setParamKey(key);
 							}
 						}
 					} catch (ParseException e) {
@@ -230,19 +242,23 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 					if (searchValue.size() > 1) {
 						Object searchValues = searchValue.toArray();
 						lstCrriterion.add(new Criterion(resolveKey, searchValues));
+						lstCrriterion.get(lstCrriterion.size() - 1).setParamKey(key);
 					} else {
 						lstCrriterion.add(
-								new Criterion(resolveKey, Enum.valueOf(attrClass.asSubclass(Enum.class), mapParam.getFirst(key)), true));						
+								new Criterion(resolveKey, Enum.valueOf(attrClass.asSubclass(Enum.class), mapParam.getFirst(key)), true));
+						lstCrriterion.get(lstCrriterion.size() - 1).setParamKey(key);
 					}
 				} else if (ClassUtils.isAssignable(attrClass, Collection.class)) {
 					// seem Collection work in mongo
 					if (field.toGenericString().contains("<java.lang.Long>")) {
 						try {
 							lstCrriterion.add(new Criterion(resolveKey, Long.valueOf(mapParam.getFirst(key))));
+							lstCrriterion.get(lstCrriterion.size() - 1).setParamKey(key);
 						} catch (Exception e) {
 						}
 					} else {
 						lstCrriterion.add(new Criterion(resolveKey, mapParam.getFirst(key)));
+						lstCrriterion.get(lstCrriterion.size() - 1).setParamKey(key);
 					}
 				} else {
 					LOGGER.error("[" + attrClass.getName() + "] is not support in Acceval Base Criteria Search yet!");
@@ -269,15 +285,13 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 			}
 		}
 		
-		for (String key: mapParam.keySet()) {
-			int index = key.indexOf("-");
-			if (index != -1) {
-				String nestedKey = key.substring(0, index);
-				String propertyKey = key.substring(index + 1);
-				for (Criterion criterion: acceCriteria.getCriterion()) {
-					if (criterion.getPropertyName().equals(propertyKey)) {
-						criterion.setNestedConditionKey(nestedKey);
-					}
+		for (Criterion criterion: acceCriteria.getCriterion()) {
+			String paramKey = criterion.getParamKey();
+			if (paramKey != null) {
+				int index = paramKey.indexOf("-");
+				if (index != -1) {
+					String nestedKey = paramKey.substring(0, index);				
+					criterion.setNestedConditionKey(nestedKey);										
 				}
 			}
 		}
@@ -1099,8 +1113,27 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 			query.addCriteria(criteria);
 		}
 
-		List<org.springframework.data.mongodb.core.query.Criteria> orCriterias =
-				(List<org.springframework.data.mongodb.core.query.Criteria>) this.getMongoCriterias(orCriteria)[0];
+		Map<String, org.springframework.data.mongodb.core.query.Criteria> orCriterias 
+			= new HashMap<String, org.springframework.data.mongodb.core.query.Criteria>();
+		
+		for (Criterion criterion: orCriteria.getCriterion()) {
+			Criteria tempCriteria = new Criteria();
+			tempCriteria.setAutoAppendCompany(orCriteria.isAutoAppendCompany());
+			tempCriteria.setFetchAll(orCriteria.isFetchAll());
+			tempCriteria.setOrder(orCriteria.getOrder());
+			tempCriteria.setPageSize(orCriteria.getPageSize());
+			tempCriteria.setInitialise(orCriteria.isInitialise());
+			tempCriteria.setProjections(orCriteria.getProjections());
+			tempCriteria.setRequestedPage(orCriteria.getRequestedPage());
+			
+			tempCriteria.setCriterion(Arrays.asList(criterion));
+			List<org.springframework.data.mongodb.core.query.Criteria> criterias =
+					(List<org.springframework.data.mongodb.core.query.Criteria>) this.getMongoCriterias(tempCriteria)[0];
+			if (criterias.size() > 0) {
+				orCriterias.put(criterion.getParamKey(), criterias.get(0));
+			}
+		}
+		
 		
 		org.springframework.data.mongodb.core.query.Criteria criteria = new org.springframework.data.mongodb.core.query.Criteria();
 		
@@ -1115,15 +1148,21 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 			for (Criterion criterion: orCriteria.getCriterion()) {
 				if (criterion.getNestedConditionKey() != null) {
 					String nestedKey = criterion.getNestedConditionKey();
+					
+					// nestedCriteriaMap => <nested key (data group code) : <List of mongo criteria (and conditions)>
+					
 					if (!nestedCriteriaMap.containsKey(nestedKey)) {
 						List<org.springframework.data.mongodb.core.query.Criteria> nestedCriterias 
 							= new ArrayList<org.springframework.data.mongodb.core.query.Criteria>();
 						org.springframework.data.mongodb.core.query.Criteria nestedCriteria = null;
-						for (org.springframework.data.mongodb.core.query.Criteria searchCriteria: orCriterias) {
-							if (searchCriteria.getKey().equals(criterion.getPropertyName())) {
-								nestedCriteria = searchCriteria;
-							}
+						if (orCriterias.get(criterion.getParamKey()) != null) {
+							nestedCriteria = orCriterias.get(criterion.getParamKey());
 						}
+//						for (org.springframework.data.mongodb.core.query.Criteria searchCriteria: orCriterias) {
+//							if (searchCriteria.getKey().equals(criterion.getPropertyName())) {
+//								nestedCriteria = searchCriteria;
+//							}
+//						}
 						if (nestedCriteria != null) {
 							nestedCriterias.add(nestedCriteria);
 							nestedCriteriaMap.put(nestedKey, nestedCriterias);
@@ -1132,11 +1171,14 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 						List<org.springframework.data.mongodb.core.query.Criteria> nestedCriterias 
 							= nestedCriteriaMap.get(nestedKey);
 						org.springframework.data.mongodb.core.query.Criteria nestedCriteria = null;
-						for (org.springframework.data.mongodb.core.query.Criteria searchCriteria: orCriterias) {
-							if (searchCriteria.getKey().equals(criterion.getPropertyName())) {
-								nestedCriteria = searchCriteria;
-							}
+						if (orCriterias.get(criterion.getParamKey()) != null) {
+							nestedCriteria = orCriterias.get(criterion.getParamKey());
 						}
+//						for (org.springframework.data.mongodb.core.query.Criteria searchCriteria: orCriterias) {
+//							if (searchCriteria.getKey().equals(criterion.getPropertyName())) {
+//								nestedCriteria = searchCriteria;
+//							}
+//						}
 						if (nestedCriteria != null) {
 							nestedCriterias.add(nestedCriteria);
 						}
@@ -1144,11 +1186,14 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 				} else {
 
 					org.springframework.data.mongodb.core.query.Criteria mainCriteria = null;
-					for (org.springframework.data.mongodb.core.query.Criteria searchCriteria: orCriterias) {
-						if (searchCriteria.getKey().equals(criterion.getPropertyName())) {
-							mainCriteria = searchCriteria;
-						}
+					if (orCriterias.get(criterion.getParamKey()) != null) {
+						mainCriteria = orCriterias.get(criterion.getParamKey());
 					}
+//					for (org.springframework.data.mongodb.core.query.Criteria searchCriteria: orCriterias) {
+//						if (searchCriteria.getKey().equals(criterion.getPropertyName())) {
+//							mainCriteria = searchCriteria;
+//						}
+//					}
 					if (mainCriteria != null) {
 						reformCriterias.add(mainCriteria);
 					}					
