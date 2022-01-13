@@ -73,6 +73,8 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String OVERWRITE_CURRENCY_FROM = "OVERWRITE_CURRENCY_FROM";
 	public static final String OVERWRITE_CURRENCY_TO = "OVERWRITE_CURRENCY_TO";
 
+    public static final String MARKET_PRICE_SOURCE = "MARKET_PRICE_SOURCE";
+
 	public static final String DEFAULT_DATE_FORMAT = Criterion.DEFAULT_DATE_FORMAT;
 	public static final String DEFAULT_DATE_TIME_FORMAT = Criterion.DEFAULT_DATE_TIME_FORMAT;
 
