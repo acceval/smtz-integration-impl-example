@@ -1202,15 +1202,23 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 			
 			for (String key: nestedCriteriaMap.keySet()) {
 				List<org.springframework.data.mongodb.core.query.Criteria> nestedCriterias = nestedCriteriaMap.get(key);
-				org.springframework.data.mongodb.core.query.Criteria nestedCriteria = null;
 				
-				for (org.springframework.data.mongodb.core.query.Criteria subCriteria: nestedCriterias) {
-					if (nestedCriteria == null) {
-						nestedCriteria = subCriteria;
-					} else {
-						nestedCriteria.andOperator(subCriteria);
-					}
-				}
+//				org.springframework.data.mongodb.core.query.Criteria nestedCriteria = null;
+				
+//				for (org.springframework.data.mongodb.core.query.Criteria subCriteria: nestedCriterias) {
+//					if (nestedCriteria == null) {
+//						nestedCriteria = subCriteria;
+//					} else {
+//						nestedCriteria.andOperator(subCriteria);
+//					}
+//				}
+				
+				org.springframework.data.mongodb.core.query.Criteria nestedCriteria = new org.springframework.data.mongodb.core.query.Criteria();
+				
+				org.springframework.data.mongodb.core.query.Criteria[] criteriaArray =
+						nestedCriterias.toArray(new org.springframework.data.mongodb.core.query.Criteria[reformCriterias.size()]);
+				nestedCriteria.andOperator(criteriaArray);
+				
 				if (nestedCriteria != null) {
 					reformCriterias.add(nestedCriteria);
 				}
