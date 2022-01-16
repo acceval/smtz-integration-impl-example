@@ -9,6 +9,7 @@ public enum AuditType {
 	DELETE,
 	APPROVE,
 	REJECT,
+	REASSIGN,
 	UPLOAD,
 	DOWNLOAD,	
 	LOGIN,
