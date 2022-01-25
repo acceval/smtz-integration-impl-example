@@ -196,7 +196,7 @@
                         	<p th:text="${orderItem.productNameInChinese}">Product</p>
                         	<p th:text="${orderItem.productName}">Product</p>
                         </td>
-                        <td style="text-align: center;"><span th:text="${#numbers.formatDecimal(orderItem.quantity, 1, 'COMMA', 3, 'POINT')}"></span> (+/- 5% tolerance at seller’s option)
+                        <td style="text-align: center;"><span th:text="${#numbers.formatDecimal(orderItem.quantity, 1, 'COMMA', 3, 'POINT')}"></span> (+/- 5% tolerance at seller's option)
                         </td>
                         <td style="padding: 0.5rem; text-align: center;">
                         	<p style="margin: 0;" th:text="${orderItem.packagingChinese}">Bulk</p>
@@ -231,7 +231,7 @@
                         	<p style="margin: 0; font-weight: normal;">
 								质量标准
 							</p>
-                			<p style="margin: 0; font-weight: normal;">QUANLITY</p>
+                			<p style="margin: 0; font-weight: normal;">QUALITY</p>
                         </td>
                         <td width="70%">IMPCA</td>
                     </tr>
@@ -252,7 +252,7 @@
                         	<p style="margin: 0; font-weight: normal;">
 								交付条件
 							</p>
-                			<p style="margin: 0; font-weight: normal;">TERM OF DELIVERY</p>
+                			<p style="margin: 0; font-weight: normal;">TERMS OF DELIVERY</p>
                         </td>
                         <td width="70%">
                         	<p style="margin: 0;" th:text="${termOfDeliveryInChinese}"></p>
@@ -291,7 +291,7 @@
                         </td>
                         <td width="70%">
                         	<p style="margin: 0;">1. 买方办好电汇付款后应通知卖方，电汇到账后卖方安排放货事宜。</p>
-                			<p style="margin: 0;">1. Buyer shall make payment through telegraphic transfer and notify the Seller of the payment.  Seller will arrange cargoes release upon Seller’s confirmation on the receipt of the payment.</p>
+                			<p style="margin: 0;">1. Buyer shall make payment through telegraphic transfer and notify the Seller of the payment.  Seller will arrange cargoes release upon Seller's confirmation on the receipt of the payment.</p>
                         	<p style="margin: 0; margin-top: 1rem;">2. 买方（包括买方所委托的货运公司）自提。</p>
                         	<p style="margin: 0;">2. Buyer (including the freight company entrusted by Buyer) is required to arrange self-collection of the Products.</p>
                         </td>
@@ -299,7 +299,7 @@
                     <tr>
                         <td width="30%" class="labelBold" style="vertical-align: baseline;">
                         	<p style="margin: 0; font-weight: normal;">
-								交付日期
+								交付期日
 							</p>
                 			<p style="margin: 0; font-weight: normal;">DELIVERY DATE RANGE</p>
                         </td>
@@ -313,7 +313,7 @@
                         	<p style="margin: 0; font-weight: normal;">
 								卸货港/交付地点
 							</p>
-                			<p style="margin: 0; font-weight: normal;">DISCHARGE PROT / PLACE OF DELIVERY</p>
+                			<p style="margin: 0; font-weight: normal;">DISCHARGE PORT / PLACE OF DELIVERY</p>
                         </td>
                         <td width="70%">
                         	<p style="margin: 0;" th:text="${dischargePortTextInChinese}">Discharge Port In Chinese</p>
