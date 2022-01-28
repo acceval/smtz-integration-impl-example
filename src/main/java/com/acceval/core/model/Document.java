@@ -11,6 +11,7 @@ public class Document extends BaseCompanyModel {
 	private String documentName;
 	private String filename;
 	private String documentUrl;
+	private String documentType;
 	private double fileSize;
 	private String contentType;
 	private List<LabelValue> scannedTexts;
@@ -63,5 +64,12 @@ public class Document extends BaseCompanyModel {
 	}
 	public void setScannedTexts(List<LabelValue> scannedTexts) {
 		this.scannedTexts = scannedTexts;
+	}
+	public String getDocumentType() {
+		return documentType;
+	}
+	public void setDocumentType(String documentType) {
+		this.documentType = documentType;
 	}	
+	
 }
