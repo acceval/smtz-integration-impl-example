@@ -137,6 +137,21 @@ public class EntityAuditAspect extends CompareAspect {
 	        		logRequest.setInfo2(idText);
         		}
         	}
+        } else if (auditEntity.auditType() == AuditType.VIEW) {
+        	        	
+        	proceed = joinPoint.proceed();
+
+        	Object[] args = joinPoint.getArgs();
+        	
+        	if (args.length > 0) {
+        		if (args[0] instanceof Long) {
+        			Long id = (Long) args[0];
+        			logRequest.setInfo2(id.toString());
+        		} else if (args[0] instanceof String) {
+        			String id = (String) args[0];
+        			logRequest.setInfo2(id);
+        		}
+        	}
         }
         	
 		/** other info */
