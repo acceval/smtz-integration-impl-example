@@ -73,6 +73,8 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String OVERWRITE_CURRENCY_FROM = "OVERWRITE_CURRENCY_FROM";
 	public static final String OVERWRITE_CURRENCY_TO = "OVERWRITE_CURRENCY_TO";
 
+    public static final String MARKET_PRICE_SOURCE = "MARKET_PRICE_SOURCE";
+
 	public static final String DEFAULT_DATE_FORMAT = Criterion.DEFAULT_DATE_FORMAT;
 	public static final String DEFAULT_DATE_TIME_FORMAT = Criterion.DEFAULT_DATE_TIME_FORMAT;
 
@@ -123,6 +125,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String CT_APPLICATION_ADJUSTMENT = "APPLICATION_ADJUSTMENT";
 	public static final String CT_NORMALISED_PRICE = "STANDARD_FLOOR_PRICE";
 	public static final String CT_FLOOR_PRICE_BASELINE = "FLOOR_PRICE_BASELINE";
+	public static final String CT_PCM_OS_DISTRIBUTION_FLOOR_PRICE_FIX_FIRM = "PCM_OS_DISTRIBUTION_FLOOR_PRICE_FIX_FIRM";	
 	public static final String CT_NORMALISED_ALPHA = "STANDARD_FLOOR_ALPHA";
 	public static final String CT_RULECONTRIBUTIONMARGIN = "CONTRIBUTION_MARGIN_RULES";
 	public static final String CT_NORMALISED_PRICE_FOB = "NORMALISED_PRICE_FOB";

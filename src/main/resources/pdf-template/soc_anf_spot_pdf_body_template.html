@@ -165,7 +165,7 @@
 						Kg</td>
 					<td style="text-align: center;"><span
 							th:text="${#numbers.formatDecimal(orderItem.invoicePrice, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></span>
-						<span th:text="${currencyCode}"></span>/<span th:text="${orderItem.uomCode}"></span>
+						<span th:text="${orderItem.currencyCode}"></span>/<span th:text="${orderItem.uomCode}"></span>
 					</td>
 					<td><span
 							th:text="${#strings.capitalizeWords(#strings.toLowerCase(orderItem.destinationCountry))}"></span>
@@ -215,7 +215,7 @@
 				</tr>
 				<tr>
 					<td width="30%">LOAD PORT</td>
-					<td width="70%" th:text="${loadPort}">Kerteh, Malaysia</td>
+					<td width="70%" th:text="${loadPort}" style="white-space: pre-line;">Kerteh, Malaysia</td>
 				</tr>
 				<tr>
 					<td width="30%">INSURANCE</td>

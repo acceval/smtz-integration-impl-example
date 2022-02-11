@@ -280,6 +280,11 @@ public class SalesContractCreateRequest {
         private String prefTenderNo;
         private String pcmlpoNo;
 
+        private double clearanceCost;
+        private double locationShipmentCost;
+        private double inboundInsurance;
+        private double inboundSurveyor;
+
         public String getItemNumber() {
             return itemNumber;
         }
@@ -390,6 +395,38 @@ public class SalesContractCreateRequest {
 
         public void setPcmlpoNo(String pcmlpoNo) {
             this.pcmlpoNo = pcmlpoNo;
+        }
+
+        public double getClearanceCost() {
+            return clearanceCost;
+        }
+
+        public void setClearanceCost(double clearanceCost) {
+            this.clearanceCost = clearanceCost;
+        }
+
+        public double getLocationShipmentCost() {
+            return locationShipmentCost;
+        }
+
+        public void setLocationShipmentCost(double locationShipmentCost) {
+            this.locationShipmentCost = locationShipmentCost;
+        }
+
+        public double getInboundInsurance() {
+            return inboundInsurance;
+        }
+
+        public void setInboundInsurance(double inboundInsurance) {
+            this.inboundInsurance = inboundInsurance;
+        }
+
+        public double getInboundSurveyor() {
+            return inboundSurveyor;
+        }
+
+        public void setInboundSurveyor(double inboundSurveyor) {
+            this.inboundSurveyor = inboundSurveyor;
         }
     }
 

@@ -40,6 +40,9 @@ public class FileUtil {
 
 	public static String[] STD_DATEFORMAT = new String[] { "yyyy-MM-dd", "dd-MM-yyyy", "dd/MM/yyyy", "yyyy/MM/dd" };
 
+	public static String WRAPPEROPEN = "(WRAPPER";
+	public static String WRAPPERCLOSE = "WRAPPER)";
+
 	public static boolean isExcelFile(Path path) {
 
 		String extension = null;
@@ -208,6 +211,10 @@ public class FileUtil {
 				String item = "";
 				// strip quotation marks
 				if (StringUtils.isNotBlank(items[i])) {
+					if (items[i].contains(WRAPPEROPEN)) {
+						items[i] = items[i].replace(WRAPPEROPEN, "");
+						items[i] = items[i].replace(WRAPPERCLOSE, "");
+					}
 					item = items[i].substring(1, items[i].length() - 1);
 				}
 

@@ -158,11 +158,11 @@
                         <td style="font-weight: bold; text-align: left;" th:text="${orderItem.productName}">Product</td>
                         <td><span th:text="${#numbers.formatDecimal(orderItem.quantity, 1, 'COMMA', 3, 'POINT')}"></span> <span th:text="${orderItem.uomCode}"></span>
                         </td>
-                        <td style="padding: 0.5rem;" th:text="${#strings.capitalizeWords(#strings.toLowerCase(orderItem.packaging))}">Packaging Bags 25
+                        <td style="padding: 0.5rem;" th:text="${orderItem.packaging}">Packaging Bags 25
 Kg</td>
-                        <td style="text-align: right; text-align: right;"><span th:text="${#numbers.formatDecimal(orderItem.invoicePrice, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></span> <span th:text="${currencyCode}"></span>/<span th:text="${orderItem.uomCode}"></span></td>
+                        <td style="text-align: right; text-align: right;"><span th:text="${#numbers.formatDecimal(orderItem.invoicePrice, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></span> <span th:text="${orderItem.currencyCode}"></span>/<span th:text="${orderItem.uomCode}"></span></td>
                         <td><span th:text="${#strings.capitalizeWords(#strings.toLowerCase(orderItem.destinationCountry))}"></span></td>
-                        <td style="text-align: right;"><span th:text="${currencyCode}"></span> <span th:text="${#numbers.formatDecimal(orderItem.itemPrice, 1, 'COMMA', priceDecimalDigits, 'POINT')}">Quantity * invocie</span></td>
+                        <td style="text-align: right;"><span th:text="${orderItem.currencyCode}"></span> <span th:text="${#numbers.formatDecimal(orderItem.itemPrice, 1, 'COMMA', priceDecimalDigits, 'POINT')}">Quantity * invocie</span></td>
                     </tr>
                     <tr>
                     	<td colspan="5" class="labelBold" style="text-align: end;">TOTAL</td>
@@ -205,11 +205,11 @@ Kg</td>
                     </tr>
                     <tr>
                         <td width="30%">DELIVERY DATE RANGE</td>
-                        <td width="70%">For <span th:text="${retaString}"></span></td>
+                        <td width="70%"><span th:text="${retaString}"></span></td>
                     </tr>
                     <tr>
                         <td width="30%">LOAD PORT</td>
-                        <td width="70%" th:text="${loadPort}">Kerteh, Malaysia</td>
+                        <td width="70%" th:text="${loadPort}" style="white-space: pre-line;">Kerteh, Malaysia</td>
                     </tr>
                     <tr>
                         <td width="30%">INSURANCE</td>
@@ -217,7 +217,7 @@ Kg</td>
                     </tr>
                     <tr>
                         <td width="30%">TAX AND DUTIES</td>
-                        <td width="70%" th:utext="${insurance}">Buyer's Account'</td>
+                        <td width="70%" th:utext="${tax}">Buyer's Account'</td>
                     </tr>
                 </table>
                 <!-- <div class="page-break"></div> -->
