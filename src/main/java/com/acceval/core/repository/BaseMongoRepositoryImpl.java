@@ -306,9 +306,9 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 		if (acceCriteria.getOrder() != null) {
 			for (Order order : acceCriteria.getOrder()) {
 				if (order.getIsAscending()) {
-					query.with(new Sort(Sort.Direction.ASC, order.getProperty()));
+					query.with(Sort.by(Sort.Direction.ASC, order.getProperty()));
 				} else {
-					query.with(new Sort(Sort.Direction.DESC, order.getProperty()));
+					query.with(Sort.by(Sort.Direction.DESC, order.getProperty()));
 				}
 			}
 		}
@@ -320,7 +320,7 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 			int pageSize = acceCriteria.getPageSize();
 			total = mongoTemplate.count(query, this.getTargetClass());
 
-			final Pageable pageableRequest = new PageRequest(page, pageSize);
+			final Pageable pageableRequest = PageRequest.of(page, pageSize);
 			query.with(pageableRequest);
 		}
 
@@ -351,9 +351,9 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 		if (acceCriteria.getOrder() != null) {
 			for (Order order : acceCriteria.getOrder()) {
 				if (order.getIsAscending()) {
-					query.with(new Sort(Sort.Direction.ASC, order.getProperty()));
+					query.with(Sort.by(Sort.Direction.ASC, order.getProperty()));
 				} else {
-					query.with(new Sort(Sort.Direction.DESC, order.getProperty()));
+					query.with(Sort.by(Sort.Direction.DESC, order.getProperty()));
 				}
 			}
 		}
@@ -770,9 +770,9 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 
 			for (Order order : criteria.getOrder()) {
 				if (order.getIsAscending()) {
-					query.with(new Sort(Sort.Direction.ASC, order.getProperty()));
+					query.with(Sort.by(Sort.Direction.ASC, order.getProperty()));
 				} else {
-					query.with(new Sort(Sort.Direction.DESC, order.getProperty()));
+					query.with(Sort.by(Sort.Direction.DESC, order.getProperty()));
 				}
 			}
 		}
@@ -784,7 +784,7 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 			int pageSize = criteria.getPageSize();
 			total = mongoTemplate.count(query, this.getTargetClass());
 
-			final Pageable pageableRequest = new PageRequest(page, pageSize);
+			final Pageable pageableRequest = PageRequest.of(page, pageSize);
 			query.with(pageableRequest);
 		}
 
@@ -847,9 +847,9 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 
 			for (Order order : criteria.getOrder()) {
 				if (order.getIsAscending()) {
-					query.with(new Sort(Sort.Direction.ASC, order.getProperty()));
+					query.with(Sort.by(Sort.Direction.ASC, order.getProperty()));
 				} else {
-					query.with(new Sort(Sort.Direction.DESC, order.getProperty()));
+					query.with(Sort.by(Sort.Direction.DESC, order.getProperty()));
 				}
 			}
 		}
@@ -861,7 +861,7 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 			int pageSize = criteria.getPageSize();
 			total = mongoTemplate.count(query, this.getTargetClass());
 
-			final Pageable pageableRequest = new PageRequest(page, pageSize);
+			final Pageable pageableRequest = PageRequest.of(page, pageSize);
 			query.with(pageableRequest);
 		}
 
@@ -948,9 +948,9 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 
 			for (Order order : andCriteria.getOrder()) {
 				if (order.getIsAscending()) {
-					query.with(new Sort(Sort.Direction.ASC, order.getProperty()));
+					query.with(Sort.by(Sort.Direction.ASC, order.getProperty()));
 				} else {
-					query.with(new Sort(Sort.Direction.DESC, order.getProperty()));
+					query.with(Sort.by(Sort.Direction.DESC, order.getProperty()));
 				}
 			}
 		}
@@ -962,7 +962,7 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 			int pageSize = andCriteria.getPageSize();
 			total = mongoTemplate.count(query, this.getTargetClass());
 
-			final Pageable pageableRequest = new PageRequest(page, pageSize);
+			final Pageable pageableRequest = PageRequest.of(page, pageSize);
 			query.with(pageableRequest);
 		}
 
@@ -1046,9 +1046,9 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 
 			for (Order order : andCriteria.getOrder()) {
 				if (order.getIsAscending()) {
-					query.with(new Sort(Sort.Direction.ASC, order.getProperty()));
+					query.with(Sort.by(Sort.Direction.ASC, order.getProperty()));
 				} else {
-					query.with(new Sort(Sort.Direction.DESC, order.getProperty()));
+					query.with(Sort.by(Sort.Direction.DESC, order.getProperty()));
 				}
 			}
 		}
@@ -1060,7 +1060,7 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 			int pageSize = andCriteria.getPageSize();
 			total = mongoTemplate.count(query, this.getTargetClass());
 
-			final Pageable pageableRequest = new PageRequest(page, pageSize);
+			final Pageable pageableRequest = PageRequest.of(page, pageSize);
 			query.with(pageableRequest);
 		}
 
@@ -1183,9 +1183,9 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 
 			for (Order order : andCriteria.getOrder()) {
 				if (order.getIsAscending()) {
-					query.with(new Sort(Sort.Direction.ASC, order.getProperty()));
+					query.with(Sort.by(Sort.Direction.ASC, order.getProperty()));
 				} else {
-					query.with(new Sort(Sort.Direction.DESC, order.getProperty()));
+					query.with(Sort.by(Sort.Direction.DESC, order.getProperty()));
 				}
 			}
 		}
@@ -1197,7 +1197,7 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 			int pageSize = andCriteria.getPageSize();
 			total = mongoTemplate.count(query, this.getTargetClass());
 
-			final Pageable pageableRequest = new PageRequest(page, pageSize);
+			final Pageable pageableRequest = PageRequest.of(page, pageSize);
 			query.with(pageableRequest);
 		}
 
