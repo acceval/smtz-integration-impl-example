@@ -7,6 +7,7 @@ public class SalesContractUpdateRequest {
     private double quantity;
     private double invoicePrice;
     private String priceCurrency;
+    private double exchangeRate;
 
     public String getSalesContractNumber() {
         return salesContractNumber;
@@ -55,4 +56,13 @@ public class SalesContractUpdateRequest {
     public void setPriceCurrency(String priceCurrency) {
         this.priceCurrency = priceCurrency;
     }
+
+	public double getExchangeRate() {
+		return exchangeRate;
+	}
+
+	public void setExchangeRate(double exchangeRate) {
+		this.exchangeRate = exchangeRate;
+	}
+    
 }
