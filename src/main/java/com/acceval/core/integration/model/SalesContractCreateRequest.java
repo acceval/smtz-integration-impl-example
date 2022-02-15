@@ -53,6 +53,7 @@ public class SalesContractCreateRequest {
         private double exchangeRate;
         private double exchangeRateFI;
         private String tenderType;
+        private String businessModel;
 
         public String getSoldTo() {
             return soldTo;
@@ -260,6 +261,14 @@ public class SalesContractCreateRequest {
 
         public void setCustomerPONumber(String customerPONumber) {
             this.customerPONumber = customerPONumber;
+        }
+
+        public String getBusinessModel() {
+            return businessModel;
+        }
+
+        public void setBusinessModel(String businessModel) {
+            this.businessModel = businessModel;
         }
     }
     
