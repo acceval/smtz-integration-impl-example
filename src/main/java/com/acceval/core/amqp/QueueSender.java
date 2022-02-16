@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class QueueSender {
 
 	public static final String SMARTTRADZ_TOPIC = "smarttradz.topic";
-	public static final String QUEUE_NAME_AUDITLOG = "commons-auditlog-queue";
+//	public static final String QUEUE_NAME_AUDITLOG = "commons-auditlog-queue";
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
