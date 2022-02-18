@@ -4,23 +4,31 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-import com.acceval.core.audit.AuditLogHandlerInterceptor;
 import com.acceval.core.security.PrincipalProviderHandlerInterceptor;
 
 @Configuration
 public class SpringWebConfiguration extends WebMvcConfigurerAdapter {
-	private final PrincipalProviderHandlerInterceptor interceptor;
-	private final AuditLogHandlerInterceptor auditLogInterceptor;
+	
+	private final PrincipalProviderHandlerInterceptor  principalInterceptor;
+//	private final AuditLogHandlerInterceptor auditLogInterceptor;
 
-	public SpringWebConfiguration(PrincipalProviderHandlerInterceptor interceptor, AuditLogHandlerInterceptor auditLogInterceptor) {
-		this.interceptor = interceptor;
-		this.auditLogInterceptor = auditLogInterceptor;
+	public SpringWebConfiguration(PrincipalProviderHandlerInterceptor principalInterceptor) {
+		
+		this.principalInterceptor = principalInterceptor;		
 	}
+	
+//	public SpringWebConfiguration(PrincipalProviderHandlerInterceptor principalInterceptor, 
+//			AuditLogHandlerInterceptor auditLogInterceptor) {
+//		
+//		this.principalInterceptor = principalInterceptor;
+//		this.auditLogInterceptor = auditLogInterceptor;
+//	}
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(interceptor);
-		registry.addInterceptor(auditLogInterceptor);
+		
+		registry.addInterceptor(principalInterceptor);
+//		registry.addInterceptor(auditLogInterceptor);
 	}
 }
 

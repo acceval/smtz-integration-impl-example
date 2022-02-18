@@ -9,7 +9,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.MultiValueMap;
 
-public class Criterion implements Serializable {
+public class Criterion implements Serializable, Cloneable {
 
 	private static final long serialVersionUID = -467004656081639233L;
 	public static final String STRING = "STRING";
@@ -19,6 +19,7 @@ public class Criterion implements Serializable {
 	public static final String DEFAULT_DATE_TIME_FORMAT = "dd-MM-yyyy HH:mm:ss";
 
 	public static final String DEFAULT_MONGO_DATE_FORMAT = "%d-%m-%Y";
+	public static final String DEFAULT_MONGO_DATE_TIME_FORMAT = "%d-%m-%Y %H:%M:%S";
 
 	public static final String SIGN_LESS_OR_EQUAL = "<=";
 	public static final String SIGN_GREATER_OR_EQUAL = ">=";
@@ -26,7 +27,7 @@ public class Criterion implements Serializable {
 
 	public enum RestrictionType {
 		EQUAL("="), LESS_OR_EQUAL(SIGN_LESS_OR_EQUAL), GREATER_OR_EQUAL(SIGN_GREATER_OR_EQUAL), GREATER(">"), LESS("<"), NOT_EQUAL("<>"),
-		IN("in"), NOT_IN("not in"), IS_NULL("is null"), IS_NOT_NULL("is not null");
+		IN("in"), NOT_IN("not in"), IS_NULL("is null"), IS_NOT_NULL("is not null"), IS_BLANK("is null");
 
 		private String sign;
 
@@ -50,11 +51,15 @@ public class Criterion implements Serializable {
 	private boolean exactSearch = true;
 	private boolean searchStartWith = false;
 	private String propertyName;
+	private String alternatePropertyName; // mainly for mongo aggregration, need new name
 	private Object searchValue;
 	private Object[] searchValues;
 	private String searchValueDataType = STRING;
 
 	RestrictionType restrictionType = RestrictionType.EQUAL;
+	
+	private String paramKey;
+	private String nestedConditionKey;
 
 	public Criterion() {
 
@@ -223,7 +228,30 @@ public class Criterion implements Serializable {
 
 	public boolean isSearchValueDataTypeDate() {
 		return DATE.equalsIgnoreCase(this.getSearchValueDataType());
+	}
 
+	public String getAlternatePropertyName() {
+		return alternatePropertyName;
+	}
+
+	public void setAlternatePropertyName(String alternatePropertyName) {
+		this.alternatePropertyName = alternatePropertyName;
+	}
+	
+	public String getNestedConditionKey() {
+		return nestedConditionKey;
+	}
+
+	public void setNestedConditionKey(String nestedConditionKey) {
+		this.nestedConditionKey = nestedConditionKey;
+	}
+		
+	public String getParamKey() {
+		return paramKey;
+	}
+
+	public void setParamKey(String paramKey) {
+		this.paramKey = paramKey;
 	}
 
 	public static void buildDefaultSortingDesc(MultiValueMap<String, String> mapParam, String... properties) {
@@ -308,9 +336,9 @@ public class Criterion implements Serializable {
 	}
 
 	@Override
-	public Object clone() {
+	public Criterion clone() {
 		try {
-			return super.clone();
+			return (Criterion) super.clone();
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 		}

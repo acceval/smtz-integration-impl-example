@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<!-- <link th:href="${cssPath}" rel="stylesheet"/> -->
+<style>
+table {
+	width: 100%;
+	border: 1px solid #AFAFAF;
+	border-collapse: collapse;
+}
+
+table table.noBorder {
+	width: 100%;
+	border: 0;
+}
+
+table table.noBorder tr {
+	border: 0;
+}
+
+table table.noBorder td {
+	border: 0;
+}
+
+table, th, td {
+	border: 1px solid #AFAFAF;
+}
+
+td {
+	padding: 0.5rem
+}
+
+.labelBold {
+	text-align: left;
+	padding: 0.3rem 0.5rem;
+	font-weight: bold;
+}
+
+.page-break {
+	height: 0;
+	page-break-after: always;
+	margin: 0;
+	border-top: none;
+}
+
+.inlineTable {
+	width: 40%;
+	border: 0;
+}
+
+tr.noBorder td {
+	border: 0;
+}
+
+.customTable {
+	width: 30%;
+	border: 1px solid #AFAFAF;
+	border: none;
+	height: 100px;
+	border-collapse: collapse;
+}
+
+.labelNormal {
+	text-align: left;
+	padding: 0.3rem 0.5rem;
+	font-weight: normal;
+	border: 0;
+}
+
+.xlabelBold {
+	text-align: left;
+	padding: 0.3rem 0.5rem;
+	font-weight: bold;
+	border: 0;
+}
+
+.centerLabel {
+	text-align: center;
+	padding: 0.3rem 0.5rem;
+	font-weight: bold;
+}
+
+.page-break {
+	height: 0;
+	page-break-after: always;
+	margin: 0;
+	border-top: none;
+}
+</style>
+</head>
+<body style="font-family: arial;">
+	<table style="margin-top: 2rem; border: none;">
+		<tr>
+			<th width="31%"
+				style="border: 1px solid #AFAFAF; vertical-align: text-top; position: relative;">
+				<table style="border: none;">
+					<tr>
+						<th class="xlabelBold" colspan="2">Customer: <span
+							class="xlabelBold" th:utext="${buyerCode}"></span></th>
+					</tr>
+					<tr>
+						<th class="xlabelBold" colspan="2" th:utext="${buyerName}">
+							UNIPLAST POLYMERS SDN BHD</th>
+					</tr>
+					<tr style="height: 160px; vertical-align: text-top;">
+						<th class="labelNormal" colspan="2" th:utext="${buyerAddress}">
+							NO .1 JALAN 12/10 TAMAN KOPERASI POLIS FASA 1 68100 MALAYSIA</th>
+					</tr>
+				</table>
+				<table style="border: none; position: absolute; bottom: 0;">
+					<tr>
+						<th class="labelNormal" width="35%">Telephone:</th>
+						<th class="labelNormal" width="65%" th:utext="${buyerTelephoneNo}">0361872936</th>
+					</tr>
+					<tr>
+						<th class="labelNormal" width="35%">Fax No:</th>
+						<th class="labelNormal" width="65%" th:utext="${buyerFacsimile}">03-61872909</th>
+					</tr>
+				</table>
+			</th>
+			<th width="1%" style="border: none;"></th>
+			<th width="31%"
+				style="border: 1px solid #AFAFAF; vertical-align: text-top; position: relative;">
+				<table style="border: none;">
+					<tr>
+						<th class="xlabelBold" colspan="2">Delivery To: <span
+							class="xlabelBold" th:utext="${buyerCode}"></span></th>
+						<!-- <th class="xlabelBold" width="50%" th:utext="${buyerCode}">8010001505</th> -->
+					</tr>
+					<tr>
+						<th class="xlabelBold" colspan="2" th:utext="${buyerName}">
+							UNIPLAST POLYMERS SDN BHD</th>
+					</tr>
+					<tr style="height: 160px; max-height: 160px; vertical-align: text-top;">
+						<th class="labelNormal" colspan="2" th:utext="${buyerAddress}">
+							NO .1 JALAN 12/10 TAMAN KOPERASI POLIS FASA 1 68100 MALAYSIA</th>
+					</tr>
+				</table>
+				<table style="border: none; position: absolute; bottom: 0;">
+					<tr>
+						<th class="labelNormal" width="35%">Telephone:</th>
+						<th class="labelNormal" width="65%" th:utext="${buyerTelephoneNo}">0361872936</th>
+					</tr>
+					<tr>
+						<th style="visibility: hidden;" class="labelNormal" width="35%">1</th>
+						<th style="visibility: hidden;" class="labelNormal" width="65%">1</th>
+					</tr>
+				</table>
+			</th>
+			<th width="1%" style="border: none;"></th>
+			<th width="36%" style="border: none; vertical-align: text-top;">
+				<table style="border: none;">
+					<tr>
+						<th class="xlabelBold" colspan="3" style="padding-bottom: 20px;">SALES
+							ORDER CONFIRMATION</th>
+					</tr>
+					<tr>
+						<th class="xlabelBold" width="10%" style="padding-bottom: 10px;">
+							<div style="float: left;">S.O.C. No</div>
+							<!--<div style="float: right; width: 10%; text-align: end;"> :</div>-->
+						</th>
+						<th class="xlabelBold" width="1%" style="padding-bottom: 10px;">
+							<span>:</span>
+						</th>
+						<th class="labelNormal" width="25%" style="padding-bottom: 10px;">
+							<span th:utext="${reference}">CTN-00000123-1</span>
+						</th>
+					</tr>
+					<tr>
+						<th class="xlabelBold" width="10%" style="padding-bottom: 10px;">
+							<div style="float: left;">SAP Sales Contract</div>
+							<!--<div style="float: right; width: 10%; text-align: end;"> :</div>-->
+						</th>
+						<th class="xlabelBold" width="1%" style="padding-bottom: 10px;">
+							<span>:</span>
+						</th>
+						<th class="labelNormal" width="25%" style="padding-bottom: 10px;">
+							<span th:utext="${sapNumber}">1234567</span>
+						</th>
+					</tr>
+					<tr>
+						<th class="xlabelBold" width="10%" style="padding-bottom: 10px;">
+							<div style="float: left;">Delivery</div>
+							<!--<div style="float: right; width: 10%; text-align: end;"> :</div>-->
+						</th>
+						<th class="xlabelBold" width="1%" style="padding-bottom: 10px;">
+							<span>:</span>
+						</th>
+						<th class="labelNormal" width="25%" style="padding-bottom: 10px;">
+							<span th:utext="${delivery}">August 2021</span>
+						</th>
+					</tr>
+					<tr>
+						<th class="xlabelBold" width="10%" style="padding-bottom: 10px;">
+							<div style="float: left;">PO. No</div>
+							<!--<div style="float: right; width: 10%; text-align: end;"> :</div>-->
+						</th>
+						<th class="xlabelBold" width="1%" style="padding-bottom: 10px;">
+							<span>:</span>
+						</th>
+						<th class="labelNormal" width="25%" style="padding-bottom: 10px;">
+							<span th:utext="${PONumber}">1234567 (AUG 2021)</span>
+						</th>
+					</tr>
+					<tr>
+						<th class="xlabelBold" width="10%" style="padding-bottom: 10px;">
+							<div style="float: left;">Valid From</div>
+							<!--<div style="float: right; width: 10%; text-align: end;"> :</div>-->
+						</th>
+						<th class="xlabelBold" width="1%" style="padding-bottom: 10px;">
+							<span>:</span>
+						</th>
+						<th class="labelNormal" width="25%" style="padding-bottom: 10px;">
+							<span th:utext="${validFrom}">09 Aug 2021</span>
+						</th>
+					</tr>
+					<tr>
+						<th class="xlabelBold" width="10%" style="padding-bottom: 10px;">
+							<div style="float: left;">Valid To</div>
+							<!--<div style="float: right; width: 10%; text-align: end;"> :</div>-->
+						</th>
+						<th class="xlabelBold" width="1%" style="padding-bottom: 10px;">
+							<span>:</span>
+						</th>
+						<th class="labelNormal" width="25%" style="padding-bottom: 10px;">
+							<span th:utext="${validTo}">09 Aug 2021</span>
+						</th>
+					</tr>
+				</table>
+			</th>
+		</tr>
+		<tr>
+			<th style="height: 20px; border: none;"></th>
+		</tr>
+	</table>
+
+	<table style="margin-top: 1rem;">
+		<tr class="noBorder">
+			<td class="labelBold" width="30%"
+				style="border-right: 1px solid #AFAFAF;">Payment Terms</td>
+			<td width="65%" th:utext="${paymentTerm}">ZB90 - Within 90 days
+				Due net</td>
+		</tr>
+		<tr class="noBorder">
+			<td class="labelBold" width="30%"
+				style="border-right: 1px solid #AFAFAF;">Currency</td>
+			<td width="65%" th:utext="${currencyCode}">USD</td>
+		</tr>
+	</table>
+
+	<table style="margin-top: 1rem;">
+		<tr>
+			<td class="centerLabel" width="25%">Description of Goods</td>
+			<td class="centerLabel" width="15%">Term of Delivery</td>
+			<td class="centerLabel" width="16%">Quantity</td>
+			<td class="centerLabel" width="19%">Unit Price (<span
+				th:utext="${firstItemCurrencyCode}"></span>)
+			</td>
+			<td class="centerLabel" width="25%" colspan="2">Amount (<span
+				th:utext="${firstItemCurrencyCode}"></span>)
+			</td>
+		</tr>
+		<tr th:each="salesItem, iter: ${salesItems}">
+			<td style="font-weight: bold;" th:text="${salesItem.productName}"></td>
+			<td style="text-align: center;" th:text="${salesItem.incoterm}"></td>
+			<td style="text-align: center;"><span
+				th:text="${#numbers.formatDecimal(salesItem.quantity, 1, 'COMMA', 3, 'POINT')}"></span> <span th:text="${salesItem.uomCode}"></span>
+			</td>
+			<td style="text-align: right;"><span
+				th:text="${#numbers.formatDecimal(salesItem.itemInvoice, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></span> <span th:text="${firstItemCurrencyCode}"></span>/<span
+				th:text="${salesItem.uomCode}"></span></td>
+			<td style="border-right: 0px;" th:text="${firstItemCurrencyCode}">USD</td>
+			<td style="text-align: right; border-left: 0px;"><span
+				th:text="${#numbers.formatDecimal(salesItem.itemLevelTotal, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></span>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" style="border: none"></td>
+			<td style="border: none; text-align: right; font-weight: bold;">TOTAL</td>
+			<td style="border: none; text-align: right;"><span
+				th:text="${#numbers.formatDecimal(totalItemQuantity, 1, 'COMMA', 3, 'POINT')}"></span>
+			</td>
+			<td style="border-right: 0px;" th:utext="${firstItemCurrencyCode}">USD</td>
+			<td style="text-align: right; border-left: 0px;"><span
+				th:text="${#numbers.formatDecimal(totalItemAmount, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></span>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="4" style="font-weight: bold;">Total Amount (<span
+				th:text="${firstItemCurrencyCode}"></span>)
+			</td>
+			<td style="border-right: 0px;" th:text="${firstItemCurrencyCode}">USD</td>
+			<td style="text-align: right; border-left: 0px;"><span
+				th:text="${#numbers.formatDecimal(totalItemAmount, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></span>
+			</td>
+		</tr>
+		<!--<tr>
+			<td colspan="6" style="font-weight: bold;">MYR Equivalent
+				Amount:</td>
+		</tr>
+		<tr>
+			<td colspan="4" style="text-align: right; border-bottom: none;">Total Amount (MYR)</td>
+			<td style="border-right: 0px; border-bottom: none;">MYR</td>
+			<td style="text-align: right; border-left: 0px; border-bottom: none;"><span
+				th:if="${!exchangePrice.equals('0.0')}"
+				th:text="${#numbers.formatDecimal(exchangePrice, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></span>
+				<span th:if="${exchangePrice.equals('0.0')}">-</span></td>
+		</tr>
+		<tr>
+			<td colspan="2" style="border-right: 0px; border-top: none;">Exchange Rate
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span
+				th:if="${!exchangeRate.equals('0.0')}"
+				th:text="${#numbers.formatDecimal(exchangeRate, 1, 'COMMA', 5, 'POINT')}"></sapn>
+					<span th:if="${exchangeRate.equals('0.0')}">-</sapn>
+			</td>
+			<td colspan="2" style="text-align: right; border-left: 0px; border-top: none;">Total
+				Amount Payable (MYR)</td>
+			<td style="border-right: 0px; border-top: none;">MYR</td>
+			<td style="text-align: right; border-left: 0px; border-top: none;"><span
+				th:if="${!exchangePrice.equals('0.0')}"
+				th:text="${#numbers.formatDecimal(exchangePrice, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></span>
+				<span th:if="${exchangePrice.equals('0.0')}">-</span></td>
+		</tr>-->
+	</table>
+	<table style="page-break-inside: avoid !important;">
+		<tr>
+			<td colspan="6" style="font-weight: bold;">MYR Equivalent
+				Amount:</td>
+		</tr>
+		<tr>
+			<td colspan="4" style="text-align: right; border-bottom: none;">Total Amount (MYR)</td>
+			<td style="border-right: 0px; border-bottom: none;">MYR</td>
+			<td style="text-align: right; border-left: 0px; border-bottom: none;"><span
+					th:if="${!exchangePrice.equals('0.0')}"
+					th:text="${#numbers.formatDecimal(exchangePrice, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></span>
+				<span th:if="${exchangePrice.equals('0.0')}">-</span>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" style="border-right: 0px; border-top: none;">Exchange Rate
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span th:if="${!exchangeRate.equals('0.0')}"
+					th:text="${#numbers.formatDecimal(exchangeRate, 1, 'COMMA', 5, 'POINT')}"></sapn>
+					<span th:if="${exchangeRate.equals('0.0')}">-</sapn>
+			</td>
+			<td colspan="2" style="text-align: right; border-left: 0px; border-top: none;">Total
+				Amount Payable (MYR)</td>
+			<td style="border-right: 0px; border-top: none;">MYR</td>
+			<td style="text-align: right; border-left: 0px; border-top: none;"><span th:if="${!exchangePrice.equals('0.0')}"
+					th:text="${#numbers.formatDecimal(exchangePrice, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></span>
+				<span th:if="${exchangePrice.equals('0.0')}">-</span>
+			</td>
+		</tr>
+	</table>
+	<div class="page-break"></div>
+	<!-- ----------------------------------------------------- -->
+
+	<div style="font-weight: bold;">REMARKS:</div>
+	<br>
+
+	<table style="border: none">
+		<tr class="noBorder">
+			<td width="15%" style="padding: 0px;">Please Pay to:</td>
+		</tr>
+		<tr class="noBorder">
+			<td style="padding-left: 0px;">Beneficiary:</td>
+			<td style="padding-left: 0px;" th:text="${beneficiary}">PETROLIAM
+				NASIONAL BERHAD</td>
+		</tr>
+		<tr class="noBorder">
+			<td style="padding-left: 0px;">Account No.:</td>
+			<td style="padding-left: 0px;" th:text="${bankAccountNumber}">PETROLIAM
+				NASIONAL BERHAD</td>
+		</tr>
+		<tr class="noBorder">
+			<td style="padding-left: 0px;">Bank Name:</td>
+			<td style="padding-left: 0px;" th:text="${bankName}">PETROLIAM
+				NASIONAL BERHAD</td>
+		</tr>
+		<tr class="noBorder">
+			<td style="padding-left: 0px;">Branch Name:</td>
+			<td style="padding-left: 0px;" th:text="${bankBranch}">PETROLIAM
+				NASIONAL BERHAD</td>
+		</tr>
+		<tr class="noBorder">
+			<td style="padding-left: 0px;">Bank Address:</td>
+			<td style="padding-left: 0px;" th:text="${bankAddress}">PETROLIAM
+				NASIONAL BERHAD</td>
+		</tr>
+		<tr class="noBorder">
+			<td style="padding-left: 0px;">Swift Code:</td>
+			<td style="padding-left: 0px;" th:text="${bankSwift}">PETROLIAM
+				NASIONAL BERHAD</td>
+		</tr>
+	</table>
+	<p style="font-size: medium;">Please state your invoice number(s)
+		and account number when making payment.</p>
+	<br>
+	<p>PLEASE NOTE THAT THE SALES ORDER CONFIRMATION IS SUBJECT TO THE
+		TERMS AND CONDITIONS STATED OVERLEAF, KINDLY SIGN AND RETURN THE
+		DUPLICATE OF THIS FORM TO INDICATE YOUR ACCEPTANCE OF THE TERMS AND
+		CONDITIONS.</p>
+
+	<p>THANK YOU.</p>
+	<p>YOUR FAITHFULLY</p>
+
+	<span style="font-weight: bold;">for PETRONAS Chemicals
+		Marketing (Labuan) Ltd</span>
+	<!-- <span style="font-weight: bold;" th:utext="${buyer}">Name</span> -->
+
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<div style="margin-top: 2rem;">
+		<div style="display: inline-block; width: 100%;">
+			<hr style="display: inline-block; width: 30%;">
+			<hr style="display: inline-block; width: 30%; float: right;">
+		</div>
+
+		<table style="border: 0px;">
+			<tr class="noBorder">
+				<td width="50%">SALES EXECUTIVE</td>
+				<td width="50%" style="padding-left: 20%;">(COMPANY STAMP AND
+					SIGN)</td>
+			</tr>
+			<tr class="noBorder">
+				<td width="50%"></td>
+				<td width="50%" style="padding-left: 20%;">WE ACCEPT THE TERMS
+					AND CONDITIONS</td>
+			</tr>
+			<tr class="noBorder">
+				<td width="50%"></td>
+				<td width="50%" style="padding-left: 20%;">NAME:</td>
+			</tr>
+			<tr class="noBorder">
+				<td width="50%"></td>
+				<td width="50%" style="padding-left: 20%;">DATE:</td>
+			</tr>
+		</table>
+		<table style="border: none;">
+			<hr style="display: inline-block; width: 30%;">
+			<tr class="noBorder">
+				<td width="50%">SALES MANAGER</td>
+				<td width="50%"></td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="page-break"></div>
+	<h1 style="font-weight: bold; text-align: center; font-size: large;">
+		<u>CONDITIONS OF SALES</u>
+	</h1>
+	<p>
+		(1) ORDERS MADE BY ANY MEANS OF COMMUNICATION FROM THE BUYER ARE NOT
+		BINDING TO THE SELLER UNLESS CONFIRMED USING THE SOC FORM PREPARED BY
+		THE SELLER. ANY VARIATION OR DELETION OF THESE CONDITIONS IS
+		INAPPLICABLE UNLESS ACCEPTED IN WRITING BY THE SELLER. <br /> <br />
+		(2) ANY DATE OR TIME FOR DELIVERY QUOTED BY THE SELLER IS ONLY AN
+		ESTIMATION AND THE SELLER SHALL NOT BE RELIABLE FOR THE CONSEQUENCE OF
+		ANY DELAY FROM THE ESTIMATED DATE. <br /> <br /> (3) GOODS
+		REPRESENTED BY THE BUYER TO BE DEFECTIVE SHALL NOT FORM THE OBLIGATION
+		FOR THE SELLER TO BEAR ANY CLAIM FOR WORK DONE BY THE BUYER, NOR FOR
+		ANY LOSS, DAMAGE OR EXPENSE WHATSOEVER DIRECTLY OR INDIRECTLY FROM
+		SUCH DEFECTS, BUT SUCH GOODS, IF RETURNED TO THE SELLER AND ACCEPTED
+		AS DEFECTIVE WILL BE REPLACED AS ORIGINALLY ORDERED OR TREATED AS
+		MATERIALS RETURNED, BY THE SELLER, DEPENDING ON THE AVAILABILITY OF
+		THE MATERIALS. <br /> <br /> (4) THE SELLER SHALL BE RELIEVED FROM
+		THE OBLIGATION TO SUPPLY AS LONG AS THE BUYER HAS ANY ARREARS WITH
+		PAYMENTS. IF DOUBT ARISES ON THE SOLVENCY OF THE BUYER, THE SELLER
+		RESERVES THE RIGHT TO STOP FURTHER DELIVERIES UNTIL SATISFACTORY
+		SECURITIES OR PAYMENT IS RECEIVED. <br /> <br /> (5) PAYMENT OF THE
+		PRICE SHALL BE MADE IN ACCORDANCE WITH PAYMENT CONDITIONS AGREED UPON
+		BOTH PARTIES. <br /> <br /> (6) LATE PAYMENT CHARGE OF 2.0% ABOVE
+		THE BANKS PREVAILING BASE LENDING RATE (BLR) WILL BE IMPOSED FOR LATE
+		PAYMENTS. <br /> <br /> (7) RESIN SOLD IS ONLY FOR OWN CONSUMPTION.
+		<br /> <br /> (8) THESE CONDITIONS AND THE CONTRACT SHALL BE SUBJECT
+		TO AND CONSTRUCTED IN ACCORDANCE WITH THE PREVAILING MALAYSIAN LAW. <br />
+		<br /> (9) OTHER TERMS AND CONDITIONS AS STIPULATED IN GENERAL TERM &
+		CONDITION - REV. 2017 V 1. <br /> <br />
+	</p>
+</body>
+</html>

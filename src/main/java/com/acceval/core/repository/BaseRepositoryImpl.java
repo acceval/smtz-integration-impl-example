@@ -478,11 +478,25 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 		Path path = getPath(root, property);
 		Class<?> attrClass = path.getJavaType();
 
+		// Enum handling
+		if (attrClass != null && ClassUtils.isAssignable(attrClass, Enum.class)) {
+			if (values != null && values.length > 0 && values[0] instanceof String) {
+				for (int i = 0; i < values.length; i++) {
+					String enumString = (String) values[i];
+					values[i] = Enum.valueOf(attrClass.asSubclass(Enum.class), enumString);
+				}
+			} else if (value instanceof String && StringUtils.isNotBlank((String) value)) {
+				value = Enum.valueOf(attrClass.asSubclass(Enum.class), (String) value);
+			}
+		}
+
 		// Null
 		if (Criterion.RestrictionType.IS_NULL.equals(restrictionType)) {
 			return new Predicate[] { builder.isNull(path) };
 		} else if (Criterion.RestrictionType.IS_NOT_NULL.equals(restrictionType)) {
 			return new Predicate[] { builder.isNotNull(path) };
+		} else if (Criterion.RestrictionType.IS_BLANK.equals(restrictionType)) {
+			return new Predicate[] { builder.or(builder.isNull(path), builder.equal(path, "")) };
 		}
 		// LIKE
 		else if (!criterion.isExactSearch() && value instanceof String) {
@@ -758,6 +772,10 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 	 */
 	@Override
 	public Criteria getCriteriaByMapParam(MultiValueMap<String, String> mapParam, Class<?> targetClass) {
+		return getCriteriaByMapParam(mapParam, targetClass, false);
+	}
+
+	public Criteria getCriteriaByMapParam(MultiValueMap<String, String> mapParam, Class<?> targetClass, boolean isBuildOrCriterion) {
 		int page = mapParam.get(_PAGE) != null ? Integer.parseInt(mapParam.getFirst(_PAGE)) : 0;
 		int pageSize = mapParam.get(_PAGESIZE) != null ? Integer.parseInt(mapParam.getFirst(_PAGESIZE)) : 0;
 		boolean isFetchAll = mapParam.get(_FETCHALL) != null ? Boolean.parseBoolean(mapParam.getFirst(_FETCHALL)) : (pageSize <= 0);
@@ -794,8 +812,8 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 				String resolveKey = getMapPropertyResolver().containsKey(key) ? getMapPropertyResolver().get(key) : key;
 				Class<?> attrClass = getPath(root, resolveKey).getJavaType();
 
-				if (mapParam.getFirst(key) == null || mapParam.getFirst(key).equalsIgnoreCase("isNull")) {
-					lstCrriterion.add(new Criterion(resolveKey, RestrictionType.IS_NULL, mapParam.getFirst(key)));
+				if (mapParam.getFirst(key) == null || mapParam.getFirst(key).equalsIgnoreCase("isNil")) {
+					lstCrriterion.add(new Criterion(resolveKey, RestrictionType.IS_BLANK, mapParam.getFirst(key)));
 				} else if (ClassUtils.isAssignable(attrClass, Long.class, true)) {
 					List<String> searchValue = mapParam.get(key);
 
@@ -878,12 +896,13 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 		acceCriteria.setCriterion(lstCrriterion);
 
 		// base entity
-		if ((!mapParam.containsKey("recordStatus") || StringUtils.isBlank(mapParam.getFirst("recordStatus")))
+		if (!isBuildOrCriterion && (!mapParam.containsKey("recordStatus") || StringUtils.isBlank(mapParam.getFirst("recordStatus")))
 				&& (BaseEntity.class.isAssignableFrom(targetClass) || BaseCompanyEntity.class.isAssignableFrom(targetClass))) {
 			acceCriteria.appendCriterion(new Criterion("recordStatus", STATUS.ACTIVE, true));
 		}
 
-		if ((BaseCompanyModel.class.isAssignableFrom(targetClass) || BaseCompanyEntity.class.isAssignableFrom(targetClass))
+		if (!isBuildOrCriterion
+				&& (BaseCompanyModel.class.isAssignableFrom(targetClass) || BaseCompanyEntity.class.isAssignableFrom(targetClass))
 				&& !mapParam.containsKey("companyId")) {
 			Long companyId = PrincipalUtil.getCompanyID();
 			if (companyId != null) {
@@ -1065,7 +1084,7 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 			return null;
 		}
 
-		if (clazz.getSuperclass().equals(BaseEntity.class) || clazz.getSuperclass().equals(BaseCompanyEntity.class)) {
+		if (BaseEntity.class.equals(clazz.getSuperclass()) || BaseCompanyEntity.class.equals(clazz.getSuperclass())) {
 			if (clazz.isAnnotationPresent(Entity.class)) {
 				return clazz;
 			} else {

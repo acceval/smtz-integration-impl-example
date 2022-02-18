@@ -27,15 +27,15 @@ public class PrincipalUtil {
 
 		if (PrincipalUtil.provider.get() != null) {
 			return;
-//			throw new IllegalStateException("a principal provider already exists, unable to set provider again");
+//			throw new IllegalStateException("Principal provider already exists, unable to set provider again");
 		}
 		PrincipalUtil.provider.set(provider);
 	}
 
-	public static void setProvider(PrincipalProvider provider, String auditLogUUID) {
-		PrincipalUtil.auditLogUUID.set(auditLogUUID);
-		PrincipalUtil.setProvider(provider);
-	}
+//	public static void setProvider(PrincipalProvider provider, String auditLogUUID) {
+//		PrincipalUtil.auditLogUUID.set(auditLogUUID);
+//		PrincipalUtil.setProvider(provider);
+//	}
 
 	public static String getAuditLogUUID() {
 		return PrincipalUtil.auditLogUUID.get();
@@ -47,7 +47,7 @@ public class PrincipalUtil {
 	}
 
 	@NotNull
-	private static PrincipalProvider getProvider() {
+	public static PrincipalProvider getProvider() {
 		PrincipalProvider provider = PrincipalUtil.provider.get();
 
 		if (provider == null) {

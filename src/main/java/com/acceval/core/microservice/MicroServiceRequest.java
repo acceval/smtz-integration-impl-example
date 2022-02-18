@@ -1,28 +1,21 @@
 package com.acceval.core.microservice;
 
-import java.util.Optional;
-
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.cloud.client.discovery.DiscoveryClient;
-import org.springframework.web.client.RestTemplate;
 
 import com.acceval.core.MicroServiceUtilException;
 
 public class MicroServiceRequest {
 
-	private DiscoveryClient discoveryClient;
-	private RestTemplate restTemplate;
 	private String token;
+	private String companyID;
 	private String msService;
 	private String msFunction;
 	private String param;
 
-	public MicroServiceRequest(DiscoveryClient discoveryClient, RestTemplate restTemplate, String token, String msService,
-			String msFunction, String param) {
+	public MicroServiceRequest(String token, String companyID, String msService, String msFunction, String param) {
 		super();
-		this.discoveryClient = discoveryClient;
-		this.restTemplate = restTemplate;
 		this.token = token;
+		this.companyID = companyID;
 		this.msService = msService;
 		this.msFunction = msFunction;
 		this.param = param;
@@ -41,23 +34,9 @@ public class MicroServiceRequest {
 	}
 
 	public void assertNull(Class<?> clazz) throws MicroServiceUtilException {
-		Optional.ofNullable(discoveryClient).orElseThrow(() -> new MicroServiceUtilException(clazz, "DiscoveryClient is null."));
-		Optional.ofNullable(restTemplate).orElseThrow(() -> new MicroServiceUtilException(clazz, "RestTemplate is null."));
 		if (StringUtils.isBlank(msService)) new MicroServiceUtilException(clazz, "Microservice Service Name is null.");
 		if (StringUtils.isBlank(msFunction)) new MicroServiceUtilException(clazz, "Microservice Function is null.");
 		//		if (StringUtils.isBlank(param)) new MicroServiceUtilException(clazz,"Microservice Request is null.");
-	}
-
-	public DiscoveryClient getDiscoveryClient() {
-		return discoveryClient;
-	}
-
-	public void setDiscoveryClient(DiscoveryClient discoveryClient) {
-		this.discoveryClient = discoveryClient;
-	}
-
-	public RestTemplate getRestTemplate() {
-		return restTemplate;
 	}
 
 	public String getToken() {
@@ -66,10 +45,6 @@ public class MicroServiceRequest {
 
 	public void setToken(String token) {
 		this.token = token;
-	}
-
-	public void setRestTemplate(RestTemplate restTemplate) {
-		this.restTemplate = restTemplate;
 	}
 
 	public String getMsService() {
@@ -94,5 +69,13 @@ public class MicroServiceRequest {
 
 	public void setParam(String param) {
 		this.param = param;
+	}
+
+	public String getCompanyID() {
+		return companyID;
+	}
+
+	public void setCompanyID(String companyID) {
+		this.companyID = companyID;
 	}
 }

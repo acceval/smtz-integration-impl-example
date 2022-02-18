@@ -1,0 +1,93 @@
+<html>
+<head>
+<style>
+		table {
+			width: 100%;
+			border: 1px solid #AFAFAF;
+			border-collapse: collapse;
+		}
+		
+		table table.noBorder {
+			width: 100%;
+			border: 0;
+		}
+		
+		table table.noBorder tr {
+			border: 0;
+		}
+		
+		table table.noBorder td {
+			border: 0;
+		}
+		
+		table, th, td {
+			border: 1px solid #AFAFAF;
+		}
+		
+		td {
+			padding: 0.5rem
+		}
+		
+		.labelBold {
+			text-align: left;
+			padding: 0.3rem 0.5rem;
+			font-weight: bold;
+		}
+		
+		.page-break {
+			height: 0;
+			page-break-after: always;
+			margin: 0;
+			border-top: none;
+		}
+		
+		.inlineTable {
+			width: 40%;
+			border: 0;
+		}
+
+		tr.noBorder td {
+			border: 0;
+		}
+
+		</style>
+</head>
+<body>
+	<p style="margin: 0 0 30px 0;">Dear,</p>
+	<p style="margin: 0 0 10px 0;">The {{context.CONDITION_TABLE_NAME}} {{context.TOTAL_EXPIRE_RECORDS}} records was/were expired{{#if context.TOTAL_EXPIRING_RECORDS}}, {{context.TOTAL_EXPIRING_RECORDS}} is/are going expire{{/if}}{{#if context.TOTAL_MISSING_RECORDS}}, {{context.TOTAL_MISSING_RECORDS}} is missing{{/if}}. Please login to update.</p>
+	<br>
+	<br>
+			<table style="margin-top: 1rem;"> 	
+			<tr>
+				{{#each context.TABLE_COLUMN}}
+				<th class="labelBold" style="text-align: center;">{{this}}</th> 
+				{{/each}}		
+				<th class="labelBold" style="text-align: center;">VALID FROM</th>
+				<th class="labelBold" style="text-align: center;">VALID TO</th>
+				<th class="labelBold" style="text-align: center;">STATUS</th>	
+			</tr>
+			{{#context.TABLE_CONTENT}}
+			<tr style="text-align: center;">
+				{{#valueList}}
+				<td>{{this}}</td>
+				{{/valueList}}
+				<td>{{validFrom}}</td>
+				<td>{{validTo}}</td>
+				<td>{{status}}</td>
+			</tr>
+			{{/context.TABLE_CONTENT}}
+		</table> 
+	<br>
+	<br>
+	<p style="margin: 20px 0 0 0;">From:</p>
+	<p style="margin: 0 0 10px 0;">System Admin</p>
+	<br>
+	<p style="margin: 0 0 10px 0;">The information contained in this
+		message may be privileged and confidential.</p>
+	<p style="margin: 0 0 10px 0;">If you are NOT the intended
+		recipient, please notify the sender immediately.</p>
+	<!-- <p style="margin: 0 0 10px 0;">This is an generated email. Please
+		do not reply to the sender.</p> -->
+
+</body>
+</html>

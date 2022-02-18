@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<!-- <link th:href="${cssPath}" rel="stylesheet"/> -->
+		<style>
+		table {
+			width: 100%;
+			border: 1px solid rgb(0, 0, 0);
+			border-collapse: collapse;
+		}
+
+		table table.noBorder {
+			width: 100%;
+			border: 0;
+		}
+
+		table table.noBorder tr {
+			border: 0;
+		}
+
+		table table.noBorder td {
+			border: 0;
+		}
+
+		table, th, td {
+			border: 1px solid rgb(0, 0, 0);
+		}
+
+		td {
+			padding: 0.5rem
+		}
+
+		.labelBold {
+			text-align: left;
+			padding: 0.3rem 0.5rem;
+			font-weight: bold;
+		}
+
+		.page-break {
+			height: 0;
+			page-break-after: always;
+			margin: 0;
+			border-top: none;
+		}
+
+		.inlineTable {
+			width: 40%;
+			border: 0;
+		}
+
+		tr.noBorder td {
+			border: 0;
+		}
+
+        .main-body {
+            display: flex;
+            display: -webkit-box;
+
+            flex-direction: column;
+            -webkit-box-orient: vertical;
+
+            justify-content: space-between;
+            -webkit-box-pack: justify;
+
+            position: relative;
+        }
+        
+        table { 
+			page-break-inside:auto 
+		}
+		
+    	tr { 
+			page-break-inside:avoid; 
+			page-break-after:auto 
+		}
+		
+		</style>
+        <script>
+            function setBodyHeight() {
+                var mainBody = document.querySelectorAll('.main-body')[0];
+                var pageHeight = 1130;
+                var mainBodyHeight = (mainBody.clientHeight) /  2;
+                var totalPage = Math.ceil(mainBodyHeight / pageHeight);
+                //document.getElementById('display').innerHTML="1, " + mainBodyHeight + ", " + (mainBodyHeight / pageHeight) + ", " +totalPage + ", " + pageHeight;
+                
+                if((mainBodyHeight / pageHeight) % 1 < 0.5){
+					totalPage = totalPage - 1;
+				}
+                var totalHeight = totalPage * pageHeight;
+
+                document.querySelectorAll('.main-body')[0].style.height = totalHeight + 'px';
+            }
+        </script>
+	</head>
+	<body style="font-family: arial;" onload="setBodyHeight()">
+
+        <div class="main-body">
+            <div class="top-section">
+                <table style="margin-top: 3rem;">
+                    <tr>
+                        <td class="labelBold" width="35%">
+							<p style="text-decoration: underline; margin: 0;">Nomor Perjanjian Jual Beli</p>
+							<p style="font-weight: normal; margin: 0; font-style: italic;">Sales and Purchase Agreement Number</p>
+						</td>
+                        <td width="65%" th:text="${PONumber}">Agreement Number</td>
+                    </tr>
+                    <tr>
+                        <td class="labelBold" width="35%">
+                        	<p style="text-decoration: underline; margin: 0;">Tanggal Perjanjian Jual Beli</p>
+							<p style="font-weight: normal; margin: 0; font-style: italic;">Sales and Purchase Agreement Date</p>
+                        </td>
+                        <td width="65%" th:text="${agreementCommencementDate}">Agreement Commencement Date</td>
+                    </tr>
+                    <tr>
+                        <td class="labelBold" width="35%" style="vertical-align: baseline;">
+                        	<p style="text-decoration: underline; margin: 0;">Penjual</p>
+							<p style="font-weight: normal; margin: 0; font-style: italic;">Seller</p>
+                        </td>
+                        <td width="65%">
+                        	<p style="margin: 0; padding-left: 0;" class="labelBold" th:utext="${sellerCompanyNameUpperCase}">abc</p>
+                            <p style="margin: 0;" th:utext="${sellerAddress}">efg</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="labelBold" width="35%" style="vertical-align: baseline;">
+                        	<p style="text-decoration: underline; margin: 0;">Pembeli</p>
+							<p style="font-weight: normal; margin: 0; font-style: italic;">Buyer</p>
+                        </td>
+                        <td width="65%">
+                        	<p style="margin: 0; padding-left: 0;" class="labelBold" th:utext="${buyerName}">hij</p>
+                            <p style="margin: 0;" th:utext="${buyerAddress}">klm</p>
+                        </td>
+                    </tr>
+                </table>
+                <br/>
+
+				<p style="font-weight: bold; text-decoration: underline; margin: 0;">
+					Selanjutnya, dengan ini disepakati sebagai berikut:
+				</p>
+                <p style="margin: 0; font-style: italic;">Now Therefore, it is hereby agreed as follows:</p>
+                
+                <table>
+                    <tr>
+                        <th class="labelBold" style="text-align: left; width: 25%;">
+                        	<p style="font-weight: bold; text-decoration: underline; margin: 0;">
+								Produk
+							</p>
+                			<p style="margin: 0; font-weight: normal; font-style: italic;">Product</p>
+                        </th>
+                        <th class="labelBold" style="text-align: left;">
+                        	<p style="font-weight: bold; text-decoration: underline; margin: 0;">
+								Volume
+							</p>
+                			<p style="margin: 0; font-weight: normal; font-style: italic;">Volume (<span th:text="${docUomCode}"></span>)</p>
+                        </th>
+                        <th class="labelBold" style="text-align: left; width: 15%;">
+                        	<p style="font-weight: bold; text-decoration: underline; margin: 0;">
+								Pengepakan
+							</p>
+                			<p style="margin: 0; font-weight: normal; font-style: italic;">Packing</p>
+                        </th>
+                        <th class="labelBold" style="text-align: center;">
+                        	<p style="font-weight: bold; text-decoration: underline; margin: 0;">
+								Harga Per Unit
+							</p>
+                			<p style="margin: 0; font-weight: normal; font-style: italic;">Unit Price</p>
+                        </th>
+                        <th class="labelBold" style="text-align: left; width: 20%;">
+                        	<p style="font-weight: bold; text-decoration: underline; margin: 0;">
+								Harga Total
+							</p>
+                			<p style="margin: 0; font-weight: normal; font-style: italic;">Total Price</p>
+                        </th>
+                    </tr>
+                    <tr th:each="orderItem, iter: ${orderItems}" style="text-align: center;">
+                        <td style="text-align: left;" th:text="${orderItem.productName}">Product</td>
+                        <td style="text-align: right;"><span th:text="${#numbers.formatDecimal(orderItem.quantity, 1, 'COMMA', 3, 'POINT')}"></span>
+                        </td>
+                        <td style="padding: 0.5rem; text-align: left;" th:text="${#strings.capitalizeWords(#strings.toLowerCase(orderItem.packaging))}">Packaging Bags 25
+Kg</td>
+                        <td style="text-align: right;"><span style="float: left;" th:text="${currencyCode}"></span> <span style="float: right;" th:text="${#numbers.formatDecimal(orderItem.itemUnitInvoiceTHB, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></span></td>
+                        <td style="text-align: right;"><span style="float: left;" th:text="${currencyCode}"></span> <span style="float: right;" th:text="${#numbers.formatDecimal(orderItem.itemTotalInvoiceTHB, 1, 'COMMA', priceDecimalDigits, 'POINT')}">Quantity * invocie</span></td>
+                    </tr>
+                    <tr>
+                    	<td colspan="4" class="labelBold" style="text-align: end;">(Exclude PPN) Total</td>
+                    	<td><span style="float: left;" th:text="${currencyCode}"></span><span style="float: right;" th:text="${#numbers.formatDecimal(totalPrice, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></td>
+                    </tr>
+                </table>
+				<p style="margin: 0; font-style: italic;">*Quantity : +/- 5% Operational Tolerance at Seller Option</p>
+                <table>
+                    <tr style="height: 0;">
+                        <td width="30%" class="labelBold" style="vertical-align: baseline;">
+                        	<p style="font-weight: bold; text-decoration: underline; margin: 0;">
+								Asal Kargo
+							</p>
+                			<p style="margin: 0; font-weight: normal; font-style: italic;">Cargo Origin</p>
+                        </td>
+                        <td width="70%" th:text="${cargoOrigin}">C150Y</td>
+                    </tr>
+                    <tr>
+                        <td width="30%" class="labelBold" style="vertical-align: baseline;">
+                        	<p style="font-weight: bold; text-decoration: underline; margin: 0;">
+								Pelabuhan Muat
+							</p>
+                			<p style="margin: 0; font-weight: normal; font-style: italic;">Load Port</p>
+                        </td>
+                        <td width="70%" th:text="${loadPort}">Cargo Origin</td>
+                    </tr>
+                    <tr>
+                        <td width="30%" class="labelBold" style="vertical-align: baseline;">
+                        	<p style="font-weight: bold; text-decoration: underline; margin: 0;">
+								Kepemilikan dan Resiko
+							</p>
+                			<p style="margin: 0; font-weight: normal; font-style: italic;">Title and Risk</p>
+                        </td>
+                        <td width="70%">
+                        	<p style="margin: 0;">
+								Kepemilikan dan resiko barang menjadi milik pembeli sejak terbitnya SPPB (Surat Persetujuan Pengeluaran Barang)
+							</p>
+                			<p style="margin: 0; font-style: italic;">Title and risk transfer to buyer after issuance of SPPB</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td  width="30%" class="labelBold" style="vertical-align: baseline;">
+                        	<p style="font-weight: bold; text-decoration: underline; margin: 0;">
+								Perkiraan Tanggal Pengiriman
+							</p>
+                			<p style="margin: 0; font-weight: normal; font-style: italic;">Delivery Date Range</p>
+                        </td>
+                        <td width="70%">
+                        	<p style="margin: 0;" th:text="${deliveryDateRange}"></p>
+                			<p style="margin: 0;">(Subject to availability material / Sesuai dengan ketersediaan produk)</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td  width="30%" class="labelBold" style="vertical-align: baseline;">
+                        	<p style="font-weight: bold; text-decoration: underline; margin: 0;">
+								Pelabuhan Bongkar
+							</p>
+                			<p style="margin: 0; font-weight: normal; font-style: italic;">Discharging Port</p>
+                        </td>
+                        <td width="70%" th:text="${#strings.capitalizeWords(#strings.toLowerCase(dischargePortText))}">Discharging Port</td>
+                    </tr>
+                    <tr>
+                        <td  width="30%" class="labelBold" style="vertical-align: baseline;">
+                        	<p style="font-weight: bold; text-decoration: underline; margin: 0;">
+								Pengiriman
+							</p>
+                			<p style="margin: 0; font-weight: normal; font-style: italic;">Delivery Port</p>
+                        </td>
+                        <td width="70%">
+                        	<p style="margin: 0;">
+								<span style="font-weight: bold;">Terminal</span> pembeli berlokasi di <span style="font-weight: bold;" th:text="${#strings.capitalizeWords(#strings.toLowerCase(dischargePortText))}">Merak</span>
+							</p>
+                			<p style="margin: 0; font-weight: normal; font-style: italic;">Buyer <span style="font-weight: bold;">Terminal</span> located in <span style="font-weight: bold;" th:text="${#strings.capitalizeWords(#strings.toLowerCase(dischargePortText))}">Merak</span></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="30%" class="labelBold" style="vertical-align: baseline;">
+                        	<p style="font-weight: bold; text-decoration: underline; margin: 0;">
+								Pengangkutan
+							</p>
+                			<p style="margin: 0; font-weight: normal; font-style: italic;">Transportation</p>
+                        </td>
+                        <td width="70%">
+                        	<p style="margin: 0;">
+								Penjual akan mengatur transportasi atas nama pembeli sampai ke tujuan akhir
+								sesuai dengan kebutuhan pembeli mengikuti peraturan Indonesia.
+							</p>
+                			<p style="margin: 0; font-style: italic;">
+                				Seller shall provide transportation for and on behalf of Buyer from customs
+                				clearance to the Delivery Point as per Buyer's requirements in  accordance to
+                				Indonesia's laws and regulations.
+                			</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="30%" class="labelBold" style="vertical-align: baseline;">
+                        	<p style="font-weight: bold; text-decoration: underline; margin: 0;">
+								Asuransi
+							</p>
+                			<p style="margin: 0; font-weight: normal; font-style: italic;">Insurance</p>
+                        </td>
+                        <td width="70%">
+                        	<p style="margin: 0;">
+								Pembelian asuransi dari pelabuhan muat sampai tujuan akhir pengiriman
+								dibebankan kepada penjual atas nama pihak pembeli
+							</p>
+                			<p style="margin: 0; font-style: italic;">
+                				Seller to procure on behalf of Customer for the Product from Load Port until
+                				Delivery Point
+                			</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="30%" class="labelBold" style="vertical-align: baseline;">
+                        	<p style="font-weight: bold; text-decoration: underline; margin: 0;">
+								Pembayaran
+							</p>
+                			<p style="margin: 0; font-weight: normal; font-style: italic;">Payment</p>
+                        </td>
+                        <td width="70%">
+                        	<p style="margin: 0;" th:text="${payment1}">Date Range</p>
+                        	<p style="margin: 0;" th:text="${payment2}">Date Range</p>
+                        	<p style="font-weight: bold; margin: 0;" th:text="${payment3}">Date Range</p>
+                        	<p style="margin: 0;" th:text="${payment4}">Date Range</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="30%" class="labelBold" style="vertical-align: baseline;">
+                        	<p style="font-weight: bold; text-decoration: underline; margin: 0;">
+								Lainnya
+							</p>
+                			<p style="margin: 0; font-weight: normal; font-style: italic;">Other</p>
+                        </td>
+                        <td width="70%">
+                        	<p style="margin: 0;">
+								Semua syarat dan ketentuan dari Konfirmasi Pesanan ini harus sesuai dengan Ketentuan
+								dan Syarat Umum Penjualan yang dibuat antara Para Pihak. Ketika Konfirmasi Pembelian 
+								ini diterbitkan, maka Konfirmasi Pesanan ini merupakan satu kesatuan dan menjadi 
+								bagian yang tidak terpisahkan dari Perjanjian.
+							</p>
+                			<p style="margin: 0; font-style: italic;">
+                				All other terms and conditions of this SOC shall be in accordance with the General Terms
+                				and Conditions of the Sale executed between the Parties. This SOC is issued under, and shall
+                				form an integral part of Agreement.
+                			</p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+			<div>
+				<table style="width: 100%;">
+					<tr>
+						<td class="labelBold" style="width: 15%">
+							<p style="text-decoration: underline; margin: 0;">Penjual</p>
+							<p style="font-weight: normal; margin: 0; font-style: italic;">Seller</p>
+						</td>
+						<td style="width: 35%">
+							<p style="margin: 0; padding-left: 0;" class="labelBold" th:utext="${sellerCompanyNameUpperCase}">abc
+							</p>
+							<p style="margin: 0;" th:utext="${sellerAddress}">efg</p>
+						</td>
+						<td class="labelBold" style="width: 15%">
+							<p style="text-decoration: underline; margin: 0;">Pembeli</p>
+							<p style="font-weight: normal; margin: 0; font-style: italic;">Buyer</p>
+						</td>
+						<td style="width: 35%">
+							<p style="margin: 0; padding-left: 0;" class="labelBold" th:utext="${buyerName}">hij</p>
+							<p style="margin: 0;" th:utext="${buyerAddress}">klm</p>
+						</td>
+					</tr>
+					<tr>
+						<td class="labelBold" style="width: 15%; height: 5rem;">
+							<p style="text-decoration: underline; margin: 0;">Tanda Tangan</p>
+							<p style="font-weight: normal; margin: 0; font-style: italic;">Signature</p>
+						</td>
+						<td style="width: 35%; height: 5rem;"></td>
+						<td class="labelBold" style="width: 15%; height: 5rem;">
+							<p style="text-decoration: underline; margin: 0;">Tanda Tangan</p>
+							<p style="font-weight: normal; margin: 0; font-style: italic;">Signature</p>
+						</td>
+						<td style="width: 35%; height: 5rem;"></td>
+					</tr>
+					<tr>
+						<td class="labelBold" style="width: 15%;">
+							<p style="margin: 0;">Nama</p>
+							<p style="font-weight: normal; margin: 0; font-style: italic;">Name</p>
+						</td>
+						<td style="width: 35%;"></td>
+						<td class="labelBold" style="width: 15%;">
+							<p style="margin: 0;">Nama</p>
+							<p style="font-weight: normal; margin: 0; font-style: italic;">Name</p>
+						</td>
+						<td style="width: 35%;"></td>
+					</tr>
+					<tr>
+						<td class="labelBold" style="width: 15%; padding-top: 0;">
+							<p style="margin: 0;">Jabatan</p>
+							<p style="font-weight: normal; margin: 0; font-style: italic;">Designation</p>
+						</td>
+						<td style="width: 35%; padding-top: 0;"></td>
+						<td class="labelBold" style="width: 15%; padding-top: 0;">
+							<p style="margin: 0;">Jabatan</p>
+							<p style="font-weight: normal; margin: 0; font-style: italic;">Designation</p>
+						</td>
+						<td style="width: 35%; padding-top: 0;"></td>
+					</tr>
+				</table>
+				<div style="width: 30%; margin-top: 1rem; font-size: 10px;">
+					<p style="margin: 0; padding-left: 0; color: mediumspringgreen;" class="labelBold"><span th:utext="${sellerCompanyNameUpperCase}">06919.2016</span> <span th:if="${sellerBusinessNo != ''}"><sup>(<span th:text="${sellerBusinessNo}">06919.2016</span>)</sup></span></p>
+					<p style="margin: 0;" th:utext="${sellerAddress}">efg</p>
+					<p style="margin: 0;">T: <span th:utext="${sellerPhoneNumber}"></span> F: <span
+							th:utext="${sellerFaxNumber}"></span></p>
+					<a style="text-decoration: underline; color: rgb(0, 128, 192); font-weight: bold;">www.petronaschemicals.com</a>
+				</div>
+			</div>
+        </div>
+	</body>
+</html>

@@ -1,0 +1,84 @@
+# Maven
+# Build your Java project and run tests with Apache Maven.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/java
+
+trigger:
+  batch: true
+  branches:
+    include:
+      - develop
+      - master
+      - release/*
+  paths:
+    exclude:
+      - docs/README.md
+
+#schedules:
+#  - cron: "25 0 * * *"
+#    displayName: Daily morning build 845am SGT
+#    branches:
+#      include:
+#        - release/develop
+#    always: true
+
+pr: none
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  - name: CDN_TARGET_CONNECTION
+    value: azuredev-spn-connection
+  - name: CR_TARGET_CONNECTION
+    value: azuredev-docker-connection
+  - ${{ if contains(variables['Build.SourceBranch'], 'master') }}:
+      - group: 'THUNDERCLOUD-VARS-PROD'
+  - ${{ if contains(variables['Build.SourceBranch'], 'release/develop') }}:
+      - group: 'THUNDERCLOUD-VARS-DEV'
+  - ${{ if contains(variables['Build.SourceBranch'], 'release/v') }}:
+      - group: 'THUNDERCLOUD-VARS-UAT'
+
+steps:
+  - task: MavenAuthenticate@0
+    inputs:
+      artifactsFeeds: 'Thundercloud'
+      mavenServiceConnections: 'artifacts-feed-connection'
+
+  - task: Bash@3
+    inputs:
+      targetType: 'inline'
+      script: sed -i 's/-SNAPSHOT/$(VERSION_SUFFIX)/g' pom.xml && cat pom.xml
+    env:
+      VERSION_SUFFIX: $(VERSION_SUFFIX)
+
+  - task: Bash@3
+    inputs:
+      targetType: 'inline'
+      script: sed -i 's/-SNAPSHOT/$(VERSION_SUFFIX)/g' pom.xml && cat pom.xml
+    env:
+      VERSION_SUFFIX: $(VERSION_SUFFIX)
+
+  - task: Maven@3
+    inputs:
+      mavenPomFile: 'pom.xml'
+      mavenOptions: '-Xmx3072m'
+      javaHomeOption: 'JDKVersion'
+      jdkVersionOption: '1.8'
+      jdkArchitectureOption: 'x64'
+      publishJUnitResults: true
+      testResultsFiles: '**/surefire-reports/TEST-*.xml'
+      goals: 'package deploy'
+
+  - task: PublishBuildArtifacts@1
+    enabled: false
+    inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      ArtifactName: 'ms-util*.jar'
+      publishLocation: 'Container'
+
+  - task: PublishPipelineArtifact@1
+    inputs:
+      targetPath: '$(Pipeline.Workspace)/s/target/ms-util-0.0.1$(VERSION_SUFFIX).jar'
+      artifact: 'drop'
+      publishLocation: 'pipeline'

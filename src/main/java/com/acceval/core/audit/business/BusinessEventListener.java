@@ -6,10 +6,10 @@ import org.springframework.stereotype.Component;
 
 import com.acceval.core.amqp.audit.BusinessEventQueueSender;
 
-@Component
+//@Component
 public class BusinessEventListener implements ApplicationListener<BusinessEvent> {
 	
-	@Autowired
+//	@Autowired
 	private BusinessEventQueueSender eventQueueSender;
 	
 	@Override

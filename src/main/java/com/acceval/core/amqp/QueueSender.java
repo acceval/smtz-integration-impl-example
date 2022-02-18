@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class QueueSender {
 
 	public static final String SMARTTRADZ_TOPIC = "smarttradz.topic";
-	public static final String QUEUE_NAME_AUDITLOG = "commons-auditlog-queue";
+//	public static final String QUEUE_NAME_AUDITLOG = "commons-auditlog-queue";
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -35,10 +35,12 @@ public abstract class QueueSender {
 	@Deprecated
 	public void sendMessage() {
 
-		logger.info("Sending message...");
+//		logger.info("Sending message...");
 		try {
-			if (rabbitTemplate.getMessageConverter().getClass().getSimpleName().equals("Jackson2JsonMessageConverter")) {
-				rabbitTemplate.convertAndSend(this.getTopicExchageName(), this.getSenderQueueName(), this.messageBody.getBody());
+			if (rabbitTemplate.getMessageConverter().getClass().getSimpleName()
+					.equals("Jackson2JsonMessageConverter")) {
+				rabbitTemplate.convertAndSend(this.getTopicExchageName(), this.getSenderQueueName(), 
+						this.messageBody.getBody());
 			} else {
 				logger.warn("Queue message not send due to wrong rabbit mq message converter. Must be json format.");
 			}
@@ -49,7 +51,7 @@ public abstract class QueueSender {
 
 	public void sendMessage(MessageBody<?> messageBody) {
 
-		logger.info("Sending message...");
+//		logger.info("Sending message...");
 		try {
 			if (rabbitTemplate.getMessageConverter().getClass().getSimpleName()
 					.equals("Jackson2JsonMessageConverter")) {
@@ -65,7 +67,8 @@ public abstract class QueueSender {
 
 	public void sendMessage(Object objMsg) {
 		try {
-			if (rabbitTemplate.getMessageConverter().getClass().getSimpleName().equals("Jackson2JsonMessageConverter")) {
+			if (rabbitTemplate.getMessageConverter().getClass().getSimpleName()
+					.equals("Jackson2JsonMessageConverter")) {
 				rabbitTemplate.convertAndSend(this.getTopicExchageName(), this.getSenderQueueName(), objMsg);
 			} else {
 				logger.warn("Queue message not send due to wrong rabbit mq message converter. Must be json format.");

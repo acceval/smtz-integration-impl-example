@@ -16,7 +16,6 @@ import org.springframework.web.client.RestTemplate;
 
 import com.acceval.core.MicroServiceUtilException;
 import com.acceval.core.microservice.MicroServiceRequest;
-import com.acceval.core.microservice.MicroServiceUtil;
 import com.acceval.core.security.PrincipalUtil;
 
 public class PaginationSortUtil {
@@ -26,8 +25,8 @@ public class PaginationSortUtil {
 
 		/** init */
 		paginationSortUtilRequest.assertNull(PaginationSortUtil.class);
-		DiscoveryClient discoveryClient=paginationSortUtilRequest.getDiscoveryClient(); 
-		RestTemplate restTemplate=paginationSortUtilRequest.getRestTemplate();
+		DiscoveryClient discoveryClient = paginationSortUtilRequest.getDiscoveryClient();
+		RestTemplate restTemplate = paginationSortUtilRequest.getRestTemplate();
 		EntityManager entityManager = paginationSortUtilRequest.getEntityManager();
 		Class<?> targetClass = paginationSortUtilRequest.getTargetClass();
 		int pageNumber = paginationSortUtilRequest.getPageNumber();
@@ -64,15 +63,14 @@ public class PaginationSortUtil {
 						"MS Sort Service is not define in POJO for [" + field.getName() + "] field!");
 			}
 
-			msRequest =
-					new MicroServiceRequest(discoveryClient, restTemplate, PrincipalUtil.getToken(), msService, msFunction,
-							orderParam + "/" + isAsc + "/" + params);
+			msRequest = new MicroServiceRequest(PrincipalUtil.getToken(), PrincipalUtil.getCompanyID().toString(), msService, msFunction,
+					orderParam + "/" + isAsc + "/" + params);
 		} else {
 			throw new MicroServiceUtilException(PaginationSortUtil.class,
 					"Field [" + orderTarget + "] in [" + targetClass.getName() + "] is not support for sorting service.");
 		}
 		msRequest.assertNull();
-		List<?> orderedIDs = (List<?>) MicroServiceUtil.getForObject(msRequest, List.class);
+		List<?> orderedIDs = null;// TODO (List<?>) MicroServiceUtil.getForObject(msRequest, List.class);
 
 		/** 3. apply order to the query */
 		int position = 0;

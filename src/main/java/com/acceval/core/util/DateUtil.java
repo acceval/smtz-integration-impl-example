@@ -13,8 +13,8 @@ public class DateUtil {
 
 	private static Logger Logger = LoggerFactory.getLogger(DateUtil.class);
 
-	public static String[] STD_DATEFORMAT = new String[] { "yyyy-MM-dd", "dd-MM-yyyy", "dd/MM/yyyy", "yyyy/MM/dd", "yyyy-MM-dd HH:mm:ss",
-			"dd-MM-yyyy HH:mm:ss", "dd/MM/yyyy HH:mm:ss", "yyyy/MM/dd HH:mm:ss" };
+	public static String[] STD_DATEFORMAT = new String[] { "dd-MM-yyyy HH:mm:ss", "yyyy-MM-dd", "dd-MM-yyyy", "dd/MM/yyyy", "yyyy/MM/dd",
+			"yyyy-MM-dd HH:mm:ss", "dd/MM/yyyy HH:mm:ss", "yyyy/MM/dd HH:mm:ss", "d/M/yyyy HH:mm:ss", "d-M-yyyy HH:mm:ss" };
 
 	public static LocalDateTime parseToLocalDateTime(String value) {
 		LocalDateTime dateTime = null;
@@ -23,7 +23,7 @@ public class DateUtil {
 			value = value.trim();
 			for (String strDateFormat : STD_DATEFORMAT) {
 				try {
-					if (value.length() == 10) {
+					if (value.length() == 10 || value.length() == 8 || value.length() == 9) {
 						dateTime = LocalDateTime.parse(value + " 00:00:00", DateTimeFormatter.ofPattern(strDateFormat));
 					} else {
 						dateTime = LocalDateTime.parse(value, DateTimeFormatter.ofPattern(strDateFormat));
@@ -88,5 +88,13 @@ public class DateUtil {
 			return false;
 		}
 		return ld1.compareTo(ld2) == 0;
+	}
+
+	public static LocalDate getFirstDateOfMonth(LocalDate localDate) {
+		return LocalDate.of(localDate.getYear(), localDate.getMonth(), 1);
+	}
+
+	public static LocalDate getLastDateOfMonth(LocalDate localDate) {
+		return getFirstDateOfMonth(localDate).minusDays(1);
 	}
 }

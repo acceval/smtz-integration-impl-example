@@ -10,6 +10,7 @@ import javax.persistence.EntityListeners;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
+import org.javers.core.metamodel.annotation.DiffIgnore;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -25,21 +26,25 @@ public abstract class BaseModel implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	@DiffIgnore
 	@JsonIgnore
 	@CreatedBy
 	@Column(nullable = false, updatable = false)
 	private String createdBy;
 
+	@DiffIgnore
 	@JsonIgnore
 	@CreatedDate
 	@Column(nullable = false, updatable = false)
 	private LocalDateTime created;
 
+	@DiffIgnore
 	@JsonIgnore
 	@LastModifiedBy
 	@Column(nullable = false)
 	private String modifiedBy;
 
+	@DiffIgnore
 	@JsonIgnore
 	@LastModifiedDate
 	@Column(nullable = false)

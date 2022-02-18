@@ -11,8 +11,10 @@ public final class SendEmailRequest extends QueueRequest {
 
 	private String[] sendTo;
 	private String[] sendCcTo;
+	private String[] sendBccTo;
 	private String text;
 	private String subject;
+	private String sender;
 
 	/** attachment */
 	Map<String, Byte[]> lstAttachment = new LinkedHashMap<>();
@@ -26,6 +28,7 @@ public final class SendEmailRequest extends QueueRequest {
 		this.text = other.text;
 		this.subject = other.subject;
 		this.lstAttachment = other.lstAttachment;
+		this.sender = other.sender;
 	}
 
 	public String[] getSendTo() {
@@ -70,6 +73,22 @@ public final class SendEmailRequest extends QueueRequest {
 
 	public void addAttachment(String fileName, Byte[] content) {
 		lstAttachment.put(fileName, content);
+	}
+
+	public String getSender() {
+		return sender;
+	}
+
+	public void setSender(String sender) {
+		this.sender = sender;
+	}
+
+	public String[] getSendBccTo() {
+		return sendBccTo;
+	}
+
+	public void setSendBccTo(String[] sendBccTo) {
+		this.sendBccTo = sendBccTo;
 	}
 
 }

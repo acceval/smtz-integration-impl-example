@@ -1,10 +1,15 @@
 package com.acceval.core.util;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.ParseException;
 
 import org.apache.commons.lang3.StringUtils;
 
 public class NumberUtil {
+
+    private static final String NUMBER_FORMAT = "#,###,###,##0.00";
 
 	public static double stringToDouble(String str) {
 		if (StringUtils.isEmpty(str)) return 0;
@@ -30,10 +35,61 @@ public class NumberUtil {
 	}
 
 	public static double round(double number, int decimalPoint) {
-		return new BigDecimal(number).setScale(decimalPoint, BigDecimal.ROUND_HALF_UP).doubleValue();
+		return round(number, decimalPoint, RoundingMode.HALF_UP);
 	}
 
-	public static double round(double number, int decimalPoint, int roundingMode) {
-		return new BigDecimal(number).setScale(decimalPoint, roundingMode).doubleValue();
+	public static double round(double number, int decimalPoint, RoundingMode roundingMode) {
+		if (Double.isInfinite(number) || Double.isNaN(number)) {
+			return number;
+		}
+		StringBuffer format = new StringBuffer("###########0");
+		if (decimalPoint > 0) {
+			format.append(".");
+			for (int i = 0; i < decimalPoint + 1; i++) {
+				format.append("#");
+			}
+		}
+		String newNumberStr = formatNumber(number, format.toString(), roundingMode);
+
+		try {
+			// special handling for 3.655 = 3.65
+			return new BigDecimal(newNumberStr).setScale(decimalPoint, RoundingMode.HALF_UP).doubleValue();
+		} catch (NumberFormatException e) {
+			throw new RuntimeException("Original Number [" + number + "] New Number [" + newNumberStr + "]" + e.getMessage(), e);
+
+		}
+	}
+
+	public static String formatNumber(double num, String fmt, RoundingMode roundingMode) throws NumberFormatException {
+		DecimalFormat df = new DecimalFormat(fmt);
+		df.setRoundingMode(roundingMode);
+		return df.format(num);
+	}
+
+	public static String formatNumber(double num, int decimalPoint) {
+		StringBuffer format = new StringBuffer("#,###,###,##0");
+		if (decimalPoint > 0) {
+			format.append(".");
+			for (int i = 0; i < decimalPoint; i++) {
+				format.append("0");
+			}
+		}
+		return formatNumber(num, format.toString());
+	}
+
+    public static double parse(String value) throws ParseException {
+        if (StringUtils.isBlank(value)) {
+            return 0;
+        }
+
+        DecimalFormat df = new DecimalFormat(NUMBER_FORMAT);
+		df.setRoundingMode(RoundingMode.HALF_UP);
+        return df.parse(value).doubleValue();
+    }
+
+	public static String formatNumber(double num, String fmt) throws NumberFormatException {
+		DecimalFormat df = new DecimalFormat(fmt);
+		df.setRoundingMode(RoundingMode.HALF_UP);
+		return df.format(num);
 	}
 }

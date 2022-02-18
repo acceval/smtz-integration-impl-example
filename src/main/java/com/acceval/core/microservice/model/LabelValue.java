@@ -1,5 +1,6 @@
 package com.acceval.core.microservice.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -13,7 +14,9 @@ import com.acceval.core.util.ClassUtil;
 /**
  * standard LabelValue to map back to Angular
  */
-public class LabelValue implements Comparable<LabelValue> {
+public class LabelValue implements Comparable<LabelValue>, Serializable {
+	private static final long serialVersionUID = 1L;
+
 	private String label;
 	private String label2;
 	private String label3;
@@ -122,8 +125,14 @@ public class LabelValue implements Comparable<LabelValue> {
 
 	@Override
 	public int compareTo(LabelValue other) {
-
 		return this.label.compareTo(other.label);
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj != null && obj instanceof LabelValue) {
+			return StringUtils.equals(this.getValue(), ((LabelValue) obj).getValue());
+		}
+		return super.equals(obj);
+	}
 }

@@ -1,5 +1,10 @@
 package com.acceval.core.remote;
 
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
@@ -7,19 +12,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.net.ssl.SSLContext;
+
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.TrustStrategy;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -46,6 +57,7 @@ public class RemoteServerTemplate {
 			String companyUUID) throws Exception {
 
 		RestTemplate restTemplate = new RestTemplate();
+		ignoreSSL(restTemplate);
 		String token = this.getRemoteServerToken();
 		String completeUrl = this.remoteConfig.getRemoteIp() + ":" + this.remoteConfig.getRemotePort() + url;
 
@@ -99,6 +111,7 @@ public class RemoteServerTemplate {
 			String companyUUID) throws Exception {
 
 		RestTemplate restTemplate = new RestTemplate();
+		ignoreSSL(restTemplate);
 		String token = this.getRemoteServerToken();
 		String completeUrl = this.remoteConfig.getRemoteIp() + ":" + this.remoteConfig.getRemotePort() + url;
 
@@ -156,6 +169,7 @@ public class RemoteServerTemplate {
 	public <T> T postForObject(String url, Object requestBody, Class<T> responseType, String companyUUID) throws Exception {
 
 		RestTemplate restTemplate = new RestTemplate();
+		ignoreSSL(restTemplate);
 		String token = this.getRemoteServerToken();
 		String completeUrl = this.remoteConfig.getRemoteIp() + ":" + this.remoteConfig.getRemotePort() + url;
 
@@ -208,6 +222,7 @@ public class RemoteServerTemplate {
 	public <T> T putForObject(String url, Object requestBody, Class<T> responseType, String companyUUID) throws Exception {
 
 		RestTemplate restTemplate = new RestTemplate();
+		ignoreSSL(restTemplate);
 		String token = this.getRemoteServerToken();
 		String completeUrl = this.remoteConfig.getRemoteIp() + ":" + this.remoteConfig.getRemotePort() + url;
 
@@ -254,11 +269,15 @@ public class RemoteServerTemplate {
 	public String getRemoteServerToken() throws Exception {
 
 		String authUrl = this.remoteConfig.getRemoteIp() + ":" + this.remoteConfig.getRemotePort() + "/auth-service/uaa/oauth/token";
+//		System.out.println("####### firing: " + authUrl);
+//		System.out.println("####### user: " + this.remoteConfig.getCredentialUser());
+//		System.out.println("####### pass: " + this.remoteConfig.getCredentialPassword());
 
 		HttpHeaders basicHeaders =
 				this.createBasicHeaders(this.remoteConfig.getCredentialUser(), this.remoteConfig.getCredentialPassword());
 
 		RestTemplate authRestTemplate = new RestTemplate();
+		ignoreSSL(authRestTemplate);
 		HttpEntity<String> basicEntity = new HttpEntity<String>(basicHeaders);
 
 		ResponseEntity<AuthToken> authResponse = null;
@@ -282,6 +301,7 @@ public class RemoteServerTemplate {
 
 	public Company getRemoteSystemCompany(String token, Map<String, ?> uriVariables, String companyUUID) throws Exception {
 		RestTemplate restTemplate = new RestTemplate();
+		ignoreSSL(restTemplate);
 		HttpHeaders bearerHeaders = this.createBearerHeaders(token);
 		HttpEntity<String> bearerEntity = new HttpEntity<String>(bearerHeaders);
 
@@ -321,6 +341,7 @@ public class RemoteServerTemplate {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.add("Authorization", encodedAuth);
+//		System.out.println("###### auth: " + encodedAuth);
 		return headers;
 	}
 
@@ -356,6 +377,26 @@ public class RemoteServerTemplate {
 			throw ex;
 		}
 		return uriBuilder;
+	}
+
+	private void ignoreSSL(RestTemplate restTemplate) {
+		/** TODO shld disable, now use for temp solution */
+		try {
+			TrustStrategy acceptingTrustStrategy = new TrustStrategy() {
+				@Override
+				public boolean isTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
+					return true;
+				}
+			};
+			SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom().loadTrustMaterial(null, acceptingTrustStrategy).build();
+			SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext, new NoopHostnameVerifier());
+			CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(csf).build();
+			HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+			requestFactory.setHttpClient(httpClient);
+			restTemplate.setRequestFactory(requestFactory);
+		} catch (KeyManagementException | NoSuchAlgorithmException | KeyStoreException e2) {
+			e2.printStackTrace();
+		}
 	}
 
 	private void errorMsgHandler(Exception ex) throws Exception {
