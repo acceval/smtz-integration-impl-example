@@ -21,7 +21,7 @@ public class AuditLogQueueSender extends QueueSender {
 
 	@Override
 	protected String getSenderQueueName() {
-		return QUEUE_NAME_AUDITLOG;
+		return "commons-auditlog-queue";
 	}
 
 }
