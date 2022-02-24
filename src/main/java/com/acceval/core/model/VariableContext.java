@@ -72,6 +72,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String OVERWRITE_EXCHANGE_RATE_CTS = "OVERWRITE_EXCHANGE_RATE_CTS";
 	public static final String OVERWRITE_CURRENCY_FROM = "OVERWRITE_CURRENCY_FROM";
 	public static final String OVERWRITE_CURRENCY_TO = "OVERWRITE_CURRENCY_TO";
+	public static final String IS_OVERSEAS = "IS_OVERSEAS";
 
     public static final String MARKET_PRICE_SOURCE = "MARKET_PRICE_SOURCE";
 
@@ -142,8 +143,6 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String CT_TENDER_PRICE_FORMULA = "TENDER_PRICE_FORMULA";
 	public static final String CT_TENDER_PRICE_FIXED_FIRM = "TENDER_PRICE_FIXED_FIRM";
 	public static final String CT_PCMOS_STANDARD_FLOOR_PRICE = "STANDARD_FLOOR_PRICE_FOR_DISTRIBUTION_MODEL";
-	
-	
 
 	// Condition Table Fields / context key
 	public static final String CONDFIELDCODE_NORMALISE_FOR_FLOOR_PRICE = "NORMALISE_FOR_FLOOR_PRICE";
