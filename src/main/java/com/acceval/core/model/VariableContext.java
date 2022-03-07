@@ -260,6 +260,11 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String HEAD_MARKETING = "Head (Marketing)";
 	public static final String PCMOS_CEO = "CEO (PCMOS)";
 
+	// Sales Divison
+	public static final String SALES_DIVISION_METHANOL = "P4";
+	public static final String SALES_DIVISION_AROMATIC = "P5";
+	public static final String SALES_DIVISION_MTBE = "P8";
+
 	public static enum WFL_VIOLATE {
 		CHANGED_PAYMENT_TERM("Violated Payment Term Credit Day"), DEAL_AMOUNT("Below Targeted Amount [?]"),
 		WFL_NORMALISED_PRICE(
