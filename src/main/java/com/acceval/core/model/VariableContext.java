@@ -254,6 +254,11 @@ public class VariableContext implements Serializable, Cloneable {
 	
 	public final static double DEFAULT_NOT_FOUND_NOR_FLOOR_PRICE_VALUE = 1000000;
 
+	// Sales Divison
+	public static final String SALES_DIVISION_METHANOL = "P4";
+	public static final String SALES_DIVISION_AROMATIC = "P5";
+	public static final String SALES_DIVISION_MTBE = "P8";
+
 	public static enum WFL_VIOLATE {
 		CHANGED_PAYMENT_TERM("Violated Payment Term Credit Day"), DEAL_AMOUNT("Below Targeted Amount [?]"),
 		WFL_NORMALISED_PRICE(
