@@ -27,6 +27,8 @@ pr: none
 pool:
   vmImage: ubuntu-latest
 
+container: maven:3.8.1-openjdk-15-slim
+
 variables:
   - name: CDN_TARGET_CONNECTION
     value: azuredev-spn-connection
@@ -63,10 +65,11 @@ steps:
     inputs:
       mavenPomFile: 'pom.xml'
       mavenOptions: '-Xmx3072m'
-      javaHomeOption: 'JDKVersion'
-      jdkVersionOption: '1.8'
-      jdkArchitectureOption: 'x64'
+      javaHomeOption: 'path'
+      jdkDirectory: '/usr/local/openjdk-15'
       publishJUnitResults: true
+      mavenAuthenticateFeed: true
+      effectivePomSkip: true
       testResultsFiles: '**/surefire-reports/TEST-*.xml'
       goals: 'package deploy'
 
