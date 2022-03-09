@@ -258,7 +258,7 @@ public class VariableContext implements Serializable, Cloneable {
 	// Designation
 	public static final String HEAD_SALES = "Head (Sales)";
 	public static final String HEAD_MARKETING = "Head (Marketing)";
-	public static final String PCMOS_CEO = "CEO (PCMOS)";
+	public static final String PCMOS_CEO = "CEO (PCM OS)";
 
 	// Sales Divison
 	public static final String SALES_DIVISION_METHANOL = "P4";
