@@ -1216,7 +1216,7 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 				org.springframework.data.mongodb.core.query.Criteria nestedCriteria = new org.springframework.data.mongodb.core.query.Criteria();
 				
 				org.springframework.data.mongodb.core.query.Criteria[] criteriaArray =
-						nestedCriterias.toArray(new org.springframework.data.mongodb.core.query.Criteria[reformCriterias.size()]);
+						nestedCriterias.toArray(new org.springframework.data.mongodb.core.query.Criteria[nestedCriterias.size()]);
 				nestedCriteria.andOperator(criteriaArray);
 				
 				if (nestedCriteria != null) {
