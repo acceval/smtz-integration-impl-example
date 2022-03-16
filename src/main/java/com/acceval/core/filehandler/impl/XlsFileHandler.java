@@ -1,6 +1,6 @@
 package com.acceval.core.filehandler.impl;
 
-import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -9,7 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.poifs.filesystem.NPOIFSFileSystem;
+//import org.apache.poi.poifs.filesystem.NPOIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
@@ -30,8 +30,9 @@ public class XlsFileHandler extends FileHandler {
 				
 		PrintStream out = null;
 		try {
-			NPOIFSFileSystem fileSystem = new NPOIFSFileSystem(new File(filePath.toString()));
-			Workbook workbook = new HSSFWorkbook(fileSystem.getRoot(), true);
+//			NPOIFSFileSystem fileSystem = new NPOIFSFileSystem(new File(filePath.toString()));
+//			Workbook workbook = new HSSFWorkbook(fileSystem.getRoot(), true);
+			Workbook workbook = new HSSFWorkbook(new FileInputStream(filePath.toString()));
 			
 			DataFormatter formatter = new DataFormatter();
 			out = new PrintStream(new FileOutputStream(csvFile), true, "UTF-8");

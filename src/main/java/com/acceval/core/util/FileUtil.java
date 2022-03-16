@@ -3,6 +3,7 @@ package com.acceval.core.util;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -23,7 +24,7 @@ import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.util.ZipSecureFile;
-import org.apache.poi.poifs.filesystem.NPOIFSFileSystem;
+//import org.apache.poi.poifs.filesystem.NPOIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
@@ -91,8 +92,10 @@ public class FileUtil {
 		boolean isXssf = true;
 
 		if (extension.equalsIgnoreCase("xls")) {
-			NPOIFSFileSystem fs = new NPOIFSFileSystem(new File(path.toString()));
-			wb = new HSSFWorkbook(fs.getRoot(), true);
+//			NPOIFSFileSystem fs = new NPOIFSFileSystem(new File(path.toString()));
+//			wb = new HSSFWorkbook(fs.getRoot(), true);
+			wb = new HSSFWorkbook(new FileInputStream(path.toString()));
+			
 			isXssf = false;
 
 		} else {

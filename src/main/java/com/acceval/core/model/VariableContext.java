@@ -72,6 +72,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String OVERWRITE_EXCHANGE_RATE_CTS = "OVERWRITE_EXCHANGE_RATE_CTS";
 	public static final String OVERWRITE_CURRENCY_FROM = "OVERWRITE_CURRENCY_FROM";
 	public static final String OVERWRITE_CURRENCY_TO = "OVERWRITE_CURRENCY_TO";
+	public static final String IS_OVERSEAS = "IS_OVERSEAS";
 
     public static final String MARKET_PRICE_SOURCE = "MARKET_PRICE_SOURCE";
 
@@ -141,8 +142,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String CT_APPROVER_DELEGATION = "APPROVER_DELEGATION";
 	public static final String CT_TENDER_PRICE_FORMULA = "TENDER_PRICE_FORMULA";
 	public static final String CT_TENDER_PRICE_FIXED_FIRM = "TENDER_PRICE_FIXED_FIRM";
-	
-	
+	public static final String CT_PCMOS_STANDARD_FLOOR_PRICE = "STANDARD_FLOOR_PRICE_FOR_DISTRIBUTION_MODEL";
 
 	// Condition Table Fields / context key
 	public static final String CONDFIELDCODE_NORMALISE_FOR_FLOOR_PRICE = "NORMALISE_FOR_FLOOR_PRICE";
@@ -156,6 +156,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String CONDFIELDCODE_ACCUMULATIVE_AMOUNT_IN_RM = "ACCUMULATIVE_AMOUNT_IN_RM";
 	public static final String CONDFIELDCODE_TASK_NAME = "TASK_NAME";
 	public static final String CONDFIELDCODE_USER_ACCOUNT = "USER_ACCOUNT";
+	public static final String CONDFIELDCODE_PCMOS_SALES_ORG = "SALES_ORGANISATION";
 
 	// Condition Table Values / context key
 	public static final String CONDVALUECODE_PRODUCT_BASE_PRICE_INCO = "INCOTERM";
@@ -254,10 +255,20 @@ public class VariableContext implements Serializable, Cloneable {
 	
 	public final static double DEFAULT_NOT_FOUND_NOR_FLOOR_PRICE_VALUE = 1000000;
 
+	// Designation
+	public static final String HEAD_SALES = "Head (Sales)";
+	public static final String HEAD_MARKETING = "Head (Marketing)";
+	public static final String PCMOS_CEO = "CEO (PCM OS)";
+
 	// Sales Divison
 	public static final String SALES_DIVISION_METHANOL = "P4";
 	public static final String SALES_DIVISION_AROMATIC = "P5";
 	public static final String SALES_DIVISION_MTBE = "P8";
+
+	// Sales Office
+	public static final String SALES_OFFICE_AROMATIC = "P005";
+	public static final String SALES_OFFICE_METHANOL = "P006";
+	public static final String SALES_OFFICE_MTBE = "P008";
 
 	public static enum WFL_VIOLATE {
 		CHANGED_PAYMENT_TERM("Violated Payment Term Credit Day"), DEAL_AMOUNT("Below Targeted Amount [?]"),

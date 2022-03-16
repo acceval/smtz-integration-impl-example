@@ -8,6 +8,11 @@ public class SalesContractUpdateRequest {
     private double invoicePrice;
     private String priceCurrency;
     private double exchangeRate;
+    
+    private double clearanceCost;
+    private double locationShipmentCost;
+    private double inboundInsurance;
+    private double inboundSurveyor;
 
     public String getSalesContractNumber() {
         return salesContractNumber;
@@ -64,5 +69,36 @@ public class SalesContractUpdateRequest {
 	public void setExchangeRate(double exchangeRate) {
 		this.exchangeRate = exchangeRate;
 	}
-    
+
+	public double getClearanceCost() {
+		return clearanceCost;
+	}
+
+	public void setClearanceCost(double clearanceCost) {
+		this.clearanceCost = clearanceCost;
+	}
+
+	public double getLocationShipmentCost() {
+		return locationShipmentCost;
+	}
+
+	public void setLocationShipmentCost(double locationShipmentCost) {
+		this.locationShipmentCost = locationShipmentCost;
+	}
+
+	public double getInboundInsurance() {
+		return inboundInsurance;
+	}
+
+	public void setInboundInsurance(double inboundInsurance) {
+		this.inboundInsurance = inboundInsurance;
+	}
+
+	public double getInboundSurveyor() {
+		return inboundSurveyor;
+	}
+
+	public void setInboundSurveyor(double inboundSurveyor) {
+		this.inboundSurveyor = inboundSurveyor;
+	}    
 }
