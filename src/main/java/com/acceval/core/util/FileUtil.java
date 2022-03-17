@@ -151,7 +151,7 @@ public class FileUtil {
 				} else {
 					out.print("\"" + "\"");
 					firstCell = false;
-					for (int cn = 0; cn < headerCellSize; cn++) {
+					for (int cn = 1; cn < headerCellSize; cn++) {
 						if (cn >= headerCellSize) {
 							break;
 						}
