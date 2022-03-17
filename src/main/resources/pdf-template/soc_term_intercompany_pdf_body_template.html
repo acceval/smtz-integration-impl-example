@@ -116,7 +116,7 @@
 				<th class="labelBold" style="text-align: center;">Quantity/Volume<br>(MT)</th>
 				<th class="labelBold" style="text-align: center;">Container Size</th>	
 				<th class="labelBold" style="text-align: center;">Number of Containers</th>
-				<th class="labelBold" style="text-align: center;">Price<br>(USD/MT)</th>
+				<th class="labelBold" style="text-align: center;">Price</th>
 			</tr>
 			<tr th:each="orderItem, iter: ${orderItems}" style="text-align: center;">
 				<td th:text="${orderItem.productName}">Product</td>		
@@ -133,7 +133,7 @@
 				<td width="25%" class="labelBold">CONTRACT DOCUMENTS</td>
 				<td width="75%" style="white-space: pre-line;">The following documents shall together constitute the Sales Contract between the parties:-
 					Part 1: Sales Order Confirmation (SOC)
-					Part 2: General Terms and COnditions of Sales
+					Part 2: General Terms and Conditions of Sales
 					Part 3: Terms of Delivery
 				</td>
 			</tr> 
