@@ -101,7 +101,7 @@
                     <tr>
                         <td class="labelBold" width="35%">
 							<p style="text-decoration: underline; margin: 0;">Nomor Perjanjian Jual Beli</p>
-							<p th:if="${socType == 'SPOT'}" style="font-weight: normal; margin: 0; font-style: italic;">Agreement Number</p>
+							<p style="font-weight: normal; margin: 0; font-style: italic;">Agreement Number</p>
 						</td>
                         <td width="65%" th:text="${PONumber}">Agreement Number</td>
                     </tr>
@@ -235,7 +235,7 @@ Kg</td>
                         	<p style="font-weight: bold; text-decoration: underline; margin: 0;">
 								Jumlah Keseluruhan
 							</p>
-                			<p style="margin: 0; font-weight: normal; font-style: italic;">(Exclude PPN) Total</p>
+                			<p style="margin: 0; font-weight: normal; font-style: italic;">Total Price (Exclude PPN)</p>
                         </td>
                         <td width="70%">
                         	<p style="margin: 0;">
@@ -334,7 +334,7 @@ Kg</td>
                         	<p style="font-weight: bold; text-decoration: underline; margin: 0;">
 								Lainnya
 							</p>
-                			<p style="margin: 0; font-weight: normal; font-style: italic;">Other terms & Conditions</p>
+                			<p style="margin: 0; font-weight: normal; font-style: italic;">Other Terms & Conditions</p>
                         </td>
                         <td width="70%">
                         	<p style="margin: 0;">
@@ -436,6 +436,11 @@ Kg</td>
 					<tr class="noBorder">
 						<td colspan="4" style="height: 5rem;">&nbsp;</td>
 					</tr>
+					<tr class="noBorder">
+                        <td style="width: 45%">Signature: </td>
+                    	<td style="width: 10%"></td>
+                        <td style="width: 45%">Signature: </td>
+                    </tr>
 					<tr class="noBorder">
 						<td style="width: 45%;">Name: </td>
 						<td style="width: 10%;"></td>
