@@ -228,7 +228,10 @@
                     </tr>
                 </table>
 				<br>
-				<!--<p style="margin: 0; margin-bottom: 10px; font-style: italic;">*Quantity : +/- 5% Operational Tolerance at Seller Option</p>-->
+				<span th:if="${division == 'POLYMER'} and ${socType == 'CONTRACT'}">
+					<p style="margin: 0; margin-bottom: 15px;">* Final price to be mutual confirmed as per agreement in term contract part 1 after delivery.</p>
+                	<p style="margin: 0; margin-bottom: 15px;">在交货后，双方根据长约合同第一部分的约定对最终价格进行确认。</p>
+				</span>
 				
                 <table>
                     <tr style="height: 0;">
@@ -266,8 +269,14 @@
                 			<p style="margin: 0; font-weight: normal;">PACKAGING</p>
                         </td>
                         <td width="70%">
-                        	<p style="margin: 0;" th:text="${allPackagingChineseText}">Packaging In Chinese</p>
-                			<p style="margin: 0;" th:text="${allPackagingText}">Packaging</p>
+                        	<span th:if="${division != 'POLYMER'}">
+                        		<p style="margin: 0;" th:text="${allPackagingChineseText}">Packaging In Chinese</p>
+                				<p style="margin: 0;" th:text="${allPackagingText}">Packaging</p>
+                        	</span>
+                        	<span th:if="${division == 'POLYMER'}">
+                        		<p style="margin: 0;" th:text="${packagingChineseTexts}">Packaging In Chinese</p>
+                				<p style="margin: 0;" th:text="${packagingTexts}">Packaging</p>
+                        	</span>
                         </td>
                     </tr>
                     <tr>
@@ -313,7 +322,7 @@
                     <tr>
                         <td width="30%" class="labelBold" style="vertical-align: baseline;">
                         	<p style="margin: 0; font-weight: normal;">
-								货物交付
+								产品交付
 							</p>
                 			<p style="margin: 0; font-weight: normal;">DELIVERY</p>
                         </td>
@@ -352,7 +361,7 @@
                     <tr>
                         <td width="30%" class="labelBold" style="vertical-align: baseline;">
                         	<p style="margin: 0; font-weight: normal;">
-								交付期日
+								交付期日范围
 							</p>
                 			<p style="margin: 0; font-weight: normal;">DELIVERY DATE RANGE</p>
                         </td>
@@ -392,11 +401,12 @@
                     <tr>
                         <td width="30%" class="labelBold" style="vertical-align: baseline;">
                         	<p style="margin: 0; font-weight: normal;">
-								货物数量确认
+								产品数量确认
 							</p>
                 			<p style="margin: 0; font-weight: normal;">QUANTITY CONFIRMATION</p>
                         </td>
                         <td width="70%">
+                        	<p style="margin: 0; text-decoration: underline;" th:if="${division != 'METHANOL'} and ${firstIncoterm == 'DDP'}">码头交货 DDP at Port</p>
                         	<p style="margin: 0;" th:text="${quantityComfirmationInChinese}">Qty Comfirmation in Chinese</p>
                         	<p style="margin: 0;" th:text="${quantityComfirmation}">Qty Confirmation</p>
                         </td>
@@ -418,7 +428,7 @@
                     <tr>
                         <td width="30%" class="labelBold" style="vertical-align: baseline;">
                         	<p style="margin: 0; font-weight: normal;">
-								产品交付的时间及损毁、灭失风险
+								产品交付的时间点及损毁、灭失风险
 							</p>
                 			<p style="margin: 0; font-weight: normal;">PRODUCTS OWNERSHIP AND RISK OF DAMAGE AND LOSS</p>
                         </td>
@@ -430,7 +440,7 @@
                         	<p style="margin: 0;">产品交付的时间点根据不同的提货模式定义如下：</p>
                         	<p style="margin: 0;">Under the different ways of the collection of the Product, the time of the delivery of the Product is defined as follows:</p>
                         	<br>
-                        	<p style="margin: 0;">1. 货权转移：</p>
+                        	<p style="margin: 0;">1. 货权转移</p>
                         	<p style="margin: 0; padding-left: 3.5%;">Title transfer</p>
                         	<p style="margin: 0;">货权转移证明的签发生效日即视为产品交付的时间点，该时间点后产品的损耗、灭失风险即全部由买方承担。</p>
                         	<p style="margin: 0;">The effective date of the certificate for the title transfer shall be deemed as the time of delivery of the Product, upon which the risk of damage and loss of the Product shall be entirely borne by the Buyer.</p>
