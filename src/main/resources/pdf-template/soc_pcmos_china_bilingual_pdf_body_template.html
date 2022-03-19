@@ -529,6 +529,21 @@
                         	<p style="margin: 0;">2.Buyer needs to ensure that the assigned transportation tools and staff are legally qualified to carry the relevant goods, and ensure they obey the instructions of the relevant personnel of the storage company and abide by all safety management systems and regulation when they are operating in the third-party storage company.</p>-->
                         </td>
                     </tr>
+                    <tr th:if="${division!='POLYMER'}">
+                        <td width="30%" class="labelBold" style="vertical-align: baseline;">
+                        	<p style="margin: 0; font-weight: normal;">
+								其它条款
+							</p>
+                			<p style="margin: 0; font-weight: normal;">OTHER TERMS AND CONDITIONS</p>
+                        </td>
+                        <td width="70%">
+                        	<p style="margin: 0;" th:text="${termsConditions}"></p>
+                        	<!--<p style="margin: 0;">1.买方需保证所提供的运输工具资料及单证真实完整、手续齐全。否则，愿承担相关经济及法律责任。</p>
+                        	<p style="margin: 0;">1. Buyer guarantees that all transportation materials and documents provided are accurate, genuine and complete. Otherwise, Buyer shall bear relevant loss and legal responsibilities.</p>
+                        	<p style="margin: 0;">2. 买方需保证所委派的运输工具及司乘人员依法具备承运有关货物及执业的资质，并保证其在第三方仓储公司进行作业时，服从仓储公司有关人员的指挥并遵守各项安全管理制度及规程。</p>
+                        	<p style="margin: 0;">2.Buyer needs to ensure that the assigned transportation tools and staff are legally qualified to carry the relevant goods, and ensure they obey the instructions of the relevant personnel of the storage company and abide by all safety management systems and regulation when they are operating in the third-party storage company.</p>-->
+                        </td>
+                    </tr>
                     <tr>
                         <td width="30%" class="labelBold" style="vertical-align: baseline;">
                         	<p style="margin: 0; font-weight: normal;">
