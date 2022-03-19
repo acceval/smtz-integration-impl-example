@@ -148,6 +148,30 @@ public class FileUtil {
 						out.print("\"" + text + "\"");
 						firstCell = false;
 					}
+				} else {
+					out.print("\"" + "\"");
+					firstCell = false;
+					for (int cn = 1; cn < headerCellSize; cn++) {
+						if (cn >= headerCellSize) {
+							break;
+						}
+						Cell cell = row.getCell(cn, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
+						if (!firstCell)
+							out.print(',');
+						String text = formatter.formatCellValue(cell);
+
+						if (CellType.NUMERIC.equals(cell.getCellTypeEnum())) {
+							String cellValue = null;
+							if (HSSFDateUtil.isCellDateFormatted(cell)) {
+								DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+								Date date = cell.getDateCellValue();
+								cellValue = df.format(date);
+								text = cellValue;
+							}
+						}
+
+						out.print("\"" + text + "\"");
+					}
 				}
 				
 				out.println();
