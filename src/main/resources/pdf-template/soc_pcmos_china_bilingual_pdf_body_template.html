@@ -514,8 +514,8 @@
                         <td width="70%">
                         	<p style="margin: 0;">1. 任何一方违反其责任，提供虚假证明而给对方造成损失的，应承担赔偿责任。</p>
                         	<p style="margin: 0;">1. Any party who fails to fulfill their obligations required under this Contract or provide false certificates to enter this Contract which causes losses to the other party shall be liable for compensation.</p>
-                        	<p style="margin: 0; margin-top: 1rem;">2. 买方拒收产品超过7日的，卖方有权将产品随行就市转卖，并要求损害赔偿。</p>
-                        	<p style="margin: 0;">2. If the Buyer refuses to accept the Product for more than seven (7) days after signing the contract, the Seller has the right to resell the Products to the market and ask for compensation for the difference in value from the Buyer.</p>
+                        	<p style="margin: 0; margin-top: 1rem;">2. 买方拒收产品超过<span th:if="{division != 'METHANOL'}">7日<span><span th:if="{division == 'METHANOL'}">10日<span>的，卖方有权将产品随行就市转卖，并要求损害赔偿。</p>
+                        	<p style="margin: 0;">2. If the Buyer refuses to accept the Product for more than <span th:if="{division != 'METHANOL'}">seven (7)</span><span th:if="{division == 'METHANOL'}">ten (10)</span> days after signing the contract, the Seller has the right to resell the Products to the market and ask for compensation for the difference in value from the Buyer.</p>
                         	<p style="margin: 0; margin-top: 1rem;">3. 卖方与本合同相关的全部各类责任不应超出本合同上所列明的总金额的100%。</p>
                         	<p style="margin: 0;">3. All liabilities of Seller in whatever kind relating to this Contract shall not exceed the 100% of Sales/Purchase Value listed in this Contract.</p>
                         </td>
