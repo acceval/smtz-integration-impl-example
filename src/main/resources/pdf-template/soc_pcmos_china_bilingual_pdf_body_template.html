@@ -252,13 +252,20 @@
 							</p>
                 			<p style="margin: 0; font-weight: normal;">QUALITY</p>
                         </td>
-                        <td width="70%" th:if="${socType == 'CONTRACT'}">
-                        	<p style="margin: 0;"><span th:text="${productListText}"></span> 指标</p>
-                        </td>
-                        <td width="70%" th:if="${socType == 'SPOT'}">
-                        	<p style="margin: 0;"><span th:text="${productListText}"></span> Specification refer to Appendix</p>
-                        	<p style="margin: 0;"><span th:text="${productListText}"></span> 指标参见附件</p>
-                        </td>
+                        <span th:if="${division == 'METHANOL'}">
+                        	<td width="70%">
+                        		<p style="margin: 0;">IMPCA 指标</p>
+                        	</td>
+                        </span>
+                        <span th:if="${socType != 'METHANOL'}">
+                        	<td width="70%" th:if="${socType == 'CONTRACT'}">
+                        		<p style="margin: 0;"><span th:text="${productListText}"></span> 指标</p>
+                        	</td>
+                        	<td width="70%" th:if="${socType == 'SPOT'}">
+                        		<p style="margin: 0;"><span th:text="${productListText}"></span> Specification refer to Appendix</p>
+                        		<p style="margin: 0;"><span th:text="${productListText}"></span> 指标参见附件</p>
+                        	</td>
+                        </span>
                     </tr>
                     <tr>
                         <td width="30%" class="labelBold" style="vertical-align: baseline;">
