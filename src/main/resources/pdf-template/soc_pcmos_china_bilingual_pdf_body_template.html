@@ -257,7 +257,7 @@
                         		<p style="margin: 0;">IMPCA 指标</p>
                         	</td>
                         </span>
-                        <span th:if="${socType != 'METHANOL'}">
+                        <span th:if="${division != 'METHANOL'}">
                         	<td width="70%" th:if="${socType == 'CONTRACT'}">
                         		<p style="margin: 0;"><span th:text="${productListText}"></span> 指标</p>
                         	</td>
@@ -336,7 +336,7 @@
                         	<span th:if="${division == 'METHANOL'}">
                         		<span th:if="${paymentTermCode == 'TT00'}">
                         			<p style="margin: 0;">1. 买方办理好电汇付款后应通知卖方，卖方在电汇到账后将安排放货事宜。</p>
-                					<p style="margin: 0;">1. Buyer shall make payment through TT and notify the Seller of the payment.  Seller will arrange for the Product’s release upon Seller’s confirmation on the receipt of the payment.</p>
+                					<p style="margin: 0;">1. Buyer shall make payment through TT and notify the Seller of the payment.  Seller will arrange for the Product's release upon Seller's confirmation on the receipt of the payment.</p>
                 					<br>
                 					<p style="margin: 0;">2. 买方（包括买方所委托的货运公司）自提。</p>
                         			<p style="margin: 0;">2. Buyer (including the freight company entrusted by Buyer) is required to arrange for self-collection of the Product.</p>
