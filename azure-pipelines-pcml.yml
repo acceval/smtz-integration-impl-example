@@ -40,6 +40,26 @@ variables:
       - group: 'THUNDERCLOUD-VARS-UAT'
 
 steps:
+  - task: JavaToolInstaller@0
+    inputs:
+      versionSpec: '15'
+      jdkArchitectureOption: 'x64'
+      jdkSourceOption: AzureStorage
+      azureResourceManagerEndpoint: '$(CDN_TARGET_CONNECTION)'
+      azureStorageAccountName: '$(AZURE_STORAGE_ACCOUNT)'
+      azureContainerName: shared
+      azureCommonVirtualFile: 'openjdk-15.tar'
+      jdkDestinationDirectory: '/opt'
+      cleanDestinationDirectory: false
+
+  - task: Bash@3
+    inputs:
+      targetType: 'inline'
+      script: |
+        echo 'JAVA_HOME = $(JAVA_HOME)'
+        which java
+        java --version
+
   - task: MavenAuthenticate@0
     inputs:
       artifactsFeeds: 'Thundercloud'
@@ -63,10 +83,10 @@ steps:
     inputs:
       mavenPomFile: 'pom.xml'
       mavenOptions: '-Xmx3072m'
-      javaHomeOption: 'JDKVersion'
-      jdkVersionOption: '1.8'
+      javaHomeOption: 'path'
+      jdkDirectory: '/opt/JAVA_HOME_15_X64_openjdk-15_tar/jdk-15'
       jdkArchitectureOption: 'x64'
-      publishJUnitResults: true
+      publishJUnitResults: false
       testResultsFiles: '**/surefire-reports/TEST-*.xml'
       goals: 'package deploy'
 

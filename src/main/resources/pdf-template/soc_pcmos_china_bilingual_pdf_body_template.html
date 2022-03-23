@@ -64,7 +64,6 @@
             -webkit-box-pack: justify;
 
             position: relative;
-            
         }
         
         table { 
@@ -102,18 +101,34 @@
         <div class="main-body">
             <div class="top-section">
                 <table style="margin-top: 3rem;">
-                    <tr>
+                    <!--<tr>
                         <td class="labelBold" width="26%">
 							<p style="font-weight: normal; margin: 0;">合 同 确 认 号 SALES CONFIRMATION NO:</p>
 						</td>
                         <td width="74%"colspan="2" th:text="${PONumber}">Agreement Number</td>
+                    </tr>-->
+                    <tr>
+                        <td class="labelBold" width="26%">
+							<p style="font-weight: normal; margin: 0;">协 议 书 号 码<br>AGREEMENT NUMBER:</p>
+						</td>
+                        <td width="74%"colspan="2" th:text="${PONumber}">Agreement Number</td>
                         <!--<td width="74%"colspan="2" id="display"></td>-->
                     </tr>
-                    <tr>
+                    <!--<tr>
                         <td class="labelBold" width="26%">
 							<p style="font-weight: normal; margin: 0;">合 同 日 期 CONTRACT DATE:</p>
                         </td>
                         <td width="74%" colspan="2" th:text="${agreementCommencementDate}">Agreement Commencement Date</td>
+                    </tr>-->
+                    <tr>
+                        <td class="labelBold" width="26%" th:if="${socType == 'SPOT'}">
+							<p style="font-weight: normal; margin: 0;">协 议 日 期<br>AGREEMENT COMMENCEMENT DATE:</p>
+                        </td>
+                        <td class="labelBold" width="26%" th:if="${socType == 'CONTRACT'}">
+							<p style="font-weight: normal; margin: 0;">合 同 确 认 号 和 日 期<br>SALES ORDER CONFIRMATION NUMBER & DATE:</p>
+                        </td>
+                        <td width="74%" colspan="2" style="white-space: pre-line;" th:if="${socType == 'SPOT'}" th:text="${agreementCommencementDate}">Agreement Commencement Date</td>
+                        <td width="74%" colspan="2" th:if="${socType == 'CONTRACT'}" th:text="${socNumberAndDate}">Agreement Commencement Date</td>
                     </tr>
                     <tr>
                         <td class="labelBold" width="26%" style="vertical-align: baseline;">
@@ -124,14 +139,14 @@
                             <p style="margin: 0;" th:utext="${sellerAddress}">efg</p>
                             <p style="margin: 0;"><span>Telephone: </span><span th:utext="${sellerPhoneNumber}"></span></p>
                             <p style="margin: 0;"><span>Facsimile: </span><span th:utext="${sellerFaxNumber}"></span></p>
-                            <p style="margin: 0;"><span>Attention: </span><span th:utext="${sellerAttention}"></span></p>
+                            <!--<p style="margin: 0;"><span>Attention: </span><span th:utext="${sellerAttention}"></span></p>-->
                         </td>
                         <td width="37%" style="vertical-align: text-top;">
                         	<p style="margin: 0; padding-left: 0;" class="labelBold" th:utext="${sellerCompanyNameInChinese}">abc</p>
                             <p style="margin: 0;" th:utext="${sellerAddressInChinese}">efg</p>
                             <p style="margin: 0;"><span>电话: </span><span th:utext="${sellerPhoneNumber}"></span></p>
                             <p style="margin: 0;"><span>传真: </span><span th:utext="${sellerFaxNumber}"></span></p>
-                            <p style="margin: 0;"><span>联系人: </span><span th:utext="${sellerAttentionInChinese}"></span></p>
+                            <!--<p style="margin: 0;"><span>联系人: </span><span th:utext="${sellerAttentionInChinese}"></span></p>-->
                         </td>
                     </tr>
                     <tr>
@@ -143,19 +158,20 @@
                             <p style="margin: 0;" th:utext="${buyerAddress}">efg</p>
                             <p style="margin: 0;"><span>Telephone: </span><span th:utext="${buyerTelephoneNo}"></span></p>
                             <p style="margin: 0;"><span>Facsimile: </span><span th:utext="${buyerFacsimile}"></span></p>
-                            <p style="margin: 0;"><span>Attention: </span><span th:utext="${buyerAttention}"></span></p>
+                            <!--<p style="margin: 0;"><span>Attention: </span><span th:utext="${buyerAttention}"></span></p>-->
                         </td>
                         <td width="37%" style="vertical-align: text-top;">
                         	<p style="margin: 0; padding-left: 0;" class="labelBold" th:utext="${buyerChineseName}">hij</p>
                             <p style="margin: 0;" th:utext="${buyerChineseAddress}">klm</p>
                             <p style="margin: 0;"><span>电话: </span><span th:utext="${buyerTelephoneNo}"></span></p>
                             <p style="margin: 0;"><span>传真: </span><span th:utext="${buyerFacsimile}"></span></p>
-                            <p style="margin: 0;"><span>联系人: </span><span th:utext="${buyerAttention}"></span></p>
+                            <!--<p style="margin: 0;"><span>联系人: </span><span th:utext="${buyerAttention}"></span></p>-->
                         </td>
                     </tr>
                 </table>
 
-                <p style="margin: 0; margin-bottom: 15px; ">NOW THEREFORE, it is hereby agreed as follows: 现达成如下协议:</p>
+                <p style="margin: 0; margin-bottom: 0px;">NOW THEREFORE, it is hereby agreed as follows:</p>
+                <p style="margin: 0; margin-bottom: 5px;">现达成如下协议:</p>
                 
                 <table>
                     <tr>
@@ -173,7 +189,7 @@
                         </th>
                         <th class="labelBold" style="text-align: center; width: 15%;">
                         	<p style="font-weight: normal; margin: 0;">
-								包装
+								包装方式
 							</p>
                 			<p style="margin: 0; font-weight: normal;">PACKAGING</p>
                         </th>
@@ -202,7 +218,7 @@
                         	<p style="margin: 0;" th:text="${orderItem.packagingChinese}">Bulk</p>
                         	<p style="margin: 0" th:text="${#strings.capitalizeWords(#strings.toLowerCase(orderItem.packaging))}"></p>
                         </td>
-                        <td style="text-align: center;"><span th:text="${#numbers.formatDecimal(orderItem.invoicePriceRMB, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></span></td>
+                        <td style="text-align: center;"><span th:text="${#numbers.formatDecimal(orderItem.invoicePriceRMB, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></span> <span th:if="${socType == 'CONTRACT'} and ${division == 'POLYMER'}">(Provisional price 暂定价*)</span></td>
                         <td style="text-align: center;"><span th:text="${#numbers.formatDecimal(orderItem.itemPrice, 1, 'COMMA', priceDecimalDigits, 'POINT')}">Quantity * invocie</span></td>
                     </tr>
                     <tr>
@@ -211,7 +227,10 @@
                     </tr>
                 </table>
 				<br>
-				<!--<p style="margin: 0; margin-bottom: 10px; font-style: italic;">*Quantity : +/- 5% Operational Tolerance at Seller Option</p>-->
+				<span th:if="${division == 'POLYMER'} and ${socType == 'CONTRACT'}">
+					<p style="margin: 0; margin-bottom: 15px;">* Final price to be mutual confirmed as per agreement in term contract part 1 after delivery.</p>
+                	<p style="margin: 0; margin-bottom: 15px;">在交货后，双方根据长约合同第一部分的约定对最终价格进行确认。</p>
+				</span>
 				
                 <table>
                     <tr style="height: 0;">
@@ -233,18 +252,43 @@
 							</p>
                 			<p style="margin: 0; font-weight: normal;">QUALITY</p>
                         </td>
-                        <td width="70%">IMPCA</td>
+                        <span th:if="${division == 'METHANOL'}">
+                        	<td width="70%">
+                        		<p style="margin: 0;">IMPCA 指标</p>
+                        	</td>
+                        </span>
+                        <span th:if="${division == 'POLYMER'}">
+                        	<td width="70%" th:if="${socType == 'CONTRACT'}">
+                        		<p style="margin: 0;"><span th:text="${productListText}"></span> 指标</p>
+                        	</td>
+                        	<td width="70%" th:if="${socType == 'SPOT'}">
+                        		<p style="margin: 0;"><span th:text="${productListText}"></span> Specification refer to Appendix</p>
+                        		<p style="margin: 0;"><span th:text="${productListText}"></span> 指标参见附件</p>
+                        	</td>
+                        </span>
+                        <span th:if="${division == 'OGD'}">
+                        	<td width="70%">
+                        		<p style="margin: 0;"><span th:text="${productListText}"></span> Specification refer to Appendix</p>
+                        		<p style="margin: 0;"><span th:text="${productListText}"></span> 指标参见附件</p>
+                        	</td>
+                        </span>
                     </tr>
                     <tr>
                         <td width="30%" class="labelBold" style="vertical-align: baseline;">
                         	<p style="margin: 0; font-weight: normal;">
-								包装
+								包装方式
 							</p>
                 			<p style="margin: 0; font-weight: normal;">PACKAGING</p>
                         </td>
                         <td width="70%">
-                        	<p style="margin: 0;" th:text="${allPackagingChineseText}">Packaging In Chinese</p>
-                			<p style="margin: 0;" th:text="${allPackagingText}">Packaging</p>
+                        	<span th:if="${division != 'POLYMER'}">
+                        		<p style="margin: 0;" th:text="${allPackagingChineseText}">Packaging In Chinese</p>
+                				<p style="margin: 0;" th:text="${allPackagingText}">Packaging</p>
+                        	</span>
+                        	<span th:if="${division == 'POLYMER'}">
+                        		<p style="margin: 0;" th:text="${packagingChineseTexts}">Packaging In Chinese</p>
+                				<p style="margin: 0;" th:text="${packagingTexts}">Packaging</p>
+                        	</span>
                         </td>
                     </tr>
                     <tr>
@@ -254,13 +298,18 @@
 							</p>
                 			<p style="margin: 0; font-weight: normal;">TERMS OF DELIVERY</p>
                         </td>
-                        <td width="70%">
+                        <td width="70%" th:if="${firstIncoterm == 'DAP'}">
+                        	<p style="margin: 0;">根据买卖双方协商选择 As per mutual agreement</p>
+                			<p style="margin: 0;">送到买方指定目的地，卸货费用由买方承担。根据《2020年国际贸易术语解释通则》及之后的任何修订解释。</p>
+                        	<p style="margin: 0;">DAP. Delivery to buyer's designated destination, discharging cost to be borne by buyer. The trade terms are in accordance with "Incoterm 2020" or any revision thereof.</p>
+                        </td>
+                        <td width="70%" th:if="${firstIncoterm != 'DAP'}">
                         	<p style="margin: 0;" th:text="${termOfDeliveryInChinese}"></p>
                 			<p style="margin: 0;" th:text="${termOfDelivery}"></p>
                         </td>
                     </tr>
                     <tr>
-                        <td  width="30%" class="labelBold" style="vertical-align: baseline;">
+                        <td width="30%" class="labelBold">
                         	<p style="margin: 0; font-weight: normal;">
 								总金额 （含税）
 							</p>
@@ -285,22 +334,46 @@
                     <tr>
                         <td width="30%" class="labelBold" style="vertical-align: baseline;">
                         	<p style="margin: 0; font-weight: normal;">
-								货物交付
+								产品交付
 							</p>
                 			<p style="margin: 0; font-weight: normal;">DELIVERY</p>
                         </td>
                         <td width="70%">
-                        	<p style="margin: 0;">1. 买方办好电汇付款后应通知卖方，电汇到账后卖方安排放货事宜。</p>
-                			<p style="margin: 0;">1. Buyer shall make payment through telegraphic transfer and notify the Seller of the payment.  Seller will arrange cargoes release upon Seller's confirmation on the receipt of the payment.</p>
-                        	<br>
-                        	<p style="margin: 0;">2. 买方（包括买方所委托的货运公司）自提。</p>
-                        	<p style="margin: 0;">2. Buyer (including the freight company entrusted by Buyer) is required to arrange self-collection of the Products.</p>
+                        	<span th:if="${division == 'METHANOL'}">
+                        		<span th:if="${paymentTermCode == 'TT00'}">
+                        			<p style="margin: 0;">1. 买方办理好电汇付款后应通知卖方，卖方在电汇到账后将安排放货事宜。</p>
+                					<p style="margin: 0;">1. Buyer shall make payment through TT and notify the Seller of the payment.  Seller will arrange for the Product's release upon Seller's confirmation on the receipt of the payment.</p>
+                					<br>
+                					<p style="margin: 0;">2. 买方（包括买方所委托的货运公司）自提。</p>
+                        			<p style="margin: 0;">2. Buyer (including the freight company entrusted by Buyer) is required to arrange for self-collection of the Product.</p>
+                        		</span>
+                        		<span th:if="${paymentTermCode != 'TT00'}">
+                        			<p style="margin: 0;">买方（包括买方所委托的货运公司）自提。</p>
+                        			<p style="margin: 0;">Buyer (including the freight company entrusted by Buyer) is required to arrange for self-collection of the Product</p>
+                        		</span>
+                        	</span>
+                        	<span th:if="${division == 'POLYMER'}">
+                        		<span th:if="${firstIncoterm == 'DAP'}">
+                        			<p style="margin: 0;">卖方（包括卖方所委托的货运公司）送到买方指定目的地。</p>
+                					<p style="margin: 0;">Seller (including the freight company entrusted by seller) deliver the product to buyer's designated destination.</p>
+                        		</span>
+                        		<span th:if="${firstIncoterm != 'DAP'}">
+                        			<p style="margin: 0;">买方（包括买方所委托的货运公司）自提。</p>
+                        			<p style="margin: 0;">Buyer (including the freight company entrusted by Buyer) is required to arrange for self-collection of the Product.</p>
+                        		</span>
+                        	</span>
+                        	<span th:if="${division == 'OGD'}">
+                        		<span th:if="${firstIncoterm == 'DDP'}">
+                        			<p style="margin: 0;">买方（包括买方所委托的货运公司）自提。</p>
+                					<p style="margin: 0;">Buyer (including the freight company entrusted by Buyer) is required to arrange for self-collection of the Product.</p>
+                        		</span>
+                        	</span>
                         </td>
                     </tr>
                     <tr>
                         <td width="30%" class="labelBold" style="vertical-align: baseline;">
                         	<p style="margin: 0; font-weight: normal;">
-								交付期日
+								交付日期范围
 							</p>
                 			<p style="margin: 0; font-weight: normal;">DELIVERY DATE RANGE</p>
                         </td>
@@ -321,7 +394,7 @@
                         	<p style="margin: 0;" th:text="${dischargePortText}">Discharge Port</p>
                         </td>
                     </tr>
-                    <tr>
+                    <!--<tr>
                         <td width="30%" class="labelBold" style="vertical-align: baseline;">
                         	<p style="margin: 0; font-weight: normal;">
 								拥有权
@@ -336,15 +409,16 @@
                         	<p style="margin: 0;">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
                         		2. The quantity and quality risks and liabilities for vehicle loading after the loading exit shall be borne by buyer.</p>
                         </td>
-                    </tr>
+                    </tr>-->
                     <tr>
                         <td width="30%" class="labelBold" style="vertical-align: baseline;">
                         	<p style="margin: 0; font-weight: normal;">
-								货物数量确认
+								产品数量确认
 							</p>
                 			<p style="margin: 0; font-weight: normal;">QUANTITY CONFIRMATION</p>
                         </td>
                         <td width="70%">
+                        	<p style="margin: 0; text-decoration: underline;" th:if="${division != 'METHANOL'} and ${firstIncoterm == 'DDP'}">码头交货 DDP at Port</p>
                         	<p style="margin: 0;" th:text="${quantityComfirmationInChinese}">Qty Comfirmation in Chinese</p>
                         	<p style="margin: 0;" th:text="${quantityComfirmation}">Qty Confirmation</p>
                         </td>
@@ -357,20 +431,72 @@
                 			<p style="margin: 0; font-weight: normal;">INSURANCE</p>
                         </td>
                         <td width="70%">
-                        	<p style="margin: 0;" th:text="${insuranceInChinese}">Insurance in Chinese</p>
-                        	<p style="margin: 0;" th:text="${insurance}">Insurance</p>
+                        	<!--<p style="margin: 0;" th:text="${insuranceInChinese}">Insurance in Chinese</p>
+                        	<p style="margin: 0;" th:text="${insurance}">Insurance</p>-->
+                        	<p style="margin: 0;">产品交付之后，买方应对产品的损毁灭失负责，且买方应自行购买适合产品的保险。</p>
+                        	<p style="margin: 0;">Upon the delivery of the Product, Buyer shall be responsible for the risk of damage and loss for the Products if any, and Buyer shall be responsible for purchasing the insurance applicable for the Product.</p>
                         </td>
                     </tr>
                     <tr>
                         <td width="30%" class="labelBold" style="vertical-align: baseline;">
                         	<p style="margin: 0; font-weight: normal;">
-								货物的损毁、灭失风险
+								产品交付的时间点及损毁、灭失风险
 							</p>
-                			<p style="margin: 0; font-weight: normal;">RISK OF DAMAGE AND LOSS</p>
+                			<p style="margin: 0; font-weight: normal;">PRODUCTS OWNERSHIP AND RISK OF DAMAGE AND LOSS</p>
                         </td>
                         <td width="70%">
-                        	<p style="margin: 0;">在货物交付之前由卖方承担货物的损毁、灭失风险，货物交付之后则由买方承担货物的损毁、灭失风险。买方应在货物交付当时，完成当批次货物的数量确认工作，逾期视为买方对货物数量无异议。</p>
-                        	<p style="margin: 0;">Seller shall bear the risk of damage and loss for the Products before the delivery of the Products. When the delivery of the Products is completed, Buyer shall bear the risk of damage and loss for the Products. Buyer has to complete the confirmation of the quantity of the Products at the time of delivery and regards as no objection after then.</p>
+                        	<p style="margin: 0;">在产品交付之前由卖方承担产品的损毁、灭失风险，产品交付之后则由买方承担产品的损毁、灭失风险。买方应在产品交付当时，完成当批次产品的数量确认工作，逾期视为买方对产品数量无异议。</p>
+                        	<p style="margin: 0;">The Seller shall bear the risk of damage or loss of the Products before delivery and the Buyer shall bear the risk of damage or loss of the Product after delivery.</p>
+                        	<p style="margin: 0;">The Buyer shall complete the quantity confirmation of the current batch of Product at the time of delivery of the Product, delay of which shall be deemed as Buyer having no objection to the quantity of such Product.</p>
+                        	<br>
+                        	<p style="margin: 0;">产品交付的时间点根据不同的提货模式定义如下：</p>
+                        	<p style="margin: 0;">Under the different ways of the collection of the Product, the time of the delivery of the Product is defined as follows:</p>
+                        	<br>
+                        	<p style="margin: 0;">1. 货权转移</p>
+                        	<p style="margin: 0; padding-left: 3.5%;">Title transfer</p>
+                        	<p style="margin: 0;">货权转移证明的签发生效日即视为产品交付的时间点，该时间点后产品的损耗、灭失风险即全部由买方承担。</p>
+                        	<p style="margin: 0;">The effective date of the certificate for the title transfer shall be deemed as the time of delivery of the Product, upon which the risk of damage and loss of the Product shall be entirely borne by the Buyer.</p>
+                        	<p style="margin: 0;" th:if="${division != 'METHANOL'}">2. 发货通知 （发车通知书）</p>
+                        	<p style="margin: 0;" th:if="${division == 'METHANOL'}">2. 发货通知 （发车/发船通知书）</p>
+                        	<p style="margin: 0; padding-left: 3.5%;" th:if="${division != 'METHANOL'}">Delivery Notice (trucking notice)</p>
+                        	<p style="margin: 0; padding-left: 3.5%;" th:if="${division == 'METHANOL'}">Shipping notice (trucking/ shipping notice)</p>
+                        	<div th:if="${division == 'POLYMER'}">
+								<div th:if="${firstIncoterm == 'DAP'}">
+									<div style="margin-left: 10%">
+										<p style="margin: 0;">以买方指定目的地为交付点，具体而言：</p>
+										<p style="margin: 0;">The delivery point is buyer's designated destination, in detail:</p>
+										<p style="margin: 0;">车辆送货的情况下，货物到达买方指定目的地之后的产品损耗、灭失风险由买方承担。</p>
+									</div>
+									<p style="margin: 0;">If product is delivered to buyer's designated destination, the buyer shall bear the risk of
+										damage and loss of the product after buyer receive the product at the designated destination.</p>
+								</div>
+								<div th:if="${firstIncoterm == 'DDP'}">
+									<div style="margin-left: 10%">
+										<p style="margin: 0;">以到港码头为交付点，具体而言：</p>
+										<p style="margin: 0;">The delivery point is at destination port, in detail:</p>
+										<p style="margin: 0;">买方确认货权转移之后的产品损耗、灭失风险由买方承担。</p>
+										<p style="margin: 0;">The buyer shall bear the risk of damage and loss of the product after the confirmation of
+											title transfer at destination port.</p>
+									</div>
+								</div>
+                        	</div>
+                        	<div th:if="${division == 'OGD'}">
+								<div style="margin-left: 10%">
+									<p style="margin: 0;">以到港码头为交付点，具体而言：</p>
+									<p style="margin: 0;">The delivery point is at destination port, in detail:</p>
+									<p style="margin: 0;">买方确认货权转移之后的产品损耗、灭失风险由买方承担。</p>
+									<p style="margin: 0;">The buyer shall bear the risk of damage and loss of the product after the confirmation of
+										title transfer at destination port.</p>
+								</div>
+                        	</div>
+                        	<div th:if="${division == 'METHANOL'}">
+								<p style="margin: 0;">以储罐到运输工具的管线出口为交付点，具体而言：</p>
+								<p style="margin: 0;">The delivery point is the outlet of the pipeline from the storage tank to the means of transport, in detail:</p>
+								<p style="margin: 0;">-  船舶提货的情况下，通过发货船岸边一侧连接法兰处之后的产品的损耗、灭失风险由买方承担。</p>
+								<p style="margin: 0;">-  If the Product is collected by vessel, the buyer shall bear the risk of damage and loss of the Product after the Product go through the flange at the shore where the vessel is berthed.</p>
+								<p style="margin: 0;">-  车辆提货的情况下，在储罐管线出口处之后的产品的损耗、灭失风险由买方承担。</p>
+								<p style="margin: 0;">-  If the Product is collected by truck, the buyer shall bear the risk of damage and loss of the Product after the Product go through the outlet of the pipeline from the storage tank.</p>
+                        	</div>
                         </td>
                     </tr>
                     <tr>
@@ -392,15 +518,30 @@
                 			<p style="margin: 0; font-weight: normal;">LIABILITY FOR BREACH OF CONTRACT</p>
                         </td>
                         <td width="70%">
-                        	<p style="margin: 0;">1. 任何一方违反资质条件，提供虚假证明而给对方造成损失的，应承担赔偿责任。</p>
-                        	<p style="margin: 0;">1. Any party who does not have any permit or license or provide false certificates to enter this contract which causes losses to the other party shall be liable for compensation.</p>
-                        	<p style="margin: 0; margin-top: 1rem;">2. 买方拒收货物超过10日的，卖方有权将货物随行就市转卖，并要求损害赔偿。</p>
-                        	<p style="margin: 0;">2. If the buyer refuses to accept the goods for more than 10 days, the Seller has the right to resell the goods to the market and ask for compensation.</p>
+                        	<p style="margin: 0;">1. 任何一方违反其责任，提供虚假证明而给对方造成损失的，应承担赔偿责任。</p>
+                        	<p style="margin: 0;">1. Any party who fails to fulfill their obligations required under this Contract or provide false certificates to enter this Contract which causes losses to the other party shall be liable for compensation.</p>
+                        	<p style="margin: 0; margin-top: 1rem;">2. 买方拒收产品超过<span th:if="${division != 'METHANOL'}">7日</span><span th:if="${division == 'METHANOL'}">10日</span>的，卖方有权将产品随行就市转卖，并要求损害赔偿。</p>
+                        	<p style="margin: 0;">2. If the Buyer refuses to accept the Product for more than <span th:if="${division != 'METHANOL'}">seven (7)</span><span th:if="${division == 'METHANOL'}">ten (10)</span> days after signing the contract, the Seller has the right to resell the Products to the market and ask for compensation for the difference in value from the Buyer.</p>
                         	<p style="margin: 0; margin-top: 1rem;">3. 卖方与本合同相关的全部各类责任不应超出本合同上所列明的总金额的100%。</p>
-                        	<p style="margin: 0;">3. All the liabilities of Seller in whatever kind relating to this Contract shall not exceed the 100% of Sales/ Purchase Value listed in this Contract.</p>
+                        	<p style="margin: 0;">3. All liabilities of Seller in whatever kind relating to this Contract shall not exceed the 100% of Sales/Purchase Value listed in this Contract.</p>
                         </td>
                     </tr>
-                    <tr>
+                    <tr th:if="${division=='POLYMER'} and ${firstIncoterm=='DDP'}">
+                        <td width="30%" class="labelBold" style="vertical-align: baseline;">
+                        	<p style="margin: 0; font-weight: normal;">
+								其它条款
+							</p>
+                			<p style="margin: 0; font-weight: normal;">OTHER TERMS AND CONDITIONS</p>
+                        </td>
+                        <td width="70%">
+                        	<p style="margin: 0;" th:text="${termsConditions}"></p>
+                        	<!--<p style="margin: 0;">1.买方需保证所提供的运输工具资料及单证真实完整、手续齐全。否则，愿承担相关经济及法律责任。</p>
+                        	<p style="margin: 0;">1. Buyer guarantees that all transportation materials and documents provided are accurate, genuine and complete. Otherwise, Buyer shall bear relevant loss and legal responsibilities.</p>
+                        	<p style="margin: 0;">2. 买方需保证所委派的运输工具及司乘人员依法具备承运有关货物及执业的资质，并保证其在第三方仓储公司进行作业时，服从仓储公司有关人员的指挥并遵守各项安全管理制度及规程。</p>
+                        	<p style="margin: 0;">2.Buyer needs to ensure that the assigned transportation tools and staff are legally qualified to carry the relevant goods, and ensure they obey the instructions of the relevant personnel of the storage company and abide by all safety management systems and regulation when they are operating in the third-party storage company.</p>-->
+                        </td>
+                    </tr>
+                    <tr th:if="${division!='POLYMER'}">
                         <td width="30%" class="labelBold" style="vertical-align: baseline;">
                         	<p style="margin: 0; font-weight: normal;">
 								其它条款
@@ -424,8 +565,7 @@
                         </td>
                         <td width="70%">
                         	<p style="margin: 0;">本合同用英文和中文写成。两种文本具有同等效力。当中英文本含义冲突或不一致时，应以中文文本为准。</p>
-                        	<p style="margin: 0;">This Contract is written in both English and Chinese languages. Both versions are equally authentic. 
-                        	In case of any discrepancies or conflicts between the two versions, the Chinese version shall prevail.</p>
+                        	<p style="margin: 0;">This Contract is written in both English and Chinese languages. Both versions are equally authentic. In case of any discrepancies or conflicts between the two versions, the Chinese version shall prevail.</p>
                         </td>
                     </tr>
                     <tr>

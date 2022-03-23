@@ -6,7 +6,8 @@
 				<td style="text-align: left; padding-left: 1rem; border-bottom: 1.5px solid black;">
 					<div class="row" style="margin-bottom: 0.5rem;">
 						<span th:text="${sellerCompanyName}">Business Unit</span><br><br>
-						<span>Part 4 | Term - Sales Order Confirmation</span>						
+						<span th:if="${socType == 'CONTRACT'}">Part 4 | Term - Sales Order Confirmation</span>	
+						<span th:if="${socType == 'SPOT'}">Part 1 | Spot - Specific Terms and Conditions</span>						
 					</div>
 					<!-- <div class="row">
 						<span style="font-size: 0.8rem;" th:text="'(Company Registration ' + ${sellerCompanyRegistration} + ')'">Company Registration</span>

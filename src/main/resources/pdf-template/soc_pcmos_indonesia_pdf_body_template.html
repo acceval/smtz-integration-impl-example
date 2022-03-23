@@ -101,16 +101,18 @@
                     <tr>
                         <td class="labelBold" width="35%">
 							<p style="text-decoration: underline; margin: 0;">Nomor Perjanjian Jual Beli</p>
-							<p style="font-weight: normal; margin: 0; font-style: italic;">Sales and Purchase Agreement Number</p>
+							<p style="font-weight: normal; margin: 0; font-style: italic;">Agreement Number</p>
 						</td>
                         <td width="65%" th:text="${PONumber}">Agreement Number</td>
                     </tr>
                     <tr>
                         <td class="labelBold" width="35%">
                         	<p style="text-decoration: underline; margin: 0;">Tanggal Perjanjian Jual Beli</p>
-							<p style="font-weight: normal; margin: 0; font-style: italic;">Sales and Purchase Agreement Date</p>
+							<p th:if="${socType == 'SPOT'}" style="font-weight: normal; margin: 0; font-style: italic;">Agreement Commencement Date</p>
+							<p th:if="${socType == 'CONTRACT'}" style="font-weight: normal; margin: 0; font-style: italic;">Sales Order Confirmation Number & Date</p>
                         </td>
-                        <td width="65%" th:text="${agreementCommencementDate}">Agreement Commencement Date</td>
+                        <td th:if="${socType == 'SPOT'}" width="65%" th:text="${agreementCommencementDate}">Agreement Commencement Date</td>
+                        <td th:if="${socType == 'CONTRACT'}" width="65%" th:text="${socNumberAndDate}">Agreement Commencement Date</td>
                     </tr>
                     <tr>
                         <td class="labelBold" width="35%" style="vertical-align: baseline;">
@@ -160,13 +162,19 @@
 							</p>
                 			<p style="margin: 0; font-weight: normal; font-style: italic;">Packing</p>
                         </th>
-                        <th class="labelBold" style="text-align: center;">
+                        <th class="labelBold" style="text-align: center; width: 16%;">
                         	<p style="font-weight: bold; text-decoration: underline; margin: 0;">
 								Harga Per Unit
 							</p>
                 			<p style="margin: 0; font-weight: normal; font-style: italic;">Unit Price</p>
                         </th>
-                        <th class="labelBold" style="text-align: left; width: 20%;">
+                        <th class="labelBold" style="text-align: center;">
+                        	<p style="font-weight: bold; text-decoration: underline; margin: 0;">
+								Pelabuhan Bongkar
+							</p>
+                			<p style="margin: 0; font-weight: normal; font-style: italic;">Destination Port/City</p>
+                        </th>
+                        <th class="labelBold" style="text-align: left; width: 16%;">
                         	<p style="font-weight: bold; text-decoration: underline; margin: 0;">
 								Harga Total
 							</p>
@@ -180,12 +188,13 @@
                         <td style="padding: 0.5rem; text-align: left;" th:text="${#strings.capitalizeWords(#strings.toLowerCase(orderItem.packaging))}">Packaging Bags 25
 Kg</td>
                         <td style="text-align: right;"><span style="float: left;" th:text="${currencyCode}"></span> <span style="float: right;" th:text="${#numbers.formatDecimal(orderItem.itemUnitInvoiceTHB, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></span></td>
+                        <td><span th:text="${#strings.capitalizeWords(#strings.toLowerCase(orderItem.destinationCountry))}"></span></td>
                         <td style="text-align: right;"><span style="float: left;" th:text="${currencyCode}"></span> <span style="float: right;" th:text="${#numbers.formatDecimal(orderItem.itemTotalInvoiceTHB, 1, 'COMMA', priceDecimalDigits, 'POINT')}">Quantity * invocie</span></td>
                     </tr>
-                    <tr>
+                    <!--<tr>
                     	<td colspan="4" class="labelBold" style="text-align: end;">(Exclude PPN) Total</td>
                     	<td><span style="float: left;" th:text="${currencyCode}"></span><span style="float: right;" th:text="${#numbers.formatDecimal(totalPrice, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></td>
-                    </tr>
+                    </tr>-->
                 </table>
 				<p style="margin: 0; font-style: italic;">*Quantity : +/- 5% Operational Tolerance at Seller Option</p>
                 <table>
@@ -222,6 +231,19 @@ Kg</td>
                         </td>
                     </tr>
                     <tr>
+                        <td width="30%" class="labelBold" style="vertical-align: baseline;">
+                        	<p style="font-weight: bold; text-decoration: underline; margin: 0;">
+								Jumlah Keseluruhan
+							</p>
+                			<p style="margin: 0; font-weight: normal; font-style: italic;">Total Price (Exclude PPN)</p>
+                        </td>
+                        <td width="70%">
+                        	<p style="margin: 0;">
+								<span th:text="${currencyCode}"></span> <span th:text="${#numbers.formatDecimal(totalPrice, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></span>
+							</p>
+                		</td>
+                    </tr>
+                    <tr>
                         <td  width="30%" class="labelBold" style="vertical-align: baseline;">
                         	<p style="font-weight: bold; text-decoration: underline; margin: 0;">
 								Perkiraan Tanggal Pengiriman
@@ -233,7 +255,7 @@ Kg</td>
                 			<p style="margin: 0;">(Subject to availability material / Sesuai dengan ketersediaan produk)</p>
                         </td>
                     </tr>
-                    <tr>
+                    <!--<tr>
                         <td  width="30%" class="labelBold" style="vertical-align: baseline;">
                         	<p style="font-weight: bold; text-decoration: underline; margin: 0;">
 								Pelabuhan Bongkar
@@ -241,7 +263,7 @@ Kg</td>
                 			<p style="margin: 0; font-weight: normal; font-style: italic;">Discharging Port</p>
                         </td>
                         <td width="70%" th:text="${#strings.capitalizeWords(#strings.toLowerCase(dischargePortText))}">Discharging Port</td>
-                    </tr>
+                    </tr>-->
                     <tr>
                         <td  width="30%" class="labelBold" style="vertical-align: baseline;">
                         	<p style="font-weight: bold; text-decoration: underline; margin: 0;">
@@ -312,7 +334,7 @@ Kg</td>
                         	<p style="font-weight: bold; text-decoration: underline; margin: 0;">
 								Lainnya
 							</p>
-                			<p style="margin: 0; font-weight: normal; font-style: italic;">Other</p>
+                			<p style="margin: 0; font-weight: normal; font-style: italic;">Other Terms & Conditions</p>
                         </td>
                         <td width="70%">
                         	<p style="margin: 0;">
@@ -330,7 +352,7 @@ Kg</td>
                     </tr>
                 </table>
             </div>
-			<div>
+			<!--<div>
 				<table style="width: 100%;">
 					<tr>
 						<td class="labelBold" style="width: 15%">
@@ -395,7 +417,41 @@ Kg</td>
 							th:utext="${sellerFaxNumber}"></span></p>
 					<a style="text-decoration: underline; color: rgb(0, 128, 192); font-weight: bold;">www.petronaschemicals.com</a>
 				</div>
-			</div>
+			</div>-->
+			<table style="border: 0; width: 100%;">
+					<tr class="noBorder">
+						<td class="labelBold" style="width: 45%">SELLER</td>
+						<td style="width: 10%"></td>
+						<td class="labelBold" style="width: 45%">BUYER</td>
+					</tr>
+					<tr class="noBorder" style="vertical-align: top">
+						<td style="width: 45%">
+							<p class="labelBold" style="margin: 0; padding-left: 0" th:utext="${sellerCompanyNameUpperCase}">Seller Company Name</p>
+						</td>
+						<td style="width: 10%"></td>
+						<td style="width: 45%">
+							<p class="labelBold" style="margin: 0; padding-left: 0" th:utext="${buyerName}">Buyer Company Name</p>
+						</td>
+					</tr>
+					<tr class="noBorder">
+						<td colspan="4" style="height: 5rem;">&nbsp;</td>
+					</tr>
+					<tr class="noBorder">
+                        <td style="width: 45%">Signature: </td>
+                    	<td style="width: 10%"></td>
+                        <td style="width: 45%">Signature: </td>
+                    </tr>
+					<tr class="noBorder">
+						<td style="width: 45%;">Name: </td>
+						<td style="width: 10%;"></td>
+						<td style="width: 45%;">Name: </td>
+					</tr>
+					<tr class="noBorder">
+						<td style="width: 45%; padding-top: 0;">Designation: </td>
+						<td style="width: 10%; padding-top: 0;"></td>
+						<td style="width: 45%; padding-top: 0;">Designation: </td>
+					</tr>
+				</table>
         </div>
 	</body>
 </html>

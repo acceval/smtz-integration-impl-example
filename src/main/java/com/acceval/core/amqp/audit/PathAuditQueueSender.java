@@ -8,16 +8,16 @@ import com.acceval.core.amqp.QueueSender;
 //@Component
 public class PathAuditQueueSender extends QueueSender {
 	    
-    private static final String SENDER_QUEUE_NAME = "commons-audittrail-queue";
+//    private static final String SENDER_QUEUE_NAME = "commons-audittrail-queue";
     private static final String SMARTTRADZ_TOPIC = "smarttradz.topic"; 
     
     public PathAuditQueueSender() {
-    		this.messageBody = new MessageBody<String>();
+    	this.messageBody = new MessageBody<String>();
     }
     
     public PathAuditQueueSender(String body) {
     	
-    		this.messageBody = new MessageBody<String>(body);		
+    	this.messageBody = new MessageBody<String>(body);
 	}
     
 	@Override
@@ -27,7 +27,7 @@ public class PathAuditQueueSender extends QueueSender {
 
 	@Override
 	protected String getSenderQueueName() {		
-		return SENDER_QUEUE_NAME;
+		return "commons-audittrail-queue";
 	}
     
 }
