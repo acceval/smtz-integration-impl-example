@@ -212,6 +212,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String WFL_NO_APPROVAL = "NO_APPROVAL";
 	public static final String WFL_VIO_LOA_SM_VERIFY = "WFLLOASMVERIFY";
 	public static final String IS_NQ_CONTRACT_EXECUTION = "IS_NQ_CONTRACT_EXECUTION";
+	public static final String IS_PREF = "IS_PREF";
 
 	// Workflow Context
 	public static final String FORMULAPRICINGADJ = "FORMULAPRICINGADJ";
@@ -261,14 +262,24 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String PCMOS_CEO = "CEO (PCM OS)";
 
 	// Sales Divison
+	public static final String SALES_DIVISION_OLEFINS = "P1";
+	public static final String SALES_DIVISION_DERIVATIVES = "P2";
+	public static final String SALES_DIVISION_FERTILIZERS = "P3";
 	public static final String SALES_DIVISION_METHANOL = "P4";
 	public static final String SALES_DIVISION_AROMATIC = "P5";
+	public static final String SALES_DIVISION_POLYMERS = "P7";
 	public static final String SALES_DIVISION_MTBE = "P8";
+	public static final String SALES_DIVISION_PCASB = "P9";
+	public static final String SALES_DIVISION_INA = "PA";
 
 	// Sales Office
+	public static final String SALES_OFFICE_OLEFINS_DERIVATIVE = "P002";
+	public static final String SALES_OFFICE_UREA = "P003";
+	public static final String SALES_OFFICE_POLYMERS = "P004";
 	public static final String SALES_OFFICE_AROMATIC = "P005";
 	public static final String SALES_OFFICE_METHANOL = "P006";
 	public static final String SALES_OFFICE_MTBE = "P008";
+	public static final String SALES_OFFICE_INA = "P013";
 
 	public static enum WFL_VIOLATE {
 		CHANGED_PAYMENT_TERM("Violated Payment Term Credit Day"), DEAL_AMOUNT("Below Targeted Amount [?]"),
