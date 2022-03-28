@@ -15,6 +15,9 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({ Exception.class })
     public ResponseEntity<Object> handleAll(final Exception ex, final WebRequest request) {
         
+    	logger.info(ex.getClass().getName());
+        logger.error(ex.getLocalizedMessage(), ex);
+        
         final ApiError apiError = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, 
         		ex.getLocalizedMessage(), ex.getClass().getName());
         
