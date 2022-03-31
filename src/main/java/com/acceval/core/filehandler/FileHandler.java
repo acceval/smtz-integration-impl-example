@@ -127,6 +127,22 @@ public abstract class FileHandler<T> {
 		
 		this.startTime = LocalDateTime.now();
 	}
+	
+	public ArrayList<String> getColumn() {
+		Field[] fields = this.templateClass.getDeclaredFields();
+
+		ArrayList<String> columns = new ArrayList<String>();
+
+		for (Field field : fields) {
+
+			if (field.isAnnotationPresent(CsvBindByName.class)) {
+
+				CsvBindByName bindByName = field.getAnnotation(CsvBindByName.class);
+				columns.add(bindByName.column());
+			}
+		}
+		return columns;
+	}
 
 	public void writeTemplateFile(Path templateFile) throws FileHandlerException {
 
