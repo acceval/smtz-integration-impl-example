@@ -143,6 +143,17 @@ public class FileUtil {
 								cellValue = df.format(date);
 								text = cellValue;
 							}
+						} else if (CellType.FORMULA.equals(cell.getCellType())) {
+							String cellValue = null;
+							switch (cell.getCachedFormulaResultType()) {
+							case NUMERIC:
+								cellValue = String.valueOf(cell.getNumericCellValue());
+								break;
+							case STRING:
+								cellValue = cell.getStringCellValue();
+								break;
+							}
+							text = cellValue;
 						}
 
 						out.print("\"" + text + "\"");
@@ -168,6 +179,17 @@ public class FileUtil {
 								cellValue = df.format(date);
 								text = cellValue;
 							}
+						} else if (CellType.FORMULA.equals(cell.getCellType())) {
+							String cellValue = null;
+							switch (cell.getCachedFormulaResultType()) {
+							case NUMERIC:
+								cellValue = String.valueOf(cell.getNumericCellValue());
+								break;
+							case STRING:
+								cellValue = cell.getStringCellValue();
+								break;
+							}
+							text = cellValue;
 						}
 
 						out.print("\"" + text + "\"");
