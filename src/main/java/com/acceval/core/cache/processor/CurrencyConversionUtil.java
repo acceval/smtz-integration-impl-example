@@ -81,10 +81,16 @@ public class CurrencyConversionUtil {
 	    return amountToConvert;
     }
 
-    public static double getEffectiveExchangeRate(double rate, double fromRatio, double toRatio) {
-		double effectiveRate = rate;
-		double ffromRatio = fromRatio == 0? 1 : fromRatio;
-		double ftoRatio = toRatio == 0? 1 : toRatio;
+    public static double getEffectiveExchangeRate(Double rate, Double fromRatio, Double toRatio) {
+		double effectiveRate = rate == null ? 1 : rate;
+		double ffromRatio = 1;
+		if (fromRatio != null && fromRatio != 0) {
+			ffromRatio = fromRatio;
+		}
+		double ftoRatio = 1;
+		if (toRatio != null && toRatio != 0) {
+			ftoRatio = toRatio;
+		}
 		
 		effectiveRate = effectiveRate * ftoRatio / ffromRatio;
 		
