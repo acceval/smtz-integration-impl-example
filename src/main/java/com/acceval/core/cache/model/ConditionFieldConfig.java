@@ -1,8 +1,8 @@
 package com.acceval.core.cache.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class ConditionFieldConfig implements Serializable, Comparable<ConditionFieldConfig> {
 
@@ -12,7 +12,7 @@ public class ConditionFieldConfig implements Serializable, Comparable<ConditionF
 		RANGE,
 		CUSTOMOBJECT,
 		REGIONCOUNTRY,
-		DATE
+		DATE, ENTITY_REMOTE
 	}
 
 	public enum InputType {
