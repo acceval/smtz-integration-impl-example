@@ -233,6 +233,7 @@ public class ConditionRecordCacheProcessor {
         lstCondFieldCode.add(VariableContext.OVERWRITE_EXCHANGE_RATE);
         lstCondFieldCode.add(VariableContext.OVERWRITE_CURRENCY_FROM);
         lstCondFieldCode.add(VariableContext.OVERWRITE_CURRENCY_TO);
+        lstCondFieldCode.add(VariableContext.CUSTOM_EXCHANGE_RATE_REF_DATE);
 
         if (config != null && CollectionUtils.isNotEmpty(config.getConditionTableInputParameters())) {
             for (ConditionTableInputParameter inputParam : config.getConditionTableInputParameters()) {
@@ -307,6 +308,9 @@ public class ConditionRecordCacheProcessor {
         }
 
         LocalDateTime effectiveDate = context.getVariableAsDateTime(VariableContext.VALID_FROM);
+        if (context.getVariableAsDateTime(VariableContext.CUSTOM_EXCHANGE_RATE_REF_DATE) != null) {
+        	effectiveDate = context.getVariableAsDateTime(VariableContext.CUSTOM_EXCHANGE_RATE_REF_DATE);
+        }
         if (numericConditionValue.getConfig().isContainsCurrency() && targetCurrency != null) {
             Currency valueCurrency = numericConditionValue.getCurrency();
             if (!valueCurrency.getCode().equals(targetCurrency.getCode())) {
