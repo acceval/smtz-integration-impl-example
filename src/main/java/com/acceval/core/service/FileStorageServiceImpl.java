@@ -44,6 +44,51 @@ public class FileStorageServiceImpl implements FileStorageService {
     }
     
     @Override 
+    public String store(MultipartFile file, Path archiveLocation) {
+    	
+        String filename = StringUtils.cleanPath(file.getOriginalFilename());
+        
+        try {
+            if (file.isEmpty()) {
+                throw new StorageException("Failed to store empty file " + filename);
+            }
+            if (filename.contains("..")) {
+                // This is a security check
+                throw new StorageException("Cannot store file with relative path outside current directory " + filename);
+            }
+            if (!Files.exists(archiveLocation)) {
+		    	try {
+					Files.createDirectories(archiveLocation);
+				} catch (IOException e) {
+					throw new StorageException("Cannot create archive location " + archiveLocation.toString());
+				}
+    		}
+            
+
+            String filenameNoExtension = filename.replaceFirst("[.][^.]+$", "");
+            DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd-HHmmss") ;
+            String extension = "";
+            int index = filename.lastIndexOf(".");
+            if (index != -1 && index < filename.length() - 1) {
+            	extension = filename.substring(index + 1);
+            }
+            
+            String reformatFile = filenameNoExtension + "-" + dateFormat.format(new Date()) 
+            	+ "." + extension;
+            
+            Path reformatPath = archiveLocation.resolve(reformatFile);
+            
+            Files.copy(file.getInputStream(), reformatPath, StandardCopyOption.REPLACE_EXISTING);
+                       
+            return reformatPath.getFileName().toString();
+            
+        } catch (IOException e) {
+        	
+            throw new StorageException("Failed to store file " + filename, e);
+        }
+    }
+        
+    @Override 
     public String archive(MultipartFile file, Path archiveLocation) {
     	
         String filename = StringUtils.cleanPath(file.getOriginalFilename());

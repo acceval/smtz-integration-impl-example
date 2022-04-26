@@ -24,6 +24,8 @@ public interface FileStorageService {
 
 	void store(String filename, String content);
 	
+	String store(MultipartFile file, Path archiveLocation);
+	
 	String archive(MultipartFile file, Path archiveLocation);
 
 }
