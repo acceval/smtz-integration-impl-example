@@ -1,5 +1,22 @@
 package com.acceval.core.cache.impl;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.stereotype.Component;
+
 import com.acceval.core.cache.CacheIF;
 import com.acceval.core.cache.CacheInfo;
 import com.acceval.core.cache.HazelcastCacheInstance;
@@ -12,22 +29,6 @@ import com.acceval.core.cache.model.Uom;
 import com.acceval.core.microservice.ObjectNotFoundException;
 import com.acceval.core.security.PrincipalUtil;
 import com.hazelcast.core.ReplicatedMap;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Cache structure
@@ -49,6 +50,7 @@ public class MasterDataCache implements CacheIF {
     private final static String CACHE_NAME = "MASTERDATA_CACHE";
 
     private final static String KEY_CACHE_READY = "READY";
+    private final static String KEY_CACHE_INIT = "INIT";
     private final static String KEY_DEFAULT = "DEFAULT";
 
     private final static String KEY_ALL_UOM = "ALL_UOM";
@@ -83,7 +85,31 @@ public class MasterDataCache implements CacheIF {
 
         return false;
     }
+    
 
+    public boolean isInitialized() {
+    	
+    	String companyID = PrincipalUtil.getCompanyID().toString();
+        Boolean ready = (Boolean) getTopMap(companyID, KEY_CACHE_INIT).get(KEY_DEFAULT);
+
+        if (ready != null && ready) return true;
+
+        return false;
+        
+	}
+
+	public void setInitialized(String companyId) {
+		
+		getTopMap(companyId, KEY_CACHE_INIT).put(KEY_DEFAULT, Boolean.TRUE);		
+	}
+	
+
+	public void unsetInitialized(String companyId) {
+		
+		getTopMap(companyId, KEY_CACHE_INIT).put(KEY_DEFAULT, Boolean.FALSE);
+	}
+
+	
     /**
      * Global Uom Conversion Cache
      */
@@ -394,8 +420,9 @@ public class MasterDataCache implements CacheIF {
     public CacheInfo getCacheInfo(String companyID) {
         return null;
     }
+    
 
-    public String test() {
+	public String test() {
 
         StringBuffer buffer = new StringBuffer();
         List<Currency> temp = this.getAllCurrencies();
