@@ -40,7 +40,7 @@ public class ExchangeRateCache implements CacheIF {
     private final static String CACHE_NAME = "EXCHANGE_RATE_CACHE";
 
     private final static String KEY_CACHE_READY = "READY";
-    private final static String KEY_CACHE_INIT = "READY";
+    private final static String KEY_CACHE_INIT = "INIT";
     private final static String KEY_DEFAULT = "DEFAULT";
 
     private final static String KEY_ALL_EXCHANGE_RATE = "ALL_EXCHANGE_RATE";
