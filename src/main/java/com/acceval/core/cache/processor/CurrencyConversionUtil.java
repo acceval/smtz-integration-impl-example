@@ -81,6 +81,22 @@ public class CurrencyConversionUtil {
 	    return amountToConvert;
     }
 
+    public static double getEffectiveExchangeRate(Double rate, Double fromRatio, Double toRatio) {
+		double effectiveRate = rate == null ? 1 : rate;
+		double ffromRatio = 1;
+		if (fromRatio != null && fromRatio != 0) {
+			ffromRatio = fromRatio;
+		}
+		double ftoRatio = 1;
+		if (toRatio != null && toRatio != 0) {
+			ftoRatio = toRatio;
+		}
+		
+		effectiveRate = effectiveRate * ftoRatio / ffromRatio;
+		
+		return effectiveRate;
+	}
+    
 	public Double getConvertedAmount(double amountToConvert, long fromCurrencyID, long toCurrencyID,
 			LocalDateTime effectiveDate, Long exchangeRateTypeID, VariableContext context) {
 		
@@ -114,7 +130,12 @@ public class CurrencyConversionUtil {
 			// Only get the "latest effective date record"
 			ExchangeRate exchangeRateObj = (ExchangeRate) result.iterator().next(); 
 			
-			float fExchangeRate = zeroIfNulll(exchangeRateObj.getRate()).floatValue();
+			double fromCurrencyRatio = zeroIfNulll(exchangeRateObj.getFromCurrencyRatio());
+			double toCurrencyRatio = zeroIfNulll(exchangeRateObj.getToCurrencyRatio());
+			
+			double effectiveRate = this.getEffectiveExchangeRate(zeroIfNulll(exchangeRateObj.getRate()), fromCurrencyRatio, toCurrencyRatio);
+			
+			double fExchangeRate = zeroIfNulll(effectiveRate);
 			convertedAmount = amountToConvert * fExchangeRate;
 			logger.info("Exchange Rate EffectiveDate: " + exchangeRateObj.getEffectiveDate());			
 
@@ -125,7 +146,13 @@ public class CurrencyConversionUtil {
 			if (!result.isEmpty()) {
 				// Only get the "latest effective date record"
 				ExchangeRate exchangeRateObj = (ExchangeRate) result.iterator().next();
-				float fExchangeRate = zeroIfNulll(exchangeRateObj.getRate()).floatValue();
+				
+				double fromCurrencyRatio = zeroIfNulll(exchangeRateObj.getFromCurrencyRatio());
+				double toCurrencyRatio = zeroIfNulll(exchangeRateObj.getToCurrencyRatio());
+				
+				double effectiveRate = this.getEffectiveExchangeRate(zeroIfNulll(exchangeRateObj.getRate()), fromCurrencyRatio, toCurrencyRatio);
+				
+				double fExchangeRate = zeroIfNulll(effectiveRate);
 				logger.info("CurrencyConversionUtil", "Division Logic");
 				convertedAmount = amountToConvert / fExchangeRate;				
 			} else {

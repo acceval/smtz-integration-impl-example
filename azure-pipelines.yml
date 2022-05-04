@@ -17,7 +17,7 @@ trigger:
       - docs/README.md
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: ubuntu-20.04
 
 steps:
   - task: JavaToolInstaller@0

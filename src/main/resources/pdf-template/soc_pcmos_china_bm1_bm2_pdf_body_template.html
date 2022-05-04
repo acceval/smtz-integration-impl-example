@@ -98,13 +98,23 @@
         <div class="main-body">
             <div class="top-section">
                 <table style="margin-top: 3rem;">
-                    <tr>
-                    	<td class="labelBold" width="35%">CONTRACT NO:</td>
+                	<tr>
+                        <td class="labelBold" width="35%">AGREEMENT NUMBER</td>
                         <td width="65%" th:text="${PONumber}">Agreement Number</td>
                     </tr>
                     <tr>
-                        <td class="labelBold" width="35%">CONTRACT DATE:</td>
-                        <td width="65%" th:text="${agreementCommencementDate}">Agreement Commencement Date</td>
+                        <td class="labelBold" width="35%" th:if="${socType == 'SPOT'}">
+                        	<span>AGREEMENT COMMENCEMENT DATE<span> :
+                        </td>
+                        <td class="labelBold" width="35%" th:if="${socType == 'CONTRACT'}">
+                        	<span>SALES ORDER CONFIRMATION NUMBER & DATE<span> :
+                        </td>
+                        <td width="65%" th:if="${socType == 'SPOT'}">
+                        	<span th:if="${socType == 'SPOT'}" th:text="${agreementCommencementDate}">Commencement Date</span>
+                        </td>
+                        <td width="65%" th:if="${socType == 'CONTRACT'}">
+                        	<span th:if="${socType == 'CONTRACT'}" th:text="${socNumberAndDate}">Commencement Date</span>
+                        </td>
                     </tr>
                     <tr>
                         <td class="labelBold" width="35%">SELLER</td>
@@ -113,7 +123,7 @@
                             <p style="margin: 0;" th:utext="${sellerAddress}">Seller Address</p>
                             <p style="margin: 0;">Telephone: <span th:text="${sellerPhoneNumber}">Seller Telephone Number</span></p>
                             <p style="margin: 0;">Facsimile: <span th:text="${sellerFaxNumber}">Seller Facsimile Number</span></p>
-                            <!--<p style="margin: 0;">Attention: <span th:text="${sellerAttention}">Seller Attention</span></p>-->
+                            <!--<p style="margin: 0;">Attention: <span th:text="${sellerAttention}">Seller Attention</span></p> -->
                         </td>
                     </tr>
                     <tr>
