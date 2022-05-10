@@ -1,5 +1,20 @@
 package com.acceval.core.cache.impl;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.stereotype.Component;
+
 import com.acceval.core.cache.CacheIF;
 import com.acceval.core.cache.CacheInfo;
 import com.acceval.core.cache.HazelcastCacheInstance;
@@ -9,20 +24,6 @@ import com.acceval.core.microservice.ObjectNotFoundException;
 import com.acceval.core.security.PrincipalUtil;
 import com.acceval.core.util.DateUtil;
 import com.hazelcast.core.ReplicatedMap;
-import org.apache.commons.collections.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.stereotype.Component;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Cache structure
@@ -39,13 +40,13 @@ public class ExchangeRateCache implements CacheIF {
     private final static String CACHE_NAME = "EXCHANGE_RATE_CACHE";
 
     private final static String KEY_CACHE_READY = "READY";
+    private final static String KEY_CACHE_INIT = "INIT";
     private final static String KEY_DEFAULT = "DEFAULT";
 
     private final static String KEY_ALL_EXCHANGE_RATE = "ALL_EXCHANGE_RATE";
     private final static String KEY_ALL_EXCHANGE_RATE_TYPE = "ALL_EXCHANGE_RATE_TYPE";
     private final static String KEY_DEFAULT_EXCHANGE_RATE_TYPE = "DEFAULT_EXCHANGE_RATE_TYPE";
-
-
+    
     @Autowired
     private HazelcastCacheInstance hazelcastCacheInstance;
 
@@ -66,6 +67,28 @@ public class ExchangeRateCache implements CacheIF {
 
         return false;
     }
+    
+
+    public boolean isInitialized() {
+    	
+    	String companyID = PrincipalUtil.getCompanyID().toString();
+        Boolean ready = (Boolean) getTopMap(companyID, KEY_CACHE_INIT).get(KEY_DEFAULT);
+
+        if (ready != null && ready) return true;
+
+        return false;
+        
+	}
+
+	public void setInitialized(String companyId) {
+		
+		getTopMap(companyId, KEY_CACHE_INIT).put(KEY_DEFAULT, Boolean.TRUE);		
+	}
+	
+	public void unsetInitialized(String companyId) {
+		
+		getTopMap(companyId, KEY_CACHE_INIT).put(KEY_DEFAULT, Boolean.FALSE);
+	}
 
     /**
      * Exchange Rate Cache
@@ -154,8 +177,9 @@ public class ExchangeRateCache implements CacheIF {
     public CacheInfo getCacheInfo(String companyID) {
         return null;
     }
+    
 
-    public String test() {
+	public String test() {
         String companyID = PrincipalUtil.getCompanyID().toString();
 
         StringBuffer buffer = new StringBuffer();
