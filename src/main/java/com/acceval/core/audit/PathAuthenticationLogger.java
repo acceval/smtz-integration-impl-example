@@ -22,7 +22,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import com.acceval.core.amqp.AuditLogQueueSender;
 import com.acceval.core.amqp.audit.PathAuthenticationRequest;
 
-@Component
+//@Component
 public class PathAuthenticationLogger {
 	
 	private  final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -35,7 +35,7 @@ public class PathAuthenticationLogger {
 	@Autowired
 	private AuditLogQueueSender auditLogQueueSender;
 	
-	@EventListener
+//	@EventListener
     public void auditEventHappened(AuditApplicationEvent auditApplicationEvent) {
          
 		AuditEvent auditEvent = auditApplicationEvent.getAuditEvent();
