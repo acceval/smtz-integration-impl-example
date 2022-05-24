@@ -13,6 +13,19 @@ public class ConditionValue implements Serializable {
 	private Long uomId;
 	private Uom uom;
 	
+	/**
+	 * Value field is calculated to Target UOM/Currency value, use this field to
+	 * hold DB value
+	 */
+	private String dbValue;
+
+	public String getDbValue() {
+		return dbValue;
+	}
+
+	public void setDbValue(String dbValue) {
+		this.dbValue = dbValue;
+	}
 	public ConditionValueConfig getConfig() {
 		return config;
 	}
