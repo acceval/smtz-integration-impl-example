@@ -25,6 +25,10 @@ public class TaskView<T> {
 	public String taskOwnerName;
 	public String taskOwnerDepartment;
 	public String dealTaskDescription;
+	public String documentType;
+	public String decision;
+	public String reason;
+	public Long detailsId;
 
 	public TaskView(
 			@JsonProperty("id") String id,
@@ -103,5 +107,37 @@ public class TaskView<T> {
 	@Override
 	public int hashCode() {
 		return Objects.hash(id, processInstanceId, name, variables, dataObject, assignee);
+	}
+
+	public String getDocumentType() {
+		return documentType;
+	}
+
+	public void setDocumentType(String documentType) {
+		this.documentType = documentType;
+	}
+
+	public String getDecision() {
+		return decision;
+	}
+
+	public void setDecision(String decision) {
+		this.decision = decision;
+	}
+
+	public String getReason() {
+		return reason;
+	}
+
+	public void setReason(String reason) {
+		this.reason = reason;
+	}
+
+	public Long getDetailsId() {
+		return detailsId;
+	}
+
+	public void setDetailsId(Long detailsId) {
+		this.detailsId = detailsId;
 	}
 }
