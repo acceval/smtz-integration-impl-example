@@ -1,5 +1,15 @@
 package com.acceval.core.cache.impl;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.stereotype.Component;
+
 import com.acceval.core.cache.CacheIF;
 import com.acceval.core.cache.CacheInfo;
 import com.acceval.core.cache.HazelcastCacheInstance;
@@ -8,15 +18,6 @@ import com.acceval.core.cache.model.ConditionRecordCacheHelper;
 import com.acceval.core.cache.model.ConditionRecordCacheHolder;
 import com.acceval.core.cache.model.ConditionRecordConfig;
 import com.acceval.core.security.PrincipalUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Cache structure
@@ -31,9 +32,10 @@ public class ConditionRecordCache implements CacheIF {
     private final static String CACHE_NAME = "CONDITION_RECORD_CACHE";
 
     private final static String KEY_CACHE_READY = "READY";
+    private final static String KEY_CACHE_INIT = "INIT";
     private final static String KEY_DEFAULT = "DEFAULT";
 
-    private final static String KEY_HOLDER = "HOLDER";
+    private final static String KEY_HOLDER = "HOLDER";    
 
     @Autowired
     private HazelcastCacheInstance hazelcastCacheInstance;
@@ -55,6 +57,28 @@ public class ConditionRecordCache implements CacheIF {
 
         return false;
     }
+    
+    public boolean isInitialized() {
+    	
+    	String companyID = PrincipalUtil.getCompanyID().toString();
+        Boolean ready = (Boolean) getTopMap(companyID, KEY_CACHE_INIT).get(KEY_DEFAULT);
+
+        if (ready != null && ready) return true;
+
+        return false;
+        
+	}
+
+	public void setInitialized(String companyId) {
+		
+		getTopMap(companyId, KEY_CACHE_INIT).put(KEY_DEFAULT, Boolean.TRUE);		
+	}
+	
+
+	public void unsetInitialized(String companyId) {
+		
+		getTopMap(companyId, KEY_CACHE_INIT).put(KEY_DEFAULT, Boolean.FALSE);
+	}
 
     private ConditionRecordCacheHolder getHolder(String companyID, String code) {
         ConditionRecordCacheHolder holder = (ConditionRecordCacheHolder) getTopMap(companyID, code).get(KEY_HOLDER);
@@ -112,7 +136,8 @@ public class ConditionRecordCache implements CacheIF {
         return null;
     }
 
-    public String test(String code) {
+
+	public String test(String code) {
         String companyID = PrincipalUtil.getCompanyID().toString();
 
         StringBuffer buffer = new StringBuffer();
