@@ -293,6 +293,7 @@ public class SalesContractCreateRequest {
         private double locationShipmentCost;
         private double inboundInsurance;
         private double inboundSurveyor;
+        private boolean backToBackChangeFlag = false;
 
         public String getItemNumber() {
             return itemNumber;
@@ -437,6 +438,16 @@ public class SalesContractCreateRequest {
         public void setInboundSurveyor(double inboundSurveyor) {
             this.inboundSurveyor = inboundSurveyor;
         }
+
+		public boolean isBackToBackChangeFlag() {
+			return backToBackChangeFlag;
+		}
+
+		public void setBackToBackChangeFlag(boolean backToBackChangeFlag) {
+			this.backToBackChangeFlag = backToBackChangeFlag;
+		}
+        
+        
     }
 
 }
