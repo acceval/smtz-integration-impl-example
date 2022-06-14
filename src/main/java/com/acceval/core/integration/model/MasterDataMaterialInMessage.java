@@ -13,9 +13,12 @@ public class MasterDataMaterialInMessage implements Serializable {
 	private String materialType; // Done
 	private String prodocutDeletionFlag; // Done
 	private String division; // Done
+	private String salesSpec;
 	
 	private List<Item> items;
 	private List<PlantItem> plantItems;
+	private List<MultilingualValue> multilingualNames;
+	private List<MultilingualValue> multilingualSalesSpecs;
 
 	public String getCode() {
 		return code;
@@ -74,6 +77,15 @@ public class MasterDataMaterialInMessage implements Serializable {
 
 	public void setDivision(String division) {
 		this.division = division;
+	}
+	
+	@XmlElement(nillable = true)
+	public String getSalesSpec() {
+		return salesSpec;
+	}
+
+	public void setSalesSpec(String salesSpec) {
+		this.salesSpec = salesSpec;
 	}
 
 	public List<Item> getItems() {
@@ -219,5 +231,48 @@ public class MasterDataMaterialInMessage implements Serializable {
 	public void setPlantItems(List<PlantItem> plantItems) {
 		this.plantItems = plantItems;
 	}
+	
+	public static class MultilingualValue {
+		private String language;
+		private String value;
+		
+		@XmlElement(nillable = true)
+		public String getLanguage() {
+			return language;
+		}
+		
+		public void setLanguage(String language) {
+			this.language = language;
+		}
+		
+		@XmlElement(nillable = true)
+		public String getValue() {
+			return value;
+		}
+
+		public void setValue(String value) {
+			this.value = value;
+		}
+		
+	}
+	
+	@XmlElement(nillable = true)
+	public List<MultilingualValue> getMultilingualNames() {
+		return multilingualNames;
+	}
+
+	public void setMultilingualNames(List<MultilingualValue> multilingualNames) {
+		this.multilingualNames = multilingualNames;
+	}
+	
+	@XmlElement(nillable = true)
+	public List<MultilingualValue> getMultilingualSalesSpecs() {
+		return multilingualSalesSpecs;
+	}
+
+	public void setMultilingualSalesSpecs(List<MultilingualValue> multilingualSalesSpecs) {
+		this.multilingualSalesSpecs = multilingualSalesSpecs;
+	}
+	
 }
 
