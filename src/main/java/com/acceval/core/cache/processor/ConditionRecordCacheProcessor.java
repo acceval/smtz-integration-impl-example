@@ -154,6 +154,10 @@ public class ConditionRecordCacheProcessor {
             recordConfig =  this.conditionRecordCache.getConditionRecordConfig(String.valueOf(companyId), conditionRecordCode);
         }
 
+		if (recordConfig == null) {
+			return null;
+		}
+
         if (recordConfig != null && CollectionUtils.isNotEmpty(recordConfig.getConditionTableInputParameters())) {
             if (mapParam.get(VariableContext.PERCENTAGE_APPLY_INPUT_PARAM) == null) {
                 for (ConditionTableInputParameter inputParam : recordConfig.getConditionTableInputParameters()) {

@@ -74,6 +74,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String OVERWRITE_CURRENCY_TO = "OVERWRITE_CURRENCY_TO";
 	public static final String IS_OVERSEAS = "IS_OVERSEAS";
 	public static final String CUSTOM_EXCHANGE_RATE_REF_DATE = "CUSTOM_EXCHANGE_RATE_REF_DATE";
+	public static final String INVOICE_PRICE = "INVOICE_PRICE";
 
     public static final String MARKET_PRICE_SOURCE = "MARKET_PRICE_SOURCE";
 
