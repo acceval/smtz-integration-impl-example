@@ -580,7 +580,12 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 						builder.equal(builder.function("minute", Integer.class, path), minute),
 						builder.equal(builder.function("second", Integer.class, path), second) };
 			} else {
-				return new Predicate[] { builder.equal(path, value) };
+				
+				if (criterion.isCaseSensitive()) {
+					return new Predicate[] { builder.equal(path, value) };
+				} else {
+					return new Predicate[] { builder.equal(builder.lower(path), value) };
+				}
 			}
 		}
 		// NOT EQUAL
