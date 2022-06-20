@@ -7,6 +7,7 @@ public class Company {
 	private String servicePackage;
 	private String timeZone;
 	private Long countryId;
+	private String defaultExchangeRateTypeCode;
 
 	public Long getId() {
 		return id;
@@ -41,6 +42,14 @@ public class Company {
 
 	public void setCountryId(Long countryId) {
 		this.countryId = countryId;
+	}
+
+	public String getDefaultExchangeRateTypeCode() {
+		return defaultExchangeRateTypeCode;
+	}
+
+	public void setDefaultExchangeRateTypeCode(String defaultExchangeRateTypeCode) {
+		this.defaultExchangeRateTypeCode = defaultExchangeRateTypeCode;
 	}
 
 }

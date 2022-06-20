@@ -15,6 +15,7 @@ public @interface MicroServiceObject {
 	public static final String SRC_PRICING = "pricing-service";
 	public static final String SRC_ETL = "etl-service";
 	public static final String SRC_PRICING_POWER = "pricing-power-service";
+	public static final String SRC_BUY_ECOMMERCE = "buy-ecommerce-service";
 
 	public static final String COMMON_GT_OBJ = "getObj";
 	public static final String COMMON_QUERY = "common/query";
