@@ -1,6 +1,28 @@
 package com.acceval.core.cache.processor;
 
-import com.acceval.core.cache.CacheException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+
 import com.acceval.core.cache.impl.ConditionRecordCache;
 import com.acceval.core.cache.impl.ExchangeRateCache;
 import com.acceval.core.cache.impl.MasterDataCache;
@@ -18,29 +40,6 @@ import com.acceval.core.cache.model.Uom;
 import com.acceval.core.microservice.ObjectNotFoundException;
 import com.acceval.core.model.VariableContext;
 import com.acceval.core.security.PrincipalUtil;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.stereotype.Component;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Component
 @ConditionalOnProperty(name = "microservice.cache", havingValue = "true")
@@ -121,6 +120,7 @@ public class ConditionRecordCacheProcessor {
                         Double calculatedValue = this.calculateNumericValue(firstNumericValue, context,
                                 evaluationResult, true);
                         evaluationResult.setNumericValue(calculatedValue);
+                        value.setValue(calculatedValue != null ? calculatedValue.toString() : null);
                     } else {
                         Double calculatedValue = this.calculateNumericValue(value, context, evaluationResult, false);
                         value.setValue(calculatedValue != null ? calculatedValue.toString() : null);
@@ -153,6 +153,10 @@ public class ConditionRecordCacheProcessor {
             Long companyId = Long.valueOf(mapParam.getFirst("COMPANY_ID"));
             recordConfig =  this.conditionRecordCache.getConditionRecordConfig(String.valueOf(companyId), conditionRecordCode);
         }
+
+		if (recordConfig == null) {
+			return null;
+		}
 
         if (recordConfig != null && CollectionUtils.isNotEmpty(recordConfig.getConditionTableInputParameters())) {
             if (mapParam.get(VariableContext.PERCENTAGE_APPLY_INPUT_PARAM) == null) {

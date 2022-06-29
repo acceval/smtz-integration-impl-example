@@ -13,6 +13,7 @@ public class SalesContractUpdateRequest {
     private double locationShipmentCost;
     private double inboundInsurance;
     private double inboundSurveyor;
+    private boolean backToBackChangeFlag = false;
 
     public String getSalesContractNumber() {
         return salesContractNumber;
@@ -100,5 +101,14 @@ public class SalesContractUpdateRequest {
 
 	public void setInboundSurveyor(double inboundSurveyor) {
 		this.inboundSurveyor = inboundSurveyor;
+	}
+
+	public boolean isBackToBackChangeFlag() {
+		return backToBackChangeFlag;
+	}
+
+	public void setBackToBackChangeFlag(boolean backToBackChangeFlag) {
+		this.backToBackChangeFlag = backToBackChangeFlag;
 	}    
+	
 }

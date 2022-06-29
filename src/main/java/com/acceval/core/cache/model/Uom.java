@@ -10,6 +10,15 @@ public class Uom implements Serializable {
 	private String name;
 	private String shortName;
 	private UomType uomType;
+	
+	public com.acceval.core.cache.model.Uom toCoreUom() {
+		com.acceval.core.cache.model.Uom c = new com.acceval.core.cache.model.Uom();
+		c.setCode(getCode());
+		c.setName(getName());
+		c.setShortName(getShortName());
+		c.setUomID(getUomID());
+		return c;
+	}
 
 	public Uom(String uomID) {
 		super();

@@ -1,5 +1,19 @@
 package com.acceval.core.cache.processor;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.stereotype.Service;
+
 import com.acceval.core.cache.impl.MasterDataCache;
 import com.acceval.core.cache.model.ConditionEvaluationResult;
 import com.acceval.core.cache.model.GlobalUomConversion;
@@ -7,25 +21,6 @@ import com.acceval.core.cache.model.SkuProductAltUom;
 import com.acceval.core.cache.model.Uom;
 import com.acceval.core.microservice.ObjectNotFoundException;
 import com.acceval.core.model.VariableContext;
-import com.acceval.core.repository.Criteria;
-import com.acceval.core.repository.Criterion;
-import com.acceval.core.repository.Criterion.RestrictionType;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Service("cacheUomConversionUtil")
 @ConditionalOnProperty(name = "microservice.cache", havingValue = "true")
@@ -242,7 +237,7 @@ public class UomConversionUtil {
 				} else {
                     globalUomConversions = getGlobalUomConversion(toUomID, fromUomID, context);
 
-                    if (!result.isEmpty()) {
+					if (!globalUomConversions.isEmpty()) {
                         GlobalUomConversion globalUomConversionObj = globalUomConversions.iterator().next();
 
 						conversionFactor = globalUomConversionObj.getConversionFactor().doubleValue();

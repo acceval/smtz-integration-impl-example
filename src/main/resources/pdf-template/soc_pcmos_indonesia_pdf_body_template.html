@@ -269,13 +269,13 @@ Kg</td>
                         	<p style="font-weight: bold; text-decoration: underline; margin: 0;">
 								Pengiriman
 							</p>
-                			<p style="margin: 0; font-weight: normal; font-style: italic;">Delivery Port</p>
+                			<p style="margin: 0; font-weight: normal; font-style: italic;">Delivery <span th:if="${socType == 'SPOT'}">Point</span><span th:if="${socType == 'CONTRACT'}">Port</span></p>
                         </td>
                         <td width="70%">
                         	<p style="margin: 0;">
-								<span style="font-weight: bold;">Terminal</span> pembeli berlokasi di <span style="font-weight: bold;" th:text="${#strings.capitalizeWords(#strings.toLowerCase(dischargePortText))}">Merak</span>
+								<span th:if="${container == 'TRUE'}" style="font-weight: bold;">Gudang</span><span th:if="${container == null}" style="font-weight: bold;">Terminal</span> pembeli berlokasi di <span style="font-weight: bold;" th:text="${#strings.capitalizeWords(#strings.toLowerCase(dischargePortText))}">Merak</span>
 							</p>
-                			<p style="margin: 0; font-weight: normal; font-style: italic;">Buyer <span style="font-weight: bold;">Terminal</span> located in <span style="font-weight: bold;" th:text="${#strings.capitalizeWords(#strings.toLowerCase(dischargePortText))}">Merak</span></p>
+                			<p style="margin: 0; font-weight: normal; font-style: italic;">Buyer <span th:if="${container == 'TRUE'}" style="font-weight: bold;">Warehouse</span><span th:if="${container == null}" style="font-weight: bold;">Terminal</span> located in <span style="font-weight: bold;" th:text="${#strings.capitalizeWords(#strings.toLowerCase(dischargePortText))}">Merak</span></p>
                         </td>
                     </tr>
                     <tr>
@@ -336,7 +336,29 @@ Kg</td>
 							</p>
                 			<p style="margin: 0; font-weight: normal; font-style: italic;">Other Terms & Conditions</p>
                         </td>
-                        <td width="70%">
+                        <td th:if="${socType == 'SPOT'}" width="70%">
+                        	<p style="margin: 0;">
+								Semua syarat dan ketentuan dari Konfirmasi Pesanan ini harus sesuai dengan Ketentuan
+								dan Syarat Umum Penjualan yang dibuat antara Para Pihak.
+							</p>
+                			<p style="margin: 0; font-style: italic;">
+                				All other terms and conditions of this SOC shall be in accordance with the General Terms
+                				and Conditions of the Sale executed between the Parties.
+                			</p>
+                			<p style="margin: 0; font-style: italic;">
+                				UTILIZATION OF THE BUYER'S STORAGE TANK BY SELLER In the implementation of this Agreement, 
+                				the Buyer agrees to grant access to the Seller to use the Buyer's storage tank located, 
+                				for the purposes of unloading and storing product from the vessel to the Buyer's storage tank,
+                				without any cost to the Seller.(*for bulk shipment only) 
+                			</p>
+                			<p style="margin: 0; font-style: italic;">
+                				PENGGUNAAN TANGKI PENYIMPANAN PIHAK PEMBELI OLEH PIHAK PENJUAL Dalam pelaksanaan 
+                				Perjanjian ini, Pihak sepakat untuk memberikan akses kepada Pihak Penjual untuk 
+                				menggunakan tangki penyimpanan Pembeli, tanpa dikenakan biaya apapun kepada Penjual. 
+                				(*untuk bulk shipment)
+                			</p>
+                        </td>
+                        <td th:if="${socType == 'CONTRACT'}" width="70%">
                         	<p style="margin: 0;">
 								Semua syarat dan ketentuan dari Konfirmasi Pesanan ini harus sesuai dengan Ketentuan
 								dan Syarat Umum Penjualan yang dibuat antara Para Pihak. Ketika Konfirmasi Pembelian 

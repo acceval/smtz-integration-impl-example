@@ -12,8 +12,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import javax.management.IntrospectionException;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,7 +79,10 @@ public class MicroServiceObjectUtil {
 			appendClassField(classToFind, allField);
 			for (Field field : allField) {
 				if (field.isAnnotationPresent(MicroServiceField.class)) {
-					if (Collection.class.isAssignableFrom(field.getType())) {
+					Annotation objFieldAnno = field.getAnnotation(MicroServiceField.class);
+					MicroServiceField fieldAnno = (MicroServiceField) objFieldAnno;
+					if (Collection.class.isAssignableFrom(field.getType())
+							|| StringUtils.isBlank(fieldAnno.mockTarget())) {
 						PropertyDescriptor getter = new PropertyDescriptor(field.getName(), field.getDeclaringClass());
 						Object childObj = getter.getReadMethod().invoke(target);
 						refreshObjectDependency(childObj, isForceRefresh, restTemplate, discoveryClient);
@@ -97,19 +98,27 @@ public class MicroServiceObjectUtil {
 							}
 						});
 					}
-				} else if ((Collection.class.isAssignableFrom(field.getType())
-						&& field.getGenericType().getTypeName().indexOf("com.acceval.sales.model.") > -1
-						&& field.getGenericType().getTypeName().indexOf("com.acceval.sales.model.so.") == -1)
-						|| (field.getType().getTypeName().indexOf("com.acceval.sales.model.") > -1
-								&& field.getType().getTypeName().indexOf("com.acceval.sales.model.so.") == -1)) {
-					try {
-						PropertyDescriptor getter = new PropertyDescriptor(field.getName(), field.getDeclaringClass());
-						Object childObj = getter.getReadMethod().invoke(target);
-						if (childObj != null && !childObj.getClass().isEnum()) {
-							refreshObjectDependency(childObj, isForceRefresh, restTemplate, discoveryClient);
+				} else if (Collection.class.isAssignableFrom(field.getType())) {
+					String genericTypeName = field.getGenericType().getTypeName();
+					String typeName = field.getType().getTypeName();
+					if ((genericTypeName.indexOf("com.acceval.sales.model.") > -1
+							&& genericTypeName.indexOf("com.acceval.sales.model.so.") == -1)
+							|| (typeName.indexOf("com.acceval.sales.model.") > -1
+									&& typeName.indexOf("com.acceval.sales.model.so.") == -1)
+							|| (genericTypeName.indexOf("com.acceval.shopping.model.") > -1
+									&& genericTypeName.indexOf("com.acceval.shopping.model.so.") == -1)
+							|| (typeName.indexOf("com.acceval.shopping.model.") > -1
+									&& typeName.indexOf("com.acceval.shopping.model.so.") == -1)) {
+						try {
+							PropertyDescriptor getter = new PropertyDescriptor(field.getName(),
+									field.getDeclaringClass());
+							Object childObj = getter.getReadMethod().invoke(target);
+							if (childObj != null && !childObj.getClass().isEnum()) {
+								refreshObjectDependency(childObj, isForceRefresh, restTemplate, discoveryClient);
+							}
+						} catch (Throwable ex) {
+							ex.printStackTrace();
 						}
-					} catch (Throwable ex) {
-						ex.printStackTrace();
 					}
 				}
 			}
@@ -386,6 +395,8 @@ public class MicroServiceObjectUtil {
 						return MicroServiceObject.SRC_ETL;
 					case "pricingpower":
 						return MicroServiceObject.SRC_PRICING_POWER;
+					case "ecommerce":
+						return MicroServiceObject.SRC_BUY_ECOMMERCE;
 				}
 			}
 		}

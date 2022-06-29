@@ -8,11 +8,11 @@ import org.springframework.stereotype.Service;
 
 import com.acceval.core.cache.model.ProductSkuUom;
 
-// to be implement cache??
 @Service
-public class ProductSkuConversionUtil {
-	private final static List<GlobalUom> GlobalUoms = new ArrayList<>();
+public class ProductSkuUomConversionUtil {
+	public final static String PRODUCT_SKU_UOM = "PRODUCT_SKU_UOM";
 
+	private final static List<GlobalUom> GlobalUoms = new ArrayList<>();
 	static {
 		GlobalUoms.add(new GlobalUom("GAL", "LT", 3.7854));
 		GlobalUoms.add(new GlobalUom("LT", "ML", 1000));
@@ -122,7 +122,7 @@ public class ProductSkuConversionUtil {
 					return skuUom.getConversionFactor();
 				} else if (toUomCode.equals(skuUom.getFromUom().getCode())
 						&& fromUomCode.equals(skuUom.getToUom().getCode())) {
-					return 1 / skuUom.getConversionFactor();
+							return 1 / skuUom.getConversionFactor();
 				}
 			}
 		}
