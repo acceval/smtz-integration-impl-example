@@ -15,4 +15,5 @@ public class BuyVariableContextConst {
 	public static final String DESTINATION_POSTCODE = "DESTINATION_POSTCODE";
 
 	public static final String PACKAGING = "PACKAGING";
+	public static final String TOTAL_ITEM_AMOUNT = "TOTAL_ITEM_AMOUNT";
 }
