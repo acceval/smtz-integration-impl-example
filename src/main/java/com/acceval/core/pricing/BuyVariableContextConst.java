@@ -4,6 +4,7 @@ public class BuyVariableContextConst {
 
 	public static final String BUYER_COMPANY = "BUYER_COMPANY";
 	public static final String SELLER_COMPANY = "SELLER_COMPANY";
+	public static final String SST_REGISTERED = "SST_REGISTERED";
 
 	public static final String ORIGIN_COUNTRY = "ORIGIN_COUNTRY";
 	public static final String ORIGIN_CITY = "ORIGIN_CITY";
