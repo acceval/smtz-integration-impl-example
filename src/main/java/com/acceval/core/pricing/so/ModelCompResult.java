@@ -55,6 +55,10 @@ public class ModelCompResult implements Serializable {
 	private List<ComponentActionResult> componentActionResults;
 	private List<ModelCompResultInputter> modelCompResultInputters;
 	private double modelComponentValue;
+	private double modelComponentAmountValue;
+	private double modelComponentPercentage;
+	private double pricingTechniquePercentage;
+
 	private double comparePriValue;
 
 	public double convertToComponentValue() {
@@ -67,6 +71,30 @@ public class ModelCompResult implements Serializable {
 
 	public void setModelComponentValue(double modelComponentValue) {
 		this.modelComponentValue = modelComponentValue;
+	}
+
+	public double getModelComponentAmountValue() {
+		return modelComponentAmountValue;
+	}
+
+	public void setModelComponentAmountValue(double modelComponentAmountValue) {
+		this.modelComponentAmountValue = modelComponentAmountValue;
+	}
+
+	public double getModelComponentPercentage() {
+		return modelComponentPercentage;
+	}
+
+	public void setModelComponentPercentage(double modelComponentPercentage) {
+		this.modelComponentPercentage = modelComponentPercentage;
+	}
+
+	public double getPricingTechniquePercentage() {
+		return pricingTechniquePercentage;
+	}
+
+	public void setPricingTechniquePercentage(double pricingTechniquePercentage) {
+		this.pricingTechniquePercentage = pricingTechniquePercentage;
 	}
 
 	public double getComparePriValue() {
