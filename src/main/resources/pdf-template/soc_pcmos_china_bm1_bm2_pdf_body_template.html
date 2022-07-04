@@ -121,8 +121,8 @@
                         <td width="65%">
                         	<p style="margin: 0; padding-left: 0;" class="labelBold" th:utext="${sellerCompanyNameUpperCase}">Seller Company Name</p>
                             <p style="margin: 0;" th:utext="${sellerAddress}">Seller Address</p>
-                            <p style="margin: 0;">Telephone: <span th:text="${sellerPhoneNumber}">Seller Telephone Number</span></p>
-                            <p style="margin: 0;">Facsimile: <span th:text="${sellerFaxNumber}">Seller Facsimile Number</span></p>
+                            <p style="margin: 0;" th:if="${socType == 'CONTRACT'}">Telephone: <span th:text="${sellerPhoneNumber}">Seller Telephone Number</span></p>
+                            <p style="margin: 0;" th:if="${socType == 'CONTRACT'}">Facsimile: <span th:text="${sellerFaxNumber}">Seller Facsimile Number</span></p>
                             <!--<p style="margin: 0;">Attention: <span th:text="${sellerAttention}">Seller Attention</span></p> -->
                         </td>
                     </tr>
@@ -131,8 +131,8 @@
                         <td width="65%">
                         	<p style="margin: 0; padding-left: 0;" class="labelBold" th:utext="${buyerName}">Buyer Company Name</p>
                             <p style="margin: 0;" th:utext="${buyerAddress}">Buyer Address</p>
-                            <p style="margin: 0;">Telephone: <span th:text="${buyerTelephoneNo}">Buyer Telephone Number</span></p>
-                            <p style="margin: 0;">Facsimile: <span th:text="${buyerFacsimile}">Buyer Facsimile Number</span></p>
+                            <p style="margin: 0;" th:if="${socType == 'CONTRACT'}">Telephone: <span th:text="${buyerTelephoneNo}">Buyer Telephone Number</span></p>
+                            <p style="margin: 0;" th:if="${socType == 'CONTRACT'}">Facsimile: <span th:text="${buyerFacsimile}">Buyer Facsimile Number</span></p>
                             <!--<p style="margin: 0;">Attention: <span th:text="${buyerAttention}">Buyer Attention</span></p>-->
                         </td>
                     </tr>
@@ -143,14 +143,16 @@
                     <tr>
                     	<th class="labelBold" style="text-align: center;">PRODUCT</th>
                     	<th class="labelBold" style="text-align: center;">VOLUME (<span th:text="${docUomCode}"></span>)</th>
-                    	<th class="labelBold" style="text-align: center;">PACKAGING</th>
+                    	<th class="labelBold" style="text-align: center;" th:if="${socType == 'CONTRACT'}">PACKAGING</th>
+                    	<th class="labelBold" style="text-align: center;" th:if="${socType == 'SPOT'}">CONTAINER SIZE</th>
                     	<th class="labelBold" style="text-align: center;">UNIT PRICE (<span th:text="${currencyCode}"></span> / <span th:text="${docUomCode}"></span>)</th>
                     	<th class="labelBold" style="text-align: center;">SUB-TOTAL AMOUNT (<span th:text="${currencyCode}"></span>)</th>
                     </tr>
                     <tr th:each="orderItem, iter: ${orderItems}" style="text-align: center;">
                         <td style="text-align: center;" th:text="${orderItem.productName}">Product</td>
                         <td style="text-align: center;"><span th:text="${#numbers.formatDecimal(orderItem.quantity, 1, 'COMMA', 3, 'POINT')}"></span></td>
-                        <td style="padding: 0.5rem; text-align: center;" th:text="${#strings.capitalizeWords(#strings.toLowerCase(orderItem.packaging))}">packaging</td>
+                        <td style="padding: 0.5rem; text-align: center;" th:if="${socType == 'CONTRACT'}" th:text="${#strings.capitalizeWords(#strings.toLowerCase(orderItem.packaging))}">packaging</td>
+                        <td style="padding: 0.5rem; text-align: center;" th:if="${socType == 'SPOT'}" th:text="${orderItem.containerSize}">packaging</td>
                         <td style="text-align: center;"><span th:text="${#numbers.formatDecimal(orderItem.invoicePrice, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></span></td>
                         <td style="text-align: center;"><span th:text="${#numbers.formatDecimal(orderItem.itemPrice, 1, 'COMMA', priceDecimalDigits, 'POINT')}">Quantity * invocie</span></td>
                     </tr>
@@ -160,9 +162,23 @@
                     </tr>
                  </table>
                  <table style="border-top:0">  
+                 	<tr style="height: 0;" th:if="${socType == 'SPOT'}">
+                    	<td width="30%" class="labelBold" style="border-top:0">DOCUMENT</td>
+                        <td width="75%" style="white-space: pre-line;">The following documents shall together constitute the Sales Contract between the Parties:
+							Part 1: Spot - Specific Terms and Conditions (including Appendix)
+							Part 2: Spot - Terms of Sale
+							Part 3: Spot - Terms of Delivery
+							The Agreement shall be read and construed as a whole. In the event of a dispute or
+							conflict between the above documents, the documents shall prevail in the order listed above.
+						</td>
+                    </tr>
                     <tr style="height: 0;">
                     	<td width="30%" class="labelBold" style="border-top:0">CARGO ORIGIN</td>
                         <td width="70%" th:text="${cargoOrigin}" style="border-top:0">Cargo Origin</td>
+                    </tr>
+                    <tr style="height: 0;" th:if="${socType == 'SPOT'}">
+                    	<td width="30%" class="labelBold" style="border-top:0">PACKAGING</td>
+                        <td width="70%" th:text="${packagingTexts}" style="border-top:0">Cargo Origin</td>
                     </tr>
                     <tr>
                     	<td width="30%" class="labelBold">TERMS OF DELIVERY</td>
