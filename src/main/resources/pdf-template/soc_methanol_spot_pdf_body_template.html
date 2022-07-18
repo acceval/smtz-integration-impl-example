@@ -170,7 +170,7 @@
 						<span style="margin-top: 0;" th:text="${orderItem.productName3}">Product3</span>
 					</td>
 					<td><span th:text="${#numbers.formatDecimal(orderItem.quantity, 1, 'COMMA', 3, 'POINT')}"></span>
-						<span th:text="${orderItem.uomCode}"></span>
+						<span th:text="${orderItem.uomCode}"></span> <span th:text="${orderItem.tolerance}"></span>
 					</td>
 					<td style="padding: 0.5rem;"
 						th:text="${#strings.capitalizeWords(#strings.toLowerCase(orderItem.packaging))}">Packaging Bags
