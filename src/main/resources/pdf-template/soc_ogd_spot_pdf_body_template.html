@@ -156,7 +156,7 @@
                     </tr>
                     <tr th:each="orderItem, iter: ${orderItems}" style="text-align: center;">
                         <td style="font-weight: bold; text-align: left;" th:text="${orderItem.productName}">Product</td>
-                        <td><span th:text="${#numbers.formatDecimal(orderItem.quantity, 1, 'COMMA', 3, 'POINT')}"></span> <span th:text="${orderItem.uomCode}"></span>
+                        <td><span th:text="${#numbers.formatDecimal(orderItem.quantity, 1, 'COMMA', 3, 'POINT')}"></span> <span th:text="${orderItem.uomCode}"></span> <span th:text="${orderItem.tolerance}"></span>
                         </td>
                         <td style="padding: 0.5rem;" th:text="${orderItem.packaging}">Packaging Bags 25
 Kg</td>
