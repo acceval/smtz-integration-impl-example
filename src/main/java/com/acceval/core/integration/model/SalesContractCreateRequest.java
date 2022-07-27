@@ -54,6 +54,7 @@ public class SalesContractCreateRequest {
         private double exchangeRateFI;
         private String tenderType;
         private String businessModel;
+        private String exRateType;
 
         public String getSoldTo() {
             return soldTo;
@@ -270,6 +271,15 @@ public class SalesContractCreateRequest {
         public void setBusinessModel(String businessModel) {
             this.businessModel = businessModel;
         }
+
+		public String getExRateType() {
+			return exRateType;
+		}
+
+		public void setExRateType(String exRateType) {
+			this.exRateType = exRateType;
+		}
+
     }
     
     public static class ContractItem {
