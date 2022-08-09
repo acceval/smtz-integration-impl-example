@@ -2,6 +2,8 @@ package com.acceval.core.pricing;
 
 public class BuyVariableContextConst {
 
+	public static final String ENVIRONMENT = "ENVIRONMENT";
+	public static final String MARKETPLACE = "MARKETPLACE";
 	public static final String BUYER_COMPANY = "BUYER_COMPANY";
 	public static final String SELLER_COMPANY = "SELLER_COMPANY";
 	public static final String SST_REGISTERED = "SST_REGISTERED";
@@ -17,4 +19,7 @@ public class BuyVariableContextConst {
 
 	public static final String PACKAGING = "PACKAGING";
 	public static final String TOTAL_ITEM_AMOUNT = "TOTAL_ITEM_AMOUNT";
+	public static final String WEIGHT_IN_KG = "WEIGHT_IN_KG";
+	public static final String PRODUCT_DELIVERY_PROFILE = "PRODUCT_DELIVERY_PROFILE";
+	public static final String TOTAL_WEIGHT_IN_KG = "TOTAL_WEIGHT_IN_KG";
 }
