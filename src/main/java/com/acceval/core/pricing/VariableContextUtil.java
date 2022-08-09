@@ -52,6 +52,8 @@ public class VariableContextUtil {
 				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 					logger.error(e.getMessage(), e);
 				}
+			} else if (StringUtils.isNotBlank(mapping.getKey()) && StringUtils.isNotBlank(mapping.getDefaultValue())) {
+				variableContext.setVariable(mapping.getKey(), mapping.getDefaultValue());
 			}
 
 		} catch (MicroServiceUtilException e) {
