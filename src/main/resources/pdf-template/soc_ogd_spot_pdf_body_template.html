@@ -142,7 +142,7 @@
                 </table>
                 <br/>
 
-                <p>The Seller and the Buyer may be referred to individually as a "Party" and collectively as "Parties".
+                <p style="margin-top: 0;">The Seller and the Buyer may be referred to individually as a "Party" and collectively as "Parties".
                     <br><br> NOW THEREFORE, it is hereby agreed as follows:</p>
 
                 <table style="margin-top: 1rem;">
@@ -154,15 +154,23 @@
                         <th class="labelBold" style="text-align: center; width: 15%;">DESTINATION PORT / CITY</th>
                         <th class="labelBold" style="text-align: center; width: 20%;">CONTRACT VALUE</th>
                     </tr>
-                    <tr th:each="orderItem, iter: ${orderItems}" style="text-align: center;">
+                    <tr th:if="${isPref == false}" th:each="orderItem, iter: ${orderItems}" style="text-align: center;">
                         <td style="font-weight: bold; text-align: left;" th:text="${orderItem.productName}">Product</td>
                         <td><span th:text="${#numbers.formatDecimal(orderItem.quantity, 1, 'COMMA', 3, 'POINT')}"></span> <span th:text="${orderItem.uomCode}"></span> <span th:text="${orderItem.tolerance}"></span>
                         </td>
-                        <td style="padding: 0.5rem;" th:text="${orderItem.packaging}">Packaging Bags 25
-Kg</td>
+                        <td style="padding: 0.5rem;" th:text="${orderItem.packaging}">Packaging Bags 25 Kg</td>
                         <td style="text-align: right; text-align: right;"><span th:text="${#numbers.formatDecimal(orderItem.invoicePrice, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></span> <span th:text="${orderItem.currencyCode}"></span>/<span th:text="${orderItem.uomCode}"></span></td>
                         <td><span th:text="${#strings.capitalizeWords(#strings.toLowerCase(orderItem.destinationCountry))}"></span></td>
                         <td style="text-align: right;"><span th:text="${orderItem.currencyCode}"></span> <span th:text="${#numbers.formatDecimal(orderItem.itemPrice, 1, 'COMMA', priceDecimalDigits, 'POINT')}">Quantity * invocie</span></td>
+                    </tr>
+                    <tr th:if="${isPref == true}" th:each="orderItem, iter: ${salesItemsSummaryData}" style="text-align: center;">
+                        <td style="font-weight: bold; text-align: left;" th:text="${orderItem.productName}">Product</td>
+                        <td><span th:text="${#numbers.formatDecimal(orderItem.totalQuantity, 1, 'COMMA', 3, 'POINT')}"></span> <span th:text="${orderItem.uom}"></span> <span th:text="${orderItem.tolerance}"></span>
+                        </td>
+                        <td style="padding: 0.5rem;" th:text="${orderItem.packaging}">Packaging Bags 25 Kg</td>
+                        <td style="text-align: right; text-align: right;"><span th:text="${#numbers.formatDecimal(orderItem.avgInvoicePrice, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></span> <span th:text="${orderItem.currency}"></span>/<span th:text="${orderItem.uom}"></span></td>
+                        <td><span th:text="${#strings.capitalizeWords(#strings.toLowerCase(orderItem.destination))}"></span></td>
+                        <td style="text-align: right;"><span th:text="${orderItem.currency}"></span> <span th:text="${#numbers.formatDecimal(orderItem.totalInvoicePrice, 1, 'COMMA', priceDecimalDigits, 'POINT')}">Quantity * invocie</span></td>
                     </tr>
                     <tr>
                     	<td colspan="5" class="labelBold" style="text-align: end;">TOTAL</td>
@@ -201,7 +209,7 @@ Kg</td>
                     </tr>
                     <tr>
                         <td width="30%">PAYMENT</td>
-                        <td width="70%" th:text="${payment}" style="white-space: pre-line;"></td>
+                        <td width="70%" th:text="${payment}"></td>
                     </tr>
                     <tr>
                         <td width="30%">DELIVERY DATE RANGE</td>

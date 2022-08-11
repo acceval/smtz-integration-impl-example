@@ -162,8 +162,9 @@
 					<th class="labelBold" style="text-align: center;">PACKAGING</th>
 					<th class="labelBold" style="text-align: center;">UNIT PRICE</th>
 					<th class="labelBold" style="text-align: center; width: 15%;">DESTINATION PORT / CITY</th>
+					<th th:if="${isPref == true}" class="labelBold" style="text-align: center; width: 20%;">CONTRACT VALUE</th>
 				</tr>
-				<tr th:each="orderItem, iter: ${orderItems}" style="text-align: center;">
+				<tr th:if="${isPref == false}" th:each="orderItem, iter: ${orderItems}" style="text-align: center;">
 					<td style="font-weight: bold; text-align: left;">
 						<span th:text="${#strings.capitalizeWords(#strings.toLowerCase(orderItem.productName))}">Product</span>
 						<span>
@@ -190,6 +191,20 @@
 							th:text="${#strings.capitalizeWords(#strings.toLowerCase(orderItem.destinationCountry))}"></span>
 					</td>
 				</tr>
+				<tr th:if="${isPref == true}" th:each="orderItem, iter: ${salesItemsSummaryData}" style="text-align: center;">
+					<td style="font-weight: bold; text-align: left;" th:text="${orderItem.productName}">Product</td>
+					<td><span th:text="${#numbers.formatDecimal(orderItem.totalQuantity, 1, 'COMMA', 3, 'POINT')}"></span> <span
+							th:text="${orderItem.uom}"></span> <span th:text="${orderItem.tolerance}"></span>
+					</td>
+					<td style="padding: 0.5rem;" th:text="${orderItem.packaging}">Packaging Bags 25 Kg</td>
+					<td style="text-align: right; text-align: right;"><span
+							th:text="${#numbers.formatDecimal(orderItem.avgInvoicePrice, 1, 'COMMA', priceDecimalDigits, 'POINT')}"></span>
+						<span th:text="${orderItem.currency}"></span>/<span th:text="${orderItem.uom}"></span></td>
+					<td><span th:text="${#strings.capitalizeWords(#strings.toLowerCase(orderItem.destination))}"></span></td>
+					<td style="text-align: right;"><span th:text="${orderItem.currency}"></span> <span
+							th:text="${#numbers.formatDecimal(orderItem.totalInvoicePrice, 1, 'COMMA', priceDecimalDigits, 'POINT')}">Quantity
+							* invocie</span></td>
+				</tr>
 			</table>
 			<table style="margin-top: 2rem;">
 				<tr>
@@ -202,7 +217,7 @@
 				</tr>
 				<tr>
 					<td width="30%">FORMULA</td>
-					<td width="70%" th:text="${formula}">Pakaging</td>
+					<td width="70%" th:text="${formula}" style="white-space: pre-line;">Pakaging</td>
 				</tr>
 				<tr>
 					<td width="30%">TOTAL PRICE</td>
