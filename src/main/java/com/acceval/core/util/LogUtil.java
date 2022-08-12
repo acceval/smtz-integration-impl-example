@@ -10,6 +10,6 @@ public class LogUtil extends FixedWindowRollingPolicy {
 	public void setFileNamePattern(String fnp) {
 		String fnp1 = fnp.substring(0, 11);
 		String fnp2 = fnp.substring(11, fnp.length());
-		super.setFileNamePattern(fnp + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + fnp2);
+		super.setFileNamePattern(fnp1 + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + fnp2);
 	}
 }
