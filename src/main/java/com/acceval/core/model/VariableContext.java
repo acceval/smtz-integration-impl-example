@@ -298,7 +298,7 @@ public class VariableContext implements Serializable, Cloneable {
 		FORMULA_PRICING_ITEM("Violated Contract LOA"), REVISED_CASE("Revised Case"),
 		WFL_NEGOTIATED_DISCOUNT(
 				"Violated Negotiated Discount Control. Product: [?], Negotiated Discount: [?], Target Negotiated Discount Control: [?]"),
-		SPOT_LOA("Violated Spot LOA."), CONTRACT_LOA("Violated Contract LOA."),
+		SPOT_LOA("Spot LOA."), CONTRACT_LOA("Violated Contract LOA."),
 		OVERRIDE_EXCHANGE_RATE("Overwrite Exchange Rate"),
 		WFL_PRICING_MANDATE(
 				"Violated Pricing Mandate Formula Rule. Line Item ?, Product: [?], Country: [?], Formula [?], Targeted Formula: [?]"),
