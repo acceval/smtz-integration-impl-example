@@ -21,7 +21,8 @@ public class ModelCompResult implements Serializable {
 	public enum ModelComponentType {
 		COST("Cost", POS_NEG.NEGATIVE), COST_FACTOR("Cost Factor", POS_NEG.POSITIVE), DISCOUNT("Discount", POS_NEG.NEGATIVE),
 		LIST_PRICE("List Price Setting", POS_NEG.POSITIVE), MARGIN("Margin", POS_NEG.POSITIVE), MARKUP("Markup", POS_NEG.POSITIVE),
-		PRICE("Price", POS_NEG.POSITIVE), TARGET_MARGIN("Target Margin", POS_NEG.POSITIVE), BUYER_REFUND("Buyer Refund", POS_NEG.NEGATIVE);
+		PRICE("Price", POS_NEG.POSITIVE), TARGET_MARGIN("Target Margin", POS_NEG.POSITIVE), BUYER_REFUND("Buyer Refund", POS_NEG.NEGATIVE),
+		TAX("Tax", POS_NEG.NEGATIVE);
 
 		ModelComponentType(String name, POS_NEG posNeg) {
 			this.name = name;
