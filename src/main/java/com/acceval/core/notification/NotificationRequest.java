@@ -24,7 +24,7 @@ public class NotificationRequest extends QueueRequest {
 	}
 	
 	private String uuid;
-	private Long userId;
+	private Long accountId;
 	private String username;
 	private Long companyId;
 	@Enumerated(EnumType.STRING)
@@ -50,12 +50,12 @@ public class NotificationRequest extends QueueRequest {
 		this.uuid = uuid;
 	}
 
-	public Long getUserId() {
-		return userId;
+	public Long getAccountId() {
+		return accountId;
 	}
 
-	public void setUserId(Long userId) {
-		this.userId = userId;
+	public void setAccountId(Long accountId) {
+		this.accountId = accountId;
 	}
 
 	public Long getCompanyId() {
