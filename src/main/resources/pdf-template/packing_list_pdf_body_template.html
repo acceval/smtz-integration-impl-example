@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<!-- <link th:href="${cssPath}" rel="stylesheet"/> -->
+		<style>
+		table {
+			width: 100%;
+			border: 1px solid rgb(0, 0, 0);
+			border-collapse: collapse;
+		}
+
+		table table.noBorder {
+			width: 100%;
+			border: 0;
+		}
+
+		table table.noBorder tr {
+			border: 0;
+		}
+
+		table table.noBorder td {
+			border: 0;
+		}
+
+		table, th, td {
+			border: 1px solid rgb(0, 0, 0);
+		}
+
+		td {
+			padding: 0.5rem
+		}
+
+		.labelBold {
+			text-align: left;
+			padding: 0.3rem 0.5rem;
+			font-weight: bold;
+		}
+
+		.page-break {
+			height: 0;
+			page-break-after: always;
+			margin: 0;
+			border-top: none;
+		}
+
+		.inlineTable {
+			width: 40%;
+			border: 0;
+		}
+
+		tr.noBorder td {
+			border: 0;
+		}
+
+        .main-body {
+            display: flex;
+            display: -webkit-box;
+
+            flex-direction: column;
+            -webkit-box-orient: vertical;
+
+            justify-content: space-between;
+            -webkit-box-pack: justify;
+
+            position: relative;
+        }
+        
+        table { 
+			page-break-inside:auto 
+		}
+		
+    	tr { 
+			page-break-inside:avoid; 
+			page-break-after:auto 
+		}
+
+		</style>
+        <!--<script>
+            function setBodyHeight() {
+                var mainBody = document.querySelectorAll('.main-body')[0];
+                var pageHeight = 2260;
+                var mainBodyHeight = (mainBody.clientHeight) /  2;
+                var totalPage = Math.ceil(mainBodyHeight / pageHeight);
+                
+                if(mainBodyHeight > (pageHeight * 75 /100)){
+					pageHeight = pageHeight + (1130 * totalPage);
+					totalPage = Math.ceil(mainBodyHeight / pageHeight);
+				}
+                var totalHeight = totalPage * pageHeight;
+
+                document.querySelectorAll('.main-body')[0].style.height = totalHeight + 'px';
+            }
+        </script>-->
+	</head>
+	<body style="font-family: arial;">
+
+        <div class="main-body">
+            <div class="top-section">
+            	<table style="margin-top: 1rem;">
+            		<tr>
+            			<th colspan="2" style="text-align: left; background-color: lightgrey; padding: 0.5rem;">To (Receiver)</th>
+            		</tr>
+            		
+            		<tr>
+            			<td width="60%">
+            				<div>
+            					Phone Number:
+            				</div>
+            				<div style="font-weight: bold; font-size: 20px;">
+            					<span th:text="${buyerPhoneNumber}">6012-2334567</span>
+            				</div>
+            			</td>
+            			<td width="40%">
+            				<div>
+            					PostCode:
+            				</div>
+            				<div style="text-align: center; font-size: 25px;">
+            					<span th:text="${postCode}">11950</span>
+            				</div>
+            			</td>
+            		</tr>
+            		<tr>
+            			<td style="font-size: 20px;">
+            				<div style="font-weight: bold;">
+            					<span th:text="${buyerName}">Mira</span>
+            				</div>
+            				<div>
+            					<span th:text="${buyerAddress1}">1-18-18, Jalan Tiga</span>
+            				</div>
+            				<div>
+            					<span th:text="${buyerAddress2}">11950 Bayan Baru, Pulau Pinang</span>
+            				</div>
+            			</td>
+            			<td>
+            				<div>
+            					City:
+            				</div>
+            				<div style="text-align: center; font-size: 25px;">
+            					<span th:text="${city}">Bayan Baru</span>
+            				</div>
+            			</td>
+            		</tr>
+                </table>
+                
+                <table>
+            		<tr>
+            			<th colspan="2" style="text-align: left; background-color: lightgrey; padding: 0.5rem;">From (Seller)</th>
+            		</tr>
+            		
+
+            		<tr style="font-size: 20px;">
+            			<td width="60%" rowspan="4" style="vertical-align: text-top;">
+            				<div style="font-weight: bold;">
+            					<span th:text="${sellerName}">Mira</span>
+            				</div>
+            				<div style="font-weight: bold;">
+            					<span th:text="${sellerPhoneNumber}">6012-2334567</span>
+            				</div>
+            				<div>
+            					<span th:text="${sellerAddress1}">1-18-18, Jalan Tiga</span>
+            				</div>
+            				<div>
+            					<span th:text="${sellerAddress2}">11950 Bayan Baru, Pulau Pinang</span>
+            				</div>
+            			</td>
+            			<td width="40%" style="font-size: 25px;"><span th:text="${soNumber}">MY-G-1208D</span></td>
+            		</tr>
+            		<tr>
+            			<td>Date: <span th:text="${deliveryDate}">09/04/2019</span></td>
+            		</tr>
+            		<tr>
+            			<td style="padding: 0;">
+            				<table style="border: 0;">
+            					<tr>
+            						<td style="border-bottom: 0; border-top: 0; border-left: 0;">Description:</td>
+            						<td style="border-bottom: 0; border-top: 0; border-right: 0; width: 15%; text-align: center;">Value</td>
+            					</tr>
+            					<tr th:each="orderItem, iter: ${orderItems}">
+            						<td style="border-bottom: 0; border-left: 0;" th:text="${orderItem.description}">Description:</td>
+            						<td style="border-bottom: 0; text-align: center; border-right: 0;" th:text="${orderItem.quantity}">Value</td>
+            					</tr>
+            				</table>
+            			</td>
+            		</tr>
+                </table>
+        </div>
+	</body>
+</html>
