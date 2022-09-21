@@ -174,10 +174,14 @@
             				<table style="border: 0;">
             					<tr>
             						<td style="border-bottom: 0; border-top: 0; border-left: 0;">Description:</td>
-            						<td style="border-bottom: 0; border-top: 0; border-right: 0; width: 15%; text-align: center;">Value</td>
+            						<td style="border-bottom: 0; border-top: 0; border-right: 0; text-align: center;">Variant</td>
+            						<td style="border-bottom: 0; border-top: 0; border-right: 0; text-align: center;">Uom</td>
+            						<td style="border-bottom: 0; border-top: 0; border-right: 0; width: 15%; text-align: center;">Quantity</td>
             					</tr>
             					<tr th:each="orderItem, iter: ${orderItems}">
             						<td style="border-bottom: 0; border-left: 0;" th:text="${orderItem.description}">Description:</td>
+            						<td style="border-bottom: 0; text-align: center; border-right: 0;" th:text="${orderItem.variant}">Value</td>
+            						<td style="border-bottom: 0; text-align: center; border-right: 0;" th:text="${orderItem.uom}">Value</td>
             						<td style="border-bottom: 0; text-align: center; border-right: 0;" th:text="${orderItem.quantity}">Value</td>
             					</tr>
             				</table>
