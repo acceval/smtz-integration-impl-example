@@ -23,6 +23,11 @@ public class NotificationRequest extends QueueRequest {
 		READ			
 	}
 	
+	public enum Status {
+		ACTIVE,
+		INACTIVE	
+	}
+	
 	private String uuid;
 	private Long accountId;
 	private String username;
@@ -37,6 +42,8 @@ public class NotificationRequest extends QueueRequest {
 	private LocalDateTime readTime;
 	private LocalDateTime sentTime;
 	private String receipientAction;
+	@Enumerated(EnumType.STRING)
+	private Status status;	
 	
 	private List<NotificationParam> notificationParams;
 	private String imageUrl;
@@ -153,5 +160,14 @@ public class NotificationRequest extends QueueRequest {
 	public void setUsername(String username) {
 		this.username = username;
 	}
+	
+	public Status getStatus() {
+		return status;
+	}
+
+	public void setStatus(Status status) {
+		this.status = status;
+	}
+
 
 }
