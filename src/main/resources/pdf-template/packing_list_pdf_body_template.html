@@ -111,17 +111,12 @@
             					<span th:text="${buyerPhoneNumber}">6012-2334567</span>
             				</div>
             			</td>
-            			<td width="40%">
-            				<div>
-            					PostCode:
-            				</div>
-            				<div style="text-align: center; font-size: 25px;">
-            					<span th:text="${postCode}">11950</span>
-            				</div>
+            			<td width="40%" style="font-size: 25px;">
+            				<span th:text="${poNumber}">PO-11950</span>
             			</td>
             		</tr>
             		<tr>
-            			<td style="font-size: 20px;">
+            			<td style="font-size: 20px;" rowspan="2">
             				<div style="font-weight: bold;">
             					<span th:text="${buyerName}">Mira</span>
             				</div>
@@ -132,6 +127,16 @@
             					<span th:text="${buyerAddress2}">11950 Bayan Baru, Pulau Pinang</span>
             				</div>
             			</td>
+            			<td>
+            				<div>
+            					Postcode:
+            				</div>
+            				<div style="text-align: center; font-size: 25px;">
+            					<span th:text="${postCode}">11950</span>
+            				</div>
+            			</td>
+            		</tr>
+            		<tr>
             			<td>
             				<div>
             					City:
