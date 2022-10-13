@@ -678,8 +678,12 @@ public class ClassUtil {
 						PropertyDescriptor pd = PropertyUtils.getPropertyDescriptor(newObj, t.replace(t.substring(t.indexOf(".")), ""));
 						if (pd == null) continue; // don't know why null
 						Class<?> propertyClass = pd.getPropertyType();
-						Object newInstanceValue = ClassUtil.getClassObject(propertyClass.getName());
-						ClassUtil.setProperty(newObj, t.replace(t.substring(t.indexOf(".")), ""), newInstanceValue);
+						Object newInstanceValue = ClassUtil.getProperty(newObj, t.replace(t.substring(t.indexOf(".")), ""));
+						if (newInstanceValue == null) {
+							newInstanceValue = ClassUtil.getClassObject(propertyClass.getName());
+							ClassUtil.setProperty(newObj, t.replace(t.substring(t.indexOf(".")), ""), newInstanceValue);
+						}
+						
 						ClassUtil.setProperty(newInstanceValue, t.substring(t.indexOf(".") + 1), nvalue);
 					} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
 						Logger.error(e.getMessage(), e);
