@@ -1,26 +1,25 @@
 package com.acceval.core.so;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.acceval.core.pricing.so.ModelVariableContext;
 
 public class SalesDocLink implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	public enum AlphaRequestType {
+	public enum EnterpriseRequestType {
 		OFFER, TARGET, FLOOR
 	}
 
 	private String enterpriseDocNumber;
 	private String marketplaceDocNumber;
 
-//	private double alphaSystem;
-//	private AlphaRequestType alphaRequestType;
-
 	private String waterfallModelCode;
 	private String waterfallModelDeciderCode;
 	private String conditionTableCode;
 	private ModelVariableContext context;
+	private List<ModelVariableContext> lstContext;
 
 	public String getEnterpriseDocNumber() {
 		return enterpriseDocNumber;
@@ -68,5 +67,13 @@ public class SalesDocLink implements Serializable {
 
 	public void setContext(ModelVariableContext context) {
 		this.context = context;
+	}
+
+	public List<ModelVariableContext> getLstContext() {
+		return lstContext;
+	}
+
+	public void setLstContext(List<ModelVariableContext> lstContext) {
+		this.lstContext = lstContext;
 	}
 }
