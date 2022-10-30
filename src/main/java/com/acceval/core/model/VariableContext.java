@@ -287,6 +287,9 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String SALES_OFFICE_MTBE = "P008";
 	public static final String SALES_OFFICE_INA = "P013";
 
+	// Overwriting system time
+	public static final String OVERWRITE_SYSTEM_TIME = "OVERWRITE_SYSTEM_TIME";
+
 	public static enum WFL_VIOLATE {
 		CHANGED_PAYMENT_TERM("Violated Payment Term Credit Day"), DEAL_AMOUNT("Below Targeted Amount [?]"),
 		WFL_NORMALISED_PRICE(
