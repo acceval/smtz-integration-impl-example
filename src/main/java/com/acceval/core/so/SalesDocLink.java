@@ -14,6 +14,7 @@ public class SalesDocLink implements Serializable {
 
 	private String enterpriseDocNumber;
 	private String marketplaceDocNumber;
+	private boolean saveEnterpriseSalesDoc = true;
 
 	private String waterfallModelCode;
 	private String waterfallModelDeciderCode;
@@ -35,6 +36,14 @@ public class SalesDocLink implements Serializable {
 
 	public void setMarketplaceDocNumber(String marketplaceDocNumber) {
 		this.marketplaceDocNumber = marketplaceDocNumber;
+	}
+
+	public boolean isSaveEnterpriseSalesDoc() {
+		return saveEnterpriseSalesDoc;
+	}
+
+	public void setSaveEnterpriseSalesDoc(boolean saveEnterpriseSalesDoc) {
+		this.saveEnterpriseSalesDoc = saveEnterpriseSalesDoc;
 	}
 
 	public String getWaterfallModelCode() {
