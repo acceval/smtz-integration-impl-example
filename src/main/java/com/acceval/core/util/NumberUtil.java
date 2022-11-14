@@ -11,6 +11,41 @@ public class NumberUtil {
 
     private static final String NUMBER_FORMAT = "#,###,###,##0.00";
 
+	public static void testCase() {
+		System.out.println("=========================================");
+		double weird1 = -3.655 - 0.01;
+		double weird1p = -3.655 + 0.01;
+		System.out.println("DecimalFormat(\"#.00\").format(" + weird1 + "): " + new DecimalFormat("#.00").format(weird1));
+		System.out.println("BigDecimal(" + String.valueOf(weird1) + ").setScale(2, RoundingMode.HALF_UP): "
+				+ new BigDecimal(weird1).setScale(2, RoundingMode.HALF_UP));
+		System.out.println(weird1 + " vs " + NumberUtil.round(weird1, 2));
+		System.out.println(weird1p + " vs " + NumberUtil.round(weird1p, 2));
+		System.out.println((3.655 - 0.01) + " vs " + NumberUtil.round((3.655 - 0.01), 2));
+		System.out.println((3.655 + 0.01) + " vs " + NumberUtil.round((3.655 + 0.01), 2));
+		System.out.println("NumberUtil.round(3.6545, 2): " + NumberUtil.round(3.6545, 2));
+		System.out.println("NumberUtil.round(-3.6545, 2): " + NumberUtil.round(-3.6545, 2));
+		System.out.println(NumberUtil.round(3.00001, 21));
+		double value1 = 1.0848;
+		double value2 = 1.2345;
+		System.out.println(String.valueOf(value1) + " :" + NumberUtil.round(value1, 2));
+		System.out.println(String.valueOf(value2) + " :" + NumberUtil.round(value2, 2));
+		double value3 = 123456789012345.0848;
+		double value4 = 123456789012345.2345;
+		System.out.println(String.valueOf(value3) + " :" + NumberUtil.round(value3, 2));
+		System.out.println(String.valueOf(value4) + " :" + NumberUtil.round(value4, 2));
+		double weird10 = -1234567.655 - 0.01 - 0.01;
+		System.out.println(weird10 + " vs " + NumberUtil.round(weird10, 2));
+		System.out.println("=========================================");
+		weird1 = -123456.655;
+		for (int i = 1; i <= 1000; i++) {
+			weird1 -= 0.01;
+			double newV = NumberUtil.round(weird1, 4);
+			System.out.println("(" + i + " post)" + weird1 + " vs " + newV);
+//			weird1 = newV;
+		}
+		System.out.println("=========================================");
+	}
+
 	public static double stringToDouble(String str) {
 		if (StringUtils.isEmpty(str)) return 0;
 		return new Double(str).doubleValue();
@@ -39,31 +74,27 @@ public class NumberUtil {
 	}
 
 	public static double round(double number, int decimalPoint, RoundingMode roundingMode) {
-		if (Double.isInfinite(number) || Double.isNaN(number)) {
+		String strNumber = String.valueOf(number);
+		if (Double.isInfinite(number) || Double.isNaN(number) || "NaN".equals(strNumber.trim())) {
 			return number;
 		}
-		StringBuffer format = new StringBuffer("###########0");
-		if (decimalPoint > 0) {
-			format.append(".");
-			for (int i = 0; i < decimalPoint + 1; i++) {
-				format.append("#");
-			}
-		}
-		String newNumberStr = formatNumber(number, format.toString(), roundingMode);
 
 		try {
-			// special handling for 3.655 = 3.65
-			return new BigDecimal(newNumberStr).setScale(decimalPoint, RoundingMode.HALF_UP).doubleValue();
+			if (strNumber.indexOf("E") == -1 && strNumber.indexOf(".") > -1) {
+				int firstRoundDecimal = strNumber.length() - strNumber.indexOf(".") - 5;
+				if (firstRoundDecimal >= (decimalPoint * 3)) {
+//					System.out.println("\t" + strNumber.length() + " - " + strNumber.indexOf(".") + " - 5 = " + firstRoundDecimal);
+					double firstRounding = new BigDecimal(strNumber).setScale(firstRoundDecimal, RoundingMode.HALF_UP).doubleValue();
+					double newV = new BigDecimal(Double.toString(firstRounding)).setScale(decimalPoint, roundingMode).doubleValue();
+//					System.out.println("\t" + number + " => " + firstRounding + " (" + firstRoundDecimal + ") => " + newV);
+					return newV;
+				}
+			}
+			return new BigDecimal(strNumber).setScale(decimalPoint, roundingMode).doubleValue();
 		} catch (NumberFormatException e) {
-			throw new RuntimeException("Original Number [" + number + "] New Number [" + newNumberStr + "]" + e.getMessage(), e);
+			throw new RuntimeException("Original Number [" + number + "] New Number [" + strNumber + "]" + e.getMessage(), e);
 
 		}
-	}
-
-	public static String formatNumber(double num, String fmt, RoundingMode roundingMode) throws NumberFormatException {
-		DecimalFormat df = new DecimalFormat(fmt);
-		df.setRoundingMode(roundingMode);
-		return df.format(num);
 	}
 
 	public static String formatNumber(double num, int decimalPoint) {
