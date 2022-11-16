@@ -10,7 +10,7 @@ public class ConditionValueConfig implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	public enum ConditionValueType {
-        NUMBER, PERCENTAGE, AMOUNT, UNIT_AMOUNT, QUANTITY, ENTITY, CONSTANT, FORMULA, REGIONCOUNTRY
+        NUMBER, PERCENTAGE, AMOUNT, UNIT_AMOUNT, QUANTITY, ENTITY, CONSTANT, FORMULA, REGIONCOUNTRY, DAYS, HOURS, MINUTES
 	}
 
 	private Long id;
