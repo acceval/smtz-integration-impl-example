@@ -17,7 +17,7 @@ public class ConditionRecordConfig implements Serializable, TaskAssignmentInputI
 	}
 
 	public enum DateType {
-		DATE_FROM_TO, DATE, NO_DATE
+		DATE_FROM_TO, DATE, DATE_TIME_FROM_TO, DATE_TIME, NO_DATE
 	}
 
 	public enum DeciderType {
