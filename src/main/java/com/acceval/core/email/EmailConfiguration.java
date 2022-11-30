@@ -1,14 +1,19 @@
 package com.acceval.core.email;
 
-import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.io.ClassPathTemplateLoader;
-import com.github.jknack.handlebars.io.CompositeTemplateLoader;
-import com.github.jknack.handlebars.io.TemplateLoader;
+import java.io.IOException;
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 
-import java.util.List;
+import com.acceval.core.util.NumberUtil;
+import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.Helper;
+import com.github.jknack.handlebars.Options;
+import com.github.jknack.handlebars.io.ClassPathTemplateLoader;
+import com.github.jknack.handlebars.io.CompositeTemplateLoader;
+import com.github.jknack.handlebars.io.TemplateLoader;
 
 /**
  * Configuration for email client.
@@ -52,6 +57,15 @@ public class EmailConfiguration {
 		} else {
 			loader = new CompositeTemplateLoader(templateLoaders.toArray(new TemplateLoader[0]));
 		}
-		return new Handlebars(loader);
+		
+		Handlebars handlebars = new Handlebars(loader);
+		handlebars.registerHelper("format2Decimal", new Helper<Double>() {
+            @Override
+            public Object apply(Double context, Options options) throws IOException {
+                return context == null? "0.00" : NumberUtil.formatNumber(context, 2);
+            }
+        });
+		
+		return handlebars;
 	}
 }

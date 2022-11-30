@@ -17,10 +17,12 @@ import org.springframework.stereotype.Service;
 import com.acceval.core.cache.impl.MasterDataCache;
 import com.acceval.core.cache.model.ConditionEvaluationResult;
 import com.acceval.core.cache.model.GlobalUomConversion;
+import com.acceval.core.cache.model.ProductSkuUom;
 import com.acceval.core.cache.model.SkuProductAltUom;
 import com.acceval.core.cache.model.Uom;
 import com.acceval.core.microservice.ObjectNotFoundException;
 import com.acceval.core.model.VariableContext;
+import com.acceval.core.pricing.BuyVariableContextConst;
 
 @Service("cacheUomConversionUtil")
 @ConditionalOnProperty(name = "microservice.cache", havingValue = "true")
@@ -31,6 +33,9 @@ public class UomConversionUtil {
 
     @Autowired
     private ConditionRecordCacheProcessor conditionRecordCacheProcessor;
+
+	@Autowired
+	private ProductSkuUomConversionUtil productSkuConversionUtil;
 
 //	@Autowired
 //	private ProductService productService;
@@ -121,7 +126,26 @@ public class UomConversionUtil {
                 GlobalUomConversion globalUomConversionObj = result.iterator().next();
 				convertedQuantity = quantity / globalUomConversionObj.getConversionFactor().doubleValue();
 			} else {
-				log.debug("No available sku specific and global conversion found.");
+				// Marketplace UOM conversion
+				if (context != null && BuyVariableContextConst.MARKETPLACE
+						.equals(context.getVariableAsString(BuyVariableContextConst.ENVIRONMENT))) {
+					try {
+						Uom fromUom = masterDataCache.getUomByID(fromUomId);
+						Uom toUom = masterDataCache.getUomByID(toUomId);
+						if (fromUom != null && toUom != null) {
+							List<ProductSkuUom> lstProductSkuUom = context
+									.containsVariable(ProductSkuUomConversionUtil.PRODUCT_SKU_UOM)
+											? context.getVariable(ProductSkuUomConversionUtil.PRODUCT_SKU_UOM)
+											: new ArrayList<>();
+							return productSkuConversionUtil.getConvertedQuantity(fromUom.getCode(), toUom.getCode(),
+									quantity, lstProductSkuUom);
+						}
+					} catch (Exception ex) {
+						log.error(ex.getMessage(), ex);
+					}
+				} else {
+					log.debug("No available sku specific and global conversion found.");
+				}
 			}
 		}
 

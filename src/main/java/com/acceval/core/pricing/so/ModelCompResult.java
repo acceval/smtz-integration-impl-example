@@ -21,7 +21,8 @@ public class ModelCompResult implements Serializable {
 	public enum ModelComponentType {
 		COST("Cost", POS_NEG.NEGATIVE), COST_FACTOR("Cost Factor", POS_NEG.POSITIVE), DISCOUNT("Discount", POS_NEG.NEGATIVE),
 		LIST_PRICE("List Price Setting", POS_NEG.POSITIVE), MARGIN("Margin", POS_NEG.POSITIVE), MARKUP("Markup", POS_NEG.POSITIVE),
-		PRICE("Price", POS_NEG.POSITIVE), TARGET_MARGIN("Target Margin", POS_NEG.POSITIVE);
+		PRICE("Price", POS_NEG.POSITIVE), TARGET_MARGIN("Target Margin", POS_NEG.POSITIVE), BUYER_REFUND("Buyer Refund", POS_NEG.NEGATIVE),
+		TAX("Tax", POS_NEG.NEGATIVE);
 
 		ModelComponentType(String name, POS_NEG posNeg) {
 			this.name = name;
@@ -55,6 +56,10 @@ public class ModelCompResult implements Serializable {
 	private List<ComponentActionResult> componentActionResults;
 	private List<ModelCompResultInputter> modelCompResultInputters;
 	private double modelComponentValue;
+	private double modelComponentAmountValue;
+	private double modelComponentPercentage;
+	private double pricingTechniquePercentage;
+
 	private double comparePriValue;
 
 	public double convertToComponentValue() {
@@ -67,6 +72,30 @@ public class ModelCompResult implements Serializable {
 
 	public void setModelComponentValue(double modelComponentValue) {
 		this.modelComponentValue = modelComponentValue;
+	}
+
+	public double getModelComponentAmountValue() {
+		return modelComponentAmountValue;
+	}
+
+	public void setModelComponentAmountValue(double modelComponentAmountValue) {
+		this.modelComponentAmountValue = modelComponentAmountValue;
+	}
+
+	public double getModelComponentPercentage() {
+		return modelComponentPercentage;
+	}
+
+	public void setModelComponentPercentage(double modelComponentPercentage) {
+		this.modelComponentPercentage = modelComponentPercentage;
+	}
+
+	public double getPricingTechniquePercentage() {
+		return pricingTechniquePercentage;
+	}
+
+	public void setPricingTechniquePercentage(double pricingTechniquePercentage) {
+		this.pricingTechniquePercentage = pricingTechniquePercentage;
 	}
 
 	public double getComparePriValue() {

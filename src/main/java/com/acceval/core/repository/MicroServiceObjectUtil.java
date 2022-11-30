@@ -89,14 +89,21 @@ public class MicroServiceObjectUtil {
 					} else {
 						// multi-thread
 						String token = PrincipalUtil.getToken();
-						String companyID = PrincipalUtil.getCompanyID().toString();
-						executor.submit(() -> {
-							try {
-								refreshField(discoveryClient, restTemplate, token, companyID, target, field.getName(), isForceRefresh);
-							} catch (Exception e) {
-								LOGGER.error(e.getMessage(), e);
-							}
-						});
+						String companyID = PrincipalUtil.getCompanyID() != null ? PrincipalUtil.getCompanyID().toString() : null;
+//						if(PrincipalUtil.getCompanyID() != null) {
+//							companyID = PrincipalUtil.getCompanyID().toString();
+//						} else {
+//							companyID = target.get
+//						}
+						if(companyID != null) {
+							executor.submit(() -> {
+								try {
+									refreshField(discoveryClient, restTemplate, token, companyID, target, field.getName(), isForceRefresh);
+								} catch (Exception e) {
+									LOGGER.error(e.getMessage(), e);
+								}
+							});
+						}
 					}
 				} else if (Collection.class.isAssignableFrom(field.getType())) {
 					String genericTypeName = field.getGenericType().getTypeName();

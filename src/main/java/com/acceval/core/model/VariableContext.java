@@ -75,6 +75,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String IS_OVERSEAS = "IS_OVERSEAS";
 	public static final String CUSTOM_EXCHANGE_RATE_REF_DATE = "CUSTOM_EXCHANGE_RATE_REF_DATE";
 	public static final String INVOICE_PRICE = "INVOICE_PRICE";
+	public static final String SOLD_TO_CUSTOMER = "SOLD_TO_CUSTOMER";
 
     public static final String MARKET_PRICE_SOURCE = "MARKET_PRICE_SOURCE";
 
@@ -145,6 +146,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String CT_TENDER_PRICE_FORMULA = "TENDER_PRICE_FORMULA";
 	public static final String CT_TENDER_PRICE_FIXED_FIRM = "TENDER_PRICE_FIXED_FIRM";
 	public static final String CT_PCMOS_STANDARD_FLOOR_PRICE = "STANDARD_FLOOR_PRICE_FOR_DISTRIBUTION_MODEL";
+	public static final String CT_TECHNICAL_SALES_APPROVER = "TECHNICAL_SALES_APPROVER";
 
 	// Condition Table Fields / context key
 	public static final String CONDFIELDCODE_NORMALISE_FOR_FLOOR_PRICE = "NORMALISE_FOR_FLOOR_PRICE";
@@ -159,6 +161,8 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String CONDFIELDCODE_TASK_NAME = "TASK_NAME";
 	public static final String CONDFIELDCODE_USER_ACCOUNT = "USER_ACCOUNT";
 	public static final String CONDFIELDCODE_PCMOS_SALES_ORG = "SALES_ORGANISATION";
+	public static final String CONDFIELDCODE_DESIGNATION = "DESIGNATION";
+	public static final String CONDFIELDCODE_PRODUCT = "PRODUCT";
 
 	// Condition Table Values / context key
 	public static final String CONDVALUECODE_PRODUCT_BASE_PRICE_INCO = "INCOTERM";
@@ -283,6 +287,9 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String SALES_OFFICE_MTBE = "P008";
 	public static final String SALES_OFFICE_INA = "P013";
 
+	// Overwriting system time
+	public static final String OVERWRITE_SYSTEM_TIME = "OVERWRITE_SYSTEM_TIME";
+
 	public static enum WFL_VIOLATE {
 		CHANGED_PAYMENT_TERM("Violated Payment Term Credit Day"), DEAL_AMOUNT("Below Targeted Amount [?]"),
 		WFL_NORMALISED_PRICE(
@@ -294,7 +301,7 @@ public class VariableContext implements Serializable, Cloneable {
 		FORMULA_PRICING_ITEM("Violated Contract LOA"), REVISED_CASE("Revised Case"),
 		WFL_NEGOTIATED_DISCOUNT(
 				"Violated Negotiated Discount Control. Product: [?], Negotiated Discount: [?], Target Negotiated Discount Control: [?]"),
-		SPOT_LOA("Violated Spot LOA."), CONTRACT_LOA("Violated Contract LOA."),
+		SPOT_LOA("Spot LOA."), CONTRACT_LOA("Violated Contract LOA."),
 		OVERRIDE_EXCHANGE_RATE("Overwrite Exchange Rate"),
 		WFL_PRICING_MANDATE(
 				"Violated Pricing Mandate Formula Rule. Line Item ?, Product: [?], Country: [?], Formula [?], Targeted Formula: [?]"),

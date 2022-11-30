@@ -1,8 +1,9 @@
 package com.acceval.core.integration.model;
 
-import javax.xml.bind.annotation.XmlElement;
 import java.io.Serializable;
 import java.util.List;
+
+import javax.xml.bind.annotation.XmlElement;
 
 public class MasterDataMaterialInMessage implements Serializable {
 
@@ -148,6 +149,7 @@ public class MasterDataMaterialInMessage implements Serializable {
 		private String materialGroup1;
 		private String materialGroup2;
 		private String materialGroup3;
+		private String materialGroup4;
 
 		public String getSalesOrganisation() {
 			return salesOrganisation;
@@ -222,6 +224,15 @@ public class MasterDataMaterialInMessage implements Serializable {
         public void setMaterialGroup3(String materialGroup3) {
             this.materialGroup3 = materialGroup3;
         }
+        
+		public String getMaterialGroup4() {
+			return materialGroup4;
+		}
+		
+		public void setMaterialGroup4(String materialGroup4) {
+			this.materialGroup4 = materialGroup4;
+		}
+        
     }
 
 	public List<PlantItem> getPlantItems() {

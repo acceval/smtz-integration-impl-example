@@ -82,6 +82,8 @@ public class Criterion implements Serializable, Cloneable {
 			} else {
 				this.setSearchValues((Object[]) searchValue);
 			}
+		} else if (searchValue == null) {
+			this.restrictionType = RestrictionType.IS_NULL;
 		} else {
 			this.setSearchValue(searchValue);
 		}

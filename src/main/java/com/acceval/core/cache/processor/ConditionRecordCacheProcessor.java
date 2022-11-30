@@ -39,6 +39,7 @@ import com.acceval.core.cache.model.ExchangeRateType;
 import com.acceval.core.cache.model.Uom;
 import com.acceval.core.microservice.ObjectNotFoundException;
 import com.acceval.core.model.VariableContext;
+import com.acceval.core.pricing.BuyVariableContextConst;
 import com.acceval.core.security.PrincipalUtil;
 
 @Component
@@ -238,6 +239,7 @@ public class ConditionRecordCacheProcessor {
         lstCondFieldCode.add(VariableContext.OVERWRITE_CURRENCY_FROM);
         lstCondFieldCode.add(VariableContext.OVERWRITE_CURRENCY_TO);
         lstCondFieldCode.add(VariableContext.CUSTOM_EXCHANGE_RATE_REF_DATE);
+		lstCondFieldCode.add(BuyVariableContextConst.ENVIRONMENT);
 
         if (config != null && CollectionUtils.isNotEmpty(config.getConditionTableInputParameters())) {
             for (ConditionTableInputParameter inputParam : config.getConditionTableInputParameters()) {

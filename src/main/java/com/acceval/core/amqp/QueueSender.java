@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class QueueSender {
 
 	public static final String SMARTTRADZ_TOPIC = "smarttradz.topic";
-//	public static final String QUEUE_NAME_AUDITLOG = "commons-auditlog-queue";
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -41,19 +40,15 @@ public abstract class QueueSender {
 		this.messageBody = messageBody;
 	}
 
-	//  @Scheduled(cron = "0 0 21 * * *")
-	//  @Scheduled(fixedDelay = 3000L)        
 	@Deprecated
 	public void sendMessage() {
 
-//		logger.info("Sending message...");
 		try {
 			if (rabbitTemplate.getMessageConverter().getClass().getSimpleName()
 					.equals("Jackson2JsonMessageConverter")) {
 				
 				Queue queue = new Queue(this.getSenderQueueName(), true, false, false);				
 				Binding binding = BindingBuilder.bind(queue).to(topicExchange).with(this.getSenderQueueName());
-//				admin.declareQueue(queue);
 				admin.declareBinding(binding);
 				
 				rabbitTemplate.convertAndSend(this.getTopicExchageName(), this.getSenderQueueName(), 
@@ -70,14 +65,12 @@ public abstract class QueueSender {
 
 	public void sendMessage(MessageBody<?> messageBody) {
 
-//		logger.info("Sending message...");
 		try {
 			if (rabbitTemplate.getMessageConverter().getClass().getSimpleName()
 					.equals("Jackson2JsonMessageConverter")) {
 				
 				Queue queue = new Queue(this.getSenderQueueName(), true, false, false);				
 				Binding binding = BindingBuilder.bind(queue).to(topicExchange).with(this.getSenderQueueName());
-//				admin.declareQueue(queue);
 				admin.declareBinding(binding);
 				rabbitTemplate.convertAndSend(this.getTopicExchageName(), this.getSenderQueueName(),
 						messageBody.getBody());
@@ -99,7 +92,6 @@ public abstract class QueueSender {
 				
 				Queue queue = new Queue(this.getSenderQueueName(), true, false, false);				
 				Binding binding = BindingBuilder.bind(queue).to(topicExchange).with(this.getSenderQueueName());
-//				admin.declareQueue(queue);
 				admin.declareBinding(binding);				
 				rabbitTemplate.convertAndSend(this.getTopicExchageName(), this.getSenderQueueName(), objMsg);
 				

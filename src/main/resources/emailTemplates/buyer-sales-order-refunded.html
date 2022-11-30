@@ -1,0 +1,24 @@
+{{#partial "content"}}
+<p style="margin: 0 0 10px 0;">Dear <span>{{this.receiverName}}</span>,</p>
+
+<p style="margin: 0 0 20px 0;">Please be advised that {{this.context.PO_NUMBER}}, {{this.context.CURRENCY_CODE}} {{this.context.REFUND_AMOUNT}} is successfully refunded at {{this.context.ACTION_DATE_TIME}}.</p>
+
+<p>Details:</p>
+
+<table align="left" role="presentation" border="1" cellpadding="5" cellspacing="0" width="100%">
+	<tr>
+        <td style="width: 30%;">Transaction ID</td>
+        <td>{{this.context.REF_NO}}</td>
+    </tr>
+    <tr>
+        <td style="width: 30%;">Refund Date</td>
+        <td>{{this.context.ACTION_DATE_TIME}}</td>
+    </tr>
+    <tr>
+        <td style="width: 30%;">Refund Amount</td>
+        <td>{{this.context.CURRENCY_CODE}} {{this.context.REFUND_AMOUNT}}</td>
+    </tr>
+</table>
+{{/partial}}
+
+{{> default-customizable-titleclosing-base}}
