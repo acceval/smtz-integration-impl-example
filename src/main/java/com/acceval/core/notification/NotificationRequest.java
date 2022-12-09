@@ -14,7 +14,8 @@ public class NotificationRequest extends QueueRequest {
 	
 	public enum Application {
 		MARKETPLACE,
-		ENTERPRISE				
+		ENTERPRISE,
+		SMARTTRACE
 	}
 	
 	public enum MessageStatus {
