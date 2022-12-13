@@ -16,6 +16,9 @@ public class UploadResult {
 	private LocalDateTime endTime;
 	private long processSeconds; 
 	
+//	Only For upload SAP file
+	private int successSalesOrder;
+	
 	public String getName() {
 		return name;
 	}
@@ -82,5 +85,10 @@ public class UploadResult {
 	public void setArchiveFile(String archiveFile) {
 		this.archiveFile = archiveFile;
 	}
-	
+	public int getSuccessSalesOrder() {
+		return successSalesOrder;
+	}
+	public void setSuccessSalesOrder(int successSalesOrder) {
+		this.successSalesOrder = successSalesOrder;
+	}
 }
