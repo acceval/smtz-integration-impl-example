@@ -248,32 +248,40 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 						lstCrriterion.get(lstCrriterion.size() - 1).setParamKey(key);
 					}
 				} else if (ClassUtils.isAssignable(attrClass, Collection.class)) {
-					// seem Collection work in mongo
-					if (field.toGenericString().contains("<java.lang.Long>")) {
-						try {
-							lstCrriterion.add(new Criterion(resolveKey, Long.valueOf(mapParam.getFirst(key))));
-							lstCrriterion.get(lstCrriterion.size() - 1).setParamKey(key);
-						} catch (Exception e) {
-						}
-					} else if (field.toGenericString().contains("<java.lang.String>")) {
-						
+					if (isOrCriteria) {
 						List<String> searchValue = mapParam.get(key);
-						
-						if (searchValue.size() > 1) {
-							Object searchValues = searchValue.toArray();
+						Object searchValues = searchValue.toArray();
+						lstCrriterion.add(new Criterion(resolveKey, searchValues));
+						lstCrriterion.get(lstCrriterion.size() - 1).setParamKey(key);
+					} else {
+						// seem Collection work in mongo
+						if (field.toGenericString().contains("<java.lang.Long>")) {
+							try {
+								lstCrriterion.add(new Criterion(resolveKey, Long.valueOf(mapParam.getFirst(key))));
+								lstCrriterion.get(lstCrriterion.size() - 1).setParamKey(key);
+							} catch (Exception e) {
+							}
+						} else if (field.toGenericString().contains("<java.lang.String>")) {
+							
+							List<String> searchValue = mapParam.get(key);
+							
+							if (searchValue.size() > 1) {
+								Object searchValues = searchValue.toArray();
+								lstCrriterion.add(new Criterion(resolveKey, searchValues));
+								lstCrriterion.get(lstCrriterion.size() - 1).setParamKey(key);
+							} else {
+								lstCrriterion.add(new Criterion(resolveKey, ".*" + mapParam.getFirst(key).toLowerCase() + ".*", false));
+								lstCrriterion.get(lstCrriterion.size() - 1).setParamKey(key);
+							}
+							
+							
+						} else {
+							Object searchValues = mapParam.get(key);
 							lstCrriterion.add(new Criterion(resolveKey, searchValues));
 							lstCrriterion.get(lstCrriterion.size() - 1).setParamKey(key);
-						} else {
-							lstCrriterion.add(new Criterion(resolveKey, ".*" + mapParam.getFirst(key).toLowerCase() + ".*", false));
-							lstCrriterion.get(lstCrriterion.size() - 1).setParamKey(key);
 						}
-						
-						
-					} else {
-					
-						lstCrriterion.add(new Criterion(resolveKey, mapParam.getFirst(key)));
-						lstCrriterion.get(lstCrriterion.size() - 1).setParamKey(key);
 					}
+
 				} else {
 					LOGGER.error("[" + attrClass.getName() + "] is not support in Acceval Base Criteria Search yet!");
 				}

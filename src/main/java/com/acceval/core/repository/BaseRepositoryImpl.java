@@ -1069,7 +1069,9 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
 			EntityTransaction tx = entityManager.getTransaction();
 			tx.begin();
 			String updateSql = "UPDATE " + (parentEntity != null ? parentEntity.getSimpleName() : entity.getClass().getSimpleName())
-					+ " e SET e.recordStatus = 'ARCHIVE', e.dateArchived ='" + LocalDateTime.now().format(formatter) + "' WHERE e."
+					+ " e SET e.recordStatus = 'ARCHIVE', e.modified = CURRENT_TIMESTAMP, e.dateArchived ='"
+					+ LocalDateTime.now().format(formatter)
+					+ "' WHERE e."
 					+ idField + " = " + id;
 			Query query = entityManager.createQuery(updateSql);
 			query.executeUpdate();
