@@ -255,7 +255,22 @@ public abstract class BaseMongoRepositoryImpl<T> implements BaseMongoRepository<
 							lstCrriterion.get(lstCrriterion.size() - 1).setParamKey(key);
 						} catch (Exception e) {
 						}
+					} else if (field.toGenericString().contains("<java.lang.String>")) {
+						
+						List<String> searchValue = mapParam.get(key);
+						
+						if (searchValue.size() > 1) {
+							Object searchValues = searchValue.toArray();
+							lstCrriterion.add(new Criterion(resolveKey, searchValues));
+							lstCrriterion.get(lstCrriterion.size() - 1).setParamKey(key);
+						} else {
+							lstCrriterion.add(new Criterion(resolveKey, ".*" + mapParam.getFirst(key).toLowerCase() + ".*", false));
+							lstCrriterion.get(lstCrriterion.size() - 1).setParamKey(key);
+						}
+						
+						
 					} else {
+					
 						lstCrriterion.add(new Criterion(resolveKey, mapParam.getFirst(key)));
 						lstCrriterion.get(lstCrriterion.size() - 1).setParamKey(key);
 					}
