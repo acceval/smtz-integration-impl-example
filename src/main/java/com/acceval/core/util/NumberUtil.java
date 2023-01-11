@@ -82,7 +82,7 @@ public class NumberUtil {
 		try {
 			if (strNumber.indexOf("E") == -1 && strNumber.indexOf(".") > -1) {
 				int firstRoundDecimal = strNumber.length() - strNumber.indexOf(".") - 5;
-				if (firstRoundDecimal >= (decimalPoint * 3)) {
+				if (decimalPoint != 0 && firstRoundDecimal >= (decimalPoint * 3)) {
 //					System.out.println("\t" + strNumber.length() + " - " + strNumber.indexOf(".") + " - 5 = " + firstRoundDecimal);
 					double firstRounding = new BigDecimal(strNumber).setScale(firstRoundDecimal, RoundingMode.HALF_UP).doubleValue();
 					double newV = new BigDecimal(Double.toString(firstRounding)).setScale(decimalPoint, roundingMode).doubleValue();
