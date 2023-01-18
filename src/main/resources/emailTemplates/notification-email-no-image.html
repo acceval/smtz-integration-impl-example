@@ -1,0 +1,43 @@
+{{#partial "content"}}
+	<p style="margin: 0 0 20px 0;">Dear {{receiverName}},</p>
+
+	<br/>
+	<table style="border: none" width="80%">
+		<tr>
+			<td colspan="6">
+			{{#each this}}
+			   {{#body}}
+			<span style="{{style}}">{{text}}</span>
+			   {{/body}}
+			{{/each}}
+			</td>
+		</tr>
+		<tr>
+			<td>
+			<br/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+			<br/>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2"></td>
+			<td colspan="2" width:80%; height:40px; style="text-align: center;" >
+			<a class="button-a button-a-primary" href="{{context.LINK}}"
+				 style="background: #247BA0; border: 1px solid #247BA0; font-family: sans-serif; font-size: 15px; line-height: 15px; text-decoration: none; padding: 8px 12px; color: #ffffff; display: block; border-radius: 4px;">View Order Details</a>
+			</td>
+			<td colspan="2"></td>
+		</tr>
+	</table>
+	<br/>
+	<br/>
+	
+	<p style="margin:0px; color:black;">If the button does not work, copy and paste the link below into your browser:</p>
+	<p>{{context.LINK}}</p>
+	
+	
+{{/partial}}
+
+{{> default}}
