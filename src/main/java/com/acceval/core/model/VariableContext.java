@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.formula.functions.T;
 
 import com.acceval.core.repository.Criterion;
 import com.acceval.core.util.TimeZoneUtil;
@@ -163,6 +164,7 @@ public class VariableContext implements Serializable, Cloneable {
 	public static final String CONDFIELDCODE_PCMOS_SALES_ORG = "SALES_ORGANISATION";
 	public static final String CONDFIELDCODE_DESIGNATION = "DESIGNATION";
 	public static final String CONDFIELDCODE_PRODUCT = "PRODUCT";
+	public static final String CONDFIELDCODE_TOTAL_AMOUNT_IN_RM = "TOTAL_AMOUNT_IN_RM";
 
 	// Condition Table Values / context key
 	public static final String CONDVALUECODE_PRODUCT_BASE_PRICE_INCO = "INCOTERM";
