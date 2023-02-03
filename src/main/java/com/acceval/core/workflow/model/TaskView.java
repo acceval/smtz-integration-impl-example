@@ -29,7 +29,8 @@ public class TaskView<T> {
 	public String decision;
 	public String reason;
 	public Long detailsId;
-
+	public String remark;
+	
 	public TaskView(
 			@JsonProperty("id") String id,
 			@JsonProperty("processInstanceId") String processInstanceId,
@@ -139,5 +140,13 @@ public class TaskView<T> {
 
 	public void setDetailsId(Long detailsId) {
 		this.detailsId = detailsId;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
 	}
 }
