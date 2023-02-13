@@ -149,4 +149,16 @@ public class TaskView<T> {
 	public void setRemark(String remark) {
 		this.remark = remark;
 	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getTaskDescription() {
+		return taskDescription;
+	}
+
+	public LocalDateTime getCreateTime() {
+		return createTime;
+	}
 }
