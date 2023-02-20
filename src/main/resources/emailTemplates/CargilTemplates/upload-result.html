@@ -1,0 +1,54 @@
+{{#partial "content"}}
+
+<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin: 0 auto;">
+	<tr>
+		<td style="height: 2rem;">Filename</td>
+		<td>{{this.context.FILENAME}}</td>
+	</tr>
+	<tr>
+		<td style="height: 2rem;">Upload Time</td>
+		<td>{{this.context.UPLOAD_TIME}}</td>
+	</tr>
+	<tr>
+		<td style="height: 2rem;">Total Record Processed</td>
+		<td>{{this.context.TOTAL_RECORD_PROCESS}}</td>
+	</tr>
+	<tr>
+		<td style="height: 2rem;">Failed Records</td>
+		<td>{{this.context.FAILED_RECORDS}}</td>
+	</tr>
+	<tr>
+		<td style="height: 2rem;">Succeeded Records</td>
+		<td>{{this.context.SUCCEEDED_RECORDS}}</td>
+	</tr>
+	<tr>
+		<td style="height: 2rem;">Sales Order Generated</td>
+		<td>{{this.context.SO_GENERATED}}</td>
+	</tr>
+	<tr>
+		<td style="height: 2rem;">Time Taken</td>
+		<td>{{this.context.TIME_TAKEN}}</td>
+	</tr>
+</table>
+<br>
+<br>
+<table role="presentation" border="1" cellspacing="0" cellpadding="0" width="100%" style="margin: 0 auto;">
+	<tr>
+		<td style="width: 15%; padding: 0.5rem">Line Number</td>
+		<td style="padding: 0.5rem;">Error Message</td>
+		<td style="width: 20%; padding: 0.5rem;">Line Content</td>
+	</tr>
+	{{#each this.context.ERROR_RECORDS}}
+	<tr>
+		<td style="padding: 0.5rem;">{{this.lineNumber}}</td>
+		<td style="padding: 0.5rem;">{{this.errorMessage}}</td>
+		<td style="padding: 0.5rem;">{{this.lineContent}}</td>
+	</tr>
+	{{/each}}
+</table>
+
+
+
+{{/partial}}
+
+{{> cargil-default}}
