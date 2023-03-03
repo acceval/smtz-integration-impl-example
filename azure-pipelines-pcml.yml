@@ -94,11 +94,11 @@ steps:
     enabled: false
     inputs:
       PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-      ArtifactName: 'ms-util*.jar'
+      ArtifactName: 'smtz-integration-spec*.jar'
       publishLocation: 'Container'
 
   - task: PublishPipelineArtifact@1
     inputs:
-      targetPath: '$(Pipeline.Workspace)/s/target/ms-util-0.0.1$(VERSION_SUFFIX).jar'
+      targetPath: '$(Pipeline.Workspace)/s/target/smtz-integration-spec-0.0.1$(VERSION_SUFFIX).jar'
       artifact: 'drop'
       publishLocation: 'pipeline'

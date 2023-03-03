@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.acceval</groupId>
-	<artifactId>ms-util</artifactId>
+	<artifactId>smtz-integration-spec</artifactId>
 	<version>0.0.1-IOCL-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
@@ -250,26 +250,6 @@
 		</dependency>
 		
 	</dependencies>
-
-	<repositories>
-		<repository>
-			<id>Thundercloud</id>
-			<url>https://petronasvsts.pkgs.visualstudio.com/Thundercloud/_packaging/Thundercloud/maven/v1</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
-
-	<distributionManagement>
-		<repository>
-			<id>Thundercloud</id>
-			<url>https://petronasvsts.pkgs.visualstudio.com/Thundercloud/_packaging/Thundercloud/maven/v1</url>
-		</repository>
-	</distributionManagement>
 
 	<!-- <build>
     		<plugins>
