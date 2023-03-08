@@ -29,3 +29,8 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn -B package --file pom-iocl.xml
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: smtz-integration-impl-example
+        path: acceval/mvn-repo
