@@ -33,4 +33,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: com.smarttradzt.smtz-integration-impl-example.0.0.1-IOCL-SNAPSHOT
-        path: /home/runner/work/smtz-integration-impl-example/target/
+        path: /home/runner/work/smtz-integration-impl-example/smtz-integration-impl-example/target/
