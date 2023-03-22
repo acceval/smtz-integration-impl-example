@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="UpdateSalesContract" targetNamespace="http://UpdateSalesContract" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soapjms="http://www.w3.org/2010/soapjms/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://UpdateSalesContract" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://UpdateSalesContract" xmlns:tns="http://UpdateSalesContract" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+          <xsd:element name="SalesContractChangeInput" type="tns:SalesContractChangeInput"/>
+          <xsd:element name="SalesContractChangeOutput" type="tns:SalesContractChangeOutput"/>
+          <xsd:complexType name="SalesContractChangeInput">
+            <xsd:sequence>
+              <xsd:element name="Contract_Header" nillable="true" type="tns:Contract_Header"/>
+              <xsd:element maxOccurs="unbounded" name="Contract_Items" nillable="true" type="tns:Contract_Items"/>
+            </xsd:sequence>
+          </xsd:complexType>
+          <xsd:complexType name="Contract_Header">
+            <xsd:sequence>
+              <xsd:element name="DocumentNo" nillable="true" type="xsd:string"/>
+              <xsd:element name="ReasonForRejection" nillable="true" type="xsd:string"/>
+              <xsd:element name="Activity" nillable="true" type="xsd:string"/>
+              <xsd:element name="ExchangeRate" nillable="true" type="xsd:string"/>
+            </xsd:sequence>
+          </xsd:complexType>
+          <xsd:complexType name="Contract_Items">
+            <xsd:sequence>
+              <xsd:element name="Product" nillable="true" type="xsd:string"/>
+              <xsd:element name="Quantity" nillable="true" type="xsd:string"/>
+              <xsd:element name="QuantityUOM" nillable="true" type="xsd:string"/>
+              <xsd:element name="InvoicePrice" nillable="true" type="xsd:string"/>
+              <xsd:element name="PriceCurrency" nillable="true" type="xsd:string"/>
+              <xsd:element name="ReasonForRejection" nillable="true" type="xsd:string"/>
+              <xsd:element name="PMTItemNo" nillable="true" type="xsd:string"/>
+              <xsd:element name="ClearanceCost" nillable="true" type="xsd:string"/>
+              <xsd:element name="ClearanceCostCurr" nillable="true" type="xsd:string"/>
+              <xsd:element name="LocShpmtCost" nillable="true" type="xsd:string"/>
+              <xsd:element name="LocShpmtCostCurr" nillable="true" type="xsd:string"/>
+              <xsd:element name="InbInsurance" nillable="true" type="xsd:string"/>
+              <xsd:element name="InbInsuranceCurr" nillable="true" type="xsd:string"/>
+              <xsd:element name="InbSurveryor" nillable="true" type="xsd:string"/>
+              <xsd:element name="InbSurveryorCurr" nillable="true" type="xsd:string"/>
+            </xsd:sequence>
+          </xsd:complexType>
+          <xsd:complexType name="SalesContractChangeOutput">
+            <xsd:sequence>
+              <xsd:element maxOccurs="unbounded" name="RETURN" nillable="true" type="tns:RETURN"/>
+              <xsd:element maxOccurs="unbounded" name="CONTRACT_STAT" nillable="true" type="tns:CONTRACT_STAT"/>
+            </xsd:sequence>
+          </xsd:complexType>
+          <xsd:complexType name="RETURN">
+            <xsd:sequence>
+              <xsd:element name="TYPE" nillable="true" type="xsd:string"/>
+              <xsd:element name="ID" nillable="true" type="xsd:string"/>
+              <xsd:element name="NUMBER" nillable="true" type="xsd:string"/>
+              <xsd:element name="MESSAGE" nillable="true" type="xsd:string"/>
+              <xsd:element name="LOG_NO" nillable="true" type="xsd:string"/>
+              <xsd:element name="LOG_MSG_NO" nillable="true" type="xsd:string"/>
+              <xsd:element name="MESSAGE_V1" nillable="true" type="xsd:string"/>
+              <xsd:element name="MESSAGE_V2" nillable="true" type="xsd:string"/>
+              <xsd:element name="MESSAGE_V3" nillable="true" type="xsd:string"/>
+              <xsd:element name="MESSAGE_V4" nillable="true" type="xsd:string"/>
+              <xsd:element name="PARAMETER" nillable="true" type="xsd:string"/>
+              <xsd:element name="ROW" nillable="true" type="xsd:string"/>
+              <xsd:element name="FIELD" nillable="true" type="xsd:string"/>
+              <xsd:element name="SYSTEM" nillable="true" type="xsd:string"/>
+            </xsd:sequence>
+          </xsd:complexType>
+          <xsd:complexType name="CONTRACT_STAT">
+            <xsd:sequence>
+              <xsd:element name="CONTRACT_NO" nillable="true" type="xsd:string"/>
+              <xsd:element name="ITEM_PMT_NO" nillable="true" type="xsd:string"/>
+              <xsd:element name="SO_QTY" nillable="true" type="xsd:string"/>
+              <xsd:element name="DLVRY_QTY" nillable="true" type="xsd:string"/>
+              <xsd:element name="INV_QTY" nillable="true" type="xsd:string"/>
+            </xsd:sequence>
+          </xsd:complexType>
+        	</xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="UpdateSalesContract_PortType_SalesContractChangeOutput">
+    <wsdl:part name="parameters" element="tns:SalesContractChangeOutput">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="UpdateSalesContract_PortType_SalesContractChangeInput">
+    <wsdl:part name="parameters" element="tns:SalesContractChangeInput">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="UpdateSalesContract_PortType">
+    <wsdl:operation name="updateSalesContract">
+      <wsdl:input message="tns:UpdateSalesContract_PortType_SalesContractChangeInput">
+    </wsdl:input>
+      <wsdl:output message="tns:UpdateSalesContract_PortType_SalesContractChangeOutput">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="UpdateSalesContract_Binder" type="tns:UpdateSalesContract_PortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="updateSalesContract">
+      <soap:operation soapAction="UpdateSalesContract_Binder_updateSalesContract" style="document"/>
+      <wsdl:input>
+        <soap:body parts="parameters" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body parts="parameters" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="UpdateSalesContract">
+    <wsdl:port name="UpdateSalesContract_Port" binding="tns:UpdateSalesContract_Binder">
+      <soap:address location="http://UpdateSalesContract/UpdateSalesContract_Port"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

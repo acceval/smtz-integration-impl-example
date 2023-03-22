@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="CreateSalesContractPMT2" targetNamespace="http://CreateSalesContractPMT2" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soapjms="http://www.w3.org/2010/soapjms/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://CreateSalesContractPMT2" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/">
+    <wsdl:types>
+        <xsd:schema targetNamespace="http://CreateSalesContractPMT2" xmlns:tns="http://CreateSalesContractPMT2" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:element name="salesContractInputPMT2" type="tns:salesContractInputPMT2"/>
+            <xsd:element name="salesContractOutputPMT2" type="tns:salesContractOutputPMT2"/>
+            <xsd:complexType name="salesContractInputPMT2">
+                <xsd:sequence>
+                    <xsd:element name="Contract_Header" nillable="true" type="tns:Contract_Header"/>
+                    <xsd:element maxOccurs="unbounded" name="Contract_Items" nillable="true" type="tns:Contract_Items"/>
+                    <xsd:element name="Contract_Partners" nillable="true" type="tns:Contract_Partners"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="Contract_Header">
+                <xsd:sequence>
+                    <xsd:element name="SalesOrganisation" nillable="true" type="xsd:string"/>
+                    <xsd:element name="DistributionChannel" nillable="true" type="xsd:string"/>
+                    <xsd:element name="SalesDivision" nillable="true" type="xsd:string"/>
+                    <xsd:element name="SalesGroup" nillable="true" type="xsd:string"/>
+                    <xsd:element name="SalesOffice" nillable="true" type="xsd:string"/>
+                    <xsd:element name="PurchaseDate" nillable="true" type="xsd:string"/>
+                    <xsd:element name="PriceList" nillable="true" type="xsd:string"/>
+                    <xsd:element name="Incoterms1" nillable="true" type="xsd:string"/>
+                    <xsd:element name="Incoterms2" nillable="true" type="xsd:string"/>
+                    <xsd:element name="PaymentTerm" nillable="true" type="xsd:string"/>
+                    <xsd:element name="PriceDate" nillable="true" type="xsd:string"/>
+                    <xsd:element name="ValidFrom" nillable="true" type="xsd:string"/>
+                    <xsd:element name="ValidTo" nillable="true" type="xsd:string"/>
+                    <xsd:element name="TenderType" nillable="true" type="xsd:string"/>
+                    <xsd:element name="PONumber" nillable="true" type="xsd:string"/>
+                    <xsd:element name="POSOC" nillable="true" type="xsd:string"/>
+                    <xsd:element name="PODate" nillable="true" type="xsd:string"/>
+                    <xsd:element name="ShippingCondition" nillable="true" type="xsd:string"/>
+                    <xsd:element name="CustomerType" nillable="true" type="xsd:string"/>
+                    <xsd:element name="PriceCurrency" nillable="true" type="xsd:string"/>
+                    <xsd:element name="RETA" nillable="true" type="xsd:string"/>
+                    <xsd:element name="ContractType" nillable="true" type="xsd:string"/>
+                    <xsd:element name="ExchangeRate" nillable="true" type="xsd:string"/>
+                    <xsd:element name="ExchangeRateFI" nillable="true" type="xsd:string"/>
+                    <xsd:element name="OS_SalesModel" nillable="true" type="xsd:string"/>
+                    <xsd:element name="ExRateType" nillable="true" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="Contract_Items">
+                <xsd:sequence>
+                    <xsd:element name="POItemNumber" nillable="true" type="xsd:string"/>
+                    <xsd:element name="Product" nillable="true" type="xsd:string"/>
+                    <xsd:element name="Plant" nillable="true" type="xsd:string"/>
+                    <xsd:element name="Quantity" nillable="true" type="xsd:string"/>
+                    <xsd:element name="QuantityUOM" nillable="true" type="xsd:string"/>
+                    <xsd:element name="Route" nillable="true" type="xsd:string"/>
+                    <xsd:element name="InvoicePrice" nillable="true" type="xsd:string"/>
+                    <xsd:element name="ClearanceCost" nillable="true" type="xsd:string"/>
+                    <xsd:element name="ClearanceCostCurr" nillable="true" type="xsd:string"/>
+                    <xsd:element name="LocShpmtCost" nillable="true" type="xsd:string"/>
+                    <xsd:element name="LocShpmtCostCurr" nillable="true" type="xsd:string"/>
+                    <xsd:element name="InbInsurance" nillable="true" type="xsd:string"/>
+                    <xsd:element name="InbInsuranceCurr" nillable="true" type="xsd:string"/>
+                    <xsd:element name="InbSurveryor" nillable="true" type="xsd:string"/>
+                    <xsd:element name="InbSurveryorCurr" nillable="true" type="xsd:string"/>
+                    <xsd:element name="PriceCurrency" nillable="true" type="xsd:string"/>
+                    <xsd:element name="StorageLocation" nillable="true" type="xsd:string"/>
+                    <xsd:element name="Palletize" nillable="true" type="xsd:string"/>
+                    <xsd:element name="AlphaPrice" nillable="true" type="xsd:string"/>
+                    <xsd:element name="FloorPrice" nillable="true" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="Contract_Partners">
+                <xsd:sequence>
+                    <xsd:element name="SoldTo" nillable="true" type="xsd:string"/>
+                    <xsd:element name="ShipTo" nillable="true" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="salesContractOutputPMT2">
+                <xsd:sequence>
+                    <xsd:element name="ContractNumber" nillable="true" type="xsd:string"/>
+                    <xsd:element maxOccurs="unbounded" name="RETURN" nillable="true" type="tns:RETURN"/>
+                    <xsd:element maxOccurs="unbounded" name="EXTENSIONIN" nillable="true" type="tns:EXTENSIONIN"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="RETURN">
+                <xsd:sequence>
+                    <xsd:element name="TYPE" nillable="true" type="xsd:string"/>
+                    <xsd:element name="ID" nillable="true" type="xsd:string"/>
+                    <xsd:element name="NUMBER" nillable="true" type="xsd:string"/>
+                    <xsd:element name="MESSAGE" nillable="true" type="xsd:string"/>
+                    <xsd:element name="LOG_NO" nillable="true" type="xsd:string"/>
+                    <xsd:element name="LOG_MSG_NO" nillable="true" type="xsd:string"/>
+                    <xsd:element name="MESSAGE_V1" nillable="true" type="xsd:string"/>
+                    <xsd:element name="MESSAGE_V2" nillable="true" type="xsd:string"/>
+                    <xsd:element name="MESSAGE_V3" nillable="true" type="xsd:string"/>
+                    <xsd:element name="MESSAGE_V4" nillable="true" type="xsd:string"/>
+                    <xsd:element name="PARAMETER" nillable="true" type="xsd:string"/>
+                    <xsd:element name="ROW" nillable="true" type="xsd:string"/>
+                    <xsd:element name="FIELD" nillable="true" type="xsd:string"/>
+                    <xsd:element name="SYSTEM" nillable="true" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="EXTENSIONIN">
+                <xsd:sequence>
+                    <xsd:element name="STRUCTURE" nillable="true" type="xsd:string"/>
+                    <xsd:element name="VALUEPART1" nillable="true" type="xsd:string"/>
+                    <xsd:element name="VALUEPART2" nillable="true" type="xsd:string"/>
+                    <xsd:element name="VALUEPART3" nillable="true" type="xsd:string"/>
+                    <xsd:element name="VALUEPART4" nillable="true" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="CreateSalesContractPMT2_PortType_salesContractOutputPMT2">
+        <wsdl:part name="parameters" element="tns:salesContractOutputPMT2">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="CreateSalesContractPMT2_PortType_salesContractInputPMT2">
+        <wsdl:part name="parameters" element="tns:salesContractInputPMT2">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="CreateSalesContractPMT2_PortType">
+        <wsdl:operation name="createSalesContract_PMT2">
+            <wsdl:input message="tns:CreateSalesContractPMT2_PortType_salesContractInputPMT2">
+            </wsdl:input>
+            <wsdl:output message="tns:CreateSalesContractPMT2_PortType_salesContractOutputPMT2">
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="CreateSalesContractPMT2_Binder" type="tns:CreateSalesContractPMT2_PortType">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="createSalesContract_PMT2">
+            <soap:operation soapAction="CreateSalesContractPMT2_Binder_createSalesContract_PMT2" style="document"/>
+            <wsdl:input>
+                <soap:body parts="parameters" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body parts="parameters" use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="CreateSalesContractPMT2">
+        <wsdl:port name="CreateSalesContractPMT2_Port" binding="tns:CreateSalesContractPMT2_Binder">
+            <soap:address location="http://CreateSalesContractPMT2/CreateSalesContractPMT2_Port"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

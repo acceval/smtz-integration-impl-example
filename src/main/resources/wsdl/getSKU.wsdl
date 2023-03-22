@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="getSKU" targetNamespace="http://getSKU" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soapjms="http://www.w3.org/2010/soapjms/" xmlns:tns="http://getSKU" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://getSKU" xmlns:tns="http://getSKU" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+          <xsd:element name="getSKU" type="tns:getSKU"/>
+          <xsd:element name="getSKUResponse" type="tns:getSKUResponse"/>
+          <xsd:complexType name="getSKU">
+            <xsd:sequence>
+              <xsd:element name="materialNo" nillable="true" type="xsd:string"/>
+            </xsd:sequence>
+          </xsd:complexType>
+          <xsd:complexType name="getSKUResponse">
+            <xsd:sequence>
+              <xsd:element maxOccurs="unbounded" name="skuOutput" nillable="true" type="tns:skuOutput"/>
+            </xsd:sequence>
+          </xsd:complexType>
+          <xsd:complexType name="skuOutput">
+            <xsd:sequence>
+              <xsd:element name="materialNo" nillable="true" type="xsd:string"/>
+              <xsd:element name="baseUnitOfMeasure" nillable="true" type="xsd:string"/>
+              <xsd:element name="unitOfMeasureDisplay" nillable="true" type="xsd:string"/>
+              <xsd:element name="numeratorConversion" nillable="true" type="xsd:string"/>
+              <xsd:element name="denominatorConversion" nillable="true" type="xsd:string"/>
+              <xsd:element name="materialDescription" nillable="true" type="xsd:string"/>
+            </xsd:sequence>
+          </xsd:complexType>
+        	</xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="getSKU_PortType_getSKUResponse">
+    <wsdl:part name="parameters" element="tns:getSKUResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getSKU_PortType_getSKU">
+    <wsdl:part name="parameters" element="tns:getSKU">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="getSKU_PortType">
+  	<jaxws:bindings xmlns:jaxws="http://java.sun.com/xml/ns/jaxws">
+        <jaxws:enableWrapperStyle>false</jaxws:enableWrapperStyle>
+    </jaxws:bindings>
+    <wsdl:operation name="getSKU">
+      <wsdl:input message="tns:getSKU_PortType_getSKU">
+    </wsdl:input>
+      <wsdl:output message="tns:getSKU_PortType_getSKUResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="getSKU_Binder" type="tns:getSKU_PortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="getSKU">
+      <soap:operation soapAction="getSKU_Binder_getSKU" style="document"/>
+      <wsdl:input>
+        <soap:body parts="parameters" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body parts="parameters" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="getSKU">
+    <wsdl:port name="getSKU_Port" binding="tns:getSKU_Binder">
+      <soap:address location="http://getSKU/getSKU_Port"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

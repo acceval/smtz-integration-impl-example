@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="getCustomerCreditInfo" targetNamespace="http://getCustomerCreditInfo" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soapjms="http://www.w3.org/2010/soapjms/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://getCustomerCreditInfo" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/">
+    <wsdl:types>
+        <xsd:schema targetNamespace="http://getCustomerCreditInfo" xmlns:tns="http://getCustomerCreditInfo" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:element name="customerCreditInput" type="tns:customerCreditInput"/>
+            <xsd:element name="customerCreditOutput" type="tns:customerCreditOutput"/>
+            <xsd:complexType name="customerCreditInput">
+                <xsd:sequence>
+                    <xsd:element name="Header" nillable="true" type="tns:Header"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="Header">
+                <xsd:sequence>
+                    <xsd:element name="CustomerSoldToNo" nillable="true" type="xsd:string"/>
+                    <xsd:element name="CreditControlArea" nillable="true" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="customerCreditOutput">
+                <xsd:sequence>
+                    <xsd:element name="Result" nillable="true" type="tns:Result"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="Result">
+                <xsd:sequence>
+                    <xsd:element name="TotalCreditExposure" nillable="true" type="xsd:string"/>
+                    <xsd:element name="TotalCreditExposurePercentage" nillable="true" type="xsd:string"/>
+                    <xsd:element name="TotalCreditLimit" nillable="true" type="xsd:string"/>
+                    <xsd:element name="BalanceCreditLimit" nillable="true" type="xsd:string"/>
+                    <xsd:element name="BalanceCreditLimitPercentage" nillable="true" type="xsd:string"/>
+                    <xsd:element name="CreditBlock" nillable="true" type="xsd:string"/>
+                    <xsd:element name="SecurityDoc" nillable="true" type="xsd:string"/>
+                    <xsd:element name="SecurityDocExpiryDate" nillable="true" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="getCustomerCreditInfo_PortType_customerCreditInput">
+        <wsdl:part name="parameters" element="tns:customerCreditInput">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getCustomerCreditInfo_PortType_customerCreditOutput">
+        <wsdl:part name="parameters" element="tns:customerCreditOutput">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="getCustomerCreditInfo_PortType">
+        <wsdl:operation name="getCustomerCreditInfo">
+            <wsdl:input message="tns:getCustomerCreditInfo_PortType_customerCreditInput">
+            </wsdl:input>
+            <wsdl:output message="tns:getCustomerCreditInfo_PortType_customerCreditOutput">
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="getCustomerCreditInfo_Binder" type="tns:getCustomerCreditInfo_PortType">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="getCustomerCreditInfo">
+            <soap:operation soapAction="getCustomerCreditInfo_Binder_getCustomerCreditInfo" style="document"/>
+            <wsdl:input>
+                <soap:body parts="parameters" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body parts="parameters" use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="getCustomerCreditInfo">
+        <wsdl:port name="getCustomerCreditInfo_Port" binding="tns:getCustomerCreditInfo_Binder">
+            <soap:address location="http://getCustomerCreditInfo/getCustomerCreditInfo_Port"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>
