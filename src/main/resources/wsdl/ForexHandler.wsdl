@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="ForexHandler" targetNamespace="http://ForexHandler" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soapjms="http://www.w3.org/2010/soapjms/" xmlns:tns="http://ForexHandler" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://ForexHandler" xmlns:tns="http://ForexHandler" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+          <xsd:element name="ForexInput" type="tns:ForexInput"/>
+          <xsd:element name="ForexOutput" type="tns:ForexOutput"/>
+          <xsd:complexType name="ForexInput">
+            <xsd:sequence>
+              <xsd:element name="EffectiveDate" nillable="true" type="xsd:string"/>
+              <xsd:element name="FromCurrency" nillable="true" type="xsd:string"/>
+              <xsd:element name="ToCurrency" nillable="true" type="xsd:string"/>
+              <xsd:element name="ExchangeRateType" nillable="true" type="xsd:string"/>
+            </xsd:sequence>
+          </xsd:complexType>
+          <xsd:complexType name="ForexOutput">
+            <xsd:sequence>
+              <xsd:element name="EffectiveDate" nillable="true" type="xsd:string"/>
+              <xsd:element name="FromCurrency" nillable="true" type="xsd:string"/>
+              <xsd:element name="ToCurrency" nillable="true" type="xsd:string"/>
+              <xsd:element name="Rate" nillable="true" type="xsd:string"/>
+              <xsd:element name="ExchangeRateType" nillable="true" type="xsd:string"/>
+              <xsd:element name="RatioFrom" nillable="true" type="xsd:string"/>
+              <xsd:element name="RatioTo" nillable="true" type="xsd:string"/>
+            </xsd:sequence>
+          </xsd:complexType>
+        	</xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="ForexHandler_PortType_ForexOutput">
+    <wsdl:part name="parameters" element="tns:ForexOutput">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="ForexHandler_PortType_ForexInput">
+    <wsdl:part name="parameters" element="tns:ForexInput">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="ForexHandler_PortType">
+    <wsdl:operation name="getForex">
+      <wsdl:input message="tns:ForexHandler_PortType_ForexInput">
+    </wsdl:input>
+      <wsdl:output message="tns:ForexHandler_PortType_ForexOutput">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ForexHandler_Binder" type="tns:ForexHandler_PortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="getForex">
+      <soap:operation soapAction="ForexHandler_Binder_getForex" style="document"/>
+      <wsdl:input>
+        <soap:body parts="parameters" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body parts="parameters" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ForexHandler">
+    <wsdl:port name="ForexHandler_Port" binding="tns:ForexHandler_Binder">
+      <soap:address location="http://ForexHandler/ForexHandler_Port"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
