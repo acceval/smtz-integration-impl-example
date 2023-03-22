@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+                  xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soapjms="http://www.w3.org/2010/soapjms/"
+                  xmlns:tns="http://getMarketPriceData"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                  xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" name="getMarketPriceData"
+                  targetNamespace="http://getMarketPriceData">
+    <wsdl:types>
+        <xsd:schema xmlns:tns="http://getMarketPriceData"
+                    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                    targetNamespace="http://getMarketPriceData">
+            <xsd:element name="marketPriceInput" type="tns:marketPriceInput"/>
+            <xsd:element name="getMarketPriceDataResponse" type="tns:getMarketPriceDataResponse"/>
+            <xsd:complexType name="marketPriceInput">
+                <xsd:sequence>
+                    <xsd:element name="QUOSRC" nillable="true" type="xsd:string"/>
+                    <xsd:element name="QUOTNO" nillable="true" type="xsd:string"/>
+                    <xsd:element name="ZZDTFROM" nillable="true" type="xsd:string"/>
+                    <xsd:element name="ZZDTTO" nillable="true" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="getMarketPriceDataResponse">
+                <xsd:sequence>
+                    <xsd:element name="marketPrice" nillable="true" type="tns:marketPrice"/>
+                    <xsd:element name="ETRETURN" nillable="true" type="tns:ETRETURN"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="marketPrice">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="unbounded" name="output" nillable="true" type="tns:marketPriceOutput"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="marketPriceOutput">
+                <xsd:sequence>
+                    <xsd:element name="QUOSRC" nillable="true" type="xsd:string"/>
+                    <xsd:element name="QUOTNO" nillable="true" type="xsd:string"/>
+                    <xsd:element name="QUOTDATE" nillable="true" type="xsd:string"/>
+                    <xsd:element name="PRICE_H" nillable="true" type="xsd:string"/>
+                    <xsd:element name="PRICE_L" nillable="true" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="ETRETURN">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="unbounded" name="RETURN" nillable="true" type="tns:RETURN"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="RETURN">
+                <xsd:sequence>
+                    <xsd:element name="TYPE" nillable="true" type="xsd:string"/>
+                    <xsd:element name="ID" nillable="true" type="xsd:string"/>
+                    <xsd:element name="NUMBER" nillable="true" type="xsd:string"/>
+                    <xsd:element name="MESSAGE" nillable="true" type="xsd:string"/>
+                    <xsd:element name="LOG_NO" nillable="true" type="xsd:string"/>
+                    <xsd:element name="LOG_MSG_NO" nillable="true" type="xsd:string"/>
+                    <xsd:element name="MESSAGE_V1" nillable="true" type="xsd:string"/>
+                    <xsd:element name="MESSAGE_V2" nillable="true" type="xsd:string"/>
+                    <xsd:element name="MESSAGE_V3" nillable="true" type="xsd:string"/>
+                    <xsd:element name="MESSAGE_V4" nillable="true" type="xsd:string"/>
+                    <xsd:element name="PARAMETER" nillable="true" type="xsd:string"/>
+                    <xsd:element name="ROW" nillable="true" type="xsd:string"/>
+                    <xsd:element name="FIELD" nillable="true" type="xsd:string"/>
+                    <xsd:element name="SYSTEM" nillable="true" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="getMarketPriceData_PortType_marketPriceInput">
+        <wsdl:part name="parameters" element="tns:marketPriceInput"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getMarketPriceData_PortType_getMarketPriceDataResponse">
+        <wsdl:part name="parameters" element="tns:getMarketPriceDataResponse"></wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="getMarketPriceData_PortType">
+        <wsdl:operation name="getMarketPriceData">
+            <wsdl:input message="tns:getMarketPriceData_PortType_marketPriceInput"></wsdl:input>
+            <wsdl:output message="tns:getMarketPriceData_PortType_getMarketPriceDataResponse"></wsdl:output>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="getMarketPriceData_Binder" type="tns:getMarketPriceData_PortType">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="getMarketPriceData">
+            <soap:operation soapAction="getMarketPriceData_Binder_getMarketPriceData"
+                            style="document"/>
+            <wsdl:input>
+                <soap:body parts="parameters" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body parts="parameters" use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="getMarketPriceData">
+        <wsdl:port name="getMarketPriceData_Port"
+                   binding="tns:getMarketPriceData_Binder">
+            <soap:address
+                    location="http://getMarketPriceData/getMarketPriceData_Port"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>
