@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="getBOM" targetNamespace="http://getBOM" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soapjms="http://www.w3.org/2010/soapjms/" xmlns:tns="http://getBOM" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://getBOM" xmlns:tns="http://getBOM" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+          <xsd:element name="getBOM" type="tns:getBOM"/>
+          <xsd:element name="getBOMResponse" type="tns:getBOMResponse"/>
+          <xsd:complexType name="getBOM">
+            <xsd:sequence>
+              <xsd:element name="materialCode" nillable="true" type="xsd:string"/>
+              <xsd:element name="plantCode" nillable="true" type="xsd:string"/>
+            </xsd:sequence>
+          </xsd:complexType>
+          <xsd:complexType name="getBOMResponse">
+            <xsd:sequence>
+              <xsd:element maxOccurs="unbounded" name="headerOutput" nillable="true" type="tns:bomHeaderOutput"/>
+              <xsd:element maxOccurs="unbounded" name="itemOutput" nillable="true" type="tns:bomItemOutput"/>
+            </xsd:sequence>
+          </xsd:complexType>
+          <xsd:complexType name="bomHeaderOutput">
+            <xsd:sequence>
+              <xsd:element name="materialNumber" nillable="true" type="xsd:string"/>
+              <xsd:element name="confirmedQuantity" nillable="true" type="xsd:string"/>
+              <xsd:element name="unitOfMeasure" nillable="true" type="xsd:string"/>
+              <xsd:element name="plant" nillable="true" type="xsd:string"/>
+              <xsd:element name="assetClass" nillable="true" type="xsd:string"/>
+              <xsd:element name="alternativeBOM" nillable="true" type="xsd:string"/>
+              <xsd:element name="validFromDate" nillable="true" type="xsd:string"/>
+            </xsd:sequence>
+          </xsd:complexType>
+          <xsd:complexType name="bomItemOutput">
+            <xsd:sequence>
+              <xsd:element name="BOMComponent" nillable="true" type="xsd:string"/>
+              <xsd:element name="materialDescription" nillable="true" type="xsd:string"/>
+              <xsd:element name="componentQuantity" nillable="true" type="xsd:string"/>
+              <xsd:element name="baseUnitOfMeasure" nillable="true" type="xsd:string"/>
+              <xsd:element name="deletionIndicator" nillable="true" type="xsd:string"/>
+              <xsd:element name="alternativeBOM" nillable="true" type="xsd:string"/>
+            </xsd:sequence>
+          </xsd:complexType>
+        	</xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="getBOM_PortType_getBOMResponse">
+    <wsdl:part name="parameters" element="tns:getBOMResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getBOM_PortType_getBOM">
+    <wsdl:part name="parameters" element="tns:getBOM">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="getBOM_PortType">
+  	<jaxws:bindings xmlns:jaxws="http://java.sun.com/xml/ns/jaxws">
+        <jaxws:enableWrapperStyle>false</jaxws:enableWrapperStyle>
+    </jaxws:bindings>
+    <wsdl:operation name="getBOM">
+      <wsdl:input message="tns:getBOM_PortType_getBOM">
+    </wsdl:input>
+      <wsdl:output message="tns:getBOM_PortType_getBOMResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="getBOM_Binder" type="tns:getBOM_PortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="getBOM">
+      <soap:operation soapAction="getBOM_Binder_getBOM" style="document"/>
+      <wsdl:input>
+        <soap:body parts="parameters" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body parts="parameters" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="getBOM">
+    <wsdl:port name="getBOM_Port" binding="tns:getBOM_Binder">
+      <soap:address location="http://getBOM/getBOM_Port"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="GetInvoicesHandler" targetNamespace="http://GetInvoicesHandler" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soapjms="http://www.w3.org/2010/soapjms/" xmlns:tns="http://GetInvoicesHandler" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://GetInvoicesHandler" xmlns:tns="http://GetInvoicesHandler" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+          <xsd:element name="GetInvoiceInput" type="tns:GetInvoiceInput"/>
+          <xsd:element name="getInvoicesResponse" type="tns:getInvoicesResponse"/>
+          <xsd:complexType name="GetInvoiceInput">
+            <xsd:sequence>
+              <xsd:element name="DateFrom" nillable="true" type="xsd:string"/>
+              <xsd:element name="DateTo" nillable="true" type="xsd:string"/>
+              <xsd:element maxOccurs="unbounded" name="SalesOrganizations" nillable="true" type="tns:SalesOrganizations"/>
+              <xsd:element maxOccurs="unbounded" name="Divisions" nillable="true" type="tns:Divisions"/>
+            </xsd:sequence>
+          </xsd:complexType>
+          <xsd:complexType name="SalesOrganizations">
+            <xsd:sequence>
+              <xsd:element name="SalesOrganization" nillable="true" type="xsd:string"/>
+            </xsd:sequence>
+          </xsd:complexType>
+          <xsd:complexType name="Divisions">
+            <xsd:sequence>
+              <xsd:element name="Division" nillable="true" type="xsd:string"/>
+            </xsd:sequence>
+          </xsd:complexType>
+          <xsd:complexType name="getInvoicesResponse">
+            <xsd:sequence>
+              <xsd:element maxOccurs="unbounded" name="Invoices" nillable="true" type="tns:GetInvoiceOutput"/>
+            </xsd:sequence>
+          </xsd:complexType>
+          <xsd:complexType name="GetInvoiceOutput">
+            <xsd:sequence>
+              <xsd:element name="EntryTime" nillable="true" type="xsd:string"/>
+              <xsd:element name="EntryDate" nillable="true" type="xsd:string"/>
+              <xsd:element name="SalesOrganization" nillable="true" type="xsd:string"/>
+              <xsd:element name="DistributionChannel" nillable="true" type="xsd:string"/>
+              <xsd:element name="Division" nillable="true" type="xsd:string"/>
+              <xsd:element name="SalesOffice" nillable="true" type="xsd:string"/>
+              <xsd:element name="BillingDocument" nillable="true" type="xsd:string"/>
+              <xsd:element name="BillingItem" nillable="true" type="xsd:string"/>
+              <xsd:element name="BillingType" nillable="true" type="xsd:string"/>
+              <xsd:element name="PricingDate" nillable="true" type="xsd:string"/>
+              <xsd:element name="SoldtoParty" nillable="true" type="xsd:string"/>
+              <xsd:element name="ShipTo" nillable="true" type="xsd:string"/>
+              <xsd:element name="BillTo" nillable="true" type="xsd:string"/>
+              <xsd:element name="Payer" nillable="true" type="xsd:string"/>
+              <xsd:element name="CountryDestination" nillable="true" type="xsd:string"/>
+              <xsd:element name="TermsPaymentKey" nillable="true" type="xsd:string"/>
+              <xsd:element name="DocumentCurrency" nillable="true" type="xsd:string"/>
+              <xsd:element name="ExchangeRateFIPostings" nillable="true" type="xsd:string"/>
+              <xsd:element name="ActualInvoicedQuantity" nillable="true" type="xsd:string"/>
+              <xsd:element name="SalesUnit" nillable="true" type="xsd:string"/>
+              <xsd:element name="MaterialNumber" nillable="true" type="xsd:string"/>
+              <xsd:element name="Plant" nillable="true" type="xsd:string"/>
+              <xsd:element name="SalesGroup" nillable="true" type="xsd:string"/>
+              <xsd:element name="InvoicePrice" nillable="true" type="xsd:string"/>
+              <xsd:element name="ConditionUnitInDocument" nillable="true" type="xsd:string"/>
+              <xsd:element name="InvoicePriceQuantity" nillable="true" type="xsd:string"/>
+              <xsd:element name="InvoicePriceCurrency" nillable="true" type="xsd:string"/>
+              <xsd:element name="ReferenceDocumentID" nillable="true" type="xsd:string"/>
+              <xsd:element name="ReferenceDocumentItemID" nillable="true" type="xsd:string"/>
+              <xsd:element name="RequestedDeliveryDate" nillable="true" type="xsd:string"/>
+              <xsd:element name="BillingDate" nillable="true" type="xsd:string"/>
+              <xsd:element name="ShippingConditions" nillable="true" type="xsd:string"/>
+              <xsd:element name="ShipToCity" nillable="true" type="xsd:string"/>
+              <xsd:element name="Incoterms" nillable="true" type="xsd:string"/>
+              <xsd:element name="DestinationPort" nillable="true" type="xsd:string"/>
+              <xsd:element name="SalesOrderDate" nillable="true" type="xsd:string"/>
+              <xsd:element name="OriginPort" nillable="true" type="xsd:string"/>
+              <xsd:element name="RegionPlant" nillable="true" type="xsd:string"/>
+              <xsd:element name="SalesOrderCreationDate" nillable="true" type="xsd:string"/>
+              <xsd:element name="SalesContractNo" nillable="true" type="xsd:string"/>
+              <xsd:element name="DocumentNo" nillable="true" type="xsd:string"/>
+              <xsd:element name="DocumentItemNo" nillable="true" type="xsd:string"/>
+              <xsd:element name="ETA" nillable="true" type="xsd:string"/>
+              <xsd:element name="StorageLocation" nillable="true" type="xsd:string"/>
+              <xsd:element name="DocumentQuantity" nillable="true" type="xsd:string"/>
+              <xsd:element name="DocumentValue" nillable="true" type="xsd:string"/>
+              <xsd:element name="BillingItemValue" nillable="true" type="xsd:string"/>
+              <xsd:element name="Palletize" nillable="true" type="xsd:string"/>
+              <xsd:element name="SDDocumentCategory" nillable="true" type="xsd:string"/>
+              <xsd:element name="CancelledBillingDocNo" nillable="true" type="xsd:string"/>
+              <xsd:element name="MaterialEntered" nillable="true" type="xsd:string"/>
+              <xsd:element name="ConditionExchangeRate" nillable="true" type="xsd:string"/>
+              <xsd:element name="NetWeight" nillable="true" type="xsd:string"/>
+              <xsd:element name="PurchaseOrderDate" nillable="true" type="xsd:string"/>
+              <xsd:element name="PriceListType" nillable="true" type="xsd:string"/>
+              <xsd:element name="GoodsMovementDate" nillable="true" type="xsd:string"/>
+              <xsd:element name="SalesOrderNo" nillable="true" type="xsd:string"/>
+              <xsd:element name="TaxAmount" nillable="true" type="xsd:string"/>
+              <xsd:element name="TaxCurrency" nillable="true" type="xsd:string"/>
+              <xsd:element name="EndOfLoadingDate" nillable="true" type="xsd:string"/>
+              <xsd:element name="ItemCategory" nillable="true" type="xsd:string"/>
+              <xsd:element name="OrderReason" nillable="true" type="xsd:string"/>
+            </xsd:sequence>
+          </xsd:complexType>
+        	</xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="GetInvoicesHandler_PortType_getInvoicesResponse">
+    <wsdl:part name="parameters" element="tns:getInvoicesResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="GetInvoicesHandler_PortType_GetInvoiceInput">
+    <wsdl:part name="parameters" element="tns:GetInvoiceInput">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="GetInvoicesHandler_PortType">
+    <wsdl:operation name="getInvoices">
+      <wsdl:input message="tns:GetInvoicesHandler_PortType_GetInvoiceInput">
+    </wsdl:input>
+      <wsdl:output message="tns:GetInvoicesHandler_PortType_getInvoicesResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="GetInvoicesHandler_Binder" type="tns:GetInvoicesHandler_PortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="getInvoices">
+      <soap:operation soapAction="GetInvoicesHandler_Binder_getInvoices" style="document"/>
+      <wsdl:input>
+        <soap:body parts="parameters" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body parts="parameters" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="GetInvoicesHandler">
+    <wsdl:port name="GetInvoicesHandler_Port" binding="tns:GetInvoicesHandler_Binder">
+      <soap:address location="http://GetInvoicesHandler/GetInvoicesHandler_Port"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
