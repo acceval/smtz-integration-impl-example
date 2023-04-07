@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="getCOGS" targetNamespace="http://getCOGS" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soapjms="http://www.w3.org/2010/soapjms/" xmlns:tns="http://getCOGS" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://getCOGS" xmlns:tns="http://getCOGS" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+          <xsd:element name="CogsInput" type="tns:CogsInput"/>
+          <xsd:element name="getCOGSResponse" type="tns:getCOGSResponse"/>
+          <xsd:complexType name="CogsInput">
+            <xsd:sequence>
+              <xsd:element maxOccurs="unbounded" name="ListInputs" nillable="true" type="tns:ListInputs"/>
+            </xsd:sequence>
+          </xsd:complexType>
+          <xsd:complexType name="ListInputs">
+            <xsd:sequence>
+              <xsd:element name="Plant" nillable="true" type="xsd:string"/>
+              <xsd:element name="MaterialCode" nillable="true" type="xsd:string"/>
+              <xsd:element name="ValidOnDate" nillable="true" type="xsd:string"/>
+            </xsd:sequence>
+          </xsd:complexType>
+          <xsd:complexType name="getCOGSResponse">
+            <xsd:sequence>
+              <xsd:element maxOccurs="unbounded" name="ListItems" nillable="true" type="tns:CogsOutput"/>
+              <xsd:element maxOccurs="unbounded" name="ListComponents" nillable="true" type="tns:CogsCompOutput"/>
+            </xsd:sequence>
+          </xsd:complexType>
+          <xsd:complexType name="CogsOutput">
+            <xsd:sequence>
+              <xsd:element name="Plant" nillable="true" type="xsd:string"/>
+              <xsd:element name="MaterialCode" nillable="true" type="xsd:string"/>
+              <xsd:element name="Price" nillable="true" type="xsd:string"/>
+              <xsd:element name="Currency" nillable="true" type="xsd:string"/>
+              <xsd:element name="Quantity" nillable="true" type="xsd:string"/>
+              <xsd:element name="Uom" nillable="true" type="xsd:string"/>
+              <xsd:element name="ValidFrom" nillable="true" type="xsd:string"/>
+              <xsd:element name="ValidTo" nillable="true" type="xsd:string"/>
+            </xsd:sequence>
+          </xsd:complexType>
+          <xsd:complexType name="CogsCompOutput">
+            <xsd:sequence>
+              <xsd:element name="Plant" nillable="true" type="xsd:string"/>
+              <xsd:element name="MaterialCode" nillable="true" type="xsd:string"/>
+              <xsd:element name="Component" nillable="true" type="xsd:string"/>
+              <xsd:element name="Value" nillable="true" type="xsd:string"/>
+            </xsd:sequence>
+          </xsd:complexType>
+        	</xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="getCOGS_PortType_getCOGSResponse">
+    <wsdl:part name="parameters" element="tns:getCOGSResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getCOGS_PortType_CogsInput">
+    <wsdl:part name="parameters" element="tns:CogsInput">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="getCOGS_PortType">
+    <wsdl:operation name="getCOGS">
+      <wsdl:input message="tns:getCOGS_PortType_CogsInput">
+    </wsdl:input>
+      <wsdl:output message="tns:getCOGS_PortType_getCOGSResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="getCOGS_Binder" type="tns:getCOGS_PortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="getCOGS">
+      <soap:operation soapAction="getCOGS_Binder_getCOGS" style="document"/>
+      <wsdl:input>
+        <soap:body parts="parameters" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body parts="parameters" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="getCOGS">
+    <wsdl:port name="getCOGS_Port" binding="tns:getCOGS_Binder">
+      <soap:address location="http://getCOGS/getCOGS_Port"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

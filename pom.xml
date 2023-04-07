@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.acceval</groupId>
+	<groupId>com.smarttradzt</groupId>
 	<artifactId>smtz-integration-impl-example</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
@@ -25,6 +25,7 @@
 		<junit.platform.version>1.0.0</junit.platform.version>
 		<powermock.version>2.0.0</powermock.version>		
 		<log4j2.version>2.15.0</log4j2.version>
+        <cxf.version>3.3.2</cxf.version>
 	</properties>
 
 	<dependencies>
@@ -249,6 +250,19 @@
 		    <version>3.23.1-GA</version>
 		</dependency>
 		
+		<dependency>
+			<groupId>com.smarttradzt</groupId>
+			<artifactId>smtz-integration-spec</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<scope>compile</scope>
+			<exclusions>
+		        <exclusion>
+		            <groupId>org.apache.poi</groupId>
+    				<artifactId>poi-ooxml</artifactId>
+		        </exclusion>
+		    </exclusions>
+		</dependency>
+		
 	</dependencies>
 
 	<!-- <build>
@@ -312,6 +326,55 @@
                 <configuration>
                     <encoding>UTF-8</encoding>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>src/main/generated</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>                   
+            <plugin>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-codegen-plugin</artifactId>
+                <version>${cxf.version}</version>
+
+                <executions>
+                    <execution>
+                        <id>generate-sources</id>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <sourceRoot>${basedir}/src/main/generated/</sourceRoot>
+                            <wsdlOptions>
+                                <wsdlOption>
+                                    <wsdl>${basedir}/src/main/resources/wsdl/CreateSalesContract.wsdl</wsdl>
+                                    <wsdl>${basedir}/src/main/resources/wsdl/ForexHandler.wsdl</wsdl>
+                                    <wsdl>${basedir}/src/main/resources/wsdl/getBOM.wsdl</wsdl>
+                                    <wsdl>${basedir}/src/main/resources/wsdl/getCOGS.wsdl</wsdl>
+                                    <wsdl>${basedir}/src/main/resources/wsdl/GetInvoicesHandler.wsdl</wsdl>
+                                    <wsdl>${basedir}/src/main/resources/wsdl/getMarketPriceData.wsdl</wsdl>
+                                    <wsdl>${basedir}/src/main/resources/wsdl/getSKU.wsdl</wsdl>
+                                    <wsdl>${basedir}/src/main/resources/wsdl/UpdateSalesContract.wsdl</wsdl>
+                                    <wsdl>${basedir}/src/main/resources/wsdl/getCustomerCreditInfo.wsdl</wsdl>
+                                </wsdlOption>
+                            </wsdlOptions>
+                        </configuration>
+                        <goals>
+                            <goal>wsdl2java</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 		</plugins>
 	</build>
