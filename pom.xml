@@ -264,6 +264,17 @@
 		</dependency>
 		
 	</dependencies>
+	
+	<repositories>
+	    <repository>
+	        <id>acceval-mvn-repo</id>
+	        <url>https://raw.github.com/acceval/mvn-repo/</url>
+	        <snapshots>
+	            <enabled>true</enabled>
+	            <updatePolicy>always</updatePolicy>
+	        </snapshots>
+	    </repository>
+	</repositories>
 
 	<!-- <build>
     		<plugins>
