@@ -253,7 +253,7 @@
 		<dependency>
 			<groupId>com.smarttradzt</groupId>
 			<artifactId>smtz-integration-spec</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.0.1-IOCL-SNAPSHOT</version>
 			<scope>compile</scope>
 			<exclusions>
 		        <exclusion>
@@ -268,7 +268,7 @@
 	<repositories>
 	    <repository>
 	        <id>acceval-mvn-repo</id>
-	        <url>https://raw.github.com/acceval/mvn-repo/</url>
+	        <url>https://raw.githubusercontent.com/acceval/mvn-repo/master/dev/</url>
 	        <snapshots>
 	            <enabled>true</enabled>
 	            <updatePolicy>always</updatePolicy>
