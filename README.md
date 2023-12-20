@@ -1,13 +1,13 @@
 # smtz-integration-impl-example
 
 ### Consumer Type Integration
-Step 1 - Prepare the wsdl classes
-Step 2 - Create a new ConsumerRoute class which extends **CommonSOAPConsumerRouteBuilder** override **getServiceClassFQN** and **getResponseClass** with the appropriate **input message** java class and **output message** java class.
-Step 3 - Create a new Converter class which extends **interface** of the respective integration and apply the business logic here and transform the **input message** into a SmartTradzt understandable structure.
+- Step 1 - Prepare the wsdl classes
+- Step 2 - Create a new ConsumerRoute class which extends **CommonSOAPConsumerRouteBuilder** override **getServiceClassFQN** and **getResponseClass** with the appropriate **input message** java class and **output message** java class.
+- Step 3 - Create a new Converter class which extends **interface** of the respective integration and apply the business logic here and transform the **input message** into a SmartTradzt understandable structure.
 
 ### Product Type Integration
-Step 1 - Create WebService services and requests (which is under **ws** package of example). **Request** class will be the **input message** used in configure method for the exchange message and services will inform SmartTradzt on the integration status.
-Step 2 - Create a new ConsumerRoute class which extends **CommonSOAPProducerRouteBuilder** override **getServiceClassFQN** with the appropriate **input message** java class. Override **configure** method with the appropriate **input message** and apply data transformation into SmartTradzt understandable structure. Queue sender will be required here to send the response back to SmartTradzt for any data insert or update.
+- Step 1 - Create WebService services and requests (which is under **ws** package of example). **Request** class will be the **input message** used in configure method for the exchange message and services will inform SmartTradzt on the integration status.
+- Step 2 - Create a new ConsumerRoute class which extends **CommonSOAPProducerRouteBuilder** override **getServiceClassFQN** with the appropriate **input message** java class. Override **configure** method with the appropriate **input message** and apply data transformation into SmartTradzt understandable structure. Queue sender will be required here to send the response back to SmartTradzt for any data insert or update.
 
 ## SOAP wsdl
 - It is required to create wsdl files under **resources/wsdl** folder so that java class of the respective integration is generated accordingly and can be used in **route** class and **converter** class
