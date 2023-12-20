@@ -34,6 +34,5 @@
 - Apply business logic here and data transformation into SmartTradzt understandable structure
 
 ## WebService services and requests
-- Request is the **input message** java class from SAP and to be transformed into SmartTradzt java class.
-- Services is the response message sent back to SmartTradzt to inform if the integration is successful.
-
+- Request is the **input message** java class which contains SAP data that sent to SmartTradzt and to be transformed into SmartTradzt understandable structure
+- Services is the response message sent back to SmartTradzt to inform the integration status
