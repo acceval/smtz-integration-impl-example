@@ -6,7 +6,7 @@
 - Step 3 - Create a new Converter class which extends **interface** of the respective integration and apply the business logic here and prepare the **request message**, lastly transform the response message into SmartTradzt understandable structure.
 
 ### Product Type Integration
-- Step 1 - Create WebService services and requests (sample is under **ws** package). **Request** class will be the used in configure method for the exchange message and services will inform SmartTradzt on the integration status.
+- Step 1 - Create WebService services and requests (sample is under **ws** package). **Request** class will be the used in configure method as **input message** which contains SAP data and services will inform SmartTradzt on the integration status.
 - Step 2 - Create a new ProducerRoute class which extends **CommonSOAPProducerRouteBuilder** override **getServiceClassFQN**. Override **configure** method with the appropriate **request class** and apply data transformation into SmartTradzt understandable structure. Queue sender will be required here to send the response back to SmartTradzt.
 
 ## SOAP wsdl
