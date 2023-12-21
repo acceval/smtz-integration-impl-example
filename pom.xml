@@ -25,7 +25,8 @@
 		<junit.platform.version>1.0.0</junit.platform.version>
 		<powermock.version>2.0.0</powermock.version>		
 		<log4j2.version>2.15.0</log4j2.version>
-        <cxf.version>3.3.2</cxf.version>
+        <camel.version>3.0.0-M4</camel.version>
+        <cxf.version>3.3.2</cxf.version>	
 	</properties>
 
 	<dependencies>
@@ -263,6 +264,41 @@
 		    </exclusions>
 		</dependency>
 		
+		<dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-servlet-starter</artifactId>
+            <version>${camel.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-jackson-starter</artifactId>
+            <version>${camel.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-swagger-java-starter</artifactId>
+            <version>${camel.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-spring-boot-starter</artifactId>
+            <version>${camel.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-cxf</artifactId>
+            <version>${camel.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-http4</artifactId>
+            <version>${camel.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-spring-boot-starter-jaxws</artifactId>
+            <version>${cxf.version}</version>
+        </dependency>
 	</dependencies>
 	
 	<repositories>
